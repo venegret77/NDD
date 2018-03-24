@@ -7,11 +7,10 @@ using System.Threading.Tasks;
 
 namespace NetworkDesign
 {
-    public class GroupOfLines: GroupOfElem
+    public class GroupOfLines: GroupOfGeometricFigure
     {
         public List<Line> Lines = new List<Line>();
         public Line TempLine = new Line(); //Текущая линия
-        public bool step_line = false;
 
         public GroupOfLines()
         {
@@ -21,7 +20,7 @@ namespace NetworkDesign
         public override void TempDefault()
         {
             TempLine = new Line();
-            step_line = false;
+            step = false;
         }
 
         public override void Add(object elem)
@@ -69,6 +68,11 @@ namespace NetworkDesign
                 _Line.Draw();
             }
             TempLine.Draw();
+        }
+
+        public override int Search(int x, int y, out double dist, DrawLevel dl)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -110,12 +110,12 @@ namespace NetworkDesign
 
         private void MouseBLines(int x, int y)
         {
-            if (MyMap.Polygons.polygon_active)
+            if (MyMap.Polygons.active)
             {
-                if (!MyMap.Polygons.step_polygon)
+                if (!MyMap.Polygons.step)
                 {
                     MyMap.Polygons.TempPolygon = new Polygon(x, y, drawLevel);
-                    MyMap.Polygons.step_polygon = true;
+                    MyMap.Polygons.step = true;
                 }
                 else
                 {
@@ -125,7 +125,7 @@ namespace NetworkDesign
             else
             {
                 MyMap.Polygons.Add(MyMap.Polygons.TempPolygon);
-                MyMap.Polygons.step_polygon = false;
+                MyMap.Polygons.step = false;
                 int lastindex = MyMap.Polygons.Polygons.Count - 1;
                 Element elem = new Element(3, lastindex, MyMap.Polygons.Polygons[lastindex], -1);
                 Element _elem = new Element(3, lastindex, new Polygon(), -1);
@@ -137,14 +137,14 @@ namespace NetworkDesign
 
         private void MouseLines(int x, int y)
         {
-            if (!MyMap.Lines.step_line)
+            if (!MyMap.Lines.step)
             {
-                MyMap.Lines.step_line = true;
+                MyMap.Lines.step = true;
                 MyMap.Lines.TempLine = new Line(x, y, drawLevel);
             }
             else
             {
-                MyMap.Lines.step_line = false;
+                MyMap.Lines.step = false;
                 MyMap.Lines.Add(MyMap.Lines.TempLine);
                 MyMap.Lines.TempLine = new Line();
                 int lastindex = MyMap.Lines.Lines.Count - 1;
@@ -184,14 +184,14 @@ namespace NetworkDesign
 
         private void MouseCircle(int x, int y)
         {
-            if (!MyMap.Circles.step_circle)
+            if (!MyMap.Circles.step)
             {
-                MyMap.Circles.step_circle = true;
+                MyMap.Circles.step = true;
                 MyMap.Circles.TempCircle = new Circle(x, y, drawLevel);
             }
             else
             {
-                MyMap.Circles.step_circle = false;
+                MyMap.Circles.step = false;
                 MyMap.Circles.Add(MyMap.Circles.TempCircle);
                 MyMap.Circles.TempCircle = new Circle();
                 int lastindex = MyMap.Circles.Circles.Count - 1;
@@ -228,7 +228,7 @@ namespace NetworkDesign
                     case 4:
                         break;
                     case 5:
-                        MyMap.Polygons.polygon_active = true;
+                        MyMap.Polygons.active = true;
                         MouseBLines(e.X, y);
                         break;
                     case 360:
@@ -281,7 +281,7 @@ namespace NetworkDesign
                         }
                         break;
                     case 1:
-                        MyMap.Lines.step_line = false;
+                        MyMap.Lines.step = false;
                         MyMap.Lines.TempLine = new Line();
                         break;
                     case 2:
@@ -290,12 +290,12 @@ namespace NetworkDesign
                         break;
                     case 5:
                         MyMap.Polygons.TempPolygon.ClearTempPoint();
-                        MyMap.Polygons.polygon_active = false;
+                        MyMap.Polygons.active = false;
                         MouseBLines(e.X, y);
                         MyMap.Polygons.TempPolygon = new Polygon();
                         break;
                     case 360:
-                        MyMap.Circles.step_circle = false;
+                        MyMap.Circles.step = false;
                         MyMap.Circles.TempCircle = new Circle();
                         break;
                     case 6:
@@ -336,7 +336,7 @@ namespace NetworkDesign
             switch (MyMap.RB)
             {
                 case 1:
-                    if (MyMap.Lines.step_line)
+                    if (MyMap.Lines.step)
                     {
                         MyMap.Lines.TempLine.SetPoint(e.X, y, 1);
                     }
@@ -365,13 +365,13 @@ namespace NetworkDesign
                     }
                     break;
                 case 5:
-                    if (MyMap.Polygons.polygon_active & MyMap.Polygons.step_polygon)
+                    if (MyMap.Polygons.active & MyMap.Polygons.step)
                     {
                         MyMap.Polygons.TempPolygon.SetTempPoint(e.X, y);
                     }
                     break;
                 case 360:
-                    if (MyMap.Circles.step_circle)
+                    if (MyMap.Circles.step)
                     {
                         MyMap.Circles.TempCircle.SetRadius(e.X, y);
                     }

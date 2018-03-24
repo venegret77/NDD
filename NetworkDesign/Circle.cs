@@ -8,14 +8,11 @@ using Tao.OpenGl;
 
 namespace NetworkDesign
 {
-    public class Circle
+    public class Circle: GeometricFigure
     {
         public Point MainCenterPoint;
         public Point LocalCencerPoint;
         public int radius;
-        public bool delete = false;
-        private float R, G, B, A;
-        private bool active = false;
         public DrawLevel MainDL;
         public DrawLevel LocalDL;
         public double koef;
@@ -59,27 +56,7 @@ namespace NetworkDesign
             delete = false;
         }
 
-        //Добавить конструктор с двумя уровнями отображения
-        //Реализовать разворот вместе с фигурой
-
-        /*public Circle(int x, int y, int _radius)
-        {
-            CenterPoint = new Point(x, y);
-            radius = _radius;
-            delete = false;
-        }*/
-
-        public void SetActive(bool b)
-        {
-            active = b;
-        }
-
-        public bool CheckActive()
-        {
-            return active;
-        }
-
-        public double PointInCircle(int x, int y)
+        public override double Search(int x, int y)
         {
             if (Math.Pow((x - MainCenterPoint.X), 2) + Math.Pow((y - MainCenterPoint.Y), 2) <= Math.Pow(radius,2))
                 return Math.Abs(MainCenterPoint.X - x + MainCenterPoint.Y - y);
@@ -87,7 +64,7 @@ namespace NetworkDesign
                 return -1;
         }
 
-        public double PointInCircleEnt(int x, int y)
+        public double SearchEnt(int x, int y)
         {
             if (Math.Pow((x - MainCenterPoint.X), 2) + Math.Pow((y - MainCenterPoint.Y), 2) <= Math.Pow(MainForm.colorSettings.EntranceRadius, 2))
                 return Math.Abs(MainCenterPoint.X - x + MainCenterPoint.Y - y);
@@ -95,7 +72,7 @@ namespace NetworkDesign
                 return -1;
         }
 
-        public double PointInCircleIW(int x, int y)
+        public double SearchIW(int x, int y)
         {
             if (Math.Pow((x - MainCenterPoint.X), 2) + Math.Pow((y - MainCenterPoint.Y), 2) <= Math.Pow(MainForm.colorSettings.InputWireRadius, 2))
                 return Math.Abs(MainCenterPoint.X - x + MainCenterPoint.Y - y);
@@ -108,7 +85,7 @@ namespace NetworkDesign
             radius = (int)Math.Sqrt(Math.Pow((x - MainCenterPoint.X), 2) + Math.Pow((y - MainCenterPoint.Y), 2));
         }
 
-        public void Draw()
+        public override void Draw()
         {
             if (MainDL == MainForm.drawLevel)
             {
@@ -300,6 +277,21 @@ namespace NetworkDesign
                 }
                 Gl.glEnd();
             }
+        }
+
+        public override void SetPoint(int x, int y, int i)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void CalcMaxMin(out int maxx, out int minx, out int maxy, out int miny)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void DrawB()
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -49,7 +49,7 @@ namespace NetworkDesign
 
         public int CalcNearestIW(int x, int y, DrawLevel dl)
         {
-            return InputWires.CalcNearestCicrcleEnt(x, y, dl);
+            return InputWires.SearchEnt(x, y, dl);
         }
 
         private double CalcPointToLine(int x, int y, Point point1, Point point2)

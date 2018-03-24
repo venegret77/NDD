@@ -194,8 +194,8 @@ namespace NetworkDesign
             }
             else
             {
-                int rect = Rectangles.CalcNearestRect(x, y, out double distrect, dl);
-                int bline = Polygons.CalcNearestBLine(x, y, out double distbline, dl);
+                int rect = Rectangles.Search(x, y, out double distrect, dl);
+                int bline = Polygons.Search(x, y, out double distbline, dl);
                 int build = Buildings.CalcNearestBuild(x, y, out double distbuild, dl); 
                 if (distrect == -1)
                     distrect = Int32.MaxValue;
