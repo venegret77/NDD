@@ -25,12 +25,19 @@ namespace NetworkDesign
             InputWires.TempCircle = new Circle();
         }
 
+        public void AddInBuild()
+        {
+            InputWires.TempCircle.LocalCencerPoint = InputWires.TempCircle.MainCenterPoint;
+            InputWires.Add(InputWires.TempCircle);
+            InputWires.TempCircle = new Circle();
+        }
+
         public void AddTemp(int x, int y, DrawLevel MDL, DrawLevel LDL)
         {
             InputWires.TempCircle = new Circle(x, y, rad, MDL, LDL);
         }
 
-        private void SetTempPoint(int x, int y)
+        public void SetTempPoint(int x, int y)
         {
             InputWires.TempCircle.MainCenterPoint = new Point(x, y);
         }
