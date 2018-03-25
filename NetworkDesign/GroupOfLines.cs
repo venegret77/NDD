@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace NetworkDesign
 {
-    public class GroupOfLines: GroupOfGeometricFigure
+    public class GroupOfLines: GroupOfElements
     {
         public List<Line> Lines = new List<Line>();
         public Line TempLine = new Line(); //Текущая линия

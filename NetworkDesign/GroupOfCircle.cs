@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NetworkDesign
 {
-    public class GroupOfCircle: GroupOfGeometricFigure
+    public class GroupOfCircle: GroupOfElements
     {
         public List<Circle> Circles = new List<Circle>();
         public Circle TempCircle = new Circle();

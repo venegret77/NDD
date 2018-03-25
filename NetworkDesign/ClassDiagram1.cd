@@ -1,63 +1,63 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="NetworkDesign.BuildForm" Collapsed="true">
-    <Position X="9.75" Y="0.5" Width="1.5" />
+    <Position X="14.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAABAAACAAgBAABACAAAgCAAAMAAAAEGAAAAEAAAA=</HashCode>
       <FileName>BuildForm.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NetworkDesign.Building" Collapsed="true">
-    <Position X="11.5" Y="0.5" Width="1.5" />
+    <Position X="16.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>IAAECABAAAAAlogAhDAAMQ5ACiwAAABAAAIABoARABA=</HashCode>
+      <HashCode>IAAECABAAAAAlogAhDAAMQ5AiiwEAABAAAIABoARABA=</HashCode>
       <FileName>Building.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NetworkDesign.Circle" Collapsed="true">
-    <Position X="2.75" Y="4.75" Width="1.5" />
+    <Position X="5" Y="4.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>BAAAAAAACgCAAhAABAAABABAAAQAAAAQAAAAAAKgEAA=</HashCode>
       <FileName>Circle.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NetworkDesign.ColorDialogForm" Collapsed="true">
-    <Position X="13.25" Y="0.5" Width="1.5" />
+    <Position X="18" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAACEAABAAAACAAAACAMw7AAACwHAPCAxAAEA=</HashCode>
       <FileName>ColorDialogForm.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NetworkDesign.DrawElems" Collapsed="true">
-    <Position X="15" Y="0.5" Width="1.5" />
+    <Position X="19.75" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>DrawElems.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NetworkDesign.EditRect" Collapsed="true">
-    <Position X="16.75" Y="0.5" Width="1.5" />
+    <Position X="21.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAABAggAAQAAAAAAAAgBCAAAAAAAAAAAAAAA=</HashCode>
       <FileName>EditRect.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NetworkDesign.ElemOfEdit" Collapsed="true">
-    <Position X="9.75" Y="1.5" Width="1.5" />
+    <Position X="14.5" Y="1.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAACAAAAAAAAABAAAAAAAAAABAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ElemOfEdit.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NetworkDesign.Entrances" Collapsed="true">
-    <Position X="11.5" Y="1.5" Width="1.5" />
+    <Position X="16.25" Y="1.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAIAAAAIAAAEAhAAAAIAAAAAAAAgAAAAAAAAAWgAAAA=</HashCode>
       <FileName>Entrance.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NetworkDesign.FormLog" Collapsed="true">
-    <Position X="13.25" Y="1.5" Width="1.5" />
+    <Position X="18" Y="1.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAGAAAAAAAACAAAACAAgAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>FormLog.cs</FileName>
@@ -71,63 +71,63 @@
     </TypeIdentifier>
   </Class>
   <Class Name="NetworkDesign.GroupOfBuildings" Collapsed="true">
-    <Position X="15" Y="1.5" Width="1.5" />
+    <Position X="3" Y="1.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAIAABAAAAAAAgAAAgAABAAAAIAAAAAAAQAAAAAAAAA=</HashCode>
+      <HashCode>AAIAABAAAAAAAgAAAgAABAAAAAAAAAAAAQAAAAAgAAA=</HashCode>
       <FileName>GroupOfBuildings.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NetworkDesign.GroupOfCircle" Collapsed="true">
-    <Position X="2.75" Y="1.75" Width="1.5" />
+    <Position X="5.25" Y="1.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>BAIAAAAAAgAABhAAAgAABAAAAAAAAEAQAQAAAAAgAAA=</HashCode>
       <FileName>GroupOfCircle.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NetworkDesign.GroupOfEditRects" Collapsed="true">
-    <Position X="16.75" Y="1.5" Width="1.5" />
+    <Position X="7.5" Y="1.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>QAIAAAAQAAAAAgAAAAAAAAAAACAAAAAAARAAAEAgAAA=</HashCode>
+      <HashCode>QAIAAAAQAAAAAgAAAgAABAAAACAAAAAAARAAAEAgAAA=</HashCode>
       <FileName>GroupOfEditRects.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="NetworkDesign.GroupOfGeometricFigure" Collapsed="true">
-    <Position X="3.75" Y="0.5" Width="1.5" />
+  <Class Name="NetworkDesign.GroupOfElements" Collapsed="true">
+    <Position X="6.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAIAEAAAAAAAAgAAAgAABAAAAAAgAAAAAQAAIAAgAAA=</HashCode>
-      <FileName>GroupOfGeometricFigure.cs</FileName>
+      <FileName>GroupOfElements.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NetworkDesign.GroupOfLines" Collapsed="true">
-    <Position X="5" Y="1.75" Width="1.5" />
+    <Position X="9.75" Y="1.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAIAAAAAAAAAAgAAAgAABAAAAAAQAAACAQAAAAAgAAA=</HashCode>
       <FileName>GroupOfLines.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NetworkDesign.GroupOfPolygons" Collapsed="true">
-    <Position X="7.25" Y="1.75" Width="1.5" />
+    <Position X="12" Y="1.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAIAAAAAAAAAAgAAAgAABCAAAAAAAAABAQAAAAAgAAA=</HashCode>
       <FileName>GroupOfPolygons.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NetworkDesign.GroupOfRectangles" Collapsed="true">
-    <Position X="0.5" Y="1.75" Width="1.5" />
+    <Position X="0.75" Y="1.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAIAAAABAAAAAgAAAgAABAAAAAAAAAAAAQAAAAAgBAA=</HashCode>
       <FileName>GroupOfRectangles.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NetworkDesign.InputWire" Collapsed="true">
-    <Position X="9.75" Y="2.5" Width="1.5" />
+    <Position X="19.75" Y="1.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAIAAAAIAAAEAhAABIIAEBAAAQAgAAAAAAAAASAAAAA=</HashCode>
+      <HashCode>AAIAAAAIAAQEAhAABIIAEBAAAQAgAAAAAAAAASAAAAA=</HashCode>
       <FileName>InputWire.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NetworkDesign.InputWireForm" Collapsed="true">
-    <Position X="11.5" Y="2.5" Width="1.5" />
+    <Position X="21.5" Y="1.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAABAAACABAAAAAICAAAICAAAYAAAAAGAAgAAAgAI=</HashCode>
       <FileName>InputWireForm.cs</FileName>
@@ -141,56 +141,49 @@
     </TypeIdentifier>
   </Class>
   <Class Name="NetworkDesign.Log" Collapsed="true">
-    <Position X="13.25" Y="2.5" Width="1.5" />
+    <Position X="14.5" Y="2.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AQMBAAAAAAAAAAAIAAAAAAAAAAAACAAAAAAAABAAAAI=</HashCode>
       <FileName>Log.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NetworkDesign.LogMessage" Collapsed="true">
-    <Position X="15" Y="2.5" Width="1.5" />
+    <Position X="16.25" Y="2.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>QAABAAAAAAAAAAAEAAAAAAAABAABIAAAAAAACAAAAAA=</HashCode>
       <FileName>LogMessage.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NetworkDesign.MainForm" Collapsed="true">
-    <Position X="16.75" Y="2.5" Width="1.5" />
+    <Position X="18" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>JQSCDT0KozAgIRgEw1eQwF+yQDCIzgAAAFgFkYAQIN8=</HashCode>
+      <HashCode>JQSCDT0KozAgIQgEw1eQwF+yQDCIzgAAAFgFkYAQIN8=</HashCode>
       <FileName>MainForm.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NetworkDesign.Map" Collapsed="true">
-    <Position X="9.75" Y="3.5" Width="1.5" />
+    <Position X="19.75" Y="2.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAQCBARgAAABAAAAAABCECAAAAAAAADABABAcACAAA=</HashCode>
       <FileName>Map.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NetworkDesign.MapControl" Collapsed="true">
-    <Position X="11.5" Y="3.5" Width="1.5" />
+    <Position X="21.5" Y="2.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAACAAABAAAgCAAAACAAAYAAACAGAQAACAAAA=</HashCode>
       <FileName>MapControl.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="NetworkDesign.NetworkDesignDataSet" Collapsed="true">
-    <Position X="13.25" Y="3.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAACAAAwAAgAJBBAAAQAAABAgCQBgAgAAAAAECBBA=</HashCode>
-      <FileName>NetworkDesignDataSet.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="NetworkDesign.Polygon" Collapsed="true">
-    <Position X="5" Y="4.75" Width="1.5" />
+    <Position X="2.75" Y="4.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAgCYAgAABAAAAAAAAAAAAAAAAAAAAAIgAAA=</HashCode>
       <FileName>Polygon.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NetworkDesign.Program" Collapsed="true">
-    <Position X="15" Y="3.5" Width="1.5" />
+    <Position X="14.5" Y="3.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
       <FileName>Program.cs</FileName>
@@ -204,61 +197,61 @@
     </TypeIdentifier>
   </Class>
   <Class Name="NetworkDesign.TempElems" Collapsed="true">
-    <Position X="11.5" Y="4.5" Width="1.5" />
+    <Position X="19.75" Y="3.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>TempElems.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="NetworkDesign.Properties.Resources" Collapsed="true">
-    <Position X="16.75" Y="3.5" Width="1.5" />
+    <Position X="16.25" Y="3.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AABAAAAAAAAAAAEAAAABEAAAAQAAAAAAAAAAAAABAIA=</HashCode>
     </TypeIdentifier>
   </Class>
   <Class Name="NetworkDesign.Properties.Settings" Collapsed="true">
-    <Position X="9.75" Y="4.5" Width="1.5" />
+    <Position X="18" Y="3.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAAAABAAAAAAAAAAAABAA=</HashCode>
     </TypeIdentifier>
   </Class>
   <Struct Name="NetworkDesign.Action" Collapsed="true">
-    <Position X="9.75" Y="5.75" Width="1.5" />
+    <Position X="14.5" Y="4.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAABAAAAAAAAAAAAAQAAAAAAAABAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Action.cs</FileName>
     </TypeIdentifier>
   </Struct>
   <Struct Name="NetworkDesign.ActiveElem" Collapsed="true">
-    <Position X="11.5" Y="5.75" Width="1.5" />
+    <Position X="16.25" Y="4.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAQAAAAAAAABAAAAAIAAAAAAAAA=</HashCode>
       <FileName>ActiveElem.cs</FileName>
     </TypeIdentifier>
   </Struct>
   <Struct Name="NetworkDesign.ColorSettings" Collapsed="true">
-    <Position X="13.25" Y="5.75" Width="1.5" />
+    <Position X="18" Y="4.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAIAAAAAQAACAIAAAQAAAgAAAAAAQAAAAAAgABAQA=</HashCode>
       <FileName>ColorSettings.cs</FileName>
     </TypeIdentifier>
   </Struct>
   <Struct Name="NetworkDesign.DrawLevel" Collapsed="true">
-    <Position X="15" Y="5.75" Width="1.5" />
+    <Position X="19.75" Y="4.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAgAAAAAAAAAAAAAAAABAAAAAAAAAiA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAgEgAAAAAAAAAAAAIABAAAAAAAAAiA=</HashCode>
       <FileName>DrawLevel.cs</FileName>
     </TypeIdentifier>
   </Struct>
   <Struct Name="NetworkDesign.Element" Collapsed="true">
-    <Position X="16.75" Y="5.75" Width="1.5" />
+    <Position X="21.5" Y="4.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>QAAAAAAAAAAAAAAAAAAAAAAAAAAFAAAAAAAAAAABAAA=</HashCode>
       <FileName>Element.cs</FileName>
     </TypeIdentifier>
   </Struct>
   <Struct Name="NetworkDesign.MapSettings" Collapsed="true">
-    <Position X="9.75" Y="6.75" Width="1.5" />
+    <Position X="14.5" Y="5.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAABAAAAAAAAAAAAEQAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>MapSettings.cs</FileName>

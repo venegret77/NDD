@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NetworkDesign
 {
-    public class GroupOfRectangles: GroupOfGeometricFigure
+    public class GroupOfRectangles: GroupOfElements
     {
         public List<Rectangle> Rectangles = new List<Rectangle>();
         public Rectangle TempRectangle = new Rectangle(); //Текущий прямоугольник

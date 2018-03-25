@@ -110,7 +110,7 @@
     <Compile Include="GeometricFigure.cs" />
     <Compile Include="Entrance.cs" />
     <Compile Include="GroupOfCircle.cs" />
-    <Compile Include="GroupOfGeometricFigure.cs" />
+    <Compile Include="GroupOfElements.cs" />
     <Compile Include="InputWire.cs" />
     <Compile Include="InputWireForm.cs">
       <SubType>Form</SubType>

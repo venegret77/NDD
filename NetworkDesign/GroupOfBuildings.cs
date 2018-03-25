@@ -6,15 +6,16 @@ using System.Threading.Tasks;
 
 namespace NetworkDesign
 {
-    public class GroupOfBuildings
+    public class GroupOfBuildings: GroupOfElements
     {
         public List<Building> Buildings = new List<Building>();
+
         public GroupOfBuildings()
         {
 
         }
 
-        public void TempDefault()
+        public override void TempDefault()
         {
             foreach(var b in Buildings)
             {
@@ -22,17 +23,17 @@ namespace NetworkDesign
             }
         }
 
-        public void Add(Building build)
+        public override void Add(object elem)
         {
-            Buildings.Add(build);
+            Buildings.Add((Building)elem);
         }
 
-        public void Remove(int i)
+        public override void Remove(int i)
         {
             Buildings[i] = new Building();
         }
 
-        public void Choose(int i)
+        public override void Choose(int i)
         {
             for (int j = 0; j < Buildings.Count; j++)
             {
@@ -51,7 +52,7 @@ namespace NetworkDesign
             }
         }
 
-        public int CalcNearestBuild(int x, int y, out double dist, DrawLevel dl)
+        public override int Search(int x, int y, out double dist, DrawLevel dl)
         {
             int index = -1;
             dist = -1;
@@ -76,12 +77,17 @@ namespace NetworkDesign
             return index;
         }
 
-        public void Draw()
+        public override void Draw()
         {
             foreach (var build in Buildings)
             {
                 build.Draw();
             }
+        }
+
+        public override int Search(int x, int y, DrawLevel dl)
+        {
+            throw new NotImplementedException();
         }
     }
 }

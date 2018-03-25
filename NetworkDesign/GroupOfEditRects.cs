@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NetworkDesign
 {
-    public class GroupOfEditRects
+    public class GroupOfEditRects: GroupOfElements
     {
         public List<EditRect> EditRects = new List<EditRect>();
         public bool edit_mode = true;
@@ -18,19 +18,19 @@ namespace NetworkDesign
 
         }
 
-        public void TempDefault()
+        public override void TempDefault()
         {
             edit_active = false;
             edit_mode = false;
             editRect = -1;
         }
 
-        public void Add(EditRect editRect)
+        public override void Add(object elem)
         {
-            EditRects.Add(editRect);
+            EditRects.Add((EditRect)elem);
         }
 
-        public void Draw()
+        public override void Draw()
         {
             foreach (var _editRect in EditRects)
             {
@@ -107,6 +107,26 @@ namespace NetworkDesign
                 }
                 b = false;
             }
-        }        
+        }
+
+        public override void Remove(int i)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void Choose(int i)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override int Search(int x, int y, DrawLevel dl)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override int Search(int x, int y, out double dist, DrawLevel dl)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

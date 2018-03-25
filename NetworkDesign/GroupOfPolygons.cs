@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NetworkDesign
 {
-    public class GroupOfPolygons: GroupOfGeometricFigure
+    public class GroupOfPolygons: GroupOfElements
     {
         public List<Polygon> Polygons = new List<Polygon>();
         public Polygon TempPolygon = new Polygon(); //Текущий многоугольник
