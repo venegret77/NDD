@@ -31,7 +31,7 @@ namespace NetworkDesign
 
         public int CalcNearestEnterise(int x, int y, DrawLevel dl)
         {
-            return Enterances.CalcNearestCicrcleEnt(x, y, dl);
+            return Enterances.SearchEnt(x, y, dl);
         }
 
         private double CalcPointToLine(int x, int y, Point point1, Point point2)

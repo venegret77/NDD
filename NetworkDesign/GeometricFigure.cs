@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace NetworkDesign
 {
-    public abstract class Elem
+    public abstract class GeometricFigure
     {
         protected bool active = false;
         public DrawLevel DL;

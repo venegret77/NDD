@@ -61,7 +61,7 @@ namespace NetworkDesign
         /// <param name="y">Координата мыши Y</param>
         private void SelectItems(int x, int y)
         {
-            unfocus();
+            Unfocus();
             activeElem.item = MyMap.SearchElem(x, y, out activeElem.type, out activeElem.build, drawLevel);
             switch (activeElem.type)
             {
@@ -110,12 +110,12 @@ namespace NetworkDesign
 
         private void MouseBLines(int x, int y)
         {
-            if (MyMap.Polygons.polygon_active)
+            if (MyMap.Polygons.active)
             {
-                if (!MyMap.Polygons.step_polygon)
+                if (!MyMap.Polygons.step)
                 {
                     MyMap.Polygons.TempPolygon = new Polygon(x, y, drawLevel);
-                    MyMap.Polygons.step_polygon = true;
+                    MyMap.Polygons.step = true;
                 }
                 else
                 {
@@ -125,7 +125,7 @@ namespace NetworkDesign
             else
             {
                 MyMap.Polygons.Add(MyMap.Polygons.TempPolygon);
-                MyMap.Polygons.step_polygon = false;
+                MyMap.Polygons.step = false;
                 int lastindex = MyMap.Polygons.Polygons.Count - 1;
                 Element elem = new Element(3, lastindex, MyMap.Polygons.Polygons[lastindex], -1);
                 Element _elem = new Element(3, lastindex, new Polygon(), -1);
@@ -137,14 +137,14 @@ namespace NetworkDesign
 
         private void MouseLines(int x, int y)
         {
-            if (!MyMap.Lines.step_line)
+            if (!MyMap.Lines.step)
             {
-                MyMap.Lines.step_line = true;
+                MyMap.Lines.step = true;
                 MyMap.Lines.TempLine = new Line(x, y, drawLevel);
             }
             else
             {
-                MyMap.Lines.step_line = false;
+                MyMap.Lines.step = false;
                 MyMap.Lines.Add(MyMap.Lines.TempLine);
                 MyMap.Lines.TempLine = new Line();
                 int lastindex = MyMap.Lines.Lines.Count - 1;
@@ -184,14 +184,14 @@ namespace NetworkDesign
 
         private void MouseCircle(int x, int y)
         {
-            if (!MyMap.Circles.step_circle)
+            if (!MyMap.Circles.step)
             {
-                MyMap.Circles.step_circle = true;
+                MyMap.Circles.step = true;
                 MyMap.Circles.TempCircle = new Circle(x, y, drawLevel);
             }
             else
             {
-                MyMap.Circles.step_circle = false;
+                MyMap.Circles.step = false;
                 MyMap.Circles.Add(MyMap.Circles.TempCircle);
                 MyMap.Circles.TempCircle = new Circle();
                 int lastindex = MyMap.Circles.Circles.Count - 1;
@@ -228,28 +228,50 @@ namespace NetworkDesign
                     case 4:
                         break;
                     case 5:
-                        MyMap.Polygons.polygon_active = true;
+                        MyMap.Polygons.active = true;
                         MouseBLines(e.X, y);
                         break;
                     case 360:
                         MouseCircle(e.X, y);
                         break;
                     case 6:
-                        if (!MyMap.Buildings.Buildings[activeElem.item].InputWires.step)
+                        if (drawLevel.Level != -1)
                         {
-                            InputWireForm IWF = new InputWireForm(MyMap.Buildings.Buildings[activeElem.item].floors_name);
-                            IWF.ShowDialog();
-                            if (IWF.dialogResult == DialogResult.OK)
-                                MyMap.Buildings.Buildings[activeElem.item].AddIW(e.X, y, IWF.side, IWF.floor_index);
+                            if (drawLevel.Floor != 0)
+                            {
+                                if (!MyMap.Buildings.Buildings[activeElem.item].InputWires.step)
+                                {
+                                    MyMap.Buildings.Buildings[activeElem.item].AddIWInBuild(e.X, y, drawLevel);
+                                }
+                                else
+                                {
+                                    MyMap.Buildings.Buildings[activeElem.item].AddIWInBuild(e.X, y, drawLevel);
+                                    int lastindex = MyMap.Buildings.Buildings[activeElem.item].InputWires.InputWires.Circles.Count - 1;
+                                    Element elem = new Element(6, lastindex, MyMap.Buildings.Buildings[activeElem.item].InputWires.InputWires.Circles[lastindex], -1);
+                                    Element _elem = new Element(6, lastindex, new Circle(), -1);
+                                    MyMap.log.Add(new LogMessage("Добавил проход провода через потолок", elem, _elem, activeElem.item));
+                                    InfoLable.Text = "Добавил проход провода через потолок";
+                                }
+                            }
                         }
                         else
                         {
-                            MyMap.Buildings.Buildings[activeElem.item].AddIW(e.X, y, false, -1);
-                            int lastindex = MyMap.Buildings.Buildings[activeElem.item].InputWires.InputWires.Circles.Count - 1;
-                            Element elem = new Element(6, lastindex, MyMap.Buildings.Buildings[activeElem.item].InputWires.InputWires.Circles[lastindex], -1);
-                            Element _elem = new Element(6, lastindex, new Circle(), -1);
-                            MyMap.log.Add(new LogMessage("Добавил вход провода в здание", elem, _elem, activeElem.item));
-                            InfoLable.Text = "Добавил вход провода в здание";
+                            if (!MyMap.Buildings.Buildings[activeElem.item].InputWires.step)
+                            {
+                                InputWireForm IWF = new InputWireForm(MyMap.Buildings.Buildings[activeElem.item].floors_name);
+                                IWF.ShowDialog();
+                                if (IWF.dialogResult == DialogResult.OK)
+                                    MyMap.Buildings.Buildings[activeElem.item].AddIW(e.X, y, IWF.side, IWF.floor_index);
+                            }
+                            else
+                            {
+                                MyMap.Buildings.Buildings[activeElem.item].AddIW(e.X, y, false, -1);
+                                int lastindex = MyMap.Buildings.Buildings[activeElem.item].InputWires.InputWires.Circles.Count - 1;
+                                Element elem = new Element(6, lastindex, MyMap.Buildings.Buildings[activeElem.item].InputWires.InputWires.Circles[lastindex], -1);
+                                Element _elem = new Element(6, lastindex, new Circle(), -1);
+                                MyMap.log.Add(new LogMessage("Добавил вход провода в здание", elem, _elem, activeElem.item));
+                                InfoLable.Text = "Добавил вход провода в здание";
+                            }
                         }
                         break;
                     case 7:
@@ -277,11 +299,12 @@ namespace NetworkDesign
                             ButtonReturnToMain.Enabled = true;
                             UpgrateFloors();
                             InfoLable.Text = "Выбрано здание " + activeElem.item + " '" + MyMap.Buildings.Buildings[activeElem.item].Name + "'";
-                            unfocus();
+                            Unfocus();
+                            AddIWBtn.Enabled = true;
                         }
                         break;
                     case 1:
-                        MyMap.Lines.step_line = false;
+                        MyMap.Lines.step = false;
                         MyMap.Lines.TempLine = new Line();
                         break;
                     case 2:
@@ -290,12 +313,12 @@ namespace NetworkDesign
                         break;
                     case 5:
                         MyMap.Polygons.TempPolygon.ClearTempPoint();
-                        MyMap.Polygons.polygon_active = false;
+                        MyMap.Polygons.active = false;
                         MouseBLines(e.X, y);
                         MyMap.Polygons.TempPolygon = new Polygon();
                         break;
                     case 360:
-                        MyMap.Circles.step_circle = false;
+                        MyMap.Circles.step = false;
                         MyMap.Circles.TempCircle = new Circle();
                         break;
                     case 6:
@@ -336,7 +359,7 @@ namespace NetworkDesign
             switch (MyMap.RB)
             {
                 case 1:
-                    if (MyMap.Lines.step_line)
+                    if (MyMap.Lines.step)
                     {
                         MyMap.Lines.TempLine.SetPoint(e.X, y, 1);
                     }
@@ -365,13 +388,13 @@ namespace NetworkDesign
                     }
                     break;
                 case 5:
-                    if (MyMap.Polygons.polygon_active & MyMap.Polygons.step_polygon)
+                    if (MyMap.Polygons.active & MyMap.Polygons.step)
                     {
                         MyMap.Polygons.TempPolygon.SetTempPoint(e.X, y);
                     }
                     break;
                 case 360:
-                    if (MyMap.Circles.step_circle)
+                    if (MyMap.Circles.step)
                     {
                         MyMap.Circles.TempCircle.SetRadius(e.X, y);
                     }
@@ -379,7 +402,14 @@ namespace NetworkDesign
                 case 6:
                     if (MyMap.Buildings.Buildings[activeElem.item].InputWires.step)
                     {
-                        MyMap.Buildings.Buildings[activeElem.item].MoveIW(e.X, y);
+                        if (drawLevel.Level == -1)
+                        {
+                            MyMap.Buildings.Buildings[activeElem.item].MoveIW(e.X, y);
+                        }
+                        else
+                        {
+                            MyMap.Buildings.Buildings[activeElem.item].MoveIWInBuild(e.X, y);
+                        }
                     }
                     break;
                 case 7:
@@ -545,7 +575,7 @@ namespace NetworkDesign
         /// <summary>
         /// Функция для возврата элементов к исходному состоянию, без фокусировки на определенном элементе
         /// </summary>
-        private void unfocus()
+        private void Unfocus()
         {
             MyMap.DefaultTempElems();
             //
@@ -556,9 +586,9 @@ namespace NetworkDesign
             AddEntranceBtn.Enabled = false;
             AddIWBtn.Enabled = false;
             //
-            activeElem.type = -1;
+            /*activeElem.type = -1;
             activeElem.item = -1;
-            activeElem.build = -1;
+            activeElem.build = -1;*/
             //
             MyMap.Lines.Choose(-1);
             MyMap.Rectangles.Choose(-1);
@@ -582,7 +612,7 @@ namespace NetworkDesign
                         MyMap.log.Add(new LogMessage("Преобразовал здание в прямоугольник", elem, _elem));
                         CheckButtons(true);
                         MyMap.Buildings.Remove(activeElem.item);
-                        unfocus();
+                        Unfocus();
                     }
                 }
                 else
@@ -596,7 +626,7 @@ namespace NetworkDesign
                         MyMap.log.Add(new LogMessage("Преобразовал здание в многоугольник", elem, _elem));
                         CheckButtons(true);
                         MyMap.Buildings.Remove(activeElem.item);
-                        unfocus();
+                        Unfocus();
                     }
                 }
             }
@@ -613,7 +643,7 @@ namespace NetworkDesign
                     MyMap.log.Add(new LogMessage("Преобразовал прямоугольник в здание", elem, _elem));
                     CheckButtons(true);
                     MyMap.Rectangles.Remove(activeElem.item);
-                    unfocus();
+                    Unfocus();
                 }
                 else if (activeElem.type == 3)
                 {
@@ -624,7 +654,7 @@ namespace NetworkDesign
                     MyMap.log.Add(new LogMessage("Преобразовал многоугольник в здание", elem, _elem));
                     CheckButtons(true);
                     MyMap.Polygons.Remove(activeElem.item);
-                    unfocus();
+                    Unfocus();
                 }
             }
         }
@@ -694,7 +724,7 @@ namespace NetworkDesign
                     CheckButtons(true);
                     break;
             }
-            unfocus();
+            Unfocus();
         }
 
         private void CheckButtons(bool clearForward)
@@ -719,7 +749,7 @@ namespace NetworkDesign
             else
                 PharseElem(_elem, elem, buildid);
             CheckButtons(false);
-            unfocus();
+            Unfocus();
         }
 
         private void ForwardBrn_Click(object sender, EventArgs e)
@@ -730,7 +760,7 @@ namespace NetworkDesign
             else
                 PharseElem(_elem, elem, buildid);
             CheckButtons(false);
-            unfocus();
+            Unfocus();
         }
 
         private void PharseElem(Element _elem, Element elem, bool b)

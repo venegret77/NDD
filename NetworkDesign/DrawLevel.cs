@@ -18,6 +18,21 @@ namespace NetworkDesign
             Floor = _Floor;
         }
 
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return base.ToString();
+        }
+
         public static bool operator == (DrawLevel dl, DrawLevel _dl)
         {
             if (dl.Level == _dl.Level & dl.Floor == _dl.Floor)

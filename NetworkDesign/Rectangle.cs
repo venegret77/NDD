@@ -8,23 +8,8 @@ using Tao.OpenGl;
 
 namespace NetworkDesign
 {
-    public class Rectangle: Elem
+    public class Rectangle: GeometricFigure
     {
-        //public List<Point> MainPoints = new List<Point>();
-        /*public Point Point1;
-        public Point Point2;
-        public Point Point3;
-        public Point Point4;
-        public Point Point13;
-        public Point Point12;
-        public Point Point34;
-        public Point Point24;*/
-        /*private float R, G, B, A;
-        private double alfa;
-        private bool active = false;
-        public DrawLevel DL;
-        public bool delete = false;*/
-
         public Rectangle()
         {
             delete = true;

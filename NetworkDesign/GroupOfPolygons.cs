@@ -6,36 +6,34 @@ using System.Threading.Tasks;
 
 namespace NetworkDesign
 {
-    public class GroupOfPolygons
+    public class GroupOfPolygons: GroupOfGeometricFigure
     {
         public List<Polygon> Polygons = new List<Polygon>();
         public Polygon TempPolygon = new Polygon(); //Текущий многоугольник
-        public bool polygon_active = false;
-        public bool step_polygon = false;
 
         public GroupOfPolygons()
         {
 
         }
 
-        public void TempDefault()
+        public override void TempDefault()
         {
             TempPolygon = new Polygon();
-            polygon_active = false;
-            step_polygon = false;
+            active = false;
+            step = false;
         }
 
-        public void Add(Polygon br)
+        public override void Add(object elem)
         {
-            Polygons.Add(br);
+            Polygons.Add((Polygon)elem);
         }
 
-        public void Remove(int i)
+        public override void Remove(int i)
         {
             Polygons[i] = new Polygon();
         }
 
-        public void Choose(int i)
+        public override void Choose(int i)
         {
             for (int j = 0; j < Polygons.Count; j++)
             {
@@ -50,7 +48,7 @@ namespace NetworkDesign
             }
         }
 
-        public int CalcNearestBLine(int x, int y, out double dist, DrawLevel dl)
+        public override int Search(int x, int y, out double dist, DrawLevel dl)
         {
             int index = -1;
             dist = Int32.MaxValue;
@@ -74,13 +72,18 @@ namespace NetworkDesign
             return index;
         }
 
-        public void Draw()
+        public override void Draw()
         {
             foreach (var br in Polygons)
             {
                 br.Draw();
             }
             TempPolygon.Draw();
+        }
+
+        public override int Search(int x, int y, DrawLevel dl)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -198,6 +198,24 @@ namespace NetworkDesign
             }
         }
 
+        public bool AddIWInBuild(int x, int y, DrawLevel dl)
+        {
+            if (!InputWires.step)
+            {
+                InputWires.step = true;
+                InputWires.AddTemp(x, y, dl, new DrawLevel(dl.Level, dl.Floor - 1));
+                return false;
+            }
+            else
+            {
+                InputWires.step = false;
+                //InputWires.InputWires.TempCircle.LocalCencerPoint = CalcLocalPoint(InputWires.InputWires.TempCircle.MainCenterPoint);
+                //InputWires.InputWires.TempCircle.koef = koef;
+                InputWires.AddInBuild();
+                return true;
+            }
+        }
+
         public bool AddIW(int x, int y, bool _side, int _floor)
         {
             InputWires.side = _side;
@@ -244,6 +262,11 @@ namespace NetworkDesign
                     InputWires.CheckIW(x, y, MainPolygon);
                 }
             }
+        }
+
+        public void MoveIWInBuild(int x, int y)
+        {
+            InputWires.SetTempPoint(x, y);
         }
 
         private double CalcAlfa(Point Point1, Point Point2)

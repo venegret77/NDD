@@ -8,7 +8,7 @@ using Tao.OpenGl;
 
 namespace NetworkDesign
 {
-    public class Polygon: Elem
+    public class Polygon: GeometricFigure
     {
         public Polygon()
         {

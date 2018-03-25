@@ -6,34 +6,33 @@ using System.Threading.Tasks;
 
 namespace NetworkDesign
 {
-    public class GroupOfRectangles
+    public class GroupOfRectangles: GroupOfGeometricFigure
     {
         public List<Rectangle> Rectangles = new List<Rectangle>();
         public Rectangle TempRectangle = new Rectangle(); //Текущий прямоугольник
-        public int step_rect = 0; //0 - нет точек, 1 - одна точка, 2 - две точки
 
         public GroupOfRectangles()
         {
 
         }
 
-        public void TempDefault()
+        public override void TempDefault()
         {
             TempRectangle = new Rectangle();
             step_rect = 0;
         }
 
-        public void Add(Rectangle rect)
+        public override void Add(object elem)
         {
-            Rectangles.Add(rect);
+            Rectangles.Add((Rectangle)elem);
         }
 
-        public void Remove(int i)
+        public override void Remove(int i)
         {
             Rectangles[i] = new Rectangle();
         }
 
-        public void Choose(int i)
+        public override void Choose(int i)
         {
             for (int j = 0; j < Rectangles.Count; j++)
             {
@@ -48,7 +47,7 @@ namespace NetworkDesign
             }
         }
 
-        public int CalcNearestRect(int x, int y, out double dist, DrawLevel dl)
+        public override int Search(int x, int y, out double dist, DrawLevel dl)
         {
             int index = -1;
             dist = -1;
@@ -73,13 +72,18 @@ namespace NetworkDesign
             return index;
         }
 
-        public void Draw()
+        public override void Draw()
         {
             foreach (var _rect in Rectangles)
             {
                 _rect.Draw();
             }
             TempRectangle.Draw();
+        }
+
+        public override int Search(int x, int y, DrawLevel dl)
+        {
+            throw new NotImplementedException();
         }
     }
 }
