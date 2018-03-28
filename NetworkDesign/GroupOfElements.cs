@@ -64,6 +64,18 @@ namespace NetworkDesign
         /// <returns>Возвращает индекс элемента</returns>
         public abstract int Search(int x, int y,out double dist, DrawLevel dl);
 
+        public void AddGroupElems(List<object> elems)
+        {
+            foreach (var elem in elems)
+            {
+                Add(elem);
+            }
+        }
+
+        //public abstract List<object> ConvertToListObj(); 
+
+        public abstract List<object> GetInBuild(int build);
+
         /// <summary>
         /// Отрисовка элементов
         /// </summary>

@@ -89,5 +89,10 @@ namespace NetworkDesign
         {
             throw new NotImplementedException();
         }
+
+        public override List<object> GetInBuild(int build)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

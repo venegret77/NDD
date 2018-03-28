@@ -56,8 +56,6 @@
             this.ButtonReturnToMain = new System.Windows.Forms.ToolStripButton();
             this.AddEntranceBtn = new System.Windows.Forms.ToolStripButton();
             this.AddIWBtn = new System.Windows.Forms.ToolStripButton();
-            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.файлToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.создатьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -74,6 +72,7 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.domainUpDown1 = new System.Windows.Forms.DomainUpDown();
+            this.ExporImportBuildBtn = new System.Windows.Forms.ToolStripButton();
             this.toolStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -132,6 +131,7 @@
             this.создатьToolStripButton1,
             this.сохранитьToolStripButton1,
             this.открытьToolStripButton1,
+            this.ExporImportBuildBtn,
             this.toolStripSeparator4,
             this.BackBtn,
             this.ForwardBrn,
@@ -342,14 +342,6 @@
             this.AddIWBtn.Text = "Добавить вход провода";
             this.AddIWBtn.Click += new System.EventHandler(this.AddIWBtn_Click);
             // 
-            // saveFileDialog1
-            // 
-            this.saveFileDialog1.Filter = "Network Design Map File|*.ndm";
-            // 
-            // openFileDialog1
-            // 
-            this.openFileDialog1.Filter = "Network Design Map File|*.ndm";
-            // 
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -483,6 +475,16 @@
             this.domainUpDown1.Wrap = true;
             this.domainUpDown1.SelectedItemChanged += new System.EventHandler(this.domainUpDown1_SelectedItemChanged);
             // 
+            // ExporImportBuildBtn
+            // 
+            this.ExporImportBuildBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.ExporImportBuildBtn.Image = ((System.Drawing.Image)(resources.GetObject("ExporImportBuildBtn.Image")));
+            this.ExporImportBuildBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.ExporImportBuildBtn.Name = "ExporImportBuildBtn";
+            this.ExporImportBuildBtn.Size = new System.Drawing.Size(23, 22);
+            this.ExporImportBuildBtn.Text = "Экспорт/Импорт зданий";
+            this.ExporImportBuildBtn.Click += new System.EventHandler(this.ExporImportBuildBtn_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -515,8 +517,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripButton toolStripButton5;
-        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
-        private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.ToolStripPanel BottomToolStripPanel;
         private System.Windows.Forms.ToolStripPanel TopToolStripPanel;
         private System.Windows.Forms.ToolStripPanel RightToolStripPanel;
@@ -555,6 +555,7 @@
         private System.Windows.Forms.ToolStripButton toolStripButton6;
         private System.Windows.Forms.ToolStripButton AddEntranceBtn;
         private System.Windows.Forms.ToolStripButton AddIWBtn;
+        private System.Windows.Forms.ToolStripButton ExporImportBuildBtn;
     }
 }
 

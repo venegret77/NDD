@@ -85,5 +85,28 @@ namespace NetworkDesign
         {
             throw new NotImplementedException();
         }
+
+        public override List<object> GetInBuild(int build)
+        {
+            List<object> elems = new List<object>();
+            foreach (var elem in Rectangles)
+            {
+                if (elem.DL.Level == build)
+                {
+                    elems.Add(elem);
+                }
+            }
+            return elems;
+        }
+
+        /*public override List<object> ConvertToListObj()
+        {
+            List<object> list = new List<object>();
+            foreach (var elem in Rectangles)
+            {
+                list.Add(elem);
+            }
+            return list;
+        }*/
     }
 }

@@ -6,6 +6,7 @@ using System.Xml.Serialization;
 using Tao.FreeGlut;
 using Tao.Platform.Windows;
 using System.IO.Compression;
+using System.Collections.Generic;
 
 namespace NetworkDesign
 {
@@ -436,25 +437,37 @@ namespace NetworkDesign
 
         private void сохранитьToolStripButton1_Click(object sender, EventArgs e)
         {
+            SaveMap(".ndm", "Network Design Map File");
+        }
+
+        /// <summary>
+        /// Функция для сохранения карты в файл 
+        /// </summary>
+        /// <param name="fileExtension">Расширение файла в формате .*</param>
+        /// <param name="descriptionFE">Описание заданного формата для отображения в диалоге</param>
+        private void SaveMap(string fileExtension, string descriptionFE)
+        {
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1.Filter = descriptionFE + "|*" + fileExtension;
             if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 XmlSerializer formatter = new XmlSerializer(typeof(Map));
                 string filename;
-                if (saveFileDialog1.FileName.Contains(".ndm"))
+                if (saveFileDialog1.FileName.Contains(fileExtension))
                 {
                     filename = saveFileDialog1.FileName;
                 }
                 else
                 {
-                    filename = saveFileDialog1.FileName + ".ndm";
+                    filename = saveFileDialog1.FileName + fileExtension;
                 }
                 // получаем поток, куда будем записывать сериализованный объект
-                using (FileStream fs = new FileStream(filename + ".temp", FileMode.OpenOrCreate))
+                using (FileStream fs = new FileStream(filename + "._temp", FileMode.OpenOrCreate))
                 {
                     formatter.Serialize(fs, MyMap);
                 }
-                Compress(filename + ".temp", filename);
-                File.Delete(filename + ".temp");
+                Compress(filename + "._temp", filename);
+                File.Delete(filename + "._temp");
             }
         }
 
@@ -523,17 +536,29 @@ namespace NetworkDesign
 
         private void открытьToolStripButton1_Click(object sender, EventArgs e)
         {
+            OpenMap(".ndm", "Network Design Map File");
+        }
+
+        /// <summary>
+        /// Функция для открытия файла карты
+        /// </summary>
+        /// <param name="fileExtension">Расширение файла в формате .*</param>
+        /// <param name="descriptionFE">Описание заданного формата для отображения в диалоге</param>
+        private void OpenMap(string fileExtension, string descriptionFE)
+        {
+            OpenFileDialog openFileDialog1 = new OpenFileDialog();
+            openFileDialog1.Filter = descriptionFE + "|*" + fileExtension;
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
-                Decompress(openFileDialog1.FileName, openFileDialog1.FileName + ".temp");
+                Decompress(openFileDialog1.FileName, openFileDialog1.FileName + "._temp");
                 XmlSerializer formatter = new XmlSerializer(typeof(Map));
                 // получаем поток, куда будем записывать сериализованный объект
-                using (FileStream fs = new FileStream(openFileDialog1.FileName + ".temp", FileMode.OpenOrCreate))
+                using (FileStream fs = new FileStream(openFileDialog1.FileName + "._temp", FileMode.OpenOrCreate))
                 {
                     Map TempMap = (Map)formatter.Deserialize(fs);
                     MyMap.MapLoad(TempMap);
                 }
-                File.Delete(openFileDialog1.FileName + ".temp");
+                File.Delete(openFileDialog1.FileName + "._temp");
             }
         }
 
@@ -856,6 +881,88 @@ namespace NetworkDesign
         private void AddEntranceBtn_Click(object sender, EventArgs e) => MyMap.SetInstrument(7);
 
         private void AddIWBtn_Click(object sender, EventArgs e) => MyMap.SetInstrument(6);
+
+        private void ExporImportBuildBtn_Click(object sender, EventArgs e)
+        {
+            if (activeElem.type == 4)
+            {
+                SaveBuild(".build", "Building File");
+            }
+            else
+            {
+                OpenBuild(".build", "Building File");
+            }
+        }
+
+        /// <summary>
+        /// Функция для сохранения здания в файл 
+        /// </summary>
+        /// <param name="fileExtension">Расширение файла в формате .*</param>
+        /// <param name="descriptionFE">Описание заданного формата для отображения в диалоге</param>
+        private void SaveBuild(string fileExtension, string descriptionFE)
+        {
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1.Filter = descriptionFE + "|*" + fileExtension;
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                XmlSerializer formatter = new XmlSerializer(typeof(Map));
+                Map TempMap = new Map();
+                TempMap.Buildings.Add(MyMap.Buildings.Buildings[activeElem.item]);
+                TempMap.Circles.AddGroupElems(MyMap.Circles.GetInBuild(activeElem.item));
+                TempMap.Lines.AddGroupElems(MyMap.Lines.GetInBuild(activeElem.item));
+                TempMap.Polygons.AddGroupElems(MyMap.Polygons.GetInBuild(activeElem.item));
+                TempMap.Rectangles.AddGroupElems(MyMap.Rectangles.GetInBuild(activeElem.item));
+                string filename;
+                if (saveFileDialog1.FileName.Contains(fileExtension))
+                {
+                    filename = saveFileDialog1.FileName;
+                }
+                else
+                {
+                    filename = saveFileDialog1.FileName + fileExtension;
+                }
+                // получаем поток, куда будем записывать сериализованный объект
+                using (FileStream fs = new FileStream(filename + "._temp", FileMode.OpenOrCreate))
+                {
+                    formatter.Serialize(fs, TempMap);
+                }
+                Compress(filename + "._temp", filename);
+                File.Delete(filename + "._temp");
+            }
+        }
+
+        /// <summary>
+        /// Функция для открытия карты файла
+        /// </summary>
+        /// <param name="fileExtension">Расширение файла в формате .*</param>
+        /// <param name="descriptionFE">Описание заданного формата для отображения в диалоге</param>
+        private void OpenBuild(string fileExtension, string descriptionFE)
+        {
+            Map TempMap = new Map();
+            OpenFileDialog openFileDialog1 = new OpenFileDialog();
+            openFileDialog1.Filter = descriptionFE + "|*" + fileExtension;
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                Decompress(openFileDialog1.FileName, openFileDialog1.FileName + "._temp");
+                XmlSerializer formatter = new XmlSerializer(typeof(Map));
+                // получаем поток, куда будем записывать сериализованный объект
+                using (FileStream fs = new FileStream(openFileDialog1.FileName + "._temp", FileMode.OpenOrCreate))
+                {
+                    TempMap = (Map)formatter.Deserialize(fs);
+                }
+                File.Delete(openFileDialog1.FileName + "._temp");
+                MyMap.Buildings.Add(TempMap.Buildings.Buildings[0]);
+                MyMap.Circles.AddGroupElems(TempMap.Circles.Circles.ConvertAll(new Converter<Circle, object>(Conv)));
+                MyMap.Lines.AddGroupElems(TempMap.Lines.Lines.ConvertAll(new Converter<Line, object>(Conv)));
+                MyMap.Rectangles.AddGroupElems(TempMap.Rectangles.Rectangles.ConvertAll(new Converter<Rectangle, object>(Conv)));
+                MyMap.Polygons.AddGroupElems(TempMap.Polygons.Polygons.ConvertAll(new Converter<Polygon, object>(Conv)));
+            }
+        }
+
+        static object Conv(object elem)
+        {
+            return elem;
+        }
 
         private void toolStripButton6_Click(object sender, EventArgs e)
         {
