@@ -221,7 +221,7 @@ namespace NetworkDesign
             CalcTempPoints();
         }*/
 
-        private double CalcAlfa(Point Point1, Point Point2)
+        public double CalcAlfa(Point Point1, Point Point2)
         {
             double cat1 = Point2.Y - Point1.Y; //Противолежащий
             double cat2 = Point2.X - Point1.X; //Прилежащий
@@ -229,7 +229,7 @@ namespace NetworkDesign
             return alfa;
         }
 
-        private Point RotatePoint(double alfa, Point PointMain, Point PointTemp)
+        public Point RotatePoint(double alfa, Point PointMain, Point PointTemp)
         {
             Point Temp = new Point();
             Temp.X = (int)((PointTemp.X - PointMain.X) * Math.Cos(alfa) - (PointTemp.Y - PointMain.Y) * Math.Sin(alfa) + PointMain.X);
@@ -237,7 +237,7 @@ namespace NetworkDesign
             return Temp;
         }
 
-        private double CalcWidth(int x, int y, Point point1, Point point2)
+        public double CalcWidth(int x, int y, Point point1, Point point2)
         {
             return ((point2.Y - point1.Y) * x - (point2.X - point1.X) * y + point2.X * point1.Y - point2.Y * point1.X)
                 / (Math.Sqrt(Math.Pow((point2.Y - point1.Y), 2) + Math.Pow((point2.X - point1.X), 2)));

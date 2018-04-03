@@ -24,9 +24,11 @@ namespace NetworkDesign
         private int Ox, Oy, _Ox, _Oy;
         //
         public Polygon MainPolygon = new Polygon();
+        public Polygon _MainPolygon = new Polygon();
         public Polygon LocalPolygon = new Polygon();
         //
         public Rectangle MainRectangle = new Rectangle();
+        public Rectangle _MainRectangle = new Rectangle();
         public Rectangle LocalRectangle = new Rectangle();
         //
         public DrawLevel MainMapDL = new DrawLevel();
@@ -34,14 +36,43 @@ namespace NetworkDesign
         public List<string> floors_name = new List<string>();
         //
         public Entrances Entrances = new Entrances();
-        public Entrances _Entrances = new Entrances();
         //
         public InputWire InputWires = new InputWire();
-        public InputWire _InputWires = new InputWire();
 
         public Building()
         {
             delete = true;
+        }
+
+        /// <summary>
+        /// Конструктор для копирования при создании шаблона
+        /// </summary>
+        /// <param name="_build"></param>
+        public Building(Building _build)
+        {
+            alfa =_build.alfa;
+            basement = _build.basement;
+            delete = _build.delete;
+            Entrances = _build.Entrances;
+            Floors = _build.Floors;
+            floors_name = _build.floors_name;
+            koef = _build.koef;
+            LocalDL = _build.LocalDL;
+            LocalPolygon = _build.LocalPolygon;
+            LocalRectangle = _build.LocalRectangle;
+            loft = _build.loft;
+            MainMapDL = _build.MainMapDL;
+            MainPolygon = _build.MainPolygon;
+            MainRectangle = _build.MainRectangle;
+            MP = _build.MP;
+            Name = _build.Name;
+            rect = _build.rect;
+            Ox = _build.Ox;
+            Oy = _build.Oy;
+            _Ox = _build._Ox;
+            _Oy = _build._Oy;
+            open = _build.open;
+            InputWires = new InputWire();
         }
 
         public Building(string _Name, bool _loft, bool _basement, int floors_count, Polygon _pol, int index)
@@ -301,6 +332,10 @@ namespace NetworkDesign
             LocalRectangle.Points.Add(RotatePoint(-alfa, MainRectangle.Points[0], MainRectangle.Points[1]));
             LocalRectangle.Points.Add(RotatePoint(-alfa, MainRectangle.Points[0], MainRectangle.Points[2]));
             LocalRectangle.Points.Add(RotatePoint(-alfa, MainRectangle.Points[0], MainRectangle.Points[3]));
+            _MainRectangle.Points.Add(MainRectangle.Points[0]);
+            _MainRectangle.Points.Add(RotatePoint(-alfa, MainRectangle.Points[0], MainRectangle.Points[1]));
+            _MainRectangle.Points.Add(RotatePoint(-alfa, MainRectangle.Points[0], MainRectangle.Points[2]));
+            _MainRectangle.Points.Add(RotatePoint(-alfa, MainRectangle.Points[0], MainRectangle.Points[3]));
             MP = MainRectangle.Points[0];
             int maxx, minx;
             int maxy, miny;
@@ -369,6 +404,7 @@ namespace NetworkDesign
                 if (i != p1)
                 {
                     LocalPolygon.Points[i] = RotatePoint(-alfa, LocalPolygon.Points[p1], LocalPolygon.Points[i]);
+                    _MainPolygon.Points[i] = RotatePoint(-alfa, LocalPolygon.Points[p1], LocalPolygon.Points[i]);
                 }
             }
             MP = LocalPolygon.Points[p1];

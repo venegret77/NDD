@@ -7,6 +7,7 @@ using Tao.FreeGlut;
 using Tao.Platform.Windows;
 using System.IO.Compression;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace NetworkDesign
 {
@@ -19,6 +20,8 @@ namespace NetworkDesign
         static public int _Height = 0, _Width = 0;
         static public SimpleOpenGlControl AnT = new SimpleOpenGlControl();
         ActiveElem activeElem = new ActiveElem();
+        private List<string> floors_name = new List<string>();
+        private int floor_index = 0;
 
         public MainForm()
         {
@@ -53,6 +56,8 @@ namespace NetworkDesign
             drawLevel.Floor = -1;
             _Height = AnT.Height;
             _Width = AnT.Width;
+            panel2.Parent = this;
+            panel3.Parent = this;
         }
 
         /// <summary>
@@ -62,7 +67,7 @@ namespace NetworkDesign
         /// <param name="y">Координата мыши Y</param>
         private void SelectItems(int x, int y)
         {
-            Unfocus();
+            Unfocus("Не выбран элемент");
             activeElem.item = MyMap.SearchElem(x, y, out activeElem.type, out activeElem.build, drawLevel);
             switch (activeElem.type)
             {
@@ -299,8 +304,7 @@ namespace NetworkDesign
                             drawLevel.Floor = 0;
                             ButtonReturnToMain.Enabled = true;
                             UpgrateFloors();
-                            InfoLable.Text = "Выбрано здание " + activeElem.item + " '" + MyMap.Buildings.Buildings[activeElem.item].Name + "'";
-                            Unfocus();
+                            Unfocus("Выбрано здание " + activeElem.item + " '" + MyMap.Buildings.Buildings[activeElem.item].Name + "'");
                             AddIWBtn.Enabled = true;
                         }
                         break;
@@ -336,9 +340,12 @@ namespace NetworkDesign
 
         private void UpgrateFloors()
         {
-            domainUpDown1.Enabled = true;
-            domainUpDown1.Items.AddRange(MyMap.Buildings.Buildings[activeElem.item].floors_name);
-            domainUpDown1.SelectedIndex = 0;
+            FloorDown.Visible = true;
+            FloorUP.Visible = true;
+            label1.Visible = true;
+            floors_name.AddRange(MyMap.Buildings.Buildings[activeElem.item].floors_name);
+            label1.Text = floors_name[0];
+            floor_index = 0;
         }
 
         private void AnT_MouseUp(object sender, MouseEventArgs e)
@@ -435,10 +442,7 @@ namespace NetworkDesign
             }
         }
 
-        private void сохранитьToolStripButton1_Click(object sender, EventArgs e)
-        {
-            SaveMap(".ndm", "Network Design Map File");
-        }
+        private void сохранитьToolStripButton1_Click(object sender, EventArgs e) => SaveMap(".ndm", "Network Design Map File");
 
         /// <summary>
         /// Функция для сохранения карты в файл 
@@ -534,10 +538,7 @@ namespace NetworkDesign
             Text = MyMap.mapSetting.Name;
         }
 
-        private void открытьToolStripButton1_Click(object sender, EventArgs e)
-        {
-            OpenMap(".ndm", "Network Design Map File");
-        }
+        private void открытьToolStripButton1_Click(object sender, EventArgs e) => OpenMap(".ndm", "Network Design Map File");
 
         /// <summary>
         /// Функция для открытия файла карты
@@ -560,6 +561,7 @@ namespace NetworkDesign
                 }
                 File.Delete(openFileDialog1.FileName + "._temp");
             }
+            CheckButtons(true);
         }
 
         private void toolStripButton3_Click(object sender, EventArgs e) => MyMap.SetInstrument(0);
@@ -600,11 +602,11 @@ namespace NetworkDesign
         /// <summary>
         /// Функция для возврата элементов к исходному состоянию, без фокусировки на определенном элементе
         /// </summary>
-        private void Unfocus()
+        private void Unfocus(string info)
         {
             MyMap.DefaultTempElems();
             //
-            InfoLable.Text = "Нет активного элемента";
+            InfoLable.Text = info;
             //
             BuildBtn.Enabled = false;
             DeleteBtn.Enabled = false;
@@ -637,7 +639,7 @@ namespace NetworkDesign
                         MyMap.log.Add(new LogMessage("Преобразовал здание в прямоугольник", elem, _elem));
                         CheckButtons(true);
                         MyMap.Buildings.Remove(activeElem.item);
-                        Unfocus();
+                        Unfocus("Преобразовал здание в прямоугольник");
                     }
                 }
                 else
@@ -651,7 +653,7 @@ namespace NetworkDesign
                         MyMap.log.Add(new LogMessage("Преобразовал здание в многоугольник", elem, _elem));
                         CheckButtons(true);
                         MyMap.Buildings.Remove(activeElem.item);
-                        Unfocus();
+                        Unfocus("Преобразовал здание в многоугольник");
                     }
                 }
             }
@@ -668,7 +670,7 @@ namespace NetworkDesign
                     MyMap.log.Add(new LogMessage("Преобразовал прямоугольник в здание", elem, _elem));
                     CheckButtons(true);
                     MyMap.Rectangles.Remove(activeElem.item);
-                    Unfocus();
+                    Unfocus("Преобразовал прямоугольник в здание");
                 }
                 else if (activeElem.type == 3)
                 {
@@ -679,7 +681,7 @@ namespace NetworkDesign
                     MyMap.log.Add(new LogMessage("Преобразовал многоугольник в здание", elem, _elem));
                     CheckButtons(true);
                     MyMap.Polygons.Remove(activeElem.item);
-                    Unfocus();
+                    Unfocus("Преобразовал многоугольник в здание");
                 }
             }
         }
@@ -689,10 +691,12 @@ namespace NetworkDesign
             drawLevel.Level = -1;
             drawLevel.Floor = -1;
             ButtonReturnToMain.Enabled = false;
-            domainUpDown1.Items.Clear();
-            domainUpDown1.Enabled = false;
-            domainUpDown1.SelectedIndex = -1;
-            InfoLable.Text = "Нет активного элемента";
+            FloorUP.Visible = false;
+            FloorDown.Visible = false;
+            label1.Visible = false;
+            floor_index = 0;
+            floors_name = new List<string>();
+            Unfocus("Нет активного элемента");
         }
 
         private void DeleteBtn_Click(object sender, EventArgs e)
@@ -749,7 +753,7 @@ namespace NetworkDesign
                     CheckButtons(true);
                     break;
             }
-            Unfocus();
+            Unfocus("Удалил элемент");
         }
 
         private void CheckButtons(bool clearForward)
@@ -774,7 +778,7 @@ namespace NetworkDesign
             else
                 PharseElem(_elem, elem, buildid);
             CheckButtons(false);
-            Unfocus();
+            Unfocus("Нажата стрелочка назад");
         }
 
         private void ForwardBrn_Click(object sender, EventArgs e)
@@ -785,7 +789,7 @@ namespace NetworkDesign
             else
                 PharseElem(_elem, elem, buildid);
             CheckButtons(false);
-            Unfocus();
+            Unfocus("Нажата стрелочка вперед");
         }
 
         private void PharseElem(Element _elem, Element elem, bool b)
@@ -874,7 +878,7 @@ namespace NetworkDesign
             }
         }
 
-        private void domainUpDown1_SelectedItemChanged(object sender, EventArgs e) => drawLevel.Floor = domainUpDown1.SelectedIndex;
+        //private void domainUpDown1_SelectedItemChanged(object sender, EventArgs e) => drawLevel.Floor = domainUpDown1.SelectedIndex;
 
         private void ToolStripButton6_Click_1(object sender, EventArgs e) => MyMap.SetInstrument(360);
 
@@ -884,14 +888,14 @@ namespace NetworkDesign
 
         private void ExporImportBuildBtn_Click(object sender, EventArgs e)
         {
-            if (activeElem.type == 4)
-            {
+            /*if (activeElem.type == 4)
+            {*/
                 SaveBuild(".build", "Building File");
-            }
+            /*}
             else
             {
                 OpenBuild(".build", "Building File");
-            }
+            }*/
         }
 
         /// <summary>
@@ -951,6 +955,17 @@ namespace NetworkDesign
                     TempMap = (Map)formatter.Deserialize(fs);
                 }
                 File.Delete(openFileDialog1.FileName + "._temp");
+                if (TempMap.Buildings.Buildings[0].rect)
+                {
+                    TempMap.Buildings.Buildings[0].MainRectangle.Points.Clear();
+                    TempMap.Buildings.Buildings[0].MainRectangle.Points.AddRange(TempMap.Buildings.Buildings[0]._MainRectangle.Points);
+                }
+                else
+                {
+
+                    TempMap.Buildings.Buildings[0].MainPolygon.Points.Clear();
+                    TempMap.Buildings.Buildings[0].MainPolygon.Points.AddRange(TempMap.Buildings.Buildings[0]._MainPolygon.Points);
+                }
                 MyMap.Buildings.Add(TempMap.Buildings.Buildings[0]);
                 MyMap.Circles.AddGroupElems(TempMap.Circles.Circles.ConvertAll(new Converter<Circle, object>(Conv)));
                 MyMap.Lines.AddGroupElems(TempMap.Lines.Lines.ConvertAll(new Converter<Line, object>(Conv)));
@@ -959,9 +974,74 @@ namespace NetworkDesign
             }
         }
 
-        static object Conv(object elem)
+        static object Conv(object elem) => elem;
+
+        private void toolStripButton7_Click(object sender, EventArgs e) => SaveTemplateMap(".ndm", "Network Design Map File");
+
+        /// <summary>
+        /// Функция для сохранения здания в файл 
+        /// </summary>
+        /// <param name="fileExtension">Расширение файла в формате .*</param>
+        /// <param name="descriptionFE">Описание заданного формата для отображения в диалоге</param>
+        private void SaveTemplateMap(string fileExtension, string descriptionFE)
         {
-            return elem;
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1.Filter = descriptionFE + "|*" + fileExtension;
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                XmlSerializer formatter = new XmlSerializer(typeof(Map));
+                Map TempMap = new Map();
+                foreach(var b in MyMap.Buildings.Buildings)
+                {
+                    TempMap.Buildings.Add(new Building(b));
+                }
+                TempMap.Circles = MyMap.Circles;
+                TempMap.Lines = MyMap.Lines;
+                TempMap.Polygons = MyMap.Polygons;
+                TempMap.Rectangles = MyMap.Rectangles;
+                TempMap.mapSetting = MyMap.mapSetting;
+                string filename;
+                if (saveFileDialog1.FileName.Contains(fileExtension))
+                {
+                    filename = saveFileDialog1.FileName;
+                }
+                else
+                {
+                    filename = saveFileDialog1.FileName + fileExtension;
+                }
+                // получаем поток, куда будем записывать сериализованный объект
+                using (FileStream fs = new FileStream(filename + "._temp", FileMode.OpenOrCreate))
+                {
+                    formatter.Serialize(fs, TempMap);
+                }
+                Compress(filename + "._temp", filename);
+                File.Delete(filename + "._temp");
+            }
+        }
+
+        private void FloorUP_Click(object sender, EventArgs e)
+        {
+            if (floor_index != floors_name.Count - 1)
+            {
+                floor_index++;
+                label1.Text = floors_name[floor_index];
+                drawLevel.Floor = floor_index;
+            }
+        }
+
+        private void FloorDown_Click(object sender, EventArgs e)
+        {
+            if (floor_index != 0)
+            {
+                floor_index--;
+                label1.Text = floors_name[floor_index];
+                drawLevel.Floor = floor_index;
+            }
+        }
+
+        private void toolStripButton8_Click(object sender, EventArgs e)
+        {
+            OpenBuild(".build", "Building File");
         }
 
         private void toolStripButton6_Click(object sender, EventArgs e)

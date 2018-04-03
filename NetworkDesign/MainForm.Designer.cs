@@ -39,6 +39,8 @@
             this.создатьToolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.сохранитьToolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.открытьToolStripButton1 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton7 = new System.Windows.Forms.ToolStripButton();
+            this.ExporBuildBtn = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.BackBtn = new System.Windows.Forms.ToolStripButton();
             this.ForwardBrn = new System.Windows.Forms.ToolStripButton();
@@ -71,8 +73,10 @@
             this.InfoLable = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.domainUpDown1 = new System.Windows.Forms.DomainUpDown();
-            this.ExporImportBuildBtn = new System.Windows.Forms.ToolStripButton();
+            this.label1 = new System.Windows.Forms.Label();
+            this.FloorUP = new System.Windows.Forms.Button();
+            this.FloorDown = new System.Windows.Forms.Button();
+            this.toolStripButton8 = new System.Windows.Forms.ToolStripButton();
             this.toolStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -118,9 +122,10 @@
             // panel1
             // 
             this.panel1.AutoScroll = true;
-            this.panel1.Location = new System.Drawing.Point(9, 52);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel1.Location = new System.Drawing.Point(0, 52);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(971, 575);
+            this.panel1.Size = new System.Drawing.Size(995, 586);
             this.panel1.TabIndex = 2;
             // 
             // toolStrip1
@@ -131,7 +136,9 @@
             this.создатьToolStripButton1,
             this.сохранитьToolStripButton1,
             this.открытьToolStripButton1,
-            this.ExporImportBuildBtn,
+            this.toolStripButton7,
+            this.ExporBuildBtn,
+            this.toolStripButton8,
             this.toolStripSeparator4,
             this.BackBtn,
             this.ForwardBrn,
@@ -184,6 +191,26 @@
             this.открытьToolStripButton1.Size = new System.Drawing.Size(23, 22);
             this.открытьToolStripButton1.Text = "&Открыть";
             this.открытьToolStripButton1.Click += new System.EventHandler(this.открытьToolStripButton1_Click);
+            // 
+            // toolStripButton7
+            // 
+            this.toolStripButton7.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton7.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton7.Image")));
+            this.toolStripButton7.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton7.Name = "toolStripButton7";
+            this.toolStripButton7.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButton7.Text = "Сохранить шаблон карты";
+            this.toolStripButton7.Click += new System.EventHandler(this.toolStripButton7_Click);
+            // 
+            // ExporBuildBtn
+            // 
+            this.ExporBuildBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.ExporBuildBtn.Image = ((System.Drawing.Image)(resources.GetObject("ExporBuildBtn.Image")));
+            this.ExporBuildBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.ExporBuildBtn.Name = "ExporBuildBtn";
+            this.ExporBuildBtn.Size = new System.Drawing.Size(23, 22);
+            this.ExporBuildBtn.Text = "Экспорт здания";
+            this.ExporBuildBtn.Click += new System.EventHandler(this.ExporImportBuildBtn_Click);
             // 
             // toolStripSeparator4
             // 
@@ -447,52 +474,84 @@
             // 
             // panel2
             // 
+            this.panel2.BackColor = System.Drawing.Color.Transparent;
             this.panel2.Controls.Add(this.InfoLable);
-            this.panel2.Location = new System.Drawing.Point(12, 633);
+            this.panel2.Location = new System.Drawing.Point(6, 566);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(482, 35);
             this.panel2.TabIndex = 7;
             // 
             // panel3
             // 
-            this.panel3.Controls.Add(this.domainUpDown1);
-            this.panel3.Location = new System.Drawing.Point(497, 633);
+            this.panel3.BackColor = System.Drawing.Color.Transparent;
+            this.panel3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.panel3.Controls.Add(this.label1);
+            this.panel3.Location = new System.Drawing.Point(494, 547);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(486, 35);
+            this.panel3.Size = new System.Drawing.Size(486, 54);
             this.panel3.TabIndex = 8;
             // 
-            // domainUpDown1
+            // label1
             // 
-            this.domainUpDown1.Enabled = false;
-            this.domainUpDown1.Location = new System.Drawing.Point(12, 9);
-            this.domainUpDown1.Name = "domainUpDown1";
-            this.domainUpDown1.ReadOnly = true;
-            this.domainUpDown1.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.domainUpDown1.Size = new System.Drawing.Size(176, 20);
-            this.domainUpDown1.TabIndex = 0;
-            this.domainUpDown1.Text = "Этажи";
-            this.domainUpDown1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.domainUpDown1.Wrap = true;
-            this.domainUpDown1.SelectedItemChanged += new System.EventHandler(this.domainUpDown1_SelectedItemChanged);
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label1.Location = new System.Drawing.Point(120, 24);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(0, 24);
+            this.label1.TabIndex = 7;
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label1.Visible = false;
             // 
-            // ExporImportBuildBtn
+            // FloorUP
             // 
-            this.ExporImportBuildBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.ExporImportBuildBtn.Image = ((System.Drawing.Image)(resources.GetObject("ExporImportBuildBtn.Image")));
-            this.ExporImportBuildBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.ExporImportBuildBtn.Name = "ExporImportBuildBtn";
-            this.ExporImportBuildBtn.Size = new System.Drawing.Size(23, 22);
-            this.ExporImportBuildBtn.Text = "Экспорт/Импорт зданий";
-            this.ExporImportBuildBtn.Click += new System.EventHandler(this.ExporImportBuildBtn_Click);
+            this.FloorUP.BackColor = System.Drawing.Color.Transparent;
+            this.FloorUP.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("FloorUP.BackgroundImage")));
+            this.FloorUP.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.FloorUP.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.FloorUP.Image = ((System.Drawing.Image)(resources.GetObject("FloorUP.Image")));
+            this.FloorUP.ImageAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.FloorUP.Location = new System.Drawing.Point(933, 245);
+            this.FloorUP.Name = "FloorUP";
+            this.FloorUP.Size = new System.Drawing.Size(50, 50);
+            this.FloorUP.TabIndex = 0;
+            this.FloorUP.UseVisualStyleBackColor = false;
+            this.FloorUP.Visible = false;
+            this.FloorUP.Click += new System.EventHandler(this.FloorUP_Click);
+            // 
+            // FloorDown
+            // 
+            this.FloorDown.BackColor = System.Drawing.Color.Transparent;
+            this.FloorDown.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("FloorDown.BackgroundImage")));
+            this.FloorDown.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.FloorDown.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.FloorDown.Location = new System.Drawing.Point(933, 301);
+            this.FloorDown.Name = "FloorDown";
+            this.FloorDown.Size = new System.Drawing.Size(50, 50);
+            this.FloorDown.TabIndex = 1;
+            this.FloorDown.UseVisualStyleBackColor = false;
+            this.FloorDown.Visible = false;
+            this.FloorDown.Click += new System.EventHandler(this.FloorDown_Click);
+            // 
+            // toolStripButton8
+            // 
+            this.toolStripButton8.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton8.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton8.Image")));
+            this.toolStripButton8.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton8.Name = "toolStripButton8";
+            this.toolStripButton8.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButton8.Text = "Импорт здания";
+            this.toolStripButton8.Click += new System.EventHandler(this.toolStripButton8_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(995, 671);
-            this.Controls.Add(this.panel3);
+            this.ClientSize = new System.Drawing.Size(995, 638);
+            this.Controls.Add(this.FloorDown);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.toolStrip1);
+            this.Controls.Add(this.FloorUP);
+            this.Controls.Add(this.panel3);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.panel1);
             this.MainMenuStrip = this.menuStrip1;
@@ -505,6 +564,7 @@
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -551,11 +611,15 @@
         private System.Windows.Forms.Label InfoLable;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel3;
-        private System.Windows.Forms.DomainUpDown domainUpDown1;
         private System.Windows.Forms.ToolStripButton toolStripButton6;
         private System.Windows.Forms.ToolStripButton AddEntranceBtn;
         private System.Windows.Forms.ToolStripButton AddIWBtn;
-        private System.Windows.Forms.ToolStripButton ExporImportBuildBtn;
+        private System.Windows.Forms.ToolStripButton ExporBuildBtn;
+        private System.Windows.Forms.ToolStripButton toolStripButton7;
+        private System.Windows.Forms.Button FloorDown;
+        private System.Windows.Forms.Button FloorUP;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ToolStripButton toolStripButton8;
     }
 }
 
