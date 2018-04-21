@@ -13,6 +13,7 @@ namespace NetworkDesign
 {
     public partial class MainForm : Form
     {
+        public static string user = "";
         MapSettings DefaultSettings = new MapSettings("DefaultMap", 1000, 1000);
         static public Map MyMap = new Map();
         static public DrawLevel drawLevel;
@@ -1042,6 +1043,22 @@ namespace NetworkDesign
         private void toolStripButton8_Click(object sender, EventArgs e)
         {
             OpenBuild(".build", "Building File");
+        }
+
+        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void toolStripButton9_Click(object sender, EventArgs e)
+        {
+            SearchDialog sd = new SearchDialog();
+            sd.ShowDialog();
+        }
+
+        private void toolStripButton10_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("заметка добавлена");
         }
 
         private void toolStripButton6_Click(object sender, EventArgs e)

@@ -60,7 +60,7 @@ namespace NetworkDesign
 
         public void RefreshEditRect(GroupOfLines lines, GroupOfRectangles rectangles, GroupOfPolygons bl)
         {
-            List<EditRect> _EditRects = new List<EditRect>();
+            /*List<EditRect> _EditRects = new List<EditRect>();
             bool b = false;
             for (int i = 0; i < lines.Lines.Count; i++)
             {
@@ -80,7 +80,7 @@ namespace NetworkDesign
                     _EditRects.Add(new EditRect(rectangles.Rectangles[i].Point34, 2, 34, i));
                 }
             }*/
-            for (int i = 0; i < bl.Polygons.Count; i++)
+            /*for (int i = 0; i < bl.Polygons.Count; i++)
             {
                 if (bl.Polygons[i].DL == MainForm.drawLevel)
                 {
@@ -106,7 +106,7 @@ namespace NetworkDesign
                     EditRects.Add(_EditRects[i]);
                 }
                 b = false;
-            }
+            }*/
         }
 
         public override void Remove(int i)

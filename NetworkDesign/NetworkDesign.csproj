@@ -106,6 +106,12 @@
   <ItemGroup>
     <Compile Include="Action.cs" />
     <Compile Include="ActiveElem.cs" />
+    <Compile Include="AutorisationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AutorisationForm.Designer.cs">
+      <DependentUpon>AutorisationForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Circle.cs" />
     <Compile Include="GeometricFigure.cs" />
     <Compile Include="Entrance.cs" />
@@ -174,7 +180,16 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Rectangle.cs" />
+    <Compile Include="SearchDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SearchDialog.Designer.cs">
+      <DependentUpon>SearchDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="TempElems.cs" />
+    <EmbeddedResource Include="AutorisationForm.resx">
+      <DependentUpon>AutorisationForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="BuildForm.resx">
       <DependentUpon>BuildForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -197,6 +212,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SearchDialog.resx">
+      <DependentUpon>SearchDialog.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />
