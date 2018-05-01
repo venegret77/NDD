@@ -196,14 +196,17 @@ namespace NetworkDesign
             {
                 int rect = Rectangles.Search(x, y, out double distrect, dl);
                 int bline = Polygons.Search(x, y, out double distbline, dl);
-                int build = Buildings.Search(x, y, out double distbuild, dl); 
+                int build = Buildings.Search(x, y, out double distbuild, dl);
+                int circle = Circles.Search(x, y, out double distcircle, dl);
                 if (distrect == -1)
                     distrect = Int32.MaxValue;
                 if (distbline == -1)
                     distbline = Int32.MaxValue;
                 if (distbuild == -1)
                     distbuild = Int32.MaxValue;
-                if (distbuild < distrect & distbuild < distbline)
+                if (distcircle == -1)
+                    distcircle = Int32.MaxValue;
+                if (distbuild < distrect & distbuild < distbline & distbuild < distcircle)
                 {
                     int entrance = Buildings.Buildings[build].Entrances.CalcNearestEnterise(x, y, dl);
                     if (entrance != -1)
@@ -222,15 +225,20 @@ namespace NetworkDesign
                     type = 4;
                     return build;
                 }
-                else if (distbline < distrect & distbline < distbuild)
+                else if (distbline < distrect & distbline < distbuild & distbline < distcircle)
                 {
                     type = 3;
                     return bline;
                 }
-                else if (distrect < distbline & distrect < distbuild)
+                else if (distrect < distbline & distrect < distbuild & distrect < distcircle)
                 {
                     type = 2;
                     return rect;
+                }
+                else if (distcircle < distbline & distcircle < distbuild & distcircle < distrect)
+                {
+                    type = 360;
+                    return circle;
                 }
             }
             type = -1;

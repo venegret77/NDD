@@ -16,7 +16,7 @@ namespace NetworkDesign
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new AutorisationForm());
+            Application.Run(new MainForm());
         }
     }
 }

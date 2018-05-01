@@ -14,7 +14,7 @@ namespace NetworkDesign
         public int Floors; //0 - подвал если есть, последний - чердак
         public bool loft = false; //Чердак
         public bool basement = false; //Подвал
-        public bool rect = false;
+        public int type = 2; //2 - прямоугольник, 3 - многоугольник, 360 - круг
         public bool open = false;
         public bool delete = true;
         //
@@ -30,6 +30,10 @@ namespace NetworkDesign
         public Rectangle MainRectangle = new Rectangle();
         public Rectangle _MainRectangle = new Rectangle();
         public Rectangle LocalRectangle = new Rectangle();
+        //
+        public Circle MainCircle = new Circle();
+        public Circle _MainCircle = new Circle();
+        public Circle LocalCircle = new Circle();
         //
         public DrawLevel MainMapDL = new DrawLevel();
         public DrawLevel LocalDL = new DrawLevel();
@@ -66,7 +70,7 @@ namespace NetworkDesign
             MainRectangle = _build.MainRectangle;
             MP = _build.MP;
             Name = _build.Name;
-            rect = _build.rect;
+            type = _build.type;
             Ox = _build.Ox;
             Oy = _build.Oy;
             _Ox = _build._Ox;
@@ -88,7 +92,7 @@ namespace NetworkDesign
                 Floors = floors_count + 1;
             else
                 Floors = floors_count;
-            rect = false;
+            type = 3;
             delete = false;
             MainMapDL.Level = -1;
             MainMapDL.Floor = -1;
@@ -120,7 +124,7 @@ namespace NetworkDesign
             else
                 Floors = floors_count;
             MainRectangle = _rect;
-            rect = true;
+            type = 2;
             delete = false;
             MainMapDL.Level = -1;
             MainMapDL.Floor = -1;
@@ -129,6 +133,49 @@ namespace NetworkDesign
             MainRectangle.DL = MainMapDL;
             RecalcRect();
             UpgrateFloors();
+        }
+
+        public Building(string _Name, bool _loft, bool _basement, int floors_count, Circle _circle, int index)
+        {
+            Name = _Name;
+            loft = _loft;
+            basement = _basement;
+            if (basement & loft)
+                Floors = floors_count + 2;
+            else if (basement)
+                Floors = floors_count + 1;
+            else if (loft)
+                Floors = floors_count + 1;
+            else
+                Floors = floors_count;
+            MainCircle = _circle;
+            type = 360;
+            delete = false;
+            MainMapDL.Level = -1;
+            MainMapDL.Floor = -1;
+            LocalDL.Level = index;
+            LocalDL.Floor = 0;
+            MainCircle.DL = MainMapDL;
+            RecalcCircle();
+            UpgrateFloors();
+        }
+
+        private void RecalcCircle()
+        {
+            koef = 0;
+            _MainCircle = LocalCircle;
+            LocalCircle = new Circle
+            {
+                delete = false,
+                radius = MainCircle.radius,
+                DL = LocalDL
+            };
+            if (MainForm._Height >= MainForm._Width)
+                koef = ((MainForm._Height / 2) - 150) / MainCircle.radius;
+            else
+                koef = ((MainForm._Width / 2) - 150) / MainCircle.radius;
+            LocalCircle.radius = (int)(LocalCircle.radius * koef);
+            LocalCircle.MainCenterPoint = new Point(MainForm._Width / 2, MainForm._Height / 2);
         }
 
         private void UpgrateFloors()
@@ -171,20 +218,24 @@ namespace NetworkDesign
         {
             if (!delete)
             {
-                if (rect)
+                if (type == 2)
                     return MainRectangle.Search(x, y);
-                else
+                else if (type == 3)
                     return MainPolygon.Search(x, y);
+                else if (type == 360)
+                    return MainCircle.Search(x, y);
             }
             return -1;
         }
 
         public void SetActive(bool b)
         {
-            if (rect)
+            if (type == 2)
                 MainRectangle.SetActive(b);
-            else
+            else if (type == 3)
                 MainPolygon.SetActive(b);
+            else if (type == 360)
+                MainCircle.SetActive(b);
         }
 
         public bool AddEntrance(int x, int y)
@@ -210,23 +261,34 @@ namespace NetworkDesign
 
         public Point CalcLocalPoint(Point MainP)
         {
-            Point LocalP = RotatePoint(-alfa, MP, MainP);
-            LocalP.X -= Ox; LocalP.Y -= Oy;
-            LocalP.X = (int)(LocalP.X * koef); LocalP.Y = (int)(LocalP.Y * koef);
-            LocalP.X += _Ox; LocalP.Y += _Oy;
-            return LocalP;
+            if (type == 360)
+            {
+                Point LocalP = new Point
+                {
+                    X = MainP.X,
+                    Y = MainP.Y
+                };
+                LocalP = new Point((int)(LocalCircle.radius * Math.Cos(Entrances.angle * Math.PI / 180) + LocalCircle.MainCenterPoint.X), (int)(LocalCircle.radius * Math.Sin(Entrances.angle * Math.PI / 180) + LocalCircle.MainCenterPoint.Y));
+                return LocalP;
+            }
+            else
+            {
+                Point LocalP = RotatePoint(-alfa, MP, MainP);
+                LocalP.X -= Ox; LocalP.Y -= Oy;
+                LocalP.X = (int)(LocalP.X * koef); LocalP.Y = (int)(LocalP.Y * koef);
+                LocalP.X += _Ox; LocalP.Y += _Oy;
+                return LocalP;
+            }
         }
 
         public void MoveEntrance(int x, int y)
         {
-            if (rect)
-            {
+            if (type == 2)
                 Entrances.NearestPoints(x, y, MainRectangle);
-            }
-            else
-            {
+            else if (type == 3)
                 Entrances.NearestPoints(x, y, MainPolygon);
-            }
+            else if (type == 360)
+                Entrances.NearestPoints(x, y, MainCircle);
         }
 
         public bool AddIWInBuild(int x, int y, DrawLevel dl)
@@ -273,25 +335,21 @@ namespace NetworkDesign
         {
             if (InputWires.side)
             {
-                if (rect)
-                {
+                if (type == 2)
                     InputWires.NearestPoints(x, y, MainRectangle);
-                }
-                else
-                {
+                else if (type == 3)
                     InputWires.NearestPoints(x, y, MainPolygon);
-                }
+                else if (type == 360)
+                    InputWires.NearestPoints(x, y, MainCircle);
             }
             else
             {
-                if (rect)
-                {
+                if (type == 2)
                     InputWires.CheckIW(x, y, MainRectangle);
-                }
-                else
-                {
+                else if (type == 3)
                     InputWires.CheckIW(x, y, MainPolygon);
-                }
+                else if (type == 360)
+                    InputWires.CheckIW(x, y, MainCircle);
             }
         }
 
@@ -404,7 +462,7 @@ namespace NetworkDesign
                 if (i != p1)
                 {
                     LocalPolygon.Points[i] = RotatePoint(-alfa, LocalPolygon.Points[p1], LocalPolygon.Points[i]);
-                    _MainPolygon.Points[i] = RotatePoint(-alfa, LocalPolygon.Points[p1], LocalPolygon.Points[i]);
+                    _MainPolygon.Points.Add(LocalPolygon.Points[i]);
                 }
             }
             MP = LocalPolygon.Points[p1];
@@ -448,19 +506,26 @@ namespace NetworkDesign
         {
             if (!delete)
             {
-                if (!rect)
+                if (type == 3)
                 {
                     if (MainMapDL == MainForm.drawLevel)
                         MainPolygon.DrawB();
                     else if (LocalDL.Level == MainForm.drawLevel.Level)
                         LocalPolygon.DrawB();
                 }
-                else
+                else if (type == 2)
                 {
                     if (MainMapDL == MainForm.drawLevel)
                         MainRectangle.DrawB();
                     else if (LocalDL.Level == MainForm.drawLevel.Level)
                         LocalRectangle.DrawB();
+                }
+                else if (type == 360)
+                {
+                    if (MainMapDL == MainForm.drawLevel)
+                        MainCircle.DrawB();
+                    else if (LocalDL.Level == MainForm.drawLevel.Level)
+                        LocalCircle.DrawB();
                 }
                 Entrances.Draw();
                 InputWires.Draw();

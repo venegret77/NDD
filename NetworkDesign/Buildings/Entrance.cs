@@ -7,56 +7,32 @@ using System.Threading.Tasks;
 
 namespace NetworkDesign
 {
-    public class InputWire
+    public class Entrances
     {
-        public GroupOfCircle InputWires = new GroupOfCircle();
+        public GroupOfCircle Enterances = new GroupOfCircle();
         private int rad = 5;
         public bool step = false;
-        public bool side = false;
-
-        public InputWire()
+        public double angle = 0;
+        
+        public Entrances()
         {
 
         }
 
         public void Add()
         {
-            InputWires.Add(InputWires.TempCircle);
-            InputWires.TempCircle = new Circle();
-        }
-
-        public void AddInBuild()
-        {
-            InputWires.TempCircle.LocalCencerPoint = InputWires.TempCircle.MainCenterPoint;
-            InputWires.Add(InputWires.TempCircle);
-            InputWires.TempCircle = new Circle();
+            Enterances.Add(Enterances.TempCircle);
+            Enterances.TempCircle = new Circle();
         }
 
         public void AddTemp(int x, int y, DrawLevel MDL, DrawLevel LDL)
         {
-            InputWires.TempCircle = new Circle(x, y, rad, MDL, LDL);
+            Enterances.TempCircle = new Circle(x, y, rad, MDL, LDL);
         }
 
-        public void SetTempPoint(int x, int y)
+        public int CalcNearestEnterise(int x, int y, DrawLevel dl)
         {
-            InputWires.TempCircle.MainCenterPoint = new Point(x, y);
-        }
-
-        public void CheckIW(int x, int y, Rectangle mainRectangle)
-        {
-            if (mainRectangle.Search(x, y) != -1)
-                SetTempPoint(x, y);
-        }
-
-        public void CheckIW(int x, int y, Polygon mainPolygon)
-        {
-            if (mainPolygon.Search(x, y) != -1)
-                SetTempPoint(x, y);
-        }
-
-        public int CalcNearestIW(int x, int y, DrawLevel dl)
-        {
-            return InputWires.SearchEnt(x, y, dl);
+            return Enterances.SearchEnt(x, y, dl);
         }
 
         private double CalcPointToLine(int x, int y, Point point1, Point point2)
@@ -107,19 +83,19 @@ namespace NetworkDesign
             {
                 case 1:
                     if (CheckInterval(x, y, rect.Points[0], rect.Points[1]))
-                        InputWires.TempCircle.MainCenterPoint = CalcNearestPoint(x, y, rect.Points[0], rect.Points[1]);
+                        Enterances.TempCircle.MainCenterPoint = CalcNearestPoint(x, y, rect.Points[0], rect.Points[1]);
                     break;
                 case 2:
                     if (CheckInterval(x, y, rect.Points[1], rect.Points[3]))
-                        InputWires.TempCircle.MainCenterPoint = CalcNearestPoint(x, y, rect.Points[1], rect.Points[3]);
+                        Enterances.TempCircle.MainCenterPoint = CalcNearestPoint(x, y, rect.Points[1], rect.Points[3]);
                     break;
                 case 3:
                     if (CheckInterval(x, y, rect.Points[3], rect.Points[2]))
-                        InputWires.TempCircle.MainCenterPoint = CalcNearestPoint(x, y, rect.Points[3], rect.Points[2]);
+                        Enterances.TempCircle.MainCenterPoint = CalcNearestPoint(x, y, rect.Points[3], rect.Points[2]);
                     break;
                 case 4:
                     if (CheckInterval(x, y, rect.Points[2], rect.Points[0]))
-                        InputWires.TempCircle.MainCenterPoint = CalcNearestPoint(x, y, rect.Points[2], rect.Points[0]);
+                        Enterances.TempCircle.MainCenterPoint = CalcNearestPoint(x, y, rect.Points[2], rect.Points[0]);
                     break;
             }
         }
@@ -146,8 +122,27 @@ namespace NetworkDesign
                 p1 = pol.Points.Count - 1;
                 p2 = 0;
             }
-            if (CheckInterval(x, y, pol.Points[p1], pol.Points[p2]))
-                InputWires.TempCircle.MainCenterPoint = CalcNearestPoint(x, y, pol.Points[p1], pol.Points[p2]);
+            if (CheckInterval(x,y, pol.Points[p1], pol.Points[p2]))
+                Enterances.TempCircle.MainCenterPoint = CalcNearestPoint(x, y, pol.Points[p1], pol.Points[p2]);
+        }
+
+        //баг
+        public void NearestPoints(int x, int y, Circle cir)
+        {
+            double vect = double.MaxValue;
+            angle = 0;
+            for (int _angle = 0; _angle <= 360; _angle += 1)
+            {
+                double _x = cir.radius * Math.Cos(_angle * Math.PI / 180) + cir.MainCenterPoint.X;
+                double _y = cir.radius * Math.Sin(_angle * Math.PI / 180) + cir.MainCenterPoint.Y;
+                double _vect = Math.Abs((x - _x) + (y - _y));
+                if (_vect < vect)
+                {
+                    angle = _angle;
+                    vect = _vect;
+                }
+            }
+            Enterances.TempCircle.MainCenterPoint = new Point((int)(cir.radius * Math.Cos(angle * Math.PI / 180) + cir.MainCenterPoint.X), (int)(cir.radius * Math.Sin(angle * Math.PI / 180) + cir.MainCenterPoint.Y));
         }
 
         private bool CheckInterval(int x, int y, Point p1, Point p2)
@@ -191,7 +186,7 @@ namespace NetworkDesign
 
         public void Draw()
         {
-            InputWires.DrawIW();
+            Enterances.DrawEnt();
         }
     }
 }

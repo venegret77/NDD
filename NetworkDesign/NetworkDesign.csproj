@@ -104,74 +104,74 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Action.cs" />
-    <Compile Include="ActiveElem.cs" />
-    <Compile Include="AutorisationForm.cs">
+    <Compile Include="Main\Action.cs" />
+    <Compile Include="Main\ActiveElem.cs" />
+    <Compile Include="Main\AutorisationForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AutorisationForm.Designer.cs">
+    <Compile Include="Main\AutorisationForm.Designer.cs">
       <DependentUpon>AutorisationForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Circle.cs" />
-    <Compile Include="GeometricFigure.cs" />
-    <Compile Include="Entrance.cs" />
-    <Compile Include="GroupOfCircle.cs" />
-    <Compile Include="GroupOfElements.cs" />
-    <Compile Include="InputWire.cs" />
-    <Compile Include="InputWireForm.cs">
+    <Compile Include="GeometricElements\Circle.cs" />
+    <Compile Include="GeometricElements\GeometricFigure.cs" />
+    <Compile Include="Buildings\Entrance.cs" />
+    <Compile Include="GeometricElements\GroupOfCircle.cs" />
+    <Compile Include="Main\GroupOfElements.cs" />
+    <Compile Include="Buildings\InputWire.cs" />
+    <Compile Include="Buildings\InputWireForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="InputWireForm.Designer.cs">
+    <Compile Include="Buildings\InputWireForm.Designer.cs">
       <DependentUpon>InputWireForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Polygon.cs" />
-    <Compile Include="BuildForm.cs">
+    <Compile Include="NetworkElements\NetworkElement.cs" />
+    <Compile Include="GeometricElements\Polygon.cs" />
+    <Compile Include="Buildings\BuildForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="BuildForm.Designer.cs">
+    <Compile Include="Buildings\BuildForm.Designer.cs">
       <DependentUpon>BuildForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Building.cs" />
-    <Compile Include="ColorDialogForm.cs">
+    <Compile Include="Buildings\Building.cs" />
+    <Compile Include="Main\ColorDialogForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ColorDialogForm.Designer.cs">
+    <Compile Include="Main\ColorDialogForm.Designer.cs">
       <DependentUpon>ColorDialogForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ColorSettings.cs" />
-    <Compile Include="DrawElems.cs" />
-    <Compile Include="DrawLevel.cs" />
-    <Compile Include="EditRect.cs" />
-    <Compile Include="Element.cs" />
-    <Compile Include="ElemOfEdit.cs" />
-    <Compile Include="FormLog.cs">
+    <Compile Include="Main\ColorSettings.cs" />
+    <Compile Include="Main\DrawLevel.cs" />
+    <Compile Include="Edits\EditRect.cs" />
+    <Compile Include="Logs\Element.cs" />
+    <Compile Include="Main\ElemOfEdit.cs" />
+    <Compile Include="Logs\FormLog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormLog.Designer.cs">
+    <Compile Include="Logs\FormLog.Designer.cs">
       <DependentUpon>FormLog.cs</DependentUpon>
     </Compile>
-    <Compile Include="GroupOfPolygons.cs" />
-    <Compile Include="GroupOfBuildings.cs" />
-    <Compile Include="GroupOfEditRects.cs" />
-    <Compile Include="GroupOfLines.cs" />
-    <Compile Include="GroupOfRectangles.cs" />
-    <Compile Include="Log.cs" />
-    <Compile Include="MapControl.cs">
+    <Compile Include="GeometricElements\GroupOfPolygons.cs" />
+    <Compile Include="Buildings\GroupOfBuildings.cs" />
+    <Compile Include="Edits\GroupOfEditRects.cs" />
+    <Compile Include="GeometricElements\GroupOfLines.cs" />
+    <Compile Include="GeometricElements\GroupOfRectangles.cs" />
+    <Compile Include="Logs\Log.cs" />
+    <Compile Include="Main\MapControl.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MapControl.Designer.cs">
+    <Compile Include="Main\MapControl.Designer.cs">
       <DependentUpon>MapControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Line.cs" />
-    <Compile Include="LogMessage.cs" />
-    <Compile Include="MainForm.cs">
+    <Compile Include="GeometricElements\Line.cs" />
+    <Compile Include="Logs\LogMessage.cs" />
+    <Compile Include="Main\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainForm.Designer.cs">
+    <Compile Include="Main\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Map.cs" />
-    <Compile Include="MapSettings.cs" />
+    <Compile Include="Main\Map.cs" />
+    <Compile Include="Main\MapSettings.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -179,33 +179,33 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Rectangle.cs" />
-    <Compile Include="SearchDialog.cs">
+    <Compile Include="GeometricElements\Rectangle.cs" />
+    <Compile Include="NetworkElements\Router.cs" />
+    <Compile Include="Main\SearchDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SearchDialog.Designer.cs">
+    <Compile Include="Main\SearchDialog.Designer.cs">
       <DependentUpon>SearchDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="TempElems.cs" />
-    <EmbeddedResource Include="AutorisationForm.resx">
+    <EmbeddedResource Include="Main\AutorisationForm.resx">
       <DependentUpon>AutorisationForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="BuildForm.resx">
+    <EmbeddedResource Include="Buildings\BuildForm.resx">
       <DependentUpon>BuildForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ColorDialogForm.resx">
+    <EmbeddedResource Include="Main\ColorDialogForm.resx">
       <DependentUpon>ColorDialogForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormLog.resx">
+    <EmbeddedResource Include="Logs\FormLog.resx">
       <DependentUpon>FormLog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="InputWireForm.resx">
+    <EmbeddedResource Include="Buildings\InputWireForm.resx">
       <DependentUpon>InputWireForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainForm.resx">
+    <EmbeddedResource Include="Main\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MapControl.resx">
+    <EmbeddedResource Include="Main\MapControl.resx">
       <DependentUpon>MapControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -213,10 +213,9 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="SearchDialog.resx">
+    <EmbeddedResource Include="Main\SearchDialog.resx">
       <DependentUpon>SearchDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

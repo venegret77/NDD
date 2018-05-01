@@ -112,6 +112,13 @@ namespace NetworkDesign
                     DeleteBtn.Enabled = true;
                     MyMap.Buildings.Buildings[activeElem.build].Entrances.Enterances.Choose(activeElem.item);
                     break;
+                case 360:
+                    MyMap.Circles.Choose(activeElem.item);
+                    InfoLable.Text = "Выбрана окружность" + activeElem.item;
+                    DeleteBtn.Enabled = true;
+                    if (drawLevel.Level == -1)
+                        BuildBtn.Enabled = true;
+                    break;
             }
         }
 
@@ -629,7 +636,7 @@ namespace NetworkDesign
         {
             if (activeElem.type == 4)
             {
-                if (MyMap.Buildings.Buildings[activeElem.item].rect)
+                if (MyMap.Buildings.Buildings[activeElem.item].type == 2)
                 {
                     if (MessageBox.Show("", "Преобразовать обратно в прямоугольник?", MessageBoxButtons.YesNo) == DialogResult.Yes)
                     {
@@ -643,7 +650,7 @@ namespace NetworkDesign
                         Unfocus("Преобразовал здание в прямоугольник");
                     }
                 }
-                else
+                else if (MyMap.Buildings.Buildings[activeElem.item].type == 3)
                 {
                     if (MessageBox.Show("", "Преобразовать обратно в многоугольник?", MessageBoxButtons.YesNo) == DialogResult.Yes)
                     {
@@ -655,6 +662,20 @@ namespace NetworkDesign
                         CheckButtons(true);
                         MyMap.Buildings.Remove(activeElem.item);
                         Unfocus("Преобразовал здание в многоугольник");
+                    }
+                }
+                else if (MyMap.Buildings.Buildings[activeElem.item].type == 360)
+                {
+                    if (MessageBox.Show("", "Преобразовать обратно в окружность?", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    {
+                        MyMap.Circles.Add(MyMap.Buildings.Buildings[activeElem.item].MainCircle);
+                        int lastindex = MyMap.Circles.Circles.Count - 1;
+                        Element elem = new Element(4, activeElem.item, MyMap.Buildings.Buildings[activeElem.item], 5);
+                        Element _elem = new Element(360, lastindex, MyMap.Circles.Circles[lastindex], 5);
+                        MyMap.log.Add(new LogMessage("Преобразовал здание в окружность", elem, _elem));
+                        CheckButtons(true);
+                        MyMap.Buildings.Remove(activeElem.item);
+                        Unfocus("Преобразовал здание в окружность");
                     }
                 }
             }
@@ -683,6 +704,17 @@ namespace NetworkDesign
                     CheckButtons(true);
                     MyMap.Polygons.Remove(activeElem.item);
                     Unfocus("Преобразовал многоугольник в здание");
+                }
+                else if (activeElem.type == 360)
+                {
+                    MyMap.Buildings.Add(new Building(buildForm.name, buildForm.loft, buildForm.basement, buildForm.count, MyMap.Circles.Circles[activeElem.item], MyMap.Buildings.Buildings.Count));
+                    int lastindex = MyMap.Buildings.Buildings.Count - 1;
+                    Element elem = new Element(360, activeElem.item, MyMap.Circles.Circles[activeElem.item], 6);
+                    Element _elem = new Element(4, lastindex, MyMap.Buildings.Buildings[lastindex], 6);
+                    MyMap.log.Add(new LogMessage("Преобразовал окружность в здание", elem, _elem));
+                    CheckButtons(true);
+                    MyMap.Circles.Remove(activeElem.item);
+                    Unfocus("Преобразовал окружность в здание");
                 }
             }
         }
@@ -753,6 +785,13 @@ namespace NetworkDesign
                     MyMap.Buildings.Buildings[activeElem.build].Entrances.Enterances.Remove(activeElem.item);
                     CheckButtons(true);
                     break;
+                case 360:
+                    elem = new Element(360, activeElem.item, new Circle(), -1);
+                    _elem = new Element(360, activeElem.item, MyMap.Circles.Circles[activeElem.item], -1);
+                    MyMap.log.Add(new LogMessage("Удалил окружность", elem, _elem));
+                    InfoLable.Text = "Удалил окружность";
+                    MyMap.Circles.Remove(activeElem.item);
+                    break;
             }
             Unfocus("Удалил элемент");
         }
@@ -817,6 +856,14 @@ namespace NetworkDesign
                             MyMap.Buildings.Remove(elem.index);
                             MyMap.Polygons.Polygons[_elem.index] = (Polygon)_elem.elem;
                             break;
+                        case 5:
+                            MyMap.Circles.Remove(elem.index);
+                            MyMap.Buildings.Buildings[_elem.index] = (Building)_elem.elem;
+                            break;
+                        case 6:
+                            MyMap.Buildings.Remove(elem.index);
+                            MyMap.Circles.Circles[_elem.index] = (Circle)_elem.elem;
+                            break;
                     }
                 }
                 else
@@ -837,6 +884,14 @@ namespace NetworkDesign
                             break;
                         case 4:
                             MyMap.Polygons.Remove(elem.index);
+                            MyMap.Buildings.Buildings[_elem.index] = (Building)_elem.elem;
+                            break;
+                        case 5:
+                            MyMap.Buildings.Remove(elem.index);
+                            MyMap.Circles.Circles[_elem.index] = (Circle)_elem.elem;
+                            break;
+                        case 6:
+                            MyMap.Circles.Remove(elem.index);
                             MyMap.Buildings.Buildings[_elem.index] = (Building)_elem.elem;
                             break;
                     }
@@ -861,7 +916,6 @@ namespace NetworkDesign
                     case 360:
                         MyMap.Circles.Circles[elem.index] = (Circle)elem.elem;
                         break;
-
                 }
             }
         }
@@ -956,16 +1010,19 @@ namespace NetworkDesign
                     TempMap = (Map)formatter.Deserialize(fs);
                 }
                 File.Delete(openFileDialog1.FileName + "._temp");
-                if (TempMap.Buildings.Buildings[0].rect)
+                if (TempMap.Buildings.Buildings[0].type == 2)
                 {
                     TempMap.Buildings.Buildings[0].MainRectangle.Points.Clear();
                     TempMap.Buildings.Buildings[0].MainRectangle.Points.AddRange(TempMap.Buildings.Buildings[0]._MainRectangle.Points);
                 }
-                else
+                else if (TempMap.Buildings.Buildings[0].type == 3)
                 {
-
                     TempMap.Buildings.Buildings[0].MainPolygon.Points.Clear();
                     TempMap.Buildings.Buildings[0].MainPolygon.Points.AddRange(TempMap.Buildings.Buildings[0]._MainPolygon.Points);
+                }
+                else if (TempMap.Buildings.Buildings[0].type == 360)
+                {
+                    //Заглушка
                 }
                 MyMap.Buildings.Add(TempMap.Buildings.Buildings[0]);
                 MyMap.Circles.AddGroupElems(TempMap.Circles.Circles.ConvertAll(new Converter<Circle, object>(Conv)));
