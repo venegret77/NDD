@@ -15,11 +15,17 @@ namespace NetworkDesign
         public ColorDialogForm()
         {
             InitializeComponent();
-            button1.BackColor = MainForm.colorSettings.LinesColor;
-            button2.BackColor = MainForm.colorSettings.PolygonColor;
-            button3.BackColor = MainForm.colorSettings.RectColor;
-            button4.BackColor = MainForm.colorSettings.ActiveElemColor;
-            button6.BackColor = MainForm.colorSettings.BuildColor;
+            linesbtn.BackColor = MainForm.colorSettings.LinesColor;
+            polygonbtn.BackColor = MainForm.colorSettings.PolygonColor;
+            rectbtn.BackColor = MainForm.colorSettings.RectColor;
+            activeelembtn.BackColor = MainForm.colorSettings.ActiveElemColor;
+            buildbtn.BackColor = MainForm.colorSettings.BuildColor;
+            circlebtn.BackColor = MainForm.colorSettings.CircleColor;
+            entrancebtn.BackColor = MainForm.colorSettings.EntranceColor;
+            iwbtn.BackColor = MainForm.colorSettings.InputWireColor;
+            numericUpDown2.Value = MainForm.colorSettings.EntranceRadius;
+            numericUpDown3.Value = MainForm.colorSettings.InputWireRadius;
+            numericUpDown1.Value = (decimal)MainForm.colorSettings.LineWidth;
             StartPosition = FormStartPosition.CenterParent;
         }
 
@@ -31,28 +37,28 @@ namespace NetworkDesign
         private void button1_Click(object sender, EventArgs e)
         {
             colorDialog1.ShowDialog();
-            button1.BackColor = colorDialog1.Color;
+            linesbtn.BackColor = colorDialog1.Color;
             MainForm.colorSettings.LinesColor = colorDialog1.Color;
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
             colorDialog1.ShowDialog();
-            button2.BackColor = colorDialog1.Color;
+            polygonbtn.BackColor = colorDialog1.Color;
             MainForm.colorSettings.PolygonColor = colorDialog1.Color;
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
             colorDialog1.ShowDialog();
-            button3.BackColor = colorDialog1.Color;
+            rectbtn.BackColor = colorDialog1.Color;
             MainForm.colorSettings.RectColor = colorDialog1.Color;
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
             colorDialog1.ShowDialog();
-            button4.BackColor = colorDialog1.Color;
+            activeelembtn.BackColor = colorDialog1.Color;
             MainForm.colorSettings.ActiveElemColor = colorDialog1.Color;
         }
 
@@ -64,7 +70,7 @@ namespace NetworkDesign
         private void button6_Click(object sender, EventArgs e)
         {
             colorDialog1.ShowDialog();
-            button6.BackColor = colorDialog1.Color;
+            buildbtn.BackColor = colorDialog1.Color;
             MainForm.colorSettings.BuildColor = colorDialog1.Color;
         }
 
@@ -86,21 +92,21 @@ namespace NetworkDesign
         private void button9_Click(object sender, EventArgs e)
         {
             colorDialog1.ShowDialog();
-            button9.BackColor = colorDialog1.Color;
+            circlebtn.BackColor = colorDialog1.Color;
             MainForm.colorSettings.CircleColor = colorDialog1.Color;
         }
 
         private void button7_Click(object sender, EventArgs e)
         {
             colorDialog1.ShowDialog();
-            button7.BackColor = colorDialog1.Color;
+            entrancebtn.BackColor = colorDialog1.Color;
             MainForm.colorSettings.EntranceColor = colorDialog1.Color;
         }
 
         private void button8_Click(object sender, EventArgs e)
         {
             colorDialog1.ShowDialog();
-            button8.BackColor = colorDialog1.Color;
+            iwbtn.BackColor = colorDialog1.Color;
             MainForm.colorSettings.InputWireColor = colorDialog1.Color;
         }
     }

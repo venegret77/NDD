@@ -124,6 +124,13 @@
     <Compile Include="Buildings\InputWireForm.Designer.cs">
       <DependentUpon>InputWireForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Main\User.cs" />
+    <Compile Include="NetworkElements\ElementParams.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NetworkElements\ElementParams.Designer.cs">
+      <DependentUpon>ElementParams.cs</DependentUpon>
+    </Compile>
     <Compile Include="NetworkElements\NetworkElement.cs" />
     <Compile Include="GeometricElements\Polygon.cs" />
     <Compile Include="Buildings\BuildForm.cs">
@@ -172,6 +179,9 @@
     </Compile>
     <Compile Include="Main\Map.cs" />
     <Compile Include="Main\MapSettings.cs" />
+    <Compile Include="NetworkElements\NetworkSettings.cs" />
+    <Compile Include="NetworkElements\Notes.cs" />
+    <Compile Include="NetworkElements\Texture.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -207,6 +217,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Main\MapControl.resx">
       <DependentUpon>MapControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NetworkElements\ElementParams.resx">
+      <DependentUpon>ElementParams.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

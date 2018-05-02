@@ -8,6 +8,7 @@ using Tao.Platform.Windows;
 using System.IO.Compression;
 using System.Collections.Generic;
 using System.Linq;
+using NetworkDesign.NetworkElements;
 
 namespace NetworkDesign
 {
@@ -17,7 +18,8 @@ namespace NetworkDesign
         MapSettings DefaultSettings = new MapSettings("DefaultMap", 1000, 1000);
         static public Map MyMap = new Map();
         static public DrawLevel drawLevel;
-        static public ColorSettings colorSettings = new ColorSettings("");
+        static public ColorSettings colorSettings = new ColorSettings();
+        static public Parametrs parametrs = new Parametrs();
         static public int _Height = 0, _Width = 0;
         static public SimpleOpenGlControl AnT = new SimpleOpenGlControl();
         ActiveElem activeElem = new ActiveElem();
@@ -59,6 +61,8 @@ namespace NetworkDesign
             _Width = AnT.Width;
             panel2.Parent = this;
             panel3.Parent = this;
+            colorSettings = ColorSettings.Open();
+            parametrs = Parametrs.Open();
         }
 
         /// <summary>
@@ -1104,6 +1108,8 @@ namespace NetworkDesign
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
+            ColorSettings.Save(colorSettings);
+            Parametrs.Save(parametrs);
             Application.Exit();
         }
 
@@ -1116,6 +1122,17 @@ namespace NetworkDesign
         private void toolStripButton10_Click(object sender, EventArgs e)
         {
             MessageBox.Show("заметка добавлена");
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void toolStripButton11_Click(object sender, EventArgs e)
+        {
+            ElementParams elementParams = new ElementParams();
+            elementParams.ShowDialog();
         }
 
         private void toolStripButton6_Click(object sender, EventArgs e)
