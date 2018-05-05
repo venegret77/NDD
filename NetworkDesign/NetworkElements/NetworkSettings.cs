@@ -89,6 +89,17 @@ namespace NetworkDesign.NetworkElements
 
         static public Parametrs Open()
         {
+            if (!Directory.Exists(Application.StartupPath + @"\Configurations"))
+            {
+                Directory.CreateDirectory(Application.StartupPath + @"\Configurations");
+                Save(new Parametrs());
+                return new Parametrs();
+            }
+            if (!File.Exists(Application.StartupPath + @"\Configurations\NetworkSettings"))
+            {
+                Save(new Parametrs());
+                return new Parametrs();
+            }
             XmlSerializer formatter = new XmlSerializer(typeof(Parametrs));
             using (FileStream fs = new FileStream(Application.StartupPath + @"\Configurations\NetworkSettings", FileMode.Open))
             {

@@ -136,7 +136,7 @@ namespace NetworkDesign.NetworkElements
         /// <summary>
         /// Проверка на то, используется ли данный параметр в других устройствах
         /// </summary>
-        /// <returns>true - параметр найден среди устройств; false - параметр не найден среди устройств</returns>
+        /// <returns>true - параметр не найден среди устройств; false - параметр найден среди устройств</returns>
         private bool Check()
         {
             return true;

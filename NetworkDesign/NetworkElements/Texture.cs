@@ -1,10 +1,11 @@
 ﻿using NetworkDesign.Main;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Tao.OpenGl;
+using Tao.DevIl;
 
 namespace NetworkDesign.NetworkElements
 {
@@ -21,6 +22,17 @@ namespace NetworkDesign.NetworkElements
         /// Ширина
         /// </summary>
         public float width = 50;
+        /// <summary>
+        /// Расположение на карте
+        /// </summary>
+        public Point location;
+
+        public Texture(bool vect, float width, Point location)
+        {
+            this.vect = vect;
+            this.width = width;
+            this.location = location;
+        }
 
         /// <summary>
         /// Отрисовка растрового изображения

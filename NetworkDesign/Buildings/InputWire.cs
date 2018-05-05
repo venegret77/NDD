@@ -43,7 +43,7 @@ namespace NetworkDesign
             InputWires.TempCircle.MainCenterPoint = new Point(x, y);
         }
 
-        public void CheckIW(int x, int y, Rectangle mainRectangle)
+        public void CheckIW(int x, int y, MyRectangle mainRectangle)
         {
             if (mainRectangle.Search(x, y) != -1)
                 SetTempPoint(x, y);
@@ -82,7 +82,7 @@ namespace NetworkDesign
             return new Point(_x, _y);
         }
 
-        public void NearestPoints(int x, int y, Rectangle rect)
+        public void NearestPoints(int x, int y, MyRectangle rect)
         {
             double d = double.MaxValue;
             int _d = 0;

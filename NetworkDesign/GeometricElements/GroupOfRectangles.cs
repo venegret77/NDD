@@ -8,8 +8,8 @@ namespace NetworkDesign
 {
     public class GroupOfRectangles: GroupOfElements
     {
-        public List<Rectangle> Rectangles = new List<Rectangle>();
-        public Rectangle TempRectangle = new Rectangle(); //Текущий прямоугольник
+        public List<MyRectangle> Rectangles = new List<MyRectangle>();
+        public MyRectangle TempRectangle = new MyRectangle(); //Текущий прямоугольник
 
         public GroupOfRectangles()
         {
@@ -18,18 +18,18 @@ namespace NetworkDesign
 
         public override void TempDefault()
         {
-            TempRectangle = new Rectangle();
+            TempRectangle = new MyRectangle();
             step_rect = 0;
         }
 
         public override void Add(object elem)
         {
-            Rectangles.Add((Rectangle)elem);
+            Rectangles.Add((MyRectangle)elem);
         }
 
         public override void Remove(int i)
         {
-            Rectangles[i] = new Rectangle();
+            Rectangles[i] = new MyRectangle();
         }
 
         public override void Choose(int i)

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Tao.DevIl;
 using Tao.FreeGlut;
 using Tao.OpenGl;
 using Tao.Platform.Windows;
@@ -47,14 +48,28 @@ namespace NetworkDesign
         {
             MainForm.AnT.Height = _MapSetting.Height;
             MainForm.AnT.Width = _MapSetting.Width;
-            Glut.glutInit();
-            Glut.glutInitDisplayMode(Glut.GLUT_RGB | Glut.GLUT_DOUBLE | Glut.GLUT_DEPTH);
+            // инициализация библиотеки glut 
+            Glut.glutInit(); 
+            // инициализация режима экрана 
+            Glut.glutInitDisplayMode( Glut.GLUT_RGB | Glut.GLUT_DOUBLE); 
+            // инициализация библиотеки openIL 
+            Il.ilInit();
+            Il.ilEnable(Il.IL_ORIGIN_SET);
+            // установка цвета очистки экрана (RGBA) 
             Gl.glClearColor(255, 255, 255, 1);
+            // установка порта вывода 
             Gl.glViewport(0, 0, MainForm.AnT.Width, MainForm.AnT.Height);
-            Gl.glMatrixMode(Gl.GL_PROJECTION);
+            // активация проекционной матрицы 
+            Gl.glMatrixMode( Gl.GL_PROJECTION);
+            // очистка матрицы 
             Gl.glLoadIdentity();
+            // установка перспективы 
             Glu.gluOrtho2D(0.0, _MapSetting.Width, 0.0, _MapSetting.Height);
-            Gl.glMatrixMode(Gl.GL_MODELVIEW);
+            // установка объектно-видовой матрицы 
+            Gl.glMatrixMode( Gl.GL_MODELVIEW);
+            Gl.glLoadIdentity();
+            // начальные настройки OpenGL 
+            //Gl.glEnable( Gl.GL_DEPTH_TEST);
             mapSetting = _MapSetting;
             RenderTimer.Interval = 15;
             RenderTimer.Tick += RenderTimer_Tick;

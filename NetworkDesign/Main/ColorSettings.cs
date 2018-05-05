@@ -88,7 +88,7 @@ namespace NetworkDesign
             set { InputWireColor = Color.FromArgb(value); }
         }
 
-        /*public ColorSettings(string todefault)
+        public ColorSettings(string todefault)
         {
             LinesColor = Color.Black;
             PolygonColor = Color.Black;
@@ -101,7 +101,7 @@ namespace NetworkDesign
             EntranceRadius = 5;
             InputWireRadius = 5;
             LineWidth = 1;
-        }*/
+        }
 
         public ColorSettings()
         {
@@ -118,6 +118,17 @@ namespace NetworkDesign
 
         static public ColorSettings Open()
         {
+            if (!Directory.Exists(Application.StartupPath + @"\Configurations"))
+            {
+                Directory.CreateDirectory(Application.StartupPath + @"\Configurations");
+                Save(new ColorSettings(""));
+                return new ColorSettings("");
+            }
+            if (!File.Exists(Application.StartupPath + @"\Configurations\ColorSettings"))
+            {
+                Save(new ColorSettings(""));
+                return new ColorSettings("");
+            }
             XmlSerializer formatter = new XmlSerializer(typeof(ColorSettings));
             using (FileStream fs = new FileStream(Application.StartupPath + @"\Configurations\ColorSettings", FileMode.Open))
             {

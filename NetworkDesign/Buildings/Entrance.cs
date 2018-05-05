@@ -51,7 +51,7 @@ namespace NetworkDesign
             return new Point(_x, _y);
         }
 
-        public void NearestPoints(int x, int y, Rectangle rect)
+        public void NearestPoints(int x, int y, MyRectangle rect)
         {
             double d = double.MaxValue;
             int _d = 0;

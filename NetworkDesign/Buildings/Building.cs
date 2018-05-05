@@ -27,9 +27,9 @@ namespace NetworkDesign
         public Polygon _MainPolygon = new Polygon();
         public Polygon LocalPolygon = new Polygon();
         //
-        public Rectangle MainRectangle = new Rectangle();
-        public Rectangle _MainRectangle = new Rectangle();
-        public Rectangle LocalRectangle = new Rectangle();
+        public MyRectangle MainRectangle = new MyRectangle();
+        public MyRectangle _MainRectangle = new MyRectangle();
+        public MyRectangle LocalRectangle = new MyRectangle();
         //
         public Circle MainCircle = new Circle();
         public Circle _MainCircle = new Circle();
@@ -110,7 +110,7 @@ namespace NetworkDesign
             UpgrateFloors();
         }
 
-        public Building(string _Name, bool _loft, bool _basement, int floors_count, Rectangle _rect, int index)
+        public Building(string _Name, bool _loft, bool _basement, int floors_count, MyRectangle _rect, int index)
         {
             Name = _Name;
             loft = _loft;

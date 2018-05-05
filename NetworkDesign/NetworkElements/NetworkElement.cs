@@ -14,13 +14,9 @@ namespace NetworkDesign
     public abstract class NetworkElement
     {
         /// <summary>
-        /// Выбрал элемент или нет
+        /// Выбран элемент или нет
         /// </summary>
         public bool active;
-        /// <summary>
-        /// Расположение на карте
-        /// </summary>
-        public Point location;
         /// <summary>
         /// Текстура
         /// </summary>
@@ -76,17 +72,35 @@ namespace NetworkDesign
         /// </summary>
         /// <param name="x">Координата X</param>
         /// <param name="y">Координата Y</param>
-        public abstract void SetPoint(int x, int y);
+        public void SetPoint(int x, int y)
+        {
+            texture.location = new Point(x, y);
+        }
+
         /// <summary>
         /// Поиск элемента, попавшего в заданные координаты
         /// </summary>
         /// <param name="x">Координата X</param>
         /// <param name="y">Коодината Y</param>
         /// <returns></returns>
-        public abstract double Search(int x, int y);
+        public double Search(int x, int y)
+        {
+            double xmin = texture.location.X;
+            double xmax = texture.location.X + texture.width;//+ или - решить позже
+            double ymin = texture.location.Y;
+            double ymax = texture.location.Y + texture.width;
+            double vect = x - xmin + x - xmax + y - ymin + y - ymax;
+            if (vect <= texture.width)
+                return vect;
+            else
+                return -1;
+        }
         /// <summary>
         /// Отрисовка
         /// </summary>
-        public abstract void Draw();
+        public void Draw()
+        {
+            texture.Draw();
+        }
     }
 }

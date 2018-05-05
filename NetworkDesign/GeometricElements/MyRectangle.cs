@@ -8,14 +8,14 @@ using Tao.OpenGl;
 
 namespace NetworkDesign
 {
-    public class Rectangle: GeometricFigure
+    public class MyRectangle: GeometricFigure
     {
-        public Rectangle()
+        public MyRectangle()
         {
             delete = true;
         }
 
-        public Rectangle(int x, int y, DrawLevel _drawLevel)
+        public MyRectangle(int x, int y, DrawLevel _drawLevel)
         {
             Points.Add(new Point(x, y));
             Points.Add(new Point(x, y));

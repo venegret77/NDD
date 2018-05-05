@@ -131,6 +131,12 @@
     <Compile Include="NetworkElements\ElementParams.Designer.cs">
       <DependentUpon>ElementParams.cs</DependentUpon>
     </Compile>
+    <Compile Include="NetworkElements\ImageTextures.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NetworkElements\ImageTextures.Designer.cs">
+      <DependentUpon>ImageTextures.cs</DependentUpon>
+    </Compile>
     <Compile Include="NetworkElements\NetworkElement.cs" />
     <Compile Include="GeometricElements\Polygon.cs" />
     <Compile Include="Buildings\BuildForm.cs">
@@ -189,7 +195,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="GeometricElements\Rectangle.cs" />
+    <Compile Include="GeometricElements\MyRectangle.cs" />
     <Compile Include="NetworkElements\Router.cs" />
     <Compile Include="Main\SearchDialog.cs">
       <SubType>Form</SubType>
@@ -220,6 +226,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="NetworkElements\ElementParams.resx">
       <DependentUpon>ElementParams.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NetworkElements\ImageTextures.resx">
+      <DependentUpon>ImageTextures.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

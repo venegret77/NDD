@@ -20,6 +20,8 @@ namespace NetworkDesign
         static public DrawLevel drawLevel;
         static public ColorSettings colorSettings = new ColorSettings();
         static public Parametrs parametrs = new Parametrs();
+        static public List<string> listOfImages = new List<string>();
+        static public ImageList images = new ImageList();
         static public int _Height = 0, _Width = 0;
         static public SimpleOpenGlControl AnT = new SimpleOpenGlControl();
         ActiveElem activeElem = new ActiveElem();
@@ -63,6 +65,7 @@ namespace NetworkDesign
             panel3.Parent = this;
             colorSettings = ColorSettings.Open();
             parametrs = Parametrs.Open();
+            listOfImages = ImageTextures.Open();
         }
 
         /// <summary>
@@ -178,7 +181,7 @@ namespace NetworkDesign
         {
             if (MyMap.Rectangles.step_rect == 0)
             {
-                MyMap.Rectangles.TempRectangle = new Rectangle(x, y, drawLevel);
+                MyMap.Rectangles.TempRectangle = new MyRectangle(x, y, drawLevel);
                 MyMap.Rectangles.step_rect = 1;
             }
             else if (MyMap.Rectangles.step_rect == 1)
@@ -190,10 +193,10 @@ namespace NetworkDesign
             {
                 MyMap.Rectangles.Add(MyMap.Rectangles.TempRectangle);
                 MyMap.Rectangles.step_rect = 0;
-                MyMap.Rectangles.TempRectangle = new Rectangle();
+                MyMap.Rectangles.TempRectangle = new MyRectangle();
                 int lastindex = MyMap.Rectangles.Rectangles.Count - 1;
                 Element elem = new Element(2, lastindex, MyMap.Rectangles.Rectangles[lastindex], -1);
-                Element _elem = new Element(2, lastindex, new Rectangle(), -1);
+                Element _elem = new Element(2, lastindex, new MyRectangle(), -1);
                 MyMap.log.Add(new LogMessage("Добавил прямоугольник", elem, _elem));
                 InfoLable.Text = "Добавил прямоугольник";
                 CheckButtons(true);
@@ -326,7 +329,7 @@ namespace NetworkDesign
                         break;
                     case 2:
                         MyMap.Rectangles.step_rect = 0;
-                        MyMap.Rectangles.TempRectangle = new Rectangle();
+                        MyMap.Rectangles.TempRectangle = new MyRectangle();
                         break;
                     case 5:
                         MyMap.Polygons.TempPolygon.ClearTempPoint();
@@ -750,7 +753,7 @@ namespace NetworkDesign
                     CheckButtons(true);
                     break;
                 case 2:
-                    elem = new Element(2, activeElem.item, new Rectangle(), -1);
+                    elem = new Element(2, activeElem.item, new MyRectangle(), -1);
                     _elem = new Element(2, activeElem.item, MyMap.Rectangles.Rectangles[activeElem.item], -1);
                     MyMap.log.Add(new LogMessage("Удалил прямоугольник", elem, _elem));
                     InfoLable.Text = "Удалил прямоугольник";
@@ -854,7 +857,7 @@ namespace NetworkDesign
                             break;
                         case 3:
                             MyMap.Buildings.Remove(elem.index);
-                            MyMap.Rectangles.Rectangles[_elem.index] = (Rectangle)_elem.elem;
+                            MyMap.Rectangles.Rectangles[_elem.index] = (MyRectangle)_elem.elem;
                             break;
                         case 4:
                             MyMap.Buildings.Remove(elem.index);
@@ -876,7 +879,7 @@ namespace NetworkDesign
                     {
                         case 1:
                             MyMap.Buildings.Remove(elem.index);
-                            MyMap.Rectangles.Rectangles[_elem.index] = (Rectangle)_elem.elem;
+                            MyMap.Rectangles.Rectangles[_elem.index] = (MyRectangle)_elem.elem;
                             break;
                         case 2:
                             MyMap.Buildings.Remove(elem.index);
@@ -909,7 +912,7 @@ namespace NetworkDesign
                         MyMap.Lines.Lines[elem.index] = (Line)elem.elem;
                         break;
                     case 2:
-                        MyMap.Rectangles.Rectangles[elem.index] = (Rectangle)elem.elem;
+                        MyMap.Rectangles.Rectangles[elem.index] = (MyRectangle)elem.elem;
                         break;
                     case 3:
                         MyMap.Polygons.Polygons[elem.index] = (Polygon)elem.elem;
@@ -1031,7 +1034,7 @@ namespace NetworkDesign
                 MyMap.Buildings.Add(TempMap.Buildings.Buildings[0]);
                 MyMap.Circles.AddGroupElems(TempMap.Circles.Circles.ConvertAll(new Converter<Circle, object>(Conv)));
                 MyMap.Lines.AddGroupElems(TempMap.Lines.Lines.ConvertAll(new Converter<Line, object>(Conv)));
-                MyMap.Rectangles.AddGroupElems(TempMap.Rectangles.Rectangles.ConvertAll(new Converter<Rectangle, object>(Conv)));
+                MyMap.Rectangles.AddGroupElems(TempMap.Rectangles.Rectangles.ConvertAll(new Converter<MyRectangle, object>(Conv)));
                 MyMap.Polygons.AddGroupElems(TempMap.Polygons.Polygons.ConvertAll(new Converter<Polygon, object>(Conv)));
             }
         }
@@ -1109,6 +1112,7 @@ namespace NetworkDesign
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             ColorSettings.Save(colorSettings);
+            ImageTextures.Save(listOfImages);
             Parametrs.Save(parametrs);
             Application.Exit();
         }
@@ -1133,6 +1137,12 @@ namespace NetworkDesign
         {
             ElementParams elementParams = new ElementParams();
             elementParams.ShowDialog();
+        }
+
+        private void toolStripButton12_Click(object sender, EventArgs e)
+        {
+            ImageTextures imageTextures = new ImageTextures();
+            imageTextures.ShowDialog();
         }
 
         private void toolStripButton6_Click(object sender, EventArgs e)
