@@ -12,22 +12,44 @@ namespace NetworkDesign.NetworkElements
 {
     public partial class ElementParams : Form
     {
-        List<NetworkParametr> Options = new List<NetworkParametr>();
+        GroupOfNE NetworkElements;
+        const int requiredparameters = 2;
+        public NetworkSettings Options;
         bool add = false;
         bool edit = false;
         int id = -1;
 
-        public ElementParams()
+        /*public ElementParams()
         {
             InitializeComponent();
-            foreach(var item in MainForm.parametrs.Params)
-            {
-                checkedListBox1.Items.Add(item);
-                listBox1.Items.Add("");
-            }
+        }*/
+
+        public ElementParams(NetworkSettings Options, ref GroupOfNE NetworkElements)
+        {
+            InitializeComponent();
+            this.Options = Options;
+            this.NetworkElements = NetworkElements;
+            PharseOptions();
         }
 
-        //Добавить новый конструктор с передачей списка сетевых устройств
+        private void PharseOptions()
+        {
+            foreach (var param in MainForm.parametrs.Params)
+            {
+                listBox2.Items.Add(param);
+                listBox1.Items.Add("");
+            }
+            for (int i = 0; i < listBox2.Items.Count; i++)
+            {
+                foreach (var item in Options.Options)
+                {
+                    if (item.ID == i)
+                    {
+                        listBox1.Items[i] = item.Value;
+                    }
+                }
+            }
+        }
 
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
@@ -44,14 +66,14 @@ namespace NetworkDesign.NetworkElements
                 if (add)
                 {
                     MainForm.parametrs.Add(text);
-                    checkedListBox1.Items.Add(text);
+                    listBox2.Items.Add(text);
                     listBox1.Items.Add("");
                     add = false;
                 }
                 else if (edit)
                 {
                     MainForm.parametrs.Edit(id, text);
-                    checkedListBox1.Items[id] = text;
+                    listBox2.Items[id] = text;
                     edit = false;
                 }
                 else
@@ -60,32 +82,14 @@ namespace NetworkDesign.NetworkElements
                 }
                 textBox1.Clear();
                 textBox1.Enabled = false;
-                checkedListBox1.Focus();
-            }
-        }
-
-        private void checkedListBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            textBox1.Clear();
-            if (checkedListBox1.SelectedIndex == -1)
-            {
-                checkedListBox1.SelectedIndex = -1;
-            }
-            else
-            {
-                listBox1.SelectedIndex = checkedListBox1.SelectedIndex;
-                id = checkedListBox1.SelectedIndex;
-                if (checkedListBox1.GetItemChecked(id))
-                {
-                    textBox1.Text = listBox1.Items[id].ToString();
-                    textBox1.Enabled = true;
-                    textBox1.Focus();
-                }
+                listBox2.Focus();
             }
         }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
+            toolStripButton2.Enabled = false;
+            toolStripButton3.Enabled = false;
             textBox1.Clear();
             if (listBox1.SelectedIndex == -1)
             {
@@ -93,22 +97,24 @@ namespace NetworkDesign.NetworkElements
             }
             else
             {
-                checkedListBox1.SelectedIndex = listBox1.SelectedIndex;
-                id = checkedListBox1.SelectedIndex;
-                if (checkedListBox1.GetItemChecked(id))
+                if (listBox1.SelectedIndex >= requiredparameters)
                 {
-                    textBox1.Text = listBox1.Items[id].ToString();
-                    textBox1.Enabled = true;
-                    textBox1.Focus();
+                    toolStripButton2.Enabled = true;
+                    toolStripButton3.Enabled = true;
                 }
+                listBox2.SelectedIndex = listBox1.SelectedIndex;
+                id = listBox2.SelectedIndex;
+                textBox1.Text = listBox1.Items[id].ToString();
+                textBox1.Enabled = true;
+                textBox1.Focus();
             }
         }
 
         private void toolStripButton2_Click(object sender, EventArgs e)
         {
             edit = true;
-            id = checkedListBox1.SelectedIndex;
-            textBox1.Text = checkedListBox1.Items[id].ToString();
+            id = listBox2.SelectedIndex;
+            textBox1.Text = listBox2.Items[id].ToString();
             textBox1.Enabled = true;
             textBox1.Focus();
         }
@@ -122,9 +128,9 @@ namespace NetworkDesign.NetworkElements
                     textBox1.Clear();
                     MainForm.parametrs.Remove(id);
                     listBox1.Items.RemoveAt(id);
-                    checkedListBox1.Items.RemoveAt(id);
+                    listBox2.Items.RemoveAt(id);
                     listBox1.SelectedIndex = -1;
-                    checkedListBox1.SelectedIndex = -1;
+                    listBox2.SelectedIndex = -1;
                 }
                 else
                 {
@@ -139,6 +145,18 @@ namespace NetworkDesign.NetworkElements
         /// <returns>true - параметр не найден среди устройств; false - параметр найден среди устройств</returns>
         private bool Check()
         {
+            foreach (var ne in NetworkElements.NetworkElements)
+            {
+                foreach (var param in ne.Options.Options)
+                {
+                    if (param.ID == id & !param.isEmpty())
+                        return false;
+                }
+            }
+            foreach (var item in NetworkElements.NetworkElements)
+            {
+                item.Options.RefreshID(id);
+            }
             return true;
         }
 
@@ -147,9 +165,52 @@ namespace NetworkDesign.NetworkElements
             //Очистка листбокс1
         }
 
-        private void ElementParams_FormClosed(object sender, FormClosedEventArgs e)
+        private void ElementParams_FormClosed(object sender, FormClosedEventArgs e) => SaveParams();
+
+        private void SaveParams()
         {
-            //Сохранение
+            Options = new NetworkSettings();
+            Options.Options.Add(new NetworkParametr(0, listBox1.Items[0].ToString()));
+            Options.Options.Add(new NetworkParametr(1, listBox1.Items[1].ToString()));
+            for (int i = 2; i < listBox1.Items.Count; i++)
+            {
+                if (!isEmpty(listBox1.Items[i].ToString()))
+                {
+                    Options.Options.Add(new NetworkParametr(i, listBox1.Items[i].ToString()));
+                }
+            }
+        }
+
+        private bool isEmpty(string Value)
+        {
+            if (Value == "" || Value == " ")
+                return true;
+            else
+                return false;
+        }
+
+        private void listBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            toolStripButton2.Enabled = false;
+            toolStripButton3.Enabled = false;
+            textBox1.Clear();
+            if (listBox2.SelectedIndex == -1)
+            {
+                listBox2.SelectedIndex = -1;
+            }
+            else
+            {
+                if (listBox2.SelectedIndex >= requiredparameters)
+                {
+                    toolStripButton2.Enabled = true;
+                    toolStripButton3.Enabled = true;
+                }
+                listBox1.SelectedIndex = listBox2.SelectedIndex;
+                id = listBox2.SelectedIndex;
+                textBox1.Text = listBox1.Items[id].ToString();
+                textBox1.Enabled = true;
+                textBox1.Focus();
+            }
         }
     }
 }

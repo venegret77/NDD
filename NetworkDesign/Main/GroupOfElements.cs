@@ -76,6 +76,11 @@ namespace NetworkDesign
 
         //public abstract List<object> ConvertToListObj(); 
 
+        /// <summary>
+        /// Получение списка объектов внутри здания. Используется при экспорте зданий
+        /// </summary>
+        /// <param name="build"></param>
+        /// <returns></returns>
         public abstract List<object> GetInBuild(int build);
 
         /// <summary>

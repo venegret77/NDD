@@ -20,8 +20,12 @@ namespace NetworkDesign
         static public DrawLevel drawLevel;
         static public ColorSettings colorSettings = new ColorSettings();
         static public Parametrs parametrs = new Parametrs();
-        static public List<string> listOfImages = new List<string>();
-        static public ImageList images = new ImageList();
+        //
+        static public List<string> ImagesURL = new List<string>();
+        static public List<uint> Textures = new List<uint>();
+        static public List<string> DeleteImages = new List<string>();
+        static public bool isLoad = false;
+        //
         static public int _Height = 0, _Width = 0;
         static public SimpleOpenGlControl AnT = new SimpleOpenGlControl();
         ActiveElem activeElem = new ActiveElem();
@@ -53,6 +57,7 @@ namespace NetworkDesign
             AnT.MouseDown += new MouseEventHandler(AnT_MouseDown);
             AnT.MouseMove += new MouseEventHandler(AnT_MouseMove);
             AnT.MouseUp += new MouseEventHandler(AnT_MouseUp);
+            AnT.MouseDoubleClick += AnT_MouseDoubleClick;
             // 
             AnT.InitializeContexts();
             MyMap = new Map(DefaultSettings);
@@ -65,7 +70,7 @@ namespace NetworkDesign
             panel3.Parent = this;
             colorSettings = ColorSettings.Open();
             parametrs = Parametrs.Open();
-            listOfImages = ImageTextures.Open();
+            ImagesURL = ImageTextures.Open();
         }
 
         /// <summary>
@@ -224,6 +229,31 @@ namespace NetworkDesign
             }
         }
 
+        private void MouseNE(int x, int y)
+        {
+            if (!MyMap.NetworkElements.step)
+            {
+                ImageTextures IT = new ImageTextures(ref MyMap.NetworkElements);
+                IT.ShowDialog();
+                if (IT.imageindex > -1)
+                {
+                    MyMap.NetworkElements.step = true;
+                    MyMap.NetworkElements.TempNetworkElement = new NetworkElement(new Texture(false, 50, new Point(x, y), IT.imageindex), drawLevel);
+                }
+            }
+            else
+            {
+                MyMap.NetworkElements.Add(MyMap.NetworkElements.TempNetworkElement);
+                MyMap.NetworkElements.TempDefault();
+                int lastindex = MyMap.NetworkElements.NetworkElements.Count - 1;
+                Element elem = new Element(8, lastindex, MyMap.NetworkElements.NetworkElements[lastindex], -1);
+                Element _elem = new Element(8, lastindex, new NetworkElement(), -1);
+                MyMap.log.Add(new LogMessage("Добавил сетевой элемент", elem, _elem));
+                InfoLable.Text = "Добавил сетевой элемент";
+                CheckButtons(true);
+            }
+        }
+
         private void AnT_MouseDown(object sender, MouseEventArgs e)
         {
             int y = MyMap.InverseY(e.Y);
@@ -305,6 +335,9 @@ namespace NetworkDesign
                             InfoLable.Text = "Добавил вход в здание";
                         }
                         break;
+                    case 8:
+                        MouseNE(e.X, y);
+                        break;
                 }
             }
             if (e.Button == MouseButtons.Right)
@@ -348,6 +381,25 @@ namespace NetworkDesign
                     case 7:
                         MyMap.Buildings.Buildings[activeElem.item].Entrances.step = false;
                         MyMap.Buildings.Buildings[activeElem.item].Entrances.Enterances.TempCircle = new Circle();
+                        break;
+                    case 8:
+                        MyMap.NetworkElements.TempDefault();
+                        break;
+                }
+            }
+        }
+
+        private void AnT_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            int y = MyMap.InverseY(e.Y);
+            if (e.Button == MouseButtons.Left)
+            {
+                switch (MyMap.RB)
+                {
+                    case 0:
+
+                    case 8:
+                        MyMap.SearchNE(e.X, y);
                         break;
                 }
             }
@@ -439,6 +491,12 @@ namespace NetworkDesign
                     if (MyMap.Buildings.Buildings[activeElem.item].Entrances.step)
                     {
                         MyMap.Buildings.Buildings[activeElem.item].MoveEntrance(e.X, y);
+                    }
+                    break;
+                case 8:
+                    if (MyMap.NetworkElements.step)
+                    {
+                        MyMap.NetworkElements.TempNetworkElement.SetPoint(e.X, y);
                     }
                     break;
             }
@@ -1112,7 +1170,7 @@ namespace NetworkDesign
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             ColorSettings.Save(colorSettings);
-            ImageTextures.Save(listOfImages);
+            ImageTextures.Save(ImagesURL);
             Parametrs.Save(parametrs);
             Application.Exit();
         }
@@ -1135,18 +1193,19 @@ namespace NetworkDesign
 
         private void toolStripButton11_Click(object sender, EventArgs e)
         {
-            ElementParams elementParams = new ElementParams();
-            elementParams.ShowDialog();
+            /*ElementParams elementParams = new ElementParams();
+            elementParams.ShowDialog();*/
         }
 
         private void toolStripButton12_Click(object sender, EventArgs e)
         {
-            ImageTextures imageTextures = new ImageTextures();
+            ImageTextures imageTextures = new ImageTextures(ref MyMap.NetworkElements);
             imageTextures.ShowDialog();
+
+            /*ToolStripButton knopka = new ToolStripButton(images.Images[imageTextures.imageindex]);
+            toolStrip1.Items.Add(knopka);*/
         }
 
-        private void toolStripButton6_Click(object sender, EventArgs e)
-        {
-        }
+        private void toolStripButton13_Click(object sender, EventArgs e) => MyMap.SetInstrument(8);
     }
 }

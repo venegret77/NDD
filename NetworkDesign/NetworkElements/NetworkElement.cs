@@ -9,14 +9,14 @@ using System.Threading.Tasks;
 namespace NetworkDesign
 {
     /// <summary>
-    /// Элементы сети
+    /// Элемент сети
     /// </summary>
-    public abstract class NetworkElement
+    public class NetworkElement
     {
         /// <summary>
         /// Выбран элемент или нет
         /// </summary>
-        public bool active;
+        public bool active = false;
         /// <summary>
         /// Текстура
         /// </summary>
@@ -24,7 +24,7 @@ namespace NetworkDesign
         /// <summary>
         /// Наименование
         /// </summary>
-        public string name;
+        //public string name;
         /// <summary>
         /// Заметки
         /// </summary>
@@ -36,19 +36,32 @@ namespace NetworkDesign
         /// <summary>
         /// Общее количество сетевых портов
         /// </summary>
-        public int TotalPorts;
+        //public int TotalPorts;
         /// <summary>
         /// Занятое количество сетевых портов
         /// </summary>
-        public int BusyPorts;
+        //public int BusyPorts;
         /// <summary>
         /// Сетевые параметры устройства
         /// </summary>
-        public NetworkSettings Options;
+        public NetworkSettings Options = new NetworkSettings("");
         /// <summary>
         /// Удалено или нет
         /// </summary>
-        public bool delete;
+        public bool delete = true;
+
+        public NetworkElement()
+        {
+            delete = true;
+        }
+
+        public NetworkElement(Texture texture, DrawLevel dL)
+        {
+            delete = false;
+            this.texture = texture;
+            DL = dL;
+        }
+
         /// <summary>
         /// Устанавливает заданную активность
         /// </summary>
@@ -89,7 +102,7 @@ namespace NetworkDesign
             double xmax = texture.location.X + texture.width;//+ или - решить позже
             double ymin = texture.location.Y;
             double ymax = texture.location.Y + texture.width;
-            double vect = x - xmin + x - xmax + y - ymin + y - ymax;
+            double vect = Math.Abs(x - xmin + x - xmax + y - ymin + y - ymax);
             if (vect <= texture.width)
                 return vect;
             else
@@ -100,7 +113,8 @@ namespace NetworkDesign
         /// </summary>
         public void Draw()
         {
-            texture.Draw();
+            if (!delete)
+                texture.Draw();
         }
     }
 }

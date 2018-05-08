@@ -17,15 +17,25 @@ namespace NetworkDesign.NetworkElements
         /// <summary>
         /// Список параметров сетевых устройств
         /// </summary>
-        List<NetworkParametr> Options = new List<NetworkParametr>();
+        public List<NetworkParametr> Options = new List<NetworkParametr>();
 
         public NetworkSettings()
         {
         }
 
-        public NetworkSettings(List<NetworkParametr> _Options)
+        public NetworkSettings(string todefault)
         {
-            Options = _Options;
+            Options.Add(new NetworkParametr(0, ""));
+            Options.Add(new NetworkParametr(1, ""));
+        }
+
+        internal void RefreshID(int id)
+        {
+            for (int i = 0; i < Options.Count; i++)
+            {
+                if (Options[i].ID > id)
+                    Options[i].SetNewID();
+            }
         }
     }
 
@@ -39,17 +49,27 @@ namespace NetworkDesign.NetworkElements
         /// </summary>
         public int ID;
         /// <summary>
-        /// Наименование
-        /// </summary>
-        public string Name;
-        /// <summary>
         /// Значение
         /// </summary>
         public string Value;
 
-        public override string ToString()
+        public void SetNewID()
         {
-            return Name + ": " + Value; 
+            ID--;
+        }
+
+        public bool isEmpty()
+        {
+            if (Value == "" || Value == " ")
+                return true;
+            else
+                return false;
+        }
+
+        public NetworkParametr(int iD, string value)
+        {
+            ID = iD;
+            Value = value;
         }
     }
 
@@ -89,16 +109,19 @@ namespace NetworkDesign.NetworkElements
 
         static public Parametrs Open()
         {
+            Parametrs parametrs = new Parametrs();
+            parametrs.Add("Наименование элемента");
+            parametrs.Add("Количество сетевых портов");
             if (!Directory.Exists(Application.StartupPath + @"\Configurations"))
             {
                 Directory.CreateDirectory(Application.StartupPath + @"\Configurations");
-                Save(new Parametrs());
-                return new Parametrs();
+                Save(parametrs);
+                return parametrs;
             }
             if (!File.Exists(Application.StartupPath + @"\Configurations\NetworkSettings"))
             {
-                Save(new Parametrs());
-                return new Parametrs();
+                Save(parametrs);
+                return parametrs;
             }
             XmlSerializer formatter = new XmlSerializer(typeof(Parametrs));
             using (FileStream fs = new FileStream(Application.StartupPath + @"\Configurations\NetworkSettings", FileMode.Open))

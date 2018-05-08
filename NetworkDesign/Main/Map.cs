@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NetworkDesign.NetworkElements;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -26,6 +27,8 @@ namespace NetworkDesign
         public GroupOfRectangles Rectangles = new GroupOfRectangles(); //Группа прямоугольников
         //Для кругов
         public GroupOfCircle Circles = new GroupOfCircle();
+        //Для элементов сети
+        public GroupOfNE NetworkElements = new GroupOfNE();
         //Редактирование
         public GroupOfEditRects EditRects = new GroupOfEditRects();
         //Лог
@@ -68,6 +71,8 @@ namespace NetworkDesign
             // установка объектно-видовой матрицы 
             Gl.glMatrixMode( Gl.GL_MODELVIEW);
             Gl.glLoadIdentity();
+            Gl.glEnable(Gl.GL_BLEND);
+            Gl.glBlendFunc(Gl.GL_SRC_ALPHA, Gl.GL_ONE_MINUS_SRC_ALPHA);
             // начальные настройки OpenGL 
             //Gl.glEnable( Gl.GL_DEPTH_TEST);
             mapSetting = _MapSetting;
@@ -93,6 +98,8 @@ namespace NetworkDesign
             Circles.Draw();
             //Для зданий
             Buildings.Draw();
+            //Для элементов сети
+            NetworkElements.Draw();
             //Для прямоугольников редактирования
             if (EditRects.edit_mode)
             {
@@ -336,6 +343,17 @@ namespace NetworkDesign
             else
             {
                 return y;
+            }
+        }
+
+        internal void SearchNE(int x, int y)
+        {
+            int NE = NetworkElements.Search(x, y, MainForm.drawLevel);
+            if (NE != -1)
+            {
+                ElementParams ep = new ElementParams(NetworkElements.NetworkElements[NE].Options, ref NetworkElements);
+                ep.ShowDialog();
+                NetworkElements.NetworkElements[NE].Options = ep.Options;
             }
         }
     }
