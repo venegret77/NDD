@@ -10,21 +10,22 @@ using System.Windows.Forms;
 
 namespace NetworkDesign.NetworkElements
 {
-    public partial class ElementParams : Form
+    public partial class NESettings : Form
     {
         GroupOfNE NetworkElements;
-        const int requiredparameters = 2;
+        const int requiredparameters = 0;
         public NetworkSettings Options;
         bool add = false;
         bool edit = false;
         int id = -1;
+        Int64 kr = 1000000;
 
-        /*public ElementParams()
+        public NESettings()
         {
             InitializeComponent();
-        }*/
+        }
 
-        public ElementParams(NetworkSettings Options, ref GroupOfNE NetworkElements)
+        public NESettings(NetworkSettings Options, ref GroupOfNE NetworkElements)
         {
             InitializeComponent();
             this.Options = Options;
@@ -32,11 +33,61 @@ namespace NetworkDesign.NetworkElements
             PharseOptions();
         }
 
+        private void RefreshLable()
+        {
+            switch (kr)
+            {
+                case 0:
+                    label4.Text = "(б/с)";
+                    break;
+                case 1000:
+                    label4.Text = "(Кб/с)";
+                    break;
+                case 1000000:
+                    label4.Text = "(Мб/с)";
+                    break;
+                case 1000000000:
+                    label4.Text = "(Гб/с)";
+                    break;
+                case 1000000000000:
+                    label4.Text = "(Тб/с)";
+                    break;
+            }
+        }
+
         private void PharseOptions()
         {
-            foreach (var param in MainForm.parametrs.Params)
+            if (Options.Throughput == 0)
             {
-                listBox2.Items.Add(param);
+                kr = 1000000;
+                numericUpDown1.Value = 100;
+            }
+            else
+            {
+                kr = 0;
+                if (Options.Throughput >= 1000 & Options.Throughput < 1000000)
+                    kr = 1000;
+                else if (Options.Throughput >= 1000000 & Options.Throughput < 1000000000)
+                    kr = 1000000;
+                else if (Options.Throughput >= 1000000000 & Options.Throughput < 1000000000000)
+                    kr = 1000000000;
+                else if (Options.Throughput >= 1000000000000)
+                    kr = 1000000000000;
+                if (kr != 0)
+                    numericUpDown1.Value = (decimal)(Options.Throughput / (double)kr);
+                else
+                    numericUpDown1.Value = (decimal)Options.Throughput;
+            }
+            RefreshLable();
+            textBox2.Text = Options.Name;
+            if (isEmpty(textBox2.Text))
+                textBox2.Text = "Новое устройство";
+            numericUpDown2.Value = Options.TotalPorts;
+            numericUpDown2.Minimum = Options.BusyPorts;
+            RefreshPorts();
+            for (int i = 0; i < MainForm.parametrs.Params.Count; i++)
+            {
+                listBox2.Items.Add(MainForm.parametrs.Params[i]);
                 listBox1.Items.Add("");
             }
             for (int i = 0; i < listBox2.Items.Count; i++)
@@ -49,6 +100,12 @@ namespace NetworkDesign.NetworkElements
                     }
                 }
             }
+        }
+
+        public void RefreshPorts()
+        {
+            int ports = Options.TotalPorts - Options.BusyPorts;
+            label5.Text = "Свободных портов: " + ports;
         }
 
         private void toolStripButton1_Click(object sender, EventArgs e)
@@ -169,10 +226,14 @@ namespace NetworkDesign.NetworkElements
 
         private void SaveParams()
         {
-            Options = new NetworkSettings();
-            Options.Options.Add(new NetworkParametr(0, listBox1.Items[0].ToString()));
-            Options.Options.Add(new NetworkParametr(1, listBox1.Items[1].ToString()));
-            for (int i = 2; i < listBox1.Items.Count; i++)
+            Options.Options.Clear();
+            Options.Name = textBox2.Text;
+            Options.TotalPorts = (int)numericUpDown2.Value;
+            if (kr != 0)
+                Options.Throughput = (Int64)(numericUpDown1.Value * kr);
+            else
+                Options.Throughput = (Int64)(numericUpDown1.Value);
+            for (int i = 0; i < listBox1.Items.Count; i++)
             {
                 if (!isEmpty(listBox1.Items[i].ToString()))
                 {
@@ -211,6 +272,31 @@ namespace NetworkDesign.NetworkElements
                 textBox1.Enabled = true;
                 textBox1.Focus();
             }
+        }
+
+        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
+        {
+            if (numericUpDown1.Value == 1000 & kr != 1000000000000)
+            {
+                numericUpDown1.Value /= 1000;
+                kr *= 1000;
+                if (kr == 0)
+                    kr = 1000;
+                RefreshLable();
+            }
+            else if (numericUpDown1.Value < 1 & kr != 0)
+            {
+                numericUpDown1.Value *= 1000;
+                kr /= 1000;
+                RefreshLable();
+            }
+        }
+
+        private void numericUpDown2_ValueChanged(object sender, EventArgs e)
+        {
+            Options.TotalPorts = (int)numericUpDown2.Value;
+            numericUpDown2.Minimum = Options.BusyPorts;
+            RefreshPorts();
         }
     }
 }

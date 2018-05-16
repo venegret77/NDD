@@ -23,6 +23,8 @@ namespace NetworkDesign
             circlebtn.BackColor = MainForm.colorSettings.CircleColor;
             entrancebtn.BackColor = MainForm.colorSettings.EntranceColor;
             iwbtn.BackColor = MainForm.colorSettings.InputWireColor;
+            button1.BackColor = MainForm.colorSettings.NWmin;
+            button2.BackColor = MainForm.colorSettings.NWmax;
             numericUpDown2.Value = MainForm.colorSettings.EntranceRadius;
             numericUpDown3.Value = MainForm.colorSettings.InputWireRadius;
             numericUpDown1.Value = (decimal)MainForm.colorSettings.LineWidth;
@@ -108,6 +110,20 @@ namespace NetworkDesign
             colorDialog1.ShowDialog();
             iwbtn.BackColor = colorDialog1.Color;
             MainForm.colorSettings.InputWireColor = colorDialog1.Color;
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            colorDialog1.ShowDialog();
+            button1.BackColor = colorDialog1.Color;
+            MainForm.colorSettings.NWmin = colorDialog1.Color;
+        }
+
+        private void button2_Click_1(object sender, EventArgs e)
+        {
+            colorDialog1.ShowDialog();
+            button2.BackColor = colorDialog1.Color;
+            MainForm.colorSettings.NWmax = colorDialog1.Color;
         }
     }
 }

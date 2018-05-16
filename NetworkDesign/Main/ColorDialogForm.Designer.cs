@@ -50,49 +50,52 @@
             this.numericUpDown3 = new System.Windows.Forms.NumericUpDown();
             this.label9 = new System.Windows.Forms.Label();
             this.circlebtn = new System.Windows.Forms.Button();
+            this.label10 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).BeginInit();
             this.SuspendLayout();
             // 
-            // button1
+            // linesbtn
             // 
             this.linesbtn.BackColor = System.Drawing.SystemColors.InactiveCaptionText;
             this.linesbtn.Location = new System.Drawing.Point(163, 4);
-            this.linesbtn.Name = "button1";
+            this.linesbtn.Name = "linesbtn";
             this.linesbtn.Size = new System.Drawing.Size(96, 23);
             this.linesbtn.TabIndex = 0;
             this.linesbtn.Text = "  ";
             this.linesbtn.UseVisualStyleBackColor = false;
             this.linesbtn.Click += new System.EventHandler(this.button1_Click);
             // 
-            // button2
+            // polygonbtn
             // 
             this.polygonbtn.BackColor = System.Drawing.SystemColors.InactiveCaptionText;
             this.polygonbtn.Location = new System.Drawing.Point(163, 33);
-            this.polygonbtn.Name = "button2";
+            this.polygonbtn.Name = "polygonbtn";
             this.polygonbtn.Size = new System.Drawing.Size(96, 23);
             this.polygonbtn.TabIndex = 1;
             this.polygonbtn.Text = "  ";
             this.polygonbtn.UseVisualStyleBackColor = false;
             this.polygonbtn.Click += new System.EventHandler(this.button2_Click);
             // 
-            // button3
+            // rectbtn
             // 
             this.rectbtn.BackColor = System.Drawing.SystemColors.InactiveCaptionText;
             this.rectbtn.Location = new System.Drawing.Point(163, 61);
-            this.rectbtn.Name = "button3";
+            this.rectbtn.Name = "rectbtn";
             this.rectbtn.Size = new System.Drawing.Size(96, 23);
             this.rectbtn.TabIndex = 2;
             this.rectbtn.Text = "  ";
             this.rectbtn.UseVisualStyleBackColor = false;
             this.rectbtn.Click += new System.EventHandler(this.button3_Click);
             // 
-            // button4
+            // activeelembtn
             // 
             this.activeelembtn.BackColor = System.Drawing.SystemColors.InactiveCaptionText;
-            this.activeelembtn.Location = new System.Drawing.Point(163, 208);
-            this.activeelembtn.Name = "button4";
+            this.activeelembtn.Location = new System.Drawing.Point(163, 211);
+            this.activeelembtn.Name = "activeelembtn";
             this.activeelembtn.Size = new System.Drawing.Size(96, 23);
             this.activeelembtn.TabIndex = 3;
             this.activeelembtn.Text = "  ";
@@ -129,7 +132,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 213);
+            this.label4.Location = new System.Drawing.Point(12, 216);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(141, 13);
             this.label4.TabIndex = 7;
@@ -138,7 +141,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(12, 241);
+            this.label5.Location = new System.Drawing.Point(12, 282);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(86, 13);
             this.label5.TabIndex = 8;
@@ -146,7 +149,7 @@
             // 
             // numericUpDown1
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(104, 239);
+            this.numericUpDown1.Location = new System.Drawing.Point(104, 280);
             this.numericUpDown1.Minimum = new decimal(new int[] {
             1,
             0,
@@ -164,7 +167,7 @@
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(163, 238);
+            this.button5.Location = new System.Drawing.Point(163, 279);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(96, 23);
             this.button5.TabIndex = 10;
@@ -181,11 +184,11 @@
             this.label6.TabIndex = 12;
             this.label6.Text = "Здания";
             // 
-            // button6
+            // buildbtn
             // 
             this.buildbtn.BackColor = System.Drawing.SystemColors.InactiveCaptionText;
             this.buildbtn.Location = new System.Drawing.Point(163, 121);
-            this.buildbtn.Name = "button6";
+            this.buildbtn.Name = "buildbtn";
             this.buildbtn.Size = new System.Drawing.Size(96, 23);
             this.buildbtn.TabIndex = 11;
             this.buildbtn.Text = "  ";
@@ -201,11 +204,11 @@
             this.label7.TabIndex = 14;
             this.label7.Text = "Входы";
             // 
-            // button7
+            // entrancebtn
             // 
             this.entrancebtn.BackColor = System.Drawing.SystemColors.InactiveCaptionText;
             this.entrancebtn.Location = new System.Drawing.Point(163, 150);
-            this.entrancebtn.Name = "button7";
+            this.entrancebtn.Name = "entrancebtn";
             this.entrancebtn.Size = new System.Drawing.Size(96, 23);
             this.entrancebtn.TabIndex = 13;
             this.entrancebtn.Text = "  ";
@@ -221,11 +224,11 @@
             this.label8.TabIndex = 16;
             this.label8.Text = "Вход провода";
             // 
-            // button8
+            // iwbtn
             // 
             this.iwbtn.BackColor = System.Drawing.SystemColors.InactiveCaptionText;
             this.iwbtn.Location = new System.Drawing.Point(163, 179);
-            this.iwbtn.Name = "button8";
+            this.iwbtn.Name = "iwbtn";
             this.iwbtn.Size = new System.Drawing.Size(96, 23);
             this.iwbtn.TabIndex = 15;
             this.iwbtn.Text = "  ";
@@ -277,22 +280,56 @@
             this.label9.TabIndex = 20;
             this.label9.Text = "Круги";
             // 
-            // button9
+            // circlebtn
             // 
             this.circlebtn.BackColor = System.Drawing.SystemColors.InactiveCaptionText;
             this.circlebtn.Location = new System.Drawing.Point(163, 90);
-            this.circlebtn.Name = "button9";
+            this.circlebtn.Name = "circlebtn";
             this.circlebtn.Size = new System.Drawing.Size(96, 23);
             this.circlebtn.TabIndex = 19;
             this.circlebtn.Text = "  ";
             this.circlebtn.UseVisualStyleBackColor = false;
             this.circlebtn.Click += new System.EventHandler(this.button9_Click);
             // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(12, 250);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(149, 13);
+            this.label10.TabIndex = 22;
+            this.label10.Text = "Сетевые провода (min - max)";
+            // 
+            // button1
+            // 
+            this.button1.BackColor = System.Drawing.SystemColors.InactiveCaptionText;
+            this.button1.Location = new System.Drawing.Point(163, 245);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(49, 23);
+            this.button1.TabIndex = 21;
+            this.button1.Text = "  ";
+            this.button1.UseVisualStyleBackColor = false;
+            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            // 
+            // button2
+            // 
+            this.button2.BackColor = System.Drawing.SystemColors.InactiveCaptionText;
+            this.button2.Location = new System.Drawing.Point(210, 245);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(49, 23);
+            this.button2.TabIndex = 23;
+            this.button2.Text = "  ";
+            this.button2.UseVisualStyleBackColor = false;
+            this.button2.Click += new System.EventHandler(this.button2_Click_1);
+            // 
             // ColorDialogForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(281, 279);
+            this.ClientSize = new System.Drawing.Size(279, 314);
+            this.Controls.Add(this.button2);
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.circlebtn);
             this.Controls.Add(this.numericUpDown3);
@@ -349,5 +386,8 @@
         private System.Windows.Forms.NumericUpDown numericUpDown3;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Button circlebtn;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button2;
     }
 }

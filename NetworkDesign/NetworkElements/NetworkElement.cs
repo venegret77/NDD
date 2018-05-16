@@ -22,10 +22,6 @@ namespace NetworkDesign
         /// </summary>
         public Texture texture;
         /// <summary>
-        /// Наименование
-        /// </summary>
-        //public string name;
-        /// <summary>
         /// Заметки
         /// </summary>
         public Notes notes;
@@ -34,17 +30,9 @@ namespace NetworkDesign
         /// </summary>
         public DrawLevel DL;
         /// <summary>
-        /// Общее количество сетевых портов
-        /// </summary>
-        //public int TotalPorts;
-        /// <summary>
-        /// Занятое количество сетевых портов
-        /// </summary>
-        //public int BusyPorts;
-        /// <summary>
         /// Сетевые параметры устройства
         /// </summary>
-        public NetworkSettings Options = new NetworkSettings("");
+        public NetworkSettings Options = new NetworkSettings();
         /// <summary>
         /// Удалено или нет
         /// </summary>
@@ -102,9 +90,8 @@ namespace NetworkDesign
             double xmax = texture.location.X + texture.width;//+ или - решить позже
             double ymin = texture.location.Y;
             double ymax = texture.location.Y + texture.width;
-            double vect = Math.Abs(x - xmin + x - xmax + y - ymin + y - ymax);
-            if (vect <= texture.width)
-                return vect;
+            if (x <= xmax & x >= xmin & y <= ymax & y >= ymin)
+                return 1;
             else
                 return -1;
         }

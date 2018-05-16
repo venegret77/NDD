@@ -28,6 +28,10 @@ namespace NetworkDesign
         public Color EntranceColor;
         [XmlIgnore()]
         public Color InputWireColor;
+        [XmlIgnore()]
+        public Color NWmax;
+        [XmlIgnore()]
+        public Color NWmin;
         public float LineWidth;
         public int EntranceRadius;
         public int InputWireRadius;
@@ -88,6 +92,20 @@ namespace NetworkDesign
             set { InputWireColor = Color.FromArgb(value); }
         }
 
+        [XmlElement("NWmax")]
+        public int argnwmax
+        {
+            get { return NWmax.ToArgb(); }
+            set { NWmax = Color.FromArgb(value); }
+        }
+
+        [XmlElement("NWmin")]
+        public int argnwmin
+        {
+            get { return NWmin.ToArgb(); }
+            set { NWmin = Color.FromArgb(value); }
+        }
+
         public ColorSettings(string todefault)
         {
             LinesColor = Color.Black;
@@ -98,6 +116,8 @@ namespace NetworkDesign
             CircleColor = Color.Black;
             EntranceColor = Color.Black;
             InputWireColor = Color.Black;
+            NWmin = Color.Black;
+            NWmax = Color.Black;
             EntranceRadius = 5;
             InputWireRadius = 5;
             LineWidth = 1;

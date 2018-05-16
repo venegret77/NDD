@@ -125,13 +125,14 @@
       <DependentUpon>InputWireForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Main\User.cs" />
-    <Compile Include="NetworkElements\ElementParams.cs">
+    <Compile Include="NetworkElements\NESettings.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="NetworkElements\ElementParams.Designer.cs">
-      <DependentUpon>ElementParams.cs</DependentUpon>
+    <Compile Include="NetworkElements\NESettings.Designer.cs">
+      <DependentUpon>NESettings.cs</DependentUpon>
     </Compile>
     <Compile Include="NetworkElements\GroupOfNE.cs" />
+    <Compile Include="NetworkElements\GroupOfNW.cs" />
     <Compile Include="NetworkElements\ImageTextures.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -187,7 +188,14 @@
     <Compile Include="Main\Map.cs" />
     <Compile Include="Main\MapSettings.cs" />
     <Compile Include="NetworkElements\NetworkSettings.cs" />
+    <Compile Include="NetworkElements\NetworkWire.cs" />
     <Compile Include="NetworkElements\Notes.cs" />
+    <Compile Include="NetworkElements\NWSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NetworkElements\NWSettings.Designer.cs">
+      <DependentUpon>NWSettings.cs</DependentUpon>
+    </Compile>
     <Compile Include="NetworkElements\Texture.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -224,11 +232,14 @@
     <EmbeddedResource Include="Main\MapControl.resx">
       <DependentUpon>MapControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="NetworkElements\ElementParams.resx">
-      <DependentUpon>ElementParams.cs</DependentUpon>
+    <EmbeddedResource Include="NetworkElements\NESettings.resx">
+      <DependentUpon>NESettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NetworkElements\ImageTextures.resx">
       <DependentUpon>ImageTextures.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NetworkElements\NWSettings.resx">
+      <DependentUpon>NWSettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

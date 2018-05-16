@@ -254,6 +254,36 @@ namespace NetworkDesign
             }
         }
 
+        private void MouseNW(int x, int y)
+        {
+            if (!MyMap.NetworkWires.step)
+            {
+                var item = MyMap.ChechNE(x, y);
+                if (item.ID != -1)
+                {
+                    MyMap.NetworkWires.step = true;
+                    MyMap.NetworkWires.TempNetworkWire = new NetworkWire(x, y, drawLevel, item);
+                }
+            }
+            else
+            {
+                var item = MyMap.ChechNE(x, y);
+                if (item.ID != -1)
+                {
+                    MyMap.NetworkWires.TempNetworkWire.idiw2 = item;
+                    MyMap.NetworkWires.step = false;
+                    MyMap.NetworkWires.Add(MyMap.NetworkWires.TempNetworkWire);
+                    MyMap.NetworkWires.TempDefault();
+                    int lastindex = MyMap.NetworkWires.NetworkWires.Count - 1;
+                    Element elem = new Element(9, lastindex, MyMap.NetworkWires.NetworkWires[lastindex], -1);
+                    Element _elem = new Element(9, lastindex, new NetworkWire(), -1);
+                    MyMap.log.Add(new LogMessage("Добавил провод", elem, _elem));
+                    InfoLable.Text = "Добавил провод";
+                    CheckButtons(true);
+                }
+            }
+        }
+
         private void AnT_MouseDown(object sender, MouseEventArgs e)
         {
             int y = MyMap.InverseY(e.Y);
@@ -338,6 +368,9 @@ namespace NetworkDesign
                     case 8:
                         MouseNE(e.X, y);
                         break;
+                    case 9:
+                        MouseNW(e.X, y);
+                        break;
                 }
             }
             if (e.Button == MouseButtons.Right)
@@ -385,6 +418,9 @@ namespace NetworkDesign
                     case 8:
                         MyMap.NetworkElements.TempDefault();
                         break;
+                    case 9:
+                        MyMap.NetworkWires.TempDefault();
+                        break;
                 }
             }
         }
@@ -397,10 +433,10 @@ namespace NetworkDesign
                 switch (MyMap.RB)
                 {
                     case 0:
-
-                    case 8:
+                        MyMap.SearchNW(e.X, y);
                         MyMap.SearchNE(e.X, y);
                         break;
+
                 }
             }
         }
@@ -497,6 +533,12 @@ namespace NetworkDesign
                     if (MyMap.NetworkElements.step)
                     {
                         MyMap.NetworkElements.TempNetworkElement.SetPoint(e.X, y);
+                    }
+                    break;
+                case 9:
+                    if (MyMap.NetworkWires.step)
+                    {
+                        MyMap.NetworkWires.TempNetworkWire.SetPoint(e.X, y, 1);
                     }
                     break;
             }
@@ -1205,6 +1247,8 @@ namespace NetworkDesign
             /*ToolStripButton knopka = new ToolStripButton(images.Images[imageTextures.imageindex]);
             toolStrip1.Items.Add(knopka);*/
         }
+
+        private void toolStripButton11_Click_1(object sender, EventArgs e) => MyMap.SetInstrument(9);
 
         private void toolStripButton13_Click(object sender, EventArgs e) => MyMap.SetInstrument(8);
     }

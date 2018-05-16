@@ -30,6 +30,7 @@ namespace NetworkDesign
 
         public override double Search(int x, int y)
         {
+            
             if (!delete)
             {
                 int maxx = 0, minx = 0, maxy = 0, miny = 0;
@@ -53,31 +54,30 @@ namespace NetworkDesign
                     maxy = Points[1].Y;
                     miny = Points[0].Y;
                 }
-                maxx += 3;
-                maxy += 3;
-                minx -= 3;
-                miny -= 3;
+                int lw = (int)MainForm.colorSettings.LineWidth + 1;
+                maxx += lw;
+                maxy += lw;
+                minx -= lw;
+                miny -= lw;
                 if (x <= maxx & x >= minx & y <= maxy & y >= miny)
                 {
-                    if (Points[1].X - Points[0].X == 0)
+                    for (int i = -(lw / 2); i < lw / 2; i++)
                     {
-                        if (Math.Abs((y - (double)Points[0].Y) / ((double)Points[1].Y - (double)Points[0].Y)) < 0.05)
-                            return 1;
-                    }
-                    else if (Points[1].Y - Points[0].Y == 0)
-                    {
-                        if (Math.Abs((x - (double)Points[0].X) / ((double)Points[1].X - (double)Points[0].X)) < 0.05)
-                            return 1;
-                    }
-                    else
-                    {
-                        if (Math.Abs((x - (double)Points[0].X) / ((double)Points[1].X - (double)Points[0].X) - (y - (double)Points[0].Y) / ((double)Points[1].Y - (double)Points[0].Y)) < 0.05)
-                            return 1;
+                        for (int j = (-lw / 2); j < lw / 2; j++)
+                        {
+                            if ((Points[1].X - Points[0].X) == 0 & (Points[1].Y - Points[0].Y) == 0)
+                                return -1;
+                            else if ((Points[1].X - Points[0].X) == 0 & (y + j - Points[0].Y) / (Points[1].Y - Points[0].Y) == 0)
+                                return 1;
+                            else if ((Points[1].Y - Points[0].Y) == 0 & (x + i - Points[0].X) / (Points[1].X - Points[0].X) == 0)
+                                return 1;
+                            else if ((x + i - Points[0].X) / (Points[1].X - Points[0].X) == (y + j - Points[0].Y) / (Points[1].Y - Points[0].Y))
+                                return 1;
+                        }
                     }
                 }
             }
             return -1;
-            //CalcPointToLine();
         }
 
         /*private bool CalcPointToLine()

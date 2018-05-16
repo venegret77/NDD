@@ -29,6 +29,7 @@ namespace NetworkDesign
         public GroupOfCircle Circles = new GroupOfCircle();
         //Для элементов сети
         public GroupOfNE NetworkElements = new GroupOfNE();
+        public GroupOfNW NetworkWires = new GroupOfNW();
         //Редактирование
         public GroupOfEditRects EditRects = new GroupOfEditRects();
         //Лог
@@ -99,6 +100,7 @@ namespace NetworkDesign
             //Для зданий
             Buildings.Draw();
             //Для элементов сети
+            NetworkWires.Draw();
             NetworkElements.Draw();
             //Для прямоугольников редактирования
             if (EditRects.edit_mode)
@@ -131,7 +133,7 @@ namespace NetworkDesign
                 EditRects.edit_mode = true;
                 MainForm.AnT.Cursor = Cursors.Arrow;
             }
-            else if (instrument == 0)
+            else if (instrument == 0 | instrument == 8)
             {
                 MainForm.AnT.Cursor = Cursors.Arrow;
             }
@@ -346,14 +348,45 @@ namespace NetworkDesign
             }
         }
 
+        public IDandIW ChechNE(int x, int y)
+        {
+            int NE = NetworkElements.Search(x, y, MainForm.drawLevel);
+            int build = Buildings.Search(x, y, out double distbuild, MainForm.drawLevel);
+            if (build != -1)
+            {
+                int IW = Buildings.Buildings[build].InputWires.CalcNearestIW(x, y, MainForm.drawLevel);
+                if (IW != -1)
+                {
+                    return new IDandIW(IW, true);
+                }
+            }
+            else if (NE != -1 && NetworkElements.NetworkElements[NE].Options.CheckPorts())
+            {
+                NetworkElements.NetworkElements[NE].Options.BusyPorts++;
+                return new IDandIW(NE, false);
+            }
+            return new IDandIW(-1, false);
+        }
+
         internal void SearchNE(int x, int y)
         {
             int NE = NetworkElements.Search(x, y, MainForm.drawLevel);
             if (NE != -1)
             {
-                ElementParams ep = new ElementParams(NetworkElements.NetworkElements[NE].Options, ref NetworkElements);
-                ep.ShowDialog();
-                NetworkElements.NetworkElements[NE].Options = ep.Options;
+                NESettings nes = new NESettings(NetworkElements.NetworkElements[NE].Options, ref NetworkElements);
+                nes.ShowDialog();
+                NetworkElements.NetworkElements[NE].Options = nes.Options;
+            }
+        }
+
+        internal void SearchNW(int x, int y)
+        {
+            int NW = NetworkWires.Search(x, y, MainForm.drawLevel);
+            if (NW != -1)
+            {
+                NWSettings nws = new NWSettings(NetworkWires.NetworkWires[NW].Throughput);
+                nws.ShowDialog();
+                NetworkWires.NetworkWires[NW].Throughput = nws.Throughput;
             }
         }
     }

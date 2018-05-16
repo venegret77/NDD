@@ -18,15 +18,31 @@ namespace NetworkDesign.NetworkElements
         /// Список параметров сетевых устройств
         /// </summary>
         public List<NetworkParametr> Options = new List<NetworkParametr>();
+        /// <summary>
+        /// Наименование устройства
+        /// </summary>
+        public string Name = "Новое устройство";
+        /// <summary>
+        /// Общее количество сетевых портов
+        /// </summary>
+        public int TotalPorts = 0;
+        /// <summary>
+        /// Количество занятых сетевых портов
+        /// </summary>
+        public int BusyPorts = 0;
+        /// <summary>
+        /// Пропускная способность
+        /// </summary>
+        public Int64 Throughput = 100000000;
 
         public NetworkSettings()
         {
         }
 
-        public NetworkSettings(string todefault)
+        public NetworkSettings(string name, int totalPorts)
         {
-            Options.Add(new NetworkParametr(0, ""));
-            Options.Add(new NetworkParametr(1, ""));
+            Name = name;
+            TotalPorts = totalPorts;
         }
 
         internal void RefreshID(int id)
@@ -36,6 +52,14 @@ namespace NetworkDesign.NetworkElements
                 if (Options[i].ID > id)
                     Options[i].SetNewID();
             }
+        }
+
+        public bool CheckPorts()
+        {
+            if (TotalPorts - BusyPorts > 0)
+                return true;
+            else
+                return false;
         }
     }
 
