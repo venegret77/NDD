@@ -9,6 +9,7 @@ using System.IO.Compression;
 using System.Collections.Generic;
 using System.Linq;
 using NetworkDesign.NetworkElements;
+using NetworkDesign.Main;
 
 namespace NetworkDesign
 {
@@ -31,6 +32,8 @@ namespace NetworkDesign
         ActiveElem activeElem = new ActiveElem();
         private List<string> floors_name = new List<string>();
         private int floor_index = 0;
+
+        static public TextBox focusbox = new TextBox();
 
         public MainForm()
         {
@@ -57,6 +60,7 @@ namespace NetworkDesign
             AnT.MouseDown += new MouseEventHandler(AnT_MouseDown);
             AnT.MouseMove += new MouseEventHandler(AnT_MouseMove);
             AnT.MouseUp += new MouseEventHandler(AnT_MouseUp);
+            AnT.Click += AnT_Click;
             AnT.MouseDoubleClick += AnT_MouseDoubleClick;
             // 
             AnT.InitializeContexts();
@@ -68,9 +72,33 @@ namespace NetworkDesign
             _Width = AnT.Width;
             panel2.Parent = this;
             panel3.Parent = this;
+            panel2.BackColor = Color.White;
+            panel3.BackColor = Color.White;
+            FloorUP.BackColor = Color.White;
+            FloorDown.BackColor = Color.White;
+            FloorUP.FlatAppearance.BorderSize = 0;
+            FloorUP.FlatStyle = FlatStyle.Flat;
+            FloorDown.FlatAppearance.BorderSize = 0;
+            FloorDown.FlatStyle = FlatStyle.Flat;
             colorSettings = ColorSettings.Open();
             parametrs = Parametrs.Open();
             ImagesURL = ImageTextures.Open();
+            focusbox.TabIndex = 99;
+            focusbox.Parent = this;
+            focusbox.Visible = true;
+            focusbox.Enabled = true;
+            focusbox.Location = new Point(10000000, 100000);
+            Click += MainForm_Click;
+        }
+
+        private void MainForm_Click(object sender, EventArgs e)
+        {
+            focusbox.Focus();
+        }
+        
+        private void AnT_Click(object sender, EventArgs e)
+        {
+            focusbox.Focus();
         }
 
         /// <summary>
@@ -123,6 +151,16 @@ namespace NetworkDesign
                     InfoLable.Text = "Выбран вход в здание " + activeElem.build + " с ID " + activeElem.item;
                     DeleteBtn.Enabled = true;
                     MyMap.Buildings.Buildings[activeElem.build].Entrances.Enterances.Choose(activeElem.item);
+                    break;
+                case 8:
+                    MyMap.NetworkElements.Choose(activeElem.item);
+                    InfoLable.Text = "Выбран сетевой элемент " + activeElem.item;
+                    DeleteBtn.Enabled = true;
+                    break;
+                case 9:
+                    MyMap.NetworkWires.Choose(activeElem.item);
+                    InfoLable.Text = "Выбран провод " + activeElem.item;
+                    DeleteBtn.Enabled = true;
                     break;
                 case 360:
                     MyMap.Circles.Choose(activeElem.item);
@@ -284,6 +322,55 @@ namespace NetworkDesign
             }
         }
 
+        TextBox textBox;
+        //Timer chechtextbox = new Timer();
+        int x, y;
+
+        private void MouseText(int x, int y, int _y)
+        {
+            this.x = x;
+            this.y = _y;
+            if (textBox == null)
+            {
+                textBox = new TextBox();
+                textBox.Parent = AnT;
+                textBox.BackColor = Color.White;
+                textBox.BorderStyle = BorderStyle.None;
+            }
+            if (textBox.Text != "" && textBox.Text != " ")
+                MyMap.MyTexts.Add(new MyText(drawLevel, new Point(x, y), textBox));
+            textBox.Location = new Point(x, y);
+            textBox.Enabled = true;
+            textBox.Visible = true;
+            textBox.Text = "";
+            textBox.Focus();
+            textBox.KeyDown += TextBox_KeyDown;
+            textBox.LostFocus += TextBox_LostFocus;
+        }
+
+        private void TextBox_LostFocus(object sender, EventArgs e)
+        {
+            if (textBox.Text != "" & textBox.Text != " ")
+            {
+                MyMap.MyTexts.Add(new MyText(drawLevel, new Point(x, y), textBox));
+                textBox.Enabled = false;
+                textBox.Visible = false;
+                textBox.Text = "";
+            }
+        }
+
+        private void TextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            Size size = TextRenderer.MeasureText(textBox.Text, textBox.Font);
+            textBox.Width = size.Width + 10;
+            textBox.Height = size.Height;
+            if (e.KeyCode == Keys.Enter)
+            {
+                focusbox.Focus();
+            }
+        }
+
+
         private void AnT_MouseDown(object sender, MouseEventArgs e)
         {
             int y = MyMap.InverseY(e.Y);
@@ -371,6 +458,9 @@ namespace NetworkDesign
                     case 9:
                         MouseNW(e.X, y);
                         break;
+                    case 10:
+                        MouseText(e.X, e.Y, y);
+                        break;
                 }
             }
             if (e.Button == MouseButtons.Right)
@@ -433,10 +523,10 @@ namespace NetworkDesign
                 switch (MyMap.RB)
                 {
                     case 0:
+                        if (MyMap.SearchNE(e.X, y))
+                            break;
                         MyMap.SearchNW(e.X, y);
-                        MyMap.SearchNE(e.X, y);
                         break;
-
                 }
             }
         }
@@ -447,8 +537,8 @@ namespace NetworkDesign
             FloorUP.Visible = true;
             label1.Visible = true;
             floors_name.AddRange(MyMap.Buildings.Buildings[activeElem.item].floors_name);
-            label1.Text = floors_name[0];
-            floor_index = 0;
+            label1.Text = floors_name[drawLevel.Floor];
+            floor_index = drawLevel.Floor;
         }
 
         private void AnT_MouseUp(object sender, MouseEventArgs e)
@@ -737,6 +827,8 @@ namespace NetworkDesign
             MyMap.Polygons.Choose(-1);
             MyMap.Buildings.Choose(-1);
             MyMap.Circles.Choose(-1);
+            MyMap.NetworkElements.Choose(-1);
+            MyMap.NetworkWires.Choose(-1);
         }
 
         private void BuildBtn_Click(object sender, EventArgs e)
@@ -892,6 +984,39 @@ namespace NetworkDesign
                     MyMap.Buildings.Buildings[activeElem.build].Entrances.Enterances.Remove(activeElem.item);
                     CheckButtons(true);
                     break;
+                case 8:
+                    if (MyMap.NetworkElements.NetworkElements[activeElem.item].Options.BusyPorts != 0)
+                    {
+                        MessageBox.Show("Невозможно удалить сетевое устройство");
+                    }
+                    else
+                    {
+                        elem = new Element(8, activeElem.item, new NetworkElement(), -1);
+                        _elem = new Element(8, activeElem.item, MyMap.NetworkElements.NetworkElements[activeElem.item], -1);
+                        MyMap.log.Add(new LogMessage("Удалил сетевой элемент", elem, _elem));
+                        InfoLable.Text = "Удалил сетевой элемент";
+                        MyMap.NetworkElements.Remove(activeElem.item);
+                        CheckButtons(true);
+                    }
+                    break;
+                case 9:
+                    var ne1 = MyMap.NetworkWires.NetworkWires[activeElem.item].idiw1;
+                    var ne2 = MyMap.NetworkWires.NetworkWires[activeElem.item].idiw2;
+                    if (!ne1.IW)
+                    {
+                        MyMap.NetworkElements.NetworkElements[ne1.ID].Options.BusyPorts--;
+                    }
+                    if (!ne2.IW)
+                    {
+                        MyMap.NetworkElements.NetworkElements[ne2.ID].Options.BusyPorts--;
+                    }
+                    elem = new Element(9, activeElem.item, new NetworkWire(), -1);
+                    _elem = new Element(9, activeElem.item, MyMap.NetworkWires.NetworkWires[activeElem.item], -1);
+                    MyMap.log.Add(new LogMessage("Удалил провод", elem, _elem));
+                    InfoLable.Text = "Удалил провод";
+                    MyMap.NetworkWires.Remove(activeElem.item);
+                    CheckButtons(true);
+                    break;
                 case 360:
                     elem = new Element(360, activeElem.item, new Circle(), -1);
                     _elem = new Element(360, activeElem.item, MyMap.Circles.Circles[activeElem.item], -1);
@@ -1022,6 +1147,40 @@ namespace NetworkDesign
                         break;
                     case 360:
                         MyMap.Circles.Circles[elem.index] = (Circle)elem.elem;
+                        break;
+                    case 8:
+                        MyMap.NetworkElements.NetworkElements[elem.index] = (NetworkElement)elem.elem;
+                        break;
+                    case 9:
+                        MyMap.NetworkWires.NetworkWires[elem.index] = (NetworkWire)elem.elem;
+                        if (MyMap.NetworkWires.NetworkWires[elem.index].delete)
+                        {
+                            var nw = (NetworkWire)_elem.elem;
+                            var ne1 = nw.idiw1;
+                            var ne2 = nw.idiw2;
+                            if (!ne1.IW)
+                            {
+                                MyMap.NetworkElements.NetworkElements[ne1.ID].Options.BusyPorts--;
+                            }
+                            if (!ne2.IW)
+                            {
+                                MyMap.NetworkElements.NetworkElements[ne2.ID].Options.BusyPorts--;
+                            }
+                        }
+                        else
+                        {
+                            var nw = (NetworkWire)elem.elem;
+                            var ne1 = nw.idiw1;
+                            var ne2 = nw.idiw2;
+                            if (!ne1.IW)
+                            {
+                                MyMap.NetworkElements.NetworkElements[ne1.ID].Options.BusyPorts++;
+                            }
+                            if (!ne2.IW)
+                            {
+                                MyMap.NetworkElements.NetworkElements[ne2.ID].Options.BusyPorts++;
+                            }
+                        }
                         break;
                 }
             }
@@ -1221,6 +1380,22 @@ namespace NetworkDesign
         {
             SearchDialog sd = new SearchDialog();
             sd.ShowDialog();
+            if (sd.text != ""  & sd.text != " ")
+            {
+                DrawLevel _drawLevel = MyMap.MyTexts.Search(sd.text);
+                if (_drawLevel.Level != -2)
+                {
+                    drawLevel = _drawLevel;
+                    ButtonReturnToMain.Enabled = true;
+                    UpgrateFloors();
+                    Unfocus("Выбрано здание " + activeElem.item + " '" + MyMap.Buildings.Buildings[activeElem.item].Name + "'");
+                    AddIWBtn.Enabled = true;
+                }
+                else
+                {
+                    MessageBox.Show("Не найдено");
+                }
+            }
         }
 
         private void toolStripButton10_Click(object sender, EventArgs e)
@@ -1249,6 +1424,22 @@ namespace NetworkDesign
         }
 
         private void toolStripButton11_Click_1(object sender, EventArgs e) => MyMap.SetInstrument(9);
+
+        private void menuStrip1_MouseClick(object sender, MouseEventArgs e)
+        {
+            focusbox.Focus();
+        }
+
+        private void toolStrip1_MouseClick(object sender, MouseEventArgs e)
+        {
+            focusbox.Focus();
+        }
+
+        private void toolStripButton12_Click_1(object sender, EventArgs e)
+        {
+        }
+
+        private void toolStripButton14_Click(object sender, EventArgs e) => MyMap.SetInstrument(10);
 
         private void toolStripButton13_Click(object sender, EventArgs e) => MyMap.SetInstrument(8);
     }

@@ -28,7 +28,7 @@ namespace NetworkDesign
 
         public void AddInBuild()
         {
-            InputWires.TempCircle.LocalCencerPoint = InputWires.TempCircle.MainCenterPoint;
+            InputWires.TempCircle.LocalCenterPoint = InputWires.TempCircle.MainCenterPoint;
             InputWires.Add(InputWires.TempCircle);
             InputWires.TempCircle = new Circle();
         }
@@ -63,7 +63,7 @@ namespace NetworkDesign
 
         public int CalcNearestIW(int x, int y, DrawLevel dl)
         {
-            return InputWires.SearchEnt(x, y, dl);
+            return InputWires.SearchIW(x, y, dl);
         }
 
         private double CalcPointToLine(int x, int y, Point point1, Point point2)

@@ -77,18 +77,40 @@ namespace NetworkDesign
             double dist = Int32.MaxValue;
             for (int i = 0; i < Circles.Count; i++)
             {
-                if (dl == Circles[i].MainDL)
+                //Внутри
+                if (dl.Level != -1)
                 {
-                    double _dist = Circles[i].SearchEnt(x, y);
-                    if (dist == -1 & _dist != -1)
+                    if (dl == Circles[i].LocalDL)
                     {
-                        dist = _dist;
-                        index = i;
+                        double _dist = Circles[i].SearchEntInBuild(x, y);
+                        if (dist == -1 & _dist != -1)
+                        {
+                            dist = _dist;
+                            index = i;
+                        }
+                        else if (_dist < dist & _dist != -1)
+                        {
+                            dist = _dist;
+                            index = i;
+                        }
                     }
-                    else if (_dist < dist & _dist != -1)
+                }
+                //Снаружи
+                else
+                {
+                    if (dl == Circles[i].MainDL)
                     {
-                        dist = _dist;
-                        index = i;
+                        double _dist = Circles[i].SearchEnt(x, y);
+                        if (dist == -1 & _dist != -1)
+                        {
+                            dist = _dist;
+                            index = i;
+                        }
+                        else if (_dist < dist & _dist != -1)
+                        {
+                            dist = _dist;
+                            index = i;
+                        }
                     }
                 }
             }
@@ -101,18 +123,40 @@ namespace NetworkDesign
             double dist = Int32.MaxValue;
             for (int i = 0; i < Circles.Count; i++)
             {
-                if (dl == Circles[i].MainDL)
+                //Внутри
+                if (dl.Level != -1)
                 {
-                    double _dist = Circles[i].SearchIW(x, y);
-                    if (dist == -1 & _dist != -1)
+                    if (dl == Circles[i].LocalDL)
                     {
-                        dist = _dist;
-                        index = i;
+                        double _dist = Circles[i].SearchEntInBuild(x, y);
+                        if (dist == -1 & _dist != -1)
+                        {
+                            dist = _dist;
+                            index = i;
+                        }
+                        else if (_dist < dist & _dist != -1)
+                        {
+                            dist = _dist;
+                            index = i;
+                        }
                     }
-                    else if (_dist < dist & _dist != -1)
+                }
+                //Снаружи
+                else
+                {
+                    if (dl == Circles[i].MainDL)
                     {
-                        dist = _dist;
-                        index = i;
+                        double _dist = Circles[i].SearchIW(x, y);
+                        if (dist == -1 & _dist != -1)
+                        {
+                            dist = _dist;
+                            index = i;
+                        }
+                        else if (_dist < dist & _dist != -1)
+                        {
+                            dist = _dist;
+                            index = i;
+                        }
                     }
                 }
             }

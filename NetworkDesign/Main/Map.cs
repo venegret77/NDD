@@ -30,6 +30,7 @@ namespace NetworkDesign
         //Для элементов сети
         public GroupOfNE NetworkElements = new GroupOfNE();
         public GroupOfNW NetworkWires = new GroupOfNW();
+        public GroupOfMT MyTexts = new GroupOfMT();
         //Редактирование
         public GroupOfEditRects EditRects = new GroupOfEditRects();
         //Лог
@@ -37,7 +38,7 @@ namespace NetworkDesign
         //Здания
         public GroupOfBuildings Buildings = new GroupOfBuildings();
         //Другое
-        Timer RenderTimer = new Timer();
+        public Timer RenderTimer = new Timer();
 
         public Map()
         {
@@ -53,9 +54,9 @@ namespace NetworkDesign
             MainForm.AnT.Height = _MapSetting.Height;
             MainForm.AnT.Width = _MapSetting.Width;
             // инициализация библиотеки glut 
-            Glut.glutInit(); 
+            Glut.glutInit();
             // инициализация режима экрана 
-            Glut.glutInitDisplayMode( Glut.GLUT_RGB | Glut.GLUT_DOUBLE); 
+            Glut.glutInitDisplayMode(Glut.GLUT_RGB | Glut.GLUT_DOUBLE);
             // инициализация библиотеки openIL 
             Il.ilInit();
             Il.ilEnable(Il.IL_ORIGIN_SET);
@@ -64,15 +65,16 @@ namespace NetworkDesign
             // установка порта вывода 
             Gl.glViewport(0, 0, MainForm.AnT.Width, MainForm.AnT.Height);
             // активация проекционной матрицы 
-            Gl.glMatrixMode( Gl.GL_PROJECTION);
+            Gl.glMatrixMode(Gl.GL_PROJECTION);
             // очистка матрицы 
             Gl.glLoadIdentity();
             // установка перспективы 
             Glu.gluOrtho2D(0.0, _MapSetting.Width, 0.0, _MapSetting.Height);
             // установка объектно-видовой матрицы 
-            Gl.glMatrixMode( Gl.GL_MODELVIEW);
+            Gl.glMatrixMode(Gl.GL_MODELVIEW);
             Gl.glLoadIdentity();
             Gl.glEnable(Gl.GL_BLEND);
+            Gl.glScaled(1, 1, 1);
             Gl.glBlendFunc(Gl.GL_SRC_ALPHA, Gl.GL_ONE_MINUS_SRC_ALPHA);
             // начальные настройки OpenGL 
             //Gl.glEnable( Gl.GL_DEPTH_TEST);
@@ -89,6 +91,7 @@ namespace NetworkDesign
             Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);
             Gl.glLoadIdentity();
             Gl.glClearColor(1, 1, 1, 1);
+            Gl.glPushMatrix();
             //Для многоугольников
             Polygons.Draw();
             //Для обычных линий
@@ -102,13 +105,35 @@ namespace NetworkDesign
             //Для элементов сети
             NetworkWires.Draw();
             NetworkElements.Draw();
+            MyTexts.Draw();
             //Для прямоугольников редактирования
             if (EditRects.edit_mode)
             {
                 EditRects.Draw();
             }
+            Gl.glPopMatrix();
             Gl.glFlush();
             MainForm.AnT.Invalidate();
+        }
+
+        int zoom = 1;
+
+        public void ZoomIn()
+        {
+            if (zoom <= 16)
+                zoom *= 2;
+            RenderTimer.Stop();
+            Gl.glScaled(zoom, zoom, zoom);
+            RenderTimer.Start();
+        }
+
+        public void ZoomOut()
+        {
+            if (zoom >= 1)
+                zoom /= 2;
+            RenderTimer.Stop();
+            Gl.glScaled(zoom, zoom, zoom);
+            RenderTimer.Start();
         }
 
         /// <summary>
@@ -122,6 +147,9 @@ namespace NetworkDesign
         /// 5 - многоугольник
         /// 6 - точки входа проводов
         /// 7 - входы в здание
+        /// 8 - сетевые элементы
+        /// 9 - провод
+        /// 10 - текст
         /// 360 - круг</param>
         public void SetInstrument(int instrument)
         {
@@ -137,6 +165,10 @@ namespace NetworkDesign
             {
                 MainForm.AnT.Cursor = Cursors.Arrow;
             }
+            else if (instrument == 10)
+            {
+                MainForm.AnT.Cursor = Cursors.IBeam;
+            }
         }
 
         /// <summary>
@@ -150,6 +182,8 @@ namespace NetworkDesign
             Circles.TempDefault();
             Buildings.TempDefault();
             EditRects.TempDefault();
+            NetworkWires.TempDefault();
+            NetworkElements.TempDefault();
         }
 
         /// <summary>
@@ -169,6 +203,9 @@ namespace NetworkDesign
             Buildings = TempMap.Buildings;
             Circles = TempMap.Circles;
             Polygons = TempMap.Polygons;
+            NetworkElements = TempMap.NetworkElements;
+            NetworkWires = TempMap.NetworkWires;
+            MyTexts = TempMap.MyTexts;
             log = TempMap.log;
             SetInstrument(RB);
         }
@@ -216,54 +253,85 @@ namespace NetworkDesign
                 type = 1;
                 return line;
             }
+            int NE = NetworkElements.Search(x, y, dl);
+            if (NE != -1)
+            {
+                type = 8;
+                return NE;
+            }
+            int NW = NetworkWires.Search(x, y, dl);
+            if (NW != -1)
+            {
+                type = 9;
+                return NW;
+            }
+            int rect = Rectangles.Search(x, y, out double distrect, dl);
+            int bline = Polygons.Search(x, y, out double distbline, dl);
+            int build = -1;
+            double distbuild = -1;
+            if (MainForm.drawLevel.Level != -1)
+            {
+                int entrance = Buildings.Buildings[MainForm.drawLevel.Level].Entrances.CalcNearestEnterise(x, y, dl);
+                if (entrance != -1)
+                {
+                    buildindex = MainForm.drawLevel.Level;
+                    type = 7;
+                    return entrance;
+                }
+                int IW = Buildings.Buildings[MainForm.drawLevel.Level].InputWires.CalcNearestIW(x, y, dl);
+                if (IW != -1)
+                {
+                    buildindex = MainForm.drawLevel.Level;
+                    type = 6;
+                    return IW;
+                }
+            }
             else
             {
-                int rect = Rectangles.Search(x, y, out double distrect, dl);
-                int bline = Polygons.Search(x, y, out double distbline, dl);
-                int build = Buildings.Search(x, y, out double distbuild, dl);
-                int circle = Circles.Search(x, y, out double distcircle, dl);
-                if (distrect == -1)
-                    distrect = Int32.MaxValue;
-                if (distbline == -1)
-                    distbline = Int32.MaxValue;
-                if (distbuild == -1)
-                    distbuild = Int32.MaxValue;
-                if (distcircle == -1)
-                    distcircle = Int32.MaxValue;
-                if (distbuild < distrect & distbuild < distbline & distbuild < distcircle)
+                build = Buildings.Search(x, y, out distbuild, dl);
+            }
+            int circle = Circles.Search(x, y, out double distcircle, dl);
+            if (distrect == -1)
+                distrect = Int32.MaxValue;
+            if (distbline == -1)
+                distbline = Int32.MaxValue;
+            if (distbuild == -1)
+                distbuild = Int32.MaxValue;
+            if (distcircle == -1)
+                distcircle = Int32.MaxValue;
+            if (distbuild < distrect & distbuild < distbline & distbuild < distcircle)
+            {
+                int entrance = Buildings.Buildings[build].Entrances.CalcNearestEnterise(x, y, dl);
+                if (entrance != -1)
                 {
-                    int entrance = Buildings.Buildings[build].Entrances.CalcNearestEnterise(x, y, dl);
-                    if (entrance != -1)
-                    {
-                        buildindex = build;
-                        type = 7;
-                        return entrance;
-                    }
-                    int IW = Buildings.Buildings[build].InputWires.CalcNearestIW(x, y, dl);
-                    if (IW != -1)
-                    {
-                        buildindex = build;
-                        type = 6;
-                        return IW;
-                    }
-                    type = 4;
-                    return build;
+                    buildindex = build;
+                    type = 7;
+                    return entrance;
                 }
-                else if (distbline < distrect & distbline < distbuild & distbline < distcircle)
+                int IW = Buildings.Buildings[build].InputWires.CalcNearestIW(x, y, dl);
+                if (IW != -1)
                 {
-                    type = 3;
-                    return bline;
+                    buildindex = build;
+                    type = 6;
+                    return IW;
                 }
-                else if (distrect < distbline & distrect < distbuild & distrect < distcircle)
-                {
-                    type = 2;
-                    return rect;
-                }
-                else if (distcircle < distbline & distcircle < distbuild & distcircle < distrect)
-                {
-                    type = 360;
-                    return circle;
-                }
+                type = 4;
+                return build;
+            }
+            else if (distbline < distrect & distbline < distbuild & distbline < distcircle)
+            {
+                type = 3;
+                return bline;
+            }
+            else if (distrect < distbline & distrect < distbuild & distrect < distcircle)
+            {
+                type = 2;
+                return rect;
+            }
+            else if (distcircle < distbline & distcircle < distbuild & distcircle < distrect)
+            {
+                type = 360;
+                return circle;
             }
             type = -1;
             return -1;
@@ -368,7 +436,7 @@ namespace NetworkDesign
             return new IDandIW(-1, false);
         }
 
-        internal void SearchNE(int x, int y)
+        internal bool SearchNE(int x, int y)
         {
             int NE = NetworkElements.Search(x, y, MainForm.drawLevel);
             if (NE != -1)
@@ -376,10 +444,12 @@ namespace NetworkDesign
                 NESettings nes = new NESettings(NetworkElements.NetworkElements[NE].Options, ref NetworkElements);
                 nes.ShowDialog();
                 NetworkElements.NetworkElements[NE].Options = nes.Options;
+                return true;
             }
+            return false;
         }
 
-        internal void SearchNW(int x, int y)
+        internal bool SearchNW(int x, int y)
         {
             int NW = NetworkWires.Search(x, y, MainForm.drawLevel);
             if (NW != -1)
@@ -387,7 +457,9 @@ namespace NetworkDesign
                 NWSettings nws = new NWSettings(NetworkWires.NetworkWires[NW].Throughput);
                 nws.ShowDialog();
                 NetworkWires.NetworkWires[NW].Throughput = nws.Throughput;
+                return true;
             }
+            return false;
         }
     }
 }

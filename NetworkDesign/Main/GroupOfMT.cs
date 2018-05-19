@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NetworkDesign.Main;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,48 +7,49 @@ using System.Threading.Tasks;
 
 namespace NetworkDesign.NetworkElements
 {
-    public class GroupOfNE : GroupOfElements
+    public class GroupOfMT : GroupOfElements
     {
-        public List<NetworkElement> NetworkElements = new List<NetworkElement>();
-        public NetworkElement TempNetworkElement = new NetworkElement();
+        public List<MyText> MyTexts = new List<MyText>();
+        //public MyText TempMyText = new MyText();
 
-        public GroupOfNE()
+        public GroupOfMT()
         {
         }
 
         public override void Add(object elem)
         {
-            NetworkElements.Add((NetworkElement)elem);
+            MyTexts.Add((MyText)elem);
         }
 
         public override void Choose(int i)
         {
-            for (int j = 0; j < NetworkElements.Count; j++)
+            /*for (int j = 0; j < MyTexts.Count; j++)
             {
                 if (j != i)
                 {
-                    NetworkElements[j].SetActive(false);
+                    MyTexts[j].SetActive(false);
                 }
                 else
                 {
-                    NetworkElements[j].SetActive(true);
+                    MyTexts[j].SetActive(true);
                 }
-            }
+            }*/
         }
 
         public override void Draw()
         {
-            foreach (var elem in NetworkElements)
+            foreach (var elem in MyTexts)
             {
-                elem.Draw();
+                //elem.Draw();
+                elem.DrawTB();
             }
-            TempNetworkElement.Draw();
+            //TempMyText.Draw();
         }
 
         public override List<object> GetInBuild(int build)
         {
             List<object> elems = new List<object>();
-            foreach (var elem in NetworkElements)
+            foreach (var elem in MyTexts)
             {
                 if (elem.DL.Level == build)
                 {
@@ -59,20 +61,20 @@ namespace NetworkDesign.NetworkElements
 
         public override void Remove(int i)
         {
-            NetworkElements[i] = new NetworkElement();
+            MyTexts[i] = new MyText();
+        }
+
+        public DrawLevel Search(string text)
+        {
+            foreach (var elem in MyTexts)
+                if (elem.TextBox.Text == text)
+                    return elem.DL;
+            return new DrawLevel(-2, -2);
         }
 
         public override int Search(int x, int y, DrawLevel dl)
         {
-            for (int i = 0; i < NetworkElements.Count; i++)
-            {
-                if (dl == NetworkElements[i].DL)
-                {
-                    if (NetworkElements[i].Search(x, y) != -1)
-                        return i;
-                }
-            }
-            return -1;
+            throw new NotImplementedException();
         }
 
         public override int Search(int x, int y, out double dist, DrawLevel dl)
@@ -82,7 +84,7 @@ namespace NetworkDesign.NetworkElements
 
         public override void TempDefault()
         {
-            TempNetworkElement = new NetworkElement();
+            //TempMyText = new MyText();
             step = false;
             active = false;
         }

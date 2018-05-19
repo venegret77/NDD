@@ -8,7 +8,7 @@ using Tao.OpenGl;
 
 namespace NetworkDesign
 {
-    public class Line: GeometricFigure
+    public class Line : GeometricFigure
     {
         public Line()
         {
@@ -30,7 +30,7 @@ namespace NetworkDesign
 
         public override double Search(int x, int y)
         {
-            
+
             if (!delete)
             {
                 int maxx = 0, minx = 0, maxy = 0, miny = 0;
@@ -61,44 +61,18 @@ namespace NetworkDesign
                 miny -= lw;
                 if (x <= maxx & x >= minx & y <= maxy & y >= miny)
                 {
-                    for (int i = -(lw / 2); i < lw / 2; i++)
-                    {
-                        for (int j = (-lw / 2); j < lw / 2; j++)
-                        {
-                            if ((Points[1].X - Points[0].X) == 0 & (Points[1].Y - Points[0].Y) == 0)
-                                return -1;
-                            else if ((Points[1].X - Points[0].X) == 0 & (y + j - Points[0].Y) / (Points[1].Y - Points[0].Y) == 0)
-                                return 1;
-                            else if ((Points[1].Y - Points[0].Y) == 0 & (x + i - Points[0].X) / (Points[1].X - Points[0].X) == 0)
-                                return 1;
-                            else if ((x + i - Points[0].X) / (Points[1].X - Points[0].X) == (y + j - Points[0].Y) / (Points[1].Y - Points[0].Y))
-                                return 1;
-                        }
-                    }
+                    double A = Points[1].Y - Points[0].Y;
+                    double B = Points[0].X - Points[1].X;
+                    double C = Points[0].X * (double)(Points[0].Y - Points[1].Y) + (double)Points[0].Y * (double)(Points[1].X - Points[0].X);
+                    double d = Math.Abs(A * x + B * y + C) / Math.Sqrt((A * A) + (B * B));
+                    if (d < lw + 2)
+                        return d;
+                    else
+                        return -1;
                 }
             }
             return -1;
         }
-
-        /*private bool CalcPointToLine()
-        {
-            int width = (int)(MainForm.colorSettings.LineWidth / 2) + 2;
-            double k = 0d;
-            if (Point1.X != Point2.X)
-            {
-                k = ((double)Point2.Y - (double)Point1.Y) / ((double)Point2.X - (double)Point1.X);
-            }
-            double b = (double)Point1.Y - (k * (double)Point1.X);
-            for (int i = Point1.X; i <= Point2.X; i++)
-            {
-                list.Add(new Point(i, (int)(i * k + b)));
-                for (int j = 1; j <= width; j++)
-                {
-                    list.Add(new Point(i + j, (int)((i + j) * k + b)));
-                    list.Add(new Point(i - j, (int)((i - j) * k + b)));
-                }
-            }
-        }*/
 
         public override void Draw()
         {

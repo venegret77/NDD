@@ -11,7 +11,7 @@ namespace NetworkDesign
     public class Circle: GeometricFigure
     {
         public Point MainCenterPoint;
-        public Point LocalCencerPoint;
+        public Point LocalCenterPoint;
         public int radius;
         public DrawLevel MainDL;
         public DrawLevel LocalDL;
@@ -76,6 +76,26 @@ namespace NetworkDesign
         {
             if (Math.Pow((x - MainCenterPoint.X), 2) + Math.Pow((y - MainCenterPoint.Y), 2) <= Math.Pow(MainForm.colorSettings.InputWireRadius, 2))
                 return Math.Abs(MainCenterPoint.X - x + MainCenterPoint.Y - y);
+            else if (Math.Pow((x - MainCenterPoint.X), 2) + Math.Pow((y - MainCenterPoint.Y), 2) <= Math.Pow(MainForm.colorSettings.InputWireRadius, 2))
+                return Math.Abs(MainCenterPoint.X - x + MainCenterPoint.Y - y);
+            else
+                return -1;
+        }
+
+        internal double SearchEntInBuild(int x, int y)
+        {
+            if (Math.Pow((x - LocalCenterPoint.X), 2) + Math.Pow((y - LocalCenterPoint.Y), 2) <= Math.Pow(MainForm.colorSettings.EntranceRadius, 2))
+                return Math.Abs(LocalCenterPoint.X - x + LocalCenterPoint.Y - y);
+            else
+                return -1;
+        }
+
+        public double SearchIWInBuild(int x, int y)
+        {
+            if (Math.Pow((x - LocalCenterPoint.X), 2) + Math.Pow((y - LocalCenterPoint.Y), 2) <= Math.Pow(MainForm.colorSettings.InputWireRadius, 2))
+                return Math.Abs(LocalCenterPoint.X - x + LocalCenterPoint.Y - y);
+            else if (Math.Pow((x - LocalCenterPoint.X), 2) + Math.Pow((y - LocalCenterPoint.Y), 2) <= Math.Pow(MainForm.colorSettings.InputWireRadius, 2))
+                return Math.Abs(LocalCenterPoint.X - x + LocalCenterPoint.Y - y);
             else
                 return -1;
         }
@@ -191,7 +211,7 @@ namespace NetworkDesign
                     Gl.glBegin(Gl.GL_TRIANGLE_FAN);
                     Gl.glColor4f(R, G, B, A);
                     // Устанавливаем центр окружности.
-                    Gl.glVertex2d(LocalCencerPoint.X, LocalCencerPoint.Y);
+                    Gl.glVertex2d(LocalCenterPoint.X, LocalCenterPoint.Y);
                     // Берём точку c координатой [radius; 0] и начинаем её поворачивать на 360 градусов.
                     // Если нужна большая точность окружности в ущерб производительности, 
                     // то изменяем шаг "10" на более мелкий, например, "1".
@@ -201,7 +221,7 @@ namespace NetworkDesign
                         double x = MainForm.colorSettings.EntranceRadius /** koef*/ * Math.Cos(angle * Math.PI / 180);
                         double y = MainForm.colorSettings.EntranceRadius /** koef*/ * Math.Sin(angle * Math.PI / 180);
                         // Смещаем окрущность к её центру [xCentre; yCentre].
-                        Gl.glVertex2d(x + LocalCencerPoint.X, y + LocalCencerPoint.Y);
+                        Gl.glVertex2d(x + LocalCenterPoint.X, y + LocalCenterPoint.Y);
                     }
                     Gl.glEnd();
                 }
@@ -270,7 +290,7 @@ namespace NetworkDesign
                     Gl.glBegin(Gl.GL_TRIANGLE_FAN);
                     Gl.glColor4f(R, G, B, A);
                     // Устанавливаем центр окружности.
-                    Gl.glVertex2d(LocalCencerPoint.X, LocalCencerPoint.Y);
+                    Gl.glVertex2d(LocalCenterPoint.X, LocalCenterPoint.Y);
                     // Берём точку c координатой [radius; 0] и начинаем её поворачивать на 360 градусов.
                     // Если нужна большая точность окружности в ущерб производительности, 
                     // то изменяем шаг "10" на более мелкий, например, "1".
@@ -280,7 +300,7 @@ namespace NetworkDesign
                         double x = MainForm.colorSettings.InputWireRadius /** koef*/ * Math.Cos(angle * Math.PI / 180);
                         double y = MainForm.colorSettings.InputWireRadius /** koef*/ * Math.Sin(angle * Math.PI / 180);
                         // Смещаем окрущность к её центру [xCentre; yCentre].
-                        Gl.glVertex2d(x + LocalCencerPoint.X, y + LocalCencerPoint.Y);
+                        Gl.glVertex2d(x + LocalCenterPoint.X, y + LocalCenterPoint.Y);
                     }
                     Gl.glEnd();
                 }
@@ -301,42 +321,39 @@ namespace NetworkDesign
         {
             if (!delete)
             {
-                if (MainDL == MainForm.drawLevel)
+                if (!active)
                 {
-                    if (!active)
-                    {
-                        R = (float)MainForm.colorSettings.BuildColor.R / 255;
-                        G = (float)MainForm.colorSettings.BuildColor.G / 255;
-                        B = (float)MainForm.colorSettings.BuildColor.B / 255;
-                        A = (float)MainForm.colorSettings.BuildColor.A / 255;
-                        Gl.glLineWidth(MainForm.colorSettings.LineWidth);
-                    }
-                    else
-                    {
-                        R = (float)MainForm.colorSettings.ActiveElemColor.R / 255;
-                        G = (float)MainForm.colorSettings.ActiveElemColor.G / 255;
-                        B = (float)MainForm.colorSettings.ActiveElemColor.B / 255;
-                        A = (float)MainForm.colorSettings.ActiveElemColor.A / 255;
-                        Gl.glLineWidth(MainForm.colorSettings.LineWidth + 1);
-                    }
-                    // Прорисовка окружности непосредственно.
-                    Gl.glBegin(Gl.GL_LINE_LOOP);
-                    Gl.glColor4f(R, G, B, A);
-                    // Устанавливаем центр окружности.
-                    //Gl.glVertex2d(CenterPoint.X, CenterPoint.Y);
-                    // Берём точку c координатой [radius; 0] и начинаем её поворачивать на 360 градусов.
-                    // Если нужна большая точность окружности в ущерб производительности, 
-                    // то изменяем шаг "10" на более мелкий, например, "1".
-                    for (int angle = 0; angle <= 360; angle += 1)
-                    {
-                        // Координаты x, y повёрнутые на заданный угол относительно начала координат.
-                        double x = radius * Math.Cos(angle * Math.PI / 180);
-                        double y = radius * Math.Sin(angle * Math.PI / 180);
-                        // Смещаем окрущность к её центру [xCentre; yCentre].
-                        Gl.glVertex2d(x + MainCenterPoint.X, y + MainCenterPoint.Y);
-                    }
-                    Gl.glEnd();
+                    R = (float)MainForm.colorSettings.BuildColor.R / 255;
+                    G = (float)MainForm.colorSettings.BuildColor.G / 255;
+                    B = (float)MainForm.colorSettings.BuildColor.B / 255;
+                    A = (float)MainForm.colorSettings.BuildColor.A / 255;
+                    Gl.glLineWidth(MainForm.colorSettings.LineWidth);
                 }
+                else
+                {
+                    R = (float)MainForm.colorSettings.ActiveElemColor.R / 255;
+                    G = (float)MainForm.colorSettings.ActiveElemColor.G / 255;
+                    B = (float)MainForm.colorSettings.ActiveElemColor.B / 255;
+                    A = (float)MainForm.colorSettings.ActiveElemColor.A / 255;
+                    Gl.glLineWidth(MainForm.colorSettings.LineWidth + 1);
+                }
+                // Прорисовка окружности непосредственно.
+                Gl.glBegin(Gl.GL_LINE_LOOP);
+                Gl.glColor4f(R, G, B, A);
+                // Устанавливаем центр окружности.
+                //Gl.glVertex2d(CenterPoint.X, CenterPoint.Y);
+                // Берём точку c координатой [radius; 0] и начинаем её поворачивать на 360 градусов.
+                // Если нужна большая точность окружности в ущерб производительности, 
+                // то изменяем шаг "10" на более мелкий, например, "1".
+                for (int angle = 0; angle <= 360; angle += 1)
+                {
+                    // Координаты x, y повёрнутые на заданный угол относительно начала координат.
+                    double x = radius * Math.Cos(angle * Math.PI / 180);
+                    double y = radius * Math.Sin(angle * Math.PI / 180);
+                    // Смещаем окрущность к её центру [xCentre; yCentre].
+                    Gl.glVertex2d(x + MainCenterPoint.X, y + MainCenterPoint.Y);
+                }
+                Gl.glEnd();
             }
         }
     }

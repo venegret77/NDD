@@ -64,15 +64,24 @@ namespace NetworkDesign.NetworkElements
 
         public override int Search(int x, int y, DrawLevel dl)
         {
+            int _i = -1;
+            double _count = Double.MaxValue;
             for (int i = 0; i < NetworkWires.Count; i++)
             {
                 if (dl == NetworkWires[i].DL)
                 {
-                    if (NetworkWires[i].Search(x, y) != -1)
-                        return i;
+                    double count = NetworkWires[i].Search(x, y);
+                    if (count < _count & count != -1)
+                    {
+                        _count = count;
+                        _i = i;
+                    }
                 }
             }
-            return -1;
+            if (_i != -1)
+                return _i;
+            else
+                return -1;
         }
 
         public override int Search(int x, int y, out double dist, DrawLevel dl)
@@ -84,6 +93,7 @@ namespace NetworkDesign.NetworkElements
         {
             TempNetworkWire = new NetworkWire();
             step = false;
+            active = false;
         }
     }
 }

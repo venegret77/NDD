@@ -100,7 +100,7 @@ namespace NetworkDesign
         /// </summary>
         public void Draw()
         {
-            if (!delete)
+            if (!delete & DL == MainForm.drawLevel)
                 texture.Draw();
         }
     }

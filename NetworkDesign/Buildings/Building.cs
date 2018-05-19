@@ -252,7 +252,7 @@ namespace NetworkDesign
             else
             {
                 Entrances.step = false;
-                Entrances.Enterances.TempCircle.LocalCencerPoint = CalcLocalPoint(Entrances.Enterances.TempCircle.MainCenterPoint);
+                Entrances.Enterances.TempCircle.LocalCenterPoint = CalcLocalPoint(Entrances.Enterances.TempCircle.MainCenterPoint);
                 Entrances.Enterances.TempCircle.koef = koef;
                 Entrances.Add();
                 return true;
@@ -324,7 +324,7 @@ namespace NetworkDesign
             else
             {
                 InputWires.step = false;
-                InputWires.InputWires.TempCircle.LocalCencerPoint = CalcLocalPoint(InputWires.InputWires.TempCircle.MainCenterPoint);
+                InputWires.InputWires.TempCircle.LocalCenterPoint = CalcLocalPoint(InputWires.InputWires.TempCircle.MainCenterPoint);
                 InputWires.InputWires.TempCircle.koef = koef;
                 InputWires.Add();
                 return true;

@@ -50,41 +50,43 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System">
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Core">
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.IO.Compression.FileSystem">
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.IO.Compression.ZipFile, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>packages\System.IO.Compression.ZipFile.4.3.0\lib\net46\System.IO.Compression.ZipFile.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq">
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Data.DataSetExtensions">
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp">
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Data">
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Deployment">
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Drawing">
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Net.Http">
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Windows.Forms">
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Xml">
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Tao.DevIl, Version=1.6.8.3, Culture=neutral, PublicKeyToken=7ec4053013524957, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -124,7 +126,10 @@
     <Compile Include="Buildings\InputWireForm.Designer.cs">
       <DependentUpon>InputWireForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Main\ISerMyText.cs" />
+    <Compile Include="Main\MyText.cs" />
     <Compile Include="Main\User.cs" />
+    <Compile Include="Main\GroupOfMT.cs" />
     <Compile Include="NetworkElements\NESettings.cs">
       <SubType>Form</SubType>
     </Compile>

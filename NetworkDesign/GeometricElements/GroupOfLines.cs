@@ -50,15 +50,24 @@ namespace NetworkDesign
 
         public override int Search(int x, int y, DrawLevel dl)
         {
+            int _i = -1;
+            double _count = Double.MaxValue;
             for (int i = 0; i < Lines.Count; i++)
             {
                 if (dl == Lines[i].DL)
                 {
-                    if (Lines[i].Search(x, y) == 1)
-                        return i;
+                    double count = Lines[i].Search(x, y);
+                    if (count < _count & count != -1)
+                    {
+                        _count = count;
+                        _i = i;
+                    }
                 }
             }
-            return -1;
+            if (_i != -1)
+                return _i;
+            else
+                return -1;
         }
 
         public override void Draw()

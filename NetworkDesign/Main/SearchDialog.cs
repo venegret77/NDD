@@ -12,9 +12,17 @@ namespace NetworkDesign
 {
     public partial class SearchDialog : Form
     {
+        public string text = "";
+
         public SearchDialog()
         {
             InitializeComponent();
+            FormClosed += SearchDialog_FormClosed;
+        }
+
+        private void SearchDialog_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            text = textBox1.Text;
         }
 
         private void SearchDialog_Load(object sender, EventArgs e)
@@ -24,16 +32,6 @@ namespace NetworkDesign
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Random rnd = new Random();
-            int a = rnd.Next(0, 2);
-            if (a == 1)
-            {
-                MessageBox.Show("Данное помещение находится в здании " + rnd.Next(1, 10) + " на этаже " + rnd.Next(1, 10));
-            }
-            else
-            {
-                MessageBox.Show("Помещений не найдено");
-            }
             Close();
         }
     }

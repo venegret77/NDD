@@ -205,7 +205,7 @@ namespace NetworkDesign.NetworkElements
         /// </summary>
         /// <param name="id">Идентификатор текстуры в списке ссылок</param>
         /// <param name="url">Ссылка</param>
-        private bool GenTex(int id, string url)
+        public static bool GenTex(int id, string url)
         {
             // создаем изображение с идентификатором imageId 
             Il.ilGenImages(1, out int imageId);
@@ -250,7 +250,7 @@ namespace NetworkDesign.NetworkElements
         /// <param name="w">Ширина</param>
         /// <param name="h">Высота</param>
         /// <returns></returns>
-        private static uint MakeGlTexture(int Format, IntPtr pixels, int w, int h)
+        public static uint MakeGlTexture(int Format, IntPtr pixels, int w, int h)
         {
             // идентификатор текстурного объекта 
             uint texObject;
