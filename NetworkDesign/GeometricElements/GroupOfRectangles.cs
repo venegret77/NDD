@@ -25,6 +25,8 @@ namespace NetworkDesign
         public override void Add(object elem)
         {
             Rectangles.Add((MyRectangle)elem);
+            Rectangles.Last().CalcCenterPoint();
+            Rectangles.Last().RecalWithZoom();
         }
 
         public override void Remove(int i)
@@ -78,7 +80,7 @@ namespace NetworkDesign
             {
                 _rect.Draw();
             }
-            TempRectangle.Draw();
+            TempRectangle.DrawTemp();
         }
 
         public override int Search(int x, int y, DrawLevel dl)

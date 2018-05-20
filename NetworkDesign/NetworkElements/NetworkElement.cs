@@ -37,10 +37,18 @@ namespace NetworkDesign
         /// Удалено или нет
         /// </summary>
         public bool delete = true;
+        private double CenterPointX;
+        private double CenterPointY;
 
         public NetworkElement()
         {
             delete = true;
+        }
+
+        internal void DrawTemp()
+        {
+            if (!delete)
+                texture.DrawTemp();
         }
 
         public NetworkElement(Texture texture, DrawLevel dL)
@@ -86,10 +94,10 @@ namespace NetworkDesign
         /// <returns></returns>
         public double Search(int x, int y)
         {
-            double xmin = texture.location.X;
-            double xmax = texture.location.X + texture.width;//+ или - решить позже
-            double ymin = texture.location.Y;
-            double ymax = texture.location.Y + texture.width;
+            double xmin = (double)texture.location.X * MainForm.Zoom;
+            double xmax = (double)(texture.location.X + texture.width * MainForm.Zoom) * MainForm.Zoom;
+            double ymin = (double)texture.location.Y * MainForm.Zoom;
+            double ymax = (double)(texture.location.Y + texture.width * MainForm.Zoom) * MainForm.Zoom;
             if (x <= xmax & x >= xmin & y <= ymax & y >= ymin)
                 return 1;
             else
@@ -101,7 +109,43 @@ namespace NetworkDesign
         public void Draw()
         {
             if (!delete & DL == MainForm.drawLevel)
-                texture.Draw();
+                texture.Draw(Options.Throughput, active);
+        }
+
+        internal void MoveElem(int x, int y, int id, GroupOfNW networkWires)
+        {
+            int difx = x - (int)CenterPointX;
+            int dify = y - (int)CenterPointY;
+            texture.location = new Point(texture.location.X + difx, texture.location.Y + dify);
+            networkWires.CheckNW(texture.location.X + difx + (int)((double)texture.width / 2 * MainForm.Zoom), texture.location.Y + dify + (int)((double)texture.width / 2 * MainForm.Zoom), id);
+        }
+
+        /// <summary>
+        /// Пересчет точек элемента в соответсии с зумом при добавлении временного в основной список
+        /// </summary>
+        public void RecalWithZoom()
+        {
+            texture.location = MainForm._GenZoomPoint(texture.location);
+            texture.width = (texture.width / (float)MainForm.Zoom);
+        }
+
+        /// <summary>
+        /// Расчет центральной точки элемента
+        /// </summary>
+        internal void CalcCenterPoint()
+        {
+            texture.CalcPoints();
+            double x = 0;
+            double y = 0;
+            int count = 0;
+            foreach (var p in texture.Points)
+            {
+                x += (double)p.X * MainForm.Zoom;
+                y += (double)p.Y * MainForm.Zoom;
+                count++;
+            }
+            CenterPointX = x / (double)count;
+            CenterPointY = y / (double)count;
         }
     }
 }

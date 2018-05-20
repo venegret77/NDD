@@ -26,6 +26,8 @@ namespace NetworkDesign
         public override void Add(object elem)
         {
             Polygons.Add((Polygon)elem);
+            Polygons.Last().CalcCenterPoint();
+            Polygons.Last().RecalWithZoom();
         }
 
         public override void Remove(int i)
@@ -78,7 +80,7 @@ namespace NetworkDesign
             {
                 br.Draw();
             }
-            TempPolygon.Draw();
+            TempPolygon.DrawTemp();
         }
 
         public override int Search(int x, int y, DrawLevel dl)

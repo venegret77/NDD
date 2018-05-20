@@ -43,6 +43,10 @@ namespace NetworkDesign
         //
         public InputWire InputWires = new InputWire();
 
+        bool isMoveEnt = false;
+        int id = -1;
+        private bool isMoveIW;
+
         public Building()
         {
             delete = true;
@@ -106,7 +110,7 @@ namespace NetworkDesign
                 delete = false,
                 DL = MainMapDL
             };
-            RecalcPolygon();
+            GenLocalPolygon();
             UpgrateFloors();
         }
 
@@ -131,7 +135,7 @@ namespace NetworkDesign
             LocalDL.Level = index;
             LocalDL.Floor = 0;
             MainRectangle.DL = MainMapDL;
-            RecalcRect();
+            GenLocalRect();
             UpgrateFloors();
         }
 
@@ -175,7 +179,36 @@ namespace NetworkDesign
             else
                 koef = ((MainForm._Width / 2) - 150) / MainCircle.radius;
             LocalCircle.radius = (int)(LocalCircle.radius * koef);
-            LocalCircle.MainCenterPoint = new Point(MainForm._Width / 2, MainForm._Height / 2);
+            LocalCircle.MainCenterPoint = new Point(0, 0);
+        }
+
+        public void AddTempIW()
+        {
+            if (isMoveIW & id != -1)
+            {
+                isMoveIW = false;
+                InputWires.InputWires.TempCircle.LocalCenterPoint = CalcLocalPoint(InputWires.InputWires.TempCircle.MainCenterPoint);
+                InputWires.InputWires.Circles[id].MainCenterPoint = new Point(InputWires.InputWires.TempCircle.MainCenterPoint.X, InputWires.InputWires.TempCircle.MainCenterPoint.Y);
+                InputWires.InputWires.Circles[id].LocalCenterPoint = new Point(InputWires.InputWires.TempCircle.LocalCenterPoint.X, InputWires.InputWires.TempCircle.LocalCenterPoint.Y);
+                InputWires.InputWires.Circles[id].delete = false;
+                InputWires.InputWires.TempDefault();
+            }
+        }
+
+        internal void MoveIW(int x, int y, int id)
+        {
+            this.id = id;
+            isMoveIW = true;
+            var iw = InputWires.InputWires.Circles[id];
+            InputWires.InputWires.TempCircle = new Circle
+            {
+                MainCenterPoint = new Point(iw.MainCenterPoint.X, iw.MainCenterPoint.Y),
+                delete = false,
+                koef = iw.koef,
+                side = iw.side
+            };
+            InputWires.InputWires.Circles[id].delete = true;
+            MoveIW(x, y);
         }
 
         private void UpgrateFloors()
@@ -214,6 +247,42 @@ namespace NetworkDesign
             }
         }
 
+        public void CalcCenterPoint()
+        {
+            if (type == 2)
+                MainRectangle.CalcCenterPoint();
+            else if (type == 3)
+                MainPolygon.CalcCenterPoint();
+            else if (type == 360)
+                MainCircle.CalcCenterPoint();
+        }
+
+        public void MoveElem(int x, int y)
+        {
+            int difx = 0;
+            int dify = 0;
+            if (type == 2)
+            {
+                difx = x - (int)MainRectangle.CenterPointX;
+                dify = y - (int)MainRectangle.CenterPointY;
+                MainRectangle.MoveElem(x, y);
+            }
+            else if (type == 3)
+            {
+                difx = x - (int)MainPolygon.CenterPointX;
+                dify = y - (int)MainPolygon.CenterPointY;
+                MainPolygon.MoveElem(x, y);
+            }
+            else if (type == 360)
+            {
+                difx = (int)((double)x / MainForm.Zoom) - MainCircle.MainCenterPoint.X;
+                dify = (int)((double)y / MainForm.Zoom) - MainCircle.MainCenterPoint.Y;
+                MainCircle.MoveElem(x, y);
+            }
+            Entrances.MoveElem(difx, dify);
+            InputWires.MoveElem(difx, dify);
+        }
+
         public double CalcPointInBuild(int x, int y)
         {
             if (!delete)
@@ -244,9 +313,25 @@ namespace NetworkDesign
             {
                 Entrances.step = true;
                 if (basement)
-                    Entrances.AddTemp(x, y, MainMapDL, new DrawLevel(LocalDL.Level,1));
+                {
+                    Entrances.AddTemp(x, y, MainMapDL, new DrawLevel(LocalDL.Level, 1));
+                    /*if (type == 2)
+                        Entrances.Enterances.TempCircle.MainCenterPoint = Entrances.CalcNearestPoint(x, y, MainRectangle.Points[0], MainRectangle.Points[1]);
+                    else if (type == 3)
+                        Entrances.Enterances.TempCircle.MainCenterPoint = Entrances.CalcNearestPoint(x, y, MainPolygon.Points[0], MainPolygon.Points[1]);
+                    else if (type == 360)
+                        Entrances.NearestPoints(x, y, MainCircle);*/
+                }
                 else
+                { 
                     Entrances.AddTemp(x, y, MainMapDL, new DrawLevel(LocalDL.Level, 0));
+                    /*if (type == 2)
+                        Entrances.Enterances.TempCircle.MainCenterPoint = Entrances.CalcNearestPoint(x, y, MainRectangle.Points[0], MainRectangle.Points[1]);
+                    else if (type == 3)
+                        Entrances.Enterances.TempCircle.MainCenterPoint = Entrances.CalcNearestPoint(x, y, MainPolygon.Points[0], MainPolygon.Points[1]);
+                    else if (type == 360)
+                        Entrances.NearestPoints(x, y, MainCircle);*/
+                }
                 return false;
             }
             else
@@ -273,22 +358,50 @@ namespace NetworkDesign
             }
             else
             {
-                Point LocalP = RotatePoint(-alfa, MP, MainP);
+                MainP = MainForm._GenZoomPoint(MainP);
+                Point LocalP = RotatePoint(-alfa, MP, MainP); 
                 LocalP.X -= Ox; LocalP.Y -= Oy;
                 LocalP.X = (int)(LocalP.X * koef); LocalP.Y = (int)(LocalP.Y * koef);
-                LocalP.X += _Ox; LocalP.Y += _Oy;
-                return LocalP;
+                return MainForm.GenZoomPoint(LocalP);
             }
         }
 
         public void MoveEntrance(int x, int y)
         {
             if (type == 2)
-                Entrances.NearestPoints(x, y, MainRectangle);
+                Entrances.NearestPoints(x, y, MainForm.GenZoomRect(MainRectangle));
             else if (type == 3)
-                Entrances.NearestPoints(x, y, MainPolygon);
+                Entrances.NearestPoints(x, y, MainForm.GenZoomPolygon(MainPolygon));
             else if (type == 360)
-                Entrances.NearestPoints(x, y, MainCircle);
+                Entrances.NearestPoints(x, y, MainForm.GenZoomCircle(MainCircle));
+        }
+
+        public void AddTempEnt()
+        {
+            if (isMoveEnt & id != -1)
+            {
+                isMoveEnt = false;
+                Entrances.Enterances.TempCircle.LocalCenterPoint = CalcLocalPoint(Entrances.Enterances.TempCircle.MainCenterPoint);
+                Entrances.Enterances.Circles[id].MainCenterPoint = new Point(Entrances.Enterances.TempCircle.MainCenterPoint.X, Entrances.Enterances.TempCircle.MainCenterPoint.Y);
+                Entrances.Enterances.Circles[id].LocalCenterPoint = new Point(Entrances.Enterances.TempCircle.LocalCenterPoint.X, Entrances.Enterances.TempCircle.LocalCenterPoint.Y);
+                Entrances.Enterances.Circles[id].delete = false;
+                Entrances.Enterances.TempDefault();
+            }
+        }
+
+        public void MoveEntrance(int x, int y, int id)
+        {
+            this.id = id;
+            isMoveEnt = true;
+            var ent = Entrances.Enterances.Circles[id];
+            Entrances.Enterances.TempCircle = new Circle
+            {
+                MainCenterPoint = new Point(ent.MainCenterPoint.X, ent.MainCenterPoint.Y),
+                delete = false,
+                koef = ent.koef
+            };
+            Entrances.Enterances.Circles[id].delete = true;
+            MoveEntrance(x, y);
         }
 
         public bool AddIWInBuild(int x, int y, DrawLevel dl)
@@ -316,9 +429,20 @@ namespace NetworkDesign
             {
                 InputWires.step = true;
                 if (_side)
+                {
                     InputWires.AddTemp(x, y, MainMapDL, new DrawLevel(LocalDL.Level, _floor));
+                    /*if (type == 2)
+                        InputWires.InputWires.TempCircle.MainCenterPoint = InputWires.CalcNearestPoint(x, y, MainRectangle.Points[0], MainRectangle.Points[1]);
+                    else if (type == 3)
+                        InputWires.InputWires.TempCircle.MainCenterPoint = InputWires.CalcNearestPoint(x, y, MainPolygon.Points[0], MainPolygon.Points[1]);
+                    else if (type == 360)
+                        InputWires.NearestPoints(x, y, MainCircle);*/
+                }
                 else
+                {
                     InputWires.AddTemp(x, y, MainMapDL, new DrawLevel(LocalDL.Level, floors_name.Count - 1));
+
+                }
                 return false;
             }
             else
@@ -333,14 +457,14 @@ namespace NetworkDesign
 
         public void MoveIW(int x, int y)
         {
-            if (InputWires.side)
+            if (InputWires.InputWires.TempCircle.side)
             {
                 if (type == 2)
-                    InputWires.NearestPoints(x, y, MainRectangle);
+                    InputWires.NearestPoints(x, y, MainForm.GenZoomRect(MainRectangle));
                 else if (type == 3)
-                    InputWires.NearestPoints(x, y, MainPolygon);
+                    InputWires.NearestPoints(x, y, MainForm.GenZoomPolygon(MainPolygon));
                 else if (type == 360)
-                    InputWires.NearestPoints(x, y, MainCircle);
+                    InputWires.NearestPoints(x, y, MainForm.GenZoomCircle(MainCircle));
             }
             else
             {
@@ -358,6 +482,12 @@ namespace NetworkDesign
             InputWires.SetTempPoint(x, y);
         }
 
+        /// <summary>
+        /// Расчет угла наклона между двумя точками относительно оси X
+        /// </summary>
+        /// <param name="Point1">Точка 1</param>
+        /// <param name="Point2">Точка 2</param>
+        /// <returns>Возвращает угол наклона</returns>
         private double CalcAlfa(Point Point1, Point Point2)
         {
             double cat1 = Point2.Y - Point1.Y; //Противолежащий
@@ -366,43 +496,62 @@ namespace NetworkDesign
             return _alfa;
         }
 
+        /// <summary>
+        /// Поворот заданной точки, относительно другой точки на определенный угол
+        /// </summary>
+        /// <param name="alfa">Угол поворота</param>
+        /// <param name="_PointMain">Точка, относительно которой осуществляется поворот</param>
+        /// <param name="_PointTemp">Поворачиваемая точка</param>
+        /// <returns>Возвращает повернутую точку</returns>
         private Point RotatePoint(double alfa, Point _PointMain, Point _PointTemp)
         {
-            Point Temp = new Point();
-            Temp.X = (int)((_PointTemp.X - _PointMain.X) * Math.Cos(alfa) - (_PointTemp.Y - _PointMain.Y) * Math.Sin(alfa) + _PointMain.X);
-            Temp.Y = (int)((_PointTemp.X - _PointMain.X) * Math.Sin(alfa) + (_PointTemp.Y - _PointMain.Y) * Math.Cos(alfa) + _PointMain.Y);
+            Point Temp = new Point
+            {
+                X = (int)((_PointTemp.X - _PointMain.X) * Math.Cos(alfa) - (_PointTemp.Y - _PointMain.Y) * Math.Sin(alfa) + _PointMain.X),
+                Y = (int)((_PointTemp.X - _PointMain.X) * Math.Sin(alfa) + (_PointTemp.Y - _PointMain.Y) * Math.Cos(alfa) + _PointMain.Y)
+            };
             return Temp;
         }
 
-        private void RecalcRect()
+        /// <summary>
+        /// Генерация прямоугольника, отображаемого внутри здания
+        /// </summary>
+        private void GenLocalRect()
         {
+            //Считаем угол наклона в зависимости от длин сторон
             double distance = CalcAB(MainRectangle.Points[0], MainRectangle.Points[1]);
-            double _distance = CalcAB(MainRectangle.Points[1], MainRectangle.Points[2]);
+            double _distance = CalcAB(MainRectangle.Points[1], MainRectangle.Points[3]);
             if (distance >= _distance)
             {
                 alfa = CalcAlfa(MainRectangle.Points[0], MainRectangle.Points[1]);
+                LocalRectangle.Points.Add(MainRectangle.Points[0]);
+                LocalRectangle.Points.Add(new Point());
+                LocalRectangle.Points.Add(new Point());
+                LocalRectangle.Points.Add(RotatePoint(-alfa, MainRectangle.Points[0], MainRectangle.Points[3]));
+                LocalRectangle.Points[2] = new Point(LocalRectangle.Points[0].X, LocalRectangle.Points[3].Y);
+                LocalRectangle.Points[1] = new Point(LocalRectangle.Points[3].X, LocalRectangle.Points[0].Y);
             }
             else
             {
-                alfa = CalcAlfa(MainRectangle.Points[0], MainRectangle.Points[2]);
+                alfa = CalcAlfa(MainRectangle.Points[1], MainRectangle.Points[3]);
+                LocalRectangle.Points.Add(MainRectangle.Points[0]);
+                LocalRectangle.Points.Add(new Point());
+                LocalRectangle.Points.Add(new Point());
+                LocalRectangle.Points.Add(RotatePoint(-alfa, MainRectangle.Points[0], MainRectangle.Points[3]));
+                LocalRectangle.Points[2] = new Point(LocalRectangle.Points[3].X, LocalRectangle.Points[0].Y);
+                LocalRectangle.Points[1] = new Point(LocalRectangle.Points[0].X, LocalRectangle.Points[3].Y);
             }
-            LocalRectangle.Points.Add(MainRectangle.Points[0]);
-            LocalRectangle.Points.Add(RotatePoint(-alfa, MainRectangle.Points[0], MainRectangle.Points[1]));
-            LocalRectangle.Points.Add(RotatePoint(-alfa, MainRectangle.Points[0], MainRectangle.Points[2]));
-            LocalRectangle.Points.Add(RotatePoint(-alfa, MainRectangle.Points[0], MainRectangle.Points[3]));
             _MainRectangle.Points.Add(MainRectangle.Points[0]);
             _MainRectangle.Points.Add(RotatePoint(-alfa, MainRectangle.Points[0], MainRectangle.Points[1]));
             _MainRectangle.Points.Add(RotatePoint(-alfa, MainRectangle.Points[0], MainRectangle.Points[2]));
             _MainRectangle.Points.Add(RotatePoint(-alfa, MainRectangle.Points[0], MainRectangle.Points[3]));
             MP = MainRectangle.Points[0];
-            int maxx, minx;
-            int maxy, miny;
-            LocalRectangle.CalcMaxMin(out maxx, out minx, out maxy, out miny);
+            LocalRectangle.CalcMaxMin(out int maxx, out int minx, out int maxy, out int miny);
             int difx = maxx - minx;
             int dify = maxy - miny;
-            koef = (double)(MainForm._Height - 150) / (double)dify;
-            if (((double)(MainForm._Width - 150) / (double)difx) < koef)
-                koef = (double)(MainForm._Width - 150) / (double)difx;
+            koef = (double)(MainForm._Height - 100) / (double)dify;
+            if (((double)(MainForm._Width - 100) / (double)difx) < koef)
+                koef = (double)(MainForm._Width - 100) / (double)difx;
             Ox = (LocalRectangle.Points[0].X + LocalRectangle.Points[1].X + LocalRectangle.Points[2].X + LocalRectangle.Points[3].X) / 4;
             Oy = (LocalRectangle.Points[0].Y + LocalRectangle.Points[1].Y + LocalRectangle.Points[2].Y + LocalRectangle.Points[3].Y) / 4;
             _Ox = (MainForm._Width) / 2;
@@ -413,14 +562,16 @@ namespace NetworkDesign
                 double y = LocalRectangle.Points[i].Y - Oy;
                 x *= koef;
                 y *= koef;
-                x += _Ox;
-                y += _Oy;
                 LocalRectangle.Points[i] = new Point((int)x, (int)y);
             }
             LocalRectangle.DL = LocalDL;
+            LocalRectangle.delete = false;
         }
 
-        private void RecalcPolygon()
+        /// <summary>
+        /// Генерация многоугольника, отображаемого внутри здания
+        /// </summary>
+        private void GenLocalPolygon()
         {
             Point[] temp = new Point[MainPolygon.Points.Count];
             MainPolygon.Points.CopyTo(temp);
@@ -432,7 +583,7 @@ namespace NetworkDesign
             //_brokenLine = brokenLine;
             double distance = -1;
             int p1 = -1, p2 = -1;
-            /*ищем самую длинную грань по формуле AB = √(xb - xa)2 + (yb - ya)2*/
+            //ищем самую длинную грань по формуле AB = √(xb - xa)2 + (yb - ya)2
             for (int i = 0; i < MainPolygon.Points.Count; i++)
             {
                 if (i != MainPolygon.Points.Count - 1)
@@ -466,9 +617,7 @@ namespace NetworkDesign
                 }
             }
             MP = LocalPolygon.Points[p1];
-            int maxx, minx;
-            int maxy, miny;
-            LocalPolygon.CalcMaxMin(out maxx, out minx, out maxy, out miny);
+            LocalPolygon.CalcMaxMin(out int maxx, out int minx, out int maxy, out int miny);
             int difx = maxx - minx;
             int dify = maxy - miny;
             koef = (double)(MainForm._Height - 150) / (double)dify;
@@ -487,14 +636,19 @@ namespace NetworkDesign
             {
                 int x = LocalPolygon.Points[i].X - Ox;
                 int y = LocalPolygon.Points[i].Y - Oy;
-                
                 x = (int)(x * koef);
                 y = (int)(y * koef);
-                x += _Ox;
-                y += _Oy;
                 LocalPolygon.Points[i] = new Point(x, y);
             }
             LocalPolygon.DL = LocalDL;
+        }
+
+        internal void AddTemp()
+        {
+            if (isMoveEnt)
+                AddTempEnt();
+            if (isMoveIW)
+                AddTempIW();
         }
 
         private double CalcAB(Point Point1, Point Point2)

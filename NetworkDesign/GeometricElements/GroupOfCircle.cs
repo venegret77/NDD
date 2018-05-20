@@ -25,6 +25,8 @@ namespace NetworkDesign
         public override void Add(object elem)
         {
             Circles.Add((Circle)elem);
+            //Circles.Last().CalcCenterPoint();
+            Circles.Last().RecalWithZoom();
         }
 
         public override void Remove(int i)
@@ -169,7 +171,7 @@ namespace NetworkDesign
             {
                 circle.Draw();
             }
-            TempCircle.Draw();
+            TempCircle.DrawTemp();
         }
 
         public void DrawEnt()
@@ -178,7 +180,7 @@ namespace NetworkDesign
             {
                 circle.DrawEnt();
             }
-            TempCircle.DrawEnt();
+            TempCircle.DrawTempEnt();
         }
 
         public void DrawIW()
@@ -187,7 +189,7 @@ namespace NetworkDesign
             {
                 circle.DrawIW();
             }
-            TempCircle.DrawIW();
+            TempCircle.DrawTempIW();
         }
 
         public override int Search(int x, int y, DrawLevel dl)

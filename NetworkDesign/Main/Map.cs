@@ -39,6 +39,10 @@ namespace NetworkDesign
         public GroupOfBuildings Buildings = new GroupOfBuildings();
         //Другое
         public Timer RenderTimer = new Timer();
+        /// <summary>
+        /// Переменная, показывающая, перемещается ли в данный момент элемент или нет
+        /// </summary>
+        public bool isMove = false;
 
         public Map()
         {
@@ -53,12 +57,15 @@ namespace NetworkDesign
         {
             MainForm.AnT.Height = _MapSetting.Height;
             MainForm.AnT.Width = _MapSetting.Width;
-            // инициализация библиотеки glut 
-            Glut.glutInit();
+            if (!MainForm.isInit)
+            {
+                // инициализация библиотеки glut 
+                Glut.glutInit();
+            }
             // инициализация режима экрана 
             Glut.glutInitDisplayMode(Glut.GLUT_RGB | Glut.GLUT_DOUBLE);
             // инициализация библиотеки openIL 
-            Il.ilInit();
+            Il.ilInit();    
             Il.ilEnable(Il.IL_ORIGIN_SET);
             // установка цвета очистки экрана (RGBA) 
             Gl.glClearColor(255, 255, 255, 1);
@@ -69,12 +76,12 @@ namespace NetworkDesign
             // очистка матрицы 
             Gl.glLoadIdentity();
             // установка перспективы 
-            Glu.gluOrtho2D(0.0, _MapSetting.Width, 0.0, _MapSetting.Height);
+            Glu.gluOrtho2D(-_MapSetting.Width / 2, _MapSetting.Width / 2, -_MapSetting.Height / 2, _MapSetting.Height / 2);
             // установка объектно-видовой матрицы 
             Gl.glMatrixMode(Gl.GL_MODELVIEW);
             Gl.glLoadIdentity();
             Gl.glEnable(Gl.GL_BLEND);
-            Gl.glScaled(1, 1, 1);
+            //Gl.glScaled(1, 1, 1);
             Gl.glBlendFunc(Gl.GL_SRC_ALPHA, Gl.GL_ONE_MINUS_SRC_ALPHA);
             // начальные настройки OpenGL 
             //Gl.glEnable( Gl.GL_DEPTH_TEST);
@@ -82,6 +89,7 @@ namespace NetworkDesign
             RenderTimer.Interval = 15;
             RenderTimer.Tick += RenderTimer_Tick;
             RenderTimer.Start();
+            MainForm.isInit = true;
         }
 
         public void RenderTimer_Tick(object sender, EventArgs e) => Drawing();
@@ -116,24 +124,66 @@ namespace NetworkDesign
             MainForm.AnT.Invalidate();
         }
 
-        int zoom = 1;
-
-        public void ZoomIn()
+        public void RefreshRenderingArea()
         {
-            if (zoom <= 16)
-                zoom *= 2;
-            RenderTimer.Stop();
-            Gl.glScaled(zoom, zoom, zoom);
-            RenderTimer.Start();
+            int Height = (int)((double)mapSetting.Height * MainForm.Zoom);
+            int Width = (int)((double)mapSetting.Width * MainForm.Zoom);
+            MainForm.AnT.Height = Height;
+            MainForm.AnT.Width = Width;
+            Gl.glViewport(0, 0, Width, Height);
+            // активация проекционной матрицы 
+            Gl.glMatrixMode(Gl.GL_PROJECTION);
+            // очистка матрицы 
+            Gl.glLoadIdentity();
+            // установка перспективы 
+            Glu.gluOrtho2D(-Width / 2, Width / 2, -Height / 2, Height / 2);
+            // установка объектно-видовой матрицы 
+            Gl.glMatrixMode(Gl.GL_MODELVIEW);
+            Gl.glLoadIdentity();
         }
 
-        public void ZoomOut()
+        public void MoveElem(int x, int y)
         {
-            if (zoom >= 1)
-                zoom /= 2;
-            RenderTimer.Stop();
-            Gl.glScaled(zoom, zoom, zoom);
-            RenderTimer.Start();
+            if (!isMove & MainForm.activeElem.item != -1)
+                isMove = true;
+            if (isMove)
+            {
+                int id = MainForm.activeElem.item;
+                switch (MainForm.activeElem.type)
+                {
+                    case 1:
+                        Lines.Lines[id].MoveElem(x, y);
+                        Lines.Lines[id].CalcCenterPoint();
+                        break;
+                    case 2:
+                        Rectangles.Rectangles[id].MoveElem(x, y);
+                        Rectangles.Rectangles[id].CalcCenterPoint();
+                        break;
+                    case 3:
+                        Polygons.Polygons[id].MoveElem(x, y);
+                        Polygons.Polygons[id].CalcCenterPoint();
+                        break;
+                    case 4:
+                        Buildings.Buildings[id].MoveElem(x, y);
+                        Buildings.Buildings[id].CalcCenterPoint();
+                        break;
+                    case 6:
+                        if (MainForm.drawLevel.Level == -1)
+                            Buildings.Buildings[MainForm.activeElem.build].MoveIW(x, y, id);
+                        break;
+                    case 7:
+                        if (MainForm.drawLevel.Level == -1)
+                            Buildings.Buildings[MainForm.activeElem.build].MoveEntrance(x, y, id);
+                        break;
+                    case 8:
+                        NetworkElements.NetworkElements[id].MoveElem(x, y, id, NetworkWires);
+                        NetworkElements.NetworkElements[id].CalcCenterPoint();
+                        break;
+                    case 360:
+                        Circles.Circles[id].MoveElem(x, y);
+                        break;
+                }
+            }
         }
 
         /// <summary>
@@ -220,6 +270,19 @@ namespace NetworkDesign
             {
                 mapSetting = _mapSettings
             };
+            MainForm.AnT.Height = _mapSettings.Height;
+            MainForm.AnT.Width = _mapSettings.Width;
+            //Gl.glClearColor(255, 255, 255, 1);
+            Gl.glViewport(0, 0, MainForm.AnT.Width, MainForm.AnT.Height);
+            // активация проекционной матрицы 
+            Gl.glMatrixMode(Gl.GL_PROJECTION);
+            // очистка матрицы 
+            Gl.glLoadIdentity();
+            // установка перспективы 
+            Glu.gluOrtho2D(-_mapSettings.Width / 2, _mapSettings.Width / 2, -_mapSettings.Height / 2, _mapSettings.Height / 2);
+            // установка объектно-видовой матрицы 
+            Gl.glMatrixMode(Gl.GL_MODELVIEW);
+            Gl.glLoadIdentity();
             MapLoad(TempMap);
         }
 
@@ -400,20 +463,14 @@ namespace NetworkDesign
             }
         }
 
-        public int InverseY(int y)
+        public int RecalcMouseY(int y)
         {
-            if (y > mapSetting.Height)
-            {
-                return mapSetting.Height + y;
-            }
-            else if (y < mapSetting.Height)
-            {
-                return mapSetting.Height - y;
-            }
-            else
-            {
-                return y;
-            }
+            return (int)((double)mapSetting.Height / 2d * MainForm.Zoom) - y;
+        }
+
+        public int RecalcMouseX(int x)
+        {
+            return x - (int)((double)mapSetting.Width / 2d * MainForm.Zoom);
         }
 
         public IDandIW ChechNE(int x, int y)

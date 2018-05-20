@@ -25,6 +25,14 @@ namespace NetworkDesign
             Enterances.TempCircle = new Circle();
         }
 
+        public void MoveElem(int difx, int dify)
+        {
+            foreach (var cir in Enterances.Circles)
+            {
+                cir.MainCenterPoint = new Point(cir.MainCenterPoint.X + difx, cir.MainCenterPoint.Y + dify);
+            }
+        }
+
         public void AddTemp(int x, int y, DrawLevel MDL, DrawLevel LDL)
         {
             Enterances.TempCircle = new Circle(x, y, rad, MDL, LDL);
@@ -41,7 +49,7 @@ namespace NetworkDesign
                 / (Math.Sqrt(Math.Pow((point2.Y - point1.Y), 2) + Math.Pow((point2.X - point1.X), 2))));
         }
 
-        private Point CalcNearestPoint(int x, int y, Point p1, Point p2)
+        public Point CalcNearestPoint(int x, int y, Point p1, Point p2)
         {
             double a = p1.Y - p2.Y;
             double b = p2.X - p1.X;
@@ -51,6 +59,12 @@ namespace NetworkDesign
             return new Point(_x, _y);
         }
 
+        /// <summary>
+        /// Поиск ближайшей точки на прямоугольнике при перемещении входа в здание или входа провода
+        /// </summary>
+        /// <param name="x">Координата мыши X</param>
+        /// <param name="y">Координата мыши Y</param>
+        /// <param name="rect">Передаваемый прямоугольник</param>
         public void NearestPoints(int x, int y, MyRectangle rect)
         {
             double d = double.MaxValue;
@@ -100,6 +114,12 @@ namespace NetworkDesign
             }
         }
 
+        /// <summary>
+        /// Поиск ближайшей точки на многоугольнике при перемещении входа в здание или входа провода
+        /// </summary>
+        /// <param name="x">Координата мыши X</param>
+        /// <param name="y">Координата мыши Y</param>
+        /// <param name="pol">Передаваемый многоугольник</param>
         public void NearestPoints(int x, int y, Polygon pol)
         {
             double d = double.MaxValue;
@@ -126,7 +146,18 @@ namespace NetworkDesign
                 Enterances.TempCircle.MainCenterPoint = CalcNearestPoint(x, y, pol.Points[p1], pol.Points[p2]);
         }
 
-        //баг
+        internal void MoveElem(int x, int y, int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        //Баг//Пофиксить//Доделать
+        /// <summary>
+        /// Поиск ближайшей точки на круге при перемещении входа в здание или входа провода
+        /// </summary>
+        /// <param name="x">Координата мыши X</param>
+        /// <param name="y">Координата мыши Y</param>
+        /// <param name="cir">Круг</param>
         public void NearestPoints(int x, int y, Circle cir)
         {
             double vect = double.MaxValue;

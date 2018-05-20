@@ -18,6 +18,8 @@ namespace NetworkDesign.NetworkElements
         public override void Add(object elem)
         {
             NetworkElements.Add((NetworkElement)elem);
+            NetworkElements.Last().RecalWithZoom();
+            NetworkElements.Last().CalcCenterPoint();
         }
 
         public override void Choose(int i)
@@ -41,7 +43,7 @@ namespace NetworkDesign.NetworkElements
             {
                 elem.Draw();
             }
-            TempNetworkElement.Draw();
+            TempNetworkElement.DrawTemp();
         }
 
         public override List<object> GetInBuild(int build)

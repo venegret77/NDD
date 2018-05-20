@@ -20,7 +20,7 @@ namespace NetworkDesign.NetworkElements
         }
     }
 
-    public class NetworkWire : Line
+    public class NetworkWire : GeometricFigure
     {
         /// <summary>
         /// Пропускная способность
@@ -36,8 +36,10 @@ namespace NetworkDesign.NetworkElements
 
         public NetworkWire(int x, int y, DrawLevel _drawLevel, IDandIW _idiw1)
         {
-            Points.Add(new Point(x, y));
-            Points.Add(new Point(x, y));
+            TempPoint.X = x;
+            TempPoint.Y = y;
+            Points.Add(TempPoint);
+            //ClearTempPoint();
             idiw1 = _idiw1;
             DL = _drawLevel;
             delete = false;
@@ -46,6 +48,32 @@ namespace NetworkDesign.NetworkElements
         public NetworkWire()
         {
             delete = true;
+        }
+
+        public void AddPoint()
+        {
+            Points.Add(TempPoint);
+            /*TempPoint = new Point
+            {
+
+            }*/
+            //ClearTempPoint();
+        }
+
+        public void ClearTempPoint()
+        {
+            TempPoint = new Point();
+        }
+
+        public void SetTempPoint(int x, int y)
+        {
+            TempPoint.X = x;
+            TempPoint.Y = y;
+        }
+
+        public override void SetPoint(int x, int y, int i)
+        {
+            Points[i] = new Point(x, y);
         }
 
         public override void Draw()
@@ -65,7 +93,7 @@ namespace NetworkDesign.NetworkElements
                         G = (float)color.G / 255;
                         B = (float)color.B / 255;
                         A = (float)color.A / 255;
-                        Gl.glLineWidth(MainForm.colorSettings.LineWidth);
+                        Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom);
                     }
                     else
                     {
@@ -73,15 +101,44 @@ namespace NetworkDesign.NetworkElements
                         G = (float)MainForm.colorSettings.ActiveElemColor.G / 255;
                         B = (float)MainForm.colorSettings.ActiveElemColor.B / 255;
                         A = (float)MainForm.colorSettings.ActiveElemColor.A / 255;
-                        Gl.glLineWidth(MainForm.colorSettings.LineWidth + 1);
+                        Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom + 1);
                     }
-                    Gl.glBegin(Gl.GL_LINES);
+                    Gl.glPushMatrix();
+                    Gl.glScaled(MainForm.Zoom, MainForm.Zoom, MainForm.Zoom);
+                    Gl.glBegin(Gl.GL_LINE_STRIP);
                     Gl.glColor4f(R, G, B, A);
-                    Gl.glVertex2d(Points[0].X, Points[0].Y);
-                    Gl.glVertex2d(Points[1].X, Points[1].Y);
+                    foreach (var point in Points)
+                        Gl.glVertex2d(point.X, point.Y);
                     Gl.glEnd();
+                    Gl.glPopMatrix();
                 }
             }
+        }
+
+        public override void DrawTemp()
+        {
+            if (!delete)
+            {
+                Gl.glLineWidth(MainForm.colorSettings.LineWidth);
+                Gl.glPushMatrix();
+                Gl.glBegin(Gl.GL_LINE_STRIP);
+                Gl.glColor4f(0.6f, 0.6f, 0.6f, 0.5f);
+                foreach (var point in Points)
+                    Gl.glVertex2d(point.X, point.Y);
+                Gl.glVertex2d(TempPoint.X, TempPoint.Y);
+                Gl.glEnd();
+                Gl.glPopMatrix();
+            }
+        }
+
+        public override double Search(int x, int y)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void DrawB()
+        {
+            throw new NotImplementedException();
         }
     }
 }

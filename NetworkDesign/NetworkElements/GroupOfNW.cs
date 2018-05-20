@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +19,22 @@ namespace NetworkDesign.NetworkElements
         public override void Add(object elem)
         {
             NetworkWires.Add((NetworkWire)elem);
+            NetworkWires.Last().RecalWithZoom();
+        }
+
+        public void CheckNW(int x, int y, int id)
+        {
+            foreach (var nw in NetworkWires)
+            {
+                if (!nw.idiw1.IW & id == nw.idiw1.ID)
+                {
+                    nw.Points[0] = new Point(x, y);
+                }
+                if (!nw.idiw2.IW & id == nw.idiw2.ID)
+                {
+                    nw.Points[nw.Points.Count - 1] = new Point(x, y);
+                }
+            }
         }
 
         public override void Choose(int i)
@@ -41,7 +58,7 @@ namespace NetworkDesign.NetworkElements
             {
                 elem.Draw();
             }
-            TempNetworkWire.Draw();
+            TempNetworkWire.DrawTemp();
         }
 
         public override List<object> GetInBuild(int build)

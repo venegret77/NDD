@@ -10,13 +10,14 @@ using System.Collections.Generic;
 using System.Linq;
 using NetworkDesign.NetworkElements;
 using NetworkDesign.Main;
+using System.Diagnostics;
 
 namespace NetworkDesign
 {
     public partial class MainForm : Form
     {
         public static string user = "";
-        MapSettings DefaultSettings = new MapSettings("DefaultMap", 1000, 1000);
+        MapSettings DefaultSettings = new MapSettings("DefaultMap", 5000, 5000);
         static public Map MyMap = new Map();
         static public DrawLevel drawLevel;
         static public ColorSettings colorSettings = new ColorSettings();
@@ -29,17 +30,25 @@ namespace NetworkDesign
         //
         static public int _Height = 0, _Width = 0;
         static public SimpleOpenGlControl AnT = new SimpleOpenGlControl();
-        ActiveElem activeElem = new ActiveElem();
+        static public ActiveElem activeElem = new ActiveElem();
         private List<string> floors_name = new List<string>();
         private int floor_index = 0;
+        //
+        public static unsafe double* zoom;
+        public static double Zoom = 1;
+
+        static public bool isInit = false;
 
         static public TextBox focusbox = new TextBox();
 
-        public MainForm()
+        Point asp = new Point();
+
+        public unsafe MainForm()
         {
             InitializeComponent();
             StartPosition = FormStartPosition.CenterScreen;
-            panel1.Controls.Add(AnT);
+            AnT.Parent = panel1;
+            //panel1.Controls.Add(AnT);
             // AnT
             // 
             AnT.AccumBits = ((byte)(0));
@@ -57,6 +66,7 @@ namespace NetworkDesign
             AnT.Size = new Size(1000, 1000);
             AnT.StencilBits = ((byte)(0));
             AnT.TabIndex = 1;
+            //AnT.AutoScroll = true;
             AnT.MouseDown += new MouseEventHandler(AnT_MouseDown);
             AnT.MouseMove += new MouseEventHandler(AnT_MouseMove);
             AnT.MouseUp += new MouseEventHandler(AnT_MouseUp);
@@ -64,14 +74,20 @@ namespace NetworkDesign
             AnT.MouseDoubleClick += AnT_MouseDoubleClick;
             // 
             AnT.InitializeContexts();
+            
             MyMap = new Map(DefaultSettings);
             Text = DefaultSettings.Name;
             drawLevel.Level = -1;
             drawLevel.Floor = -1;
             _Height = AnT.Height;
             _Width = AnT.Width;
+            panel1.Parent = this;
             panel2.Parent = this;
+            panel2.BringToFront();
             panel3.Parent = this;
+            panel3.BringToFront();
+            trackBar1.Parent = this;
+            trackBar1.BringToFront();
             panel2.BackColor = Color.White;
             panel3.BackColor = Color.White;
             FloorUP.BackColor = Color.White;
@@ -89,13 +105,15 @@ namespace NetworkDesign
             focusbox.Enabled = true;
             focusbox.Location = new Point(10000000, 100000);
             Click += MainForm_Click;
+            panel1.AutoScroll = true;
+            panel1.AutoScrollPosition = new Point(AnT.Height / 2, AnT.Width / 2);
         }
 
         private void MainForm_Click(object sender, EventArgs e)
         {
             focusbox.Focus();
         }
-        
+
         private void AnT_Click(object sender, EventArgs e)
         {
             focusbox.Focus();
@@ -172,35 +190,9 @@ namespace NetworkDesign
             }
         }
 
-        private void MouseBLines(int x, int y)
-        {
-            if (MyMap.Polygons.active)
-            {
-                if (!MyMap.Polygons.step)
-                {
-                    MyMap.Polygons.TempPolygon = new Polygon(x, y, drawLevel);
-                    MyMap.Polygons.step = true;
-                }
-                else
-                {
-                    MyMap.Polygons.TempPolygon.AddPoint();
-                }
-            }
-            else
-            {
-                MyMap.Polygons.Add(MyMap.Polygons.TempPolygon);
-                MyMap.Polygons.step = false;
-                int lastindex = MyMap.Polygons.Polygons.Count - 1;
-                Element elem = new Element(3, lastindex, MyMap.Polygons.Polygons[lastindex], -1);
-                Element _elem = new Element(3, lastindex, new Polygon(), -1);
-                MyMap.log.Add(new LogMessage("Добавил многоугольник", elem, _elem));
-                InfoLable.Text = "Добавил многоугольник";
-                CheckButtons(true);
-            }
-        }
-
         private void MouseLines(int x, int y)
         {
+            var value = panel1.VerticalScroll.Value;
             if (!MyMap.Lines.step)
             {
                 MyMap.Lines.step = true;
@@ -294,36 +286,70 @@ namespace NetworkDesign
 
         private void MouseNW(int x, int y)
         {
-            if (!MyMap.NetworkWires.step)
+            if (MyMap.NetworkWires.active)
             {
-                var item = MyMap.ChechNE(x, y);
-                if (item.ID != -1)
+                if (!MyMap.NetworkWires.step)
                 {
-                    MyMap.NetworkWires.step = true;
-                    MyMap.NetworkWires.TempNetworkWire = new NetworkWire(x, y, drawLevel, item);
+                    var item = MyMap.ChechNE(x, y);
+                    if (item.ID != -1)
+                    {
+                        MyMap.NetworkWires.step = true;
+                        MyMap.NetworkWires.TempNetworkWire = new NetworkWire(x, y, drawLevel, item);
+                    }
                 }
-            }
-            else
-            {
-                var item = MyMap.ChechNE(x, y);
-                if (item.ID != -1)
+                else
                 {
-                    MyMap.NetworkWires.TempNetworkWire.idiw2 = item;
-                    MyMap.NetworkWires.step = false;
-                    MyMap.NetworkWires.Add(MyMap.NetworkWires.TempNetworkWire);
-                    MyMap.NetworkWires.TempDefault();
-                    int lastindex = MyMap.NetworkWires.NetworkWires.Count - 1;
-                    Element elem = new Element(9, lastindex, MyMap.NetworkWires.NetworkWires[lastindex], -1);
-                    Element _elem = new Element(9, lastindex, new NetworkWire(), -1);
-                    MyMap.log.Add(new LogMessage("Добавил провод", elem, _elem));
-                    InfoLable.Text = "Добавил провод";
-                    CheckButtons(true);
+                    var item = MyMap.ChechNE(x, y);
+                    if (item.ID != -1)
+                    {
+                        MyMap.NetworkWires.TempNetworkWire.AddPoint();
+                        MyMap.NetworkWires.TempNetworkWire.ClearTempPoint();
+                        MyMap.NetworkWires.TempNetworkWire.idiw2 = item;
+                        MyMap.NetworkWires.Add(MyMap.NetworkWires.TempNetworkWire);
+                        MyMap.NetworkWires.TempDefault();
+                        int lastindex = MyMap.NetworkWires.NetworkWires.Count - 1;
+                        Element elem = new Element(9, lastindex, MyMap.NetworkWires.NetworkWires[lastindex], -1);
+                        Element _elem = new Element(9, lastindex, new NetworkWire(), -1);
+                        MyMap.log.Add(new LogMessage("Добавил провод", elem, _elem));
+                        InfoLable.Text = "Добавил провод";
+                        CheckButtons(true);
+                    }
+                    else
+                    {
+                        MyMap.NetworkWires.TempNetworkWire.AddPoint();
+                    }
                 }
             }
         }
 
+        private void MousePolygon(int x, int y)
+        {
+            if (MyMap.Polygons.active)
+            {
+                if (!MyMap.Polygons.step)
+                {
+                    MyMap.Polygons.TempPolygon = new Polygon(x, y, drawLevel);
+                    MyMap.Polygons.step = true;
+                }
+                else
+                {
+                    MyMap.Polygons.TempPolygon.AddPoint();
+                }
+            }
+            else
+            {
+                MyMap.Polygons.Add(MyMap.Polygons.TempPolygon);
+                MyMap.Polygons.step = false;
+                int lastindex = MyMap.Polygons.Polygons.Count - 1;
+                Element elem = new Element(3, lastindex, MyMap.Polygons.Polygons[lastindex], -1);
+                Element _elem = new Element(3, lastindex, new Polygon(), -1);
+                MyMap.log.Add(new LogMessage("Добавил многоугольник", elem, _elem));
+                InfoLable.Text = "Добавил многоугольник";
+                CheckButtons(true);
+            }
+        }
+
         TextBox textBox;
-        //Timer chechtextbox = new Timer();
         int x, y;
 
         private void MouseText(int x, int y, int _y)
@@ -332,10 +358,12 @@ namespace NetworkDesign
             this.y = _y;
             if (textBox == null)
             {
-                textBox = new TextBox();
-                textBox.Parent = AnT;
-                textBox.BackColor = Color.White;
-                textBox.BorderStyle = BorderStyle.None;
+                textBox = new TextBox
+                {
+                    Parent = AnT,
+                    BackColor = Color.White,
+                    BorderStyle = BorderStyle.None
+                };
             }
             if (textBox.Text != "" && textBox.Text != " ")
                 MyMap.MyTexts.Add(new MyText(drawLevel, new Point(x, y), textBox));
@@ -370,22 +398,27 @@ namespace NetworkDesign
             }
         }
 
+        Stopwatch stopwatch = new Stopwatch();
 
         private void AnT_MouseDown(object sender, MouseEventArgs e)
         {
-            int y = MyMap.InverseY(e.Y);
+            //Доделать косяк в нуле
+            panel1.AutoScrollPosition = new Point(Math.Abs(asp.X), Math.Abs(asp.Y));
+            int y = MyMap.RecalcMouseY(e.Y);
+            int x = MyMap.RecalcMouseX(e.X);
             if (e.Button == MouseButtons.Left)
             {
                 switch (MyMap.RB)
                 {
                     case 0:
-                        SelectItems(e.X, y);
+                        stopwatch.Restart();
+                        SelectItems(x, y);
                         break;
                     case 1:
-                        MouseLines(e.X, y);
+                        MouseLines(x, y);
                         break;
                     case 2:
-                        MouseRects(e.X, y);
+                        MouseRects(x, y);
                         break;
                     case 3:
                         if (MyMap.EditRects.edit_active)
@@ -397,10 +430,10 @@ namespace NetworkDesign
                         break;
                     case 5:
                         MyMap.Polygons.active = true;
-                        MouseBLines(e.X, y);
+                        MousePolygon(x, y);
                         break;
                     case 360:
-                        MouseCircle(e.X, y);
+                        MouseCircle(x, y);
                         break;
                     case 6:
                         if (drawLevel.Level != -1)
@@ -409,11 +442,11 @@ namespace NetworkDesign
                             {
                                 if (!MyMap.Buildings.Buildings[activeElem.item].InputWires.step)
                                 {
-                                    MyMap.Buildings.Buildings[activeElem.item].AddIWInBuild(e.X, y, drawLevel);
+                                    MyMap.Buildings.Buildings[activeElem.item].AddIWInBuild(x, y, drawLevel);
                                 }
                                 else
                                 {
-                                    MyMap.Buildings.Buildings[activeElem.item].AddIWInBuild(e.X, y, drawLevel);
+                                    MyMap.Buildings.Buildings[activeElem.item].AddIWInBuild(x, y, drawLevel);
                                     int lastindex = MyMap.Buildings.Buildings[activeElem.item].InputWires.InputWires.Circles.Count - 1;
                                     Element elem = new Element(6, lastindex, MyMap.Buildings.Buildings[activeElem.item].InputWires.InputWires.Circles[lastindex], -1);
                                     Element _elem = new Element(6, lastindex, new Circle(), -1);
@@ -429,11 +462,11 @@ namespace NetworkDesign
                                 InputWireForm IWF = new InputWireForm(MyMap.Buildings.Buildings[activeElem.item].floors_name);
                                 IWF.ShowDialog();
                                 if (IWF.dialogResult == DialogResult.OK)
-                                    MyMap.Buildings.Buildings[activeElem.item].AddIW(e.X, y, IWF.side, IWF.floor_index);
+                                    MyMap.Buildings.Buildings[activeElem.item].AddIW(x, y, IWF.side, IWF.floor_index);
                             }
                             else
                             {
-                                MyMap.Buildings.Buildings[activeElem.item].AddIW(e.X, y, false, -1);
+                                MyMap.Buildings.Buildings[activeElem.item].AddIW(x, y, false, -1);
                                 int lastindex = MyMap.Buildings.Buildings[activeElem.item].InputWires.InputWires.Circles.Count - 1;
                                 Element elem = new Element(6, lastindex, MyMap.Buildings.Buildings[activeElem.item].InputWires.InputWires.Circles[lastindex], -1);
                                 Element _elem = new Element(6, lastindex, new Circle(), -1);
@@ -443,7 +476,7 @@ namespace NetworkDesign
                         }
                         break;
                     case 7:
-                        if (MyMap.Buildings.Buildings[activeElem.item].AddEntrance(e.X, y))
+                        if (MyMap.Buildings.Buildings[activeElem.item].AddEntrance(x, y))
                         {
                             int lastindex = MyMap.Buildings.Buildings[activeElem.item].Entrances.Enterances.Circles.Count - 1;
                             Element elem = new Element(7, lastindex, MyMap.Buildings.Buildings[activeElem.item].Entrances.Enterances.Circles[lastindex], -1);
@@ -453,13 +486,14 @@ namespace NetworkDesign
                         }
                         break;
                     case 8:
-                        MouseNE(e.X, y);
+                        MouseNE(x, y);
                         break;
                     case 9:
-                        MouseNW(e.X, y);
+                        MyMap.NetworkWires.active = true;
+                        MouseNW(x, y);
                         break;
                     case 10:
-                        MouseText(e.X, e.Y, y);
+                        MouseText(x, e.Y, y);
                         break;
                 }
             }
@@ -468,7 +502,7 @@ namespace NetworkDesign
                 switch (MyMap.RB)
                 {
                     case 0:
-                        SelectItems(e.X, y);
+                        SelectItems(x, y);
                         if (activeElem.type == 4)
                         {
                             drawLevel.Level = activeElem.item;
@@ -490,7 +524,7 @@ namespace NetworkDesign
                     case 5:
                         MyMap.Polygons.TempPolygon.ClearTempPoint();
                         MyMap.Polygons.active = false;
-                        MouseBLines(e.X, y);
+                        MousePolygon(x, y);
                         MyMap.Polygons.TempPolygon = new Polygon();
                         break;
                     case 360:
@@ -509,7 +543,20 @@ namespace NetworkDesign
                         MyMap.NetworkElements.TempDefault();
                         break;
                     case 9:
-                        MyMap.NetworkWires.TempDefault();
+                        if (MyMap.NetworkWires.active)
+                        {
+                            int index = MyMap.NetworkWires.TempNetworkWire.Points.Count;
+                            if (index > 1)
+                            {
+                                MyMap.NetworkWires.TempNetworkWire.Points.RemoveAt(index - 1);
+                            }
+                            else
+                            {
+                                int id = MyMap.NetworkWires.TempNetworkWire.idiw1.ID;
+                                MyMap.NetworkElements.NetworkElements[id].Options.BusyPorts--;
+                                MyMap.NetworkWires.TempDefault();
+                            }
+                        }
                         break;
                 }
             }
@@ -517,19 +564,180 @@ namespace NetworkDesign
 
         private void AnT_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            int y = MyMap.InverseY(e.Y);
+            int y = MyMap.RecalcMouseY(e.Y);
+            int x = MyMap.RecalcMouseX(e.X);
             if (e.Button == MouseButtons.Left)
             {
                 switch (MyMap.RB)
                 {
                     case 0:
-                        if (MyMap.SearchNE(e.X, y))
+                        if (MyMap.SearchNE(x, y))
                             break;
-                        MyMap.SearchNW(e.X, y);
+                        MyMap.SearchNW(x, y);
                         break;
                 }
             }
         }
+
+        private void AnT_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                switch (MyMap.RB)
+                {
+                    case 0:
+                        stopwatch.Stop();
+                        if (MyMap.isMove)
+                        {
+                            if (activeElem.build != -1)
+                            {
+                                MyMap.Buildings.Buildings[activeElem.build].AddTemp();
+                            }
+                            MyMap.isMove = false;
+                        }
+                        break;
+                    case 3:
+                        MyMap.RefreshEditRect();
+                        break;
+                }
+            }
+        }
+
+        private void AnT_MouseMove(object sender, MouseEventArgs e)
+        {
+            int y = MyMap.RecalcMouseY(e.Y);
+            int x = MyMap.RecalcMouseX(e.X);
+            switch (MyMap.RB)
+            {
+                case 0:
+                    if (e.Button == MouseButtons.Left & stopwatch.ElapsedMilliseconds > 500)
+                    {
+                        if (!MyMap.isMove)
+                        {
+                            SelectItems(x, y);
+                            MyMap.MoveElem(x, y);
+                        }
+                        else
+                        {
+                            MyMap.MoveElem(x, y);
+                        }
+                    }
+                    break;
+                case 1:
+                    if (MyMap.Lines.step)
+                    {
+                        MyMap.Lines.TempLine.SetPoint(x, y, 1);
+                    }
+                    break;
+                case 2:
+                    if (MyMap.Rectangles.step_rect == 1)
+                    {
+                        MyMap.Rectangles.TempRectangle.SetPoint(x, y, 2);
+                    }
+                    else if (MyMap.Rectangles.step_rect == 2)
+                    {
+                        MyMap.Rectangles.TempRectangle.SetPoint(x, y, 34);
+                    }
+                    break;
+                case 3:
+                    if (e.Button == MouseButtons.Left)
+                    {
+                        if (!MyMap.EditRects.edit_active)
+                        {
+                            MyMap.SearchEditElem(x, y);
+                        }
+                        else
+                        {
+                            MyMap.MoveElements(x, y);
+                        }
+                    }
+                    break;
+                case 5:
+                    if (MyMap.Polygons.active & MyMap.Polygons.step)
+                    {
+                        MyMap.Polygons.TempPolygon.SetTempPoint(x, y);
+                    }
+                    break;
+                case 360:
+                    if (MyMap.Circles.step)
+                    {
+                        MyMap.Circles.TempCircle.SetRadius(x, y);
+                    }
+                    break;
+                case 6:
+                    if (MyMap.Buildings.Buildings[activeElem.item].InputWires.step)
+                    {
+                        if (drawLevel.Level == -1)
+                        {
+                            MyMap.Buildings.Buildings[activeElem.item].MoveIW(x, y);
+                        }
+                        else
+                        {
+                            MyMap.Buildings.Buildings[activeElem.item].MoveIWInBuild(x, y);
+                        }
+                    }
+                    break;
+                case 7:
+                    if (MyMap.Buildings.Buildings[activeElem.item].Entrances.step)
+                    {
+                        MyMap.Buildings.Buildings[activeElem.item].MoveEntrance(x, y);
+                    }
+                    break;
+                case 8:
+                    if (MyMap.NetworkElements.step)
+                    {
+                        MyMap.NetworkElements.TempNetworkElement.SetPoint(x, y);
+                    }
+                    break;
+                case 9:
+                    if (MyMap.NetworkWires.active & MyMap.NetworkWires.step)
+                    {
+                        MyMap.NetworkWires.TempNetworkWire.SetTempPoint(x, y);
+                    }
+                    break;
+            }
+        }
+
+        static public Point GenZoomPoint(Point p)
+        {
+            return new Point((int)((double)p.X * Zoom), (int)((double)p.Y * Zoom));
+        }
+
+        static public Point _GenZoomPoint(Point p)
+        {
+            return new Point((int)((double)p.X / Zoom), (int)((double)p.Y / Zoom));
+        }
+
+        static public MyRectangle GenZoomRect(MyRectangle rect)
+        {
+            MyRectangle mr = new MyRectangle();
+            foreach (var p in rect.Points)
+            {
+                mr.Points.Add(GenZoomPoint(p));
+            }
+            return mr;
+        }
+
+        static public Polygon GenZoomPolygon(Polygon pol)
+        {
+            Polygon pl = new Polygon();
+            foreach (var p in pol.Points)
+            {
+                pl.Points.Add(GenZoomPoint(p));
+            }
+            return pl;
+        }
+        static public Circle GenZoomCircle(Circle cir)
+        {
+            Circle _cir = new Circle
+            {
+                radius = (int)((double)cir.radius * Zoom),
+                MainCenterPoint = GenZoomPoint(cir.MainCenterPoint),
+                LocalCenterPoint = GenZoomPoint(cir.LocalCenterPoint)
+            };
+            return _cir;
+        }
+
 
         private void UpgrateFloors()
         {
@@ -541,108 +749,21 @@ namespace NetworkDesign
             floor_index = drawLevel.Floor;
         }
 
-        private void AnT_MouseUp(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                switch (MyMap.RB)
-                {
-                    case 3:
-                        MyMap.RefreshEditRect();
-                        break;
-                }
-            }
-        }
-
-        private void AnT_MouseMove(object sender, MouseEventArgs e)
-        {
-            int y = MyMap.InverseY(e.Y);
-            switch (MyMap.RB)
-            {
-                case 1:
-                    if (MyMap.Lines.step)
-                    {
-                        MyMap.Lines.TempLine.SetPoint(e.X, y, 1);
-                    }
-                    break;
-                case 2:
-                    if (MyMap.Rectangles.step_rect == 1)
-                    {
-                        MyMap.Rectangles.TempRectangle.SetPoint(e.X, y, 2);
-                    }
-                    else if (MyMap.Rectangles.step_rect == 2)
-                    {
-                        MyMap.Rectangles.TempRectangle.SetPoint(e.X, y, 34);
-                    }
-                    break;
-                case 3:
-                    if (e.Button == MouseButtons.Left)
-                    {
-                        if (!MyMap.EditRects.edit_active)
-                        {
-                            MyMap.SearchEditElem(e.X, y);
-                        }
-                        else
-                        {
-                            MyMap.MoveElements(e.X, y);
-                        }
-                    }
-                    break;
-                case 5:
-                    if (MyMap.Polygons.active & MyMap.Polygons.step)
-                    {
-                        MyMap.Polygons.TempPolygon.SetTempPoint(e.X, y);
-                    }
-                    break;
-                case 360:
-                    if (MyMap.Circles.step)
-                    {
-                        MyMap.Circles.TempCircle.SetRadius(e.X, y);
-                    }
-                    break;
-                case 6:
-                    if (MyMap.Buildings.Buildings[activeElem.item].InputWires.step)
-                    {
-                        if (drawLevel.Level == -1)
-                        {
-                            MyMap.Buildings.Buildings[activeElem.item].MoveIW(e.X, y);
-                        }
-                        else
-                        {
-                            MyMap.Buildings.Buildings[activeElem.item].MoveIWInBuild(e.X, y);
-                        }
-                    }
-                    break;
-                case 7:
-                    if (MyMap.Buildings.Buildings[activeElem.item].Entrances.step)
-                    {
-                        MyMap.Buildings.Buildings[activeElem.item].MoveEntrance(e.X, y);
-                    }
-                    break;
-                case 8:
-                    if (MyMap.NetworkElements.step)
-                    {
-                        MyMap.NetworkElements.TempNetworkElement.SetPoint(e.X, y);
-                    }
-                    break;
-                case 9:
-                    if (MyMap.NetworkWires.step)
-                    {
-                        MyMap.NetworkWires.TempNetworkWire.SetPoint(e.X, y, 1);
-                    }
-                    break;
-            }
-        }
-
         private void toolStripButton5_Click(object sender, EventArgs e)
         {
             if (MyMap.EditRects.edit_mode)
             {
                 MyMap.SetInstrument(0);
+                AddPP.Visible = false;
+                DeletePP.Visible = false;
             }
             else
             {
                 MyMap.SetInstrument(3);
+                AddPP.Visible = true;
+                AddPP.Enabled = false;
+                DeletePP.Visible = true;
+                DeletePP.Enabled = false;
                 MyMap.RefreshEditRect();
             }
         }
@@ -656,8 +777,10 @@ namespace NetworkDesign
         /// <param name="descriptionFE">Описание заданного формата для отображения в диалоге</param>
         private void SaveMap(string fileExtension, string descriptionFE)
         {
-            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-            saveFileDialog1.Filter = descriptionFE + "|*" + fileExtension;
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog
+            {
+                Filter = descriptionFE + "|*" + fileExtension
+            };
             if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 XmlSerializer formatter = new XmlSerializer(typeof(Map));
@@ -685,6 +808,7 @@ namespace NetworkDesign
         /// </summary>
         /// <param name="sourceFile">Путь к исходному файлу</param>
         /// <param name="compressedFile">Путь к получаемому файлу</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Не ликвидировать объекты несколько раз")]
         public static void Compress(string sourceFile, string compressedFile)
         {
             // поток для чтения исходного файла
@@ -709,6 +833,7 @@ namespace NetworkDesign
         /// </summary>
         /// <param name="compressedFile">Путь к исходному файлу</param>
         /// <param name="targetFile">Путь к получаемому файлу</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Не ликвидировать объекты несколько раз")]
         public static void Decompress(string compressedFile, string targetFile)
         {
             // поток для чтения из сжатого файла
@@ -752,8 +877,10 @@ namespace NetworkDesign
         /// <param name="descriptionFE">Описание заданного формата для отображения в диалоге</param>
         private void OpenMap(string fileExtension, string descriptionFE)
         {
-            OpenFileDialog openFileDialog1 = new OpenFileDialog();
-            openFileDialog1.Filter = descriptionFE + "|*" + fileExtension;
+            OpenFileDialog openFileDialog1 = new OpenFileDialog
+            {
+                Filter = descriptionFE + "|*" + fileExtension
+            };
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 Decompress(openFileDialog1.FileName, openFileDialog1.FileName + "._temp");
@@ -1211,7 +1338,7 @@ namespace NetworkDesign
         {
             /*if (activeElem.type == 4)
             {*/
-                SaveBuild(".build", "Building File");
+            SaveBuild(".build", "Building File");
             /*}
             else
             {
@@ -1226,8 +1353,10 @@ namespace NetworkDesign
         /// <param name="descriptionFE">Описание заданного формата для отображения в диалоге</param>
         private void SaveBuild(string fileExtension, string descriptionFE)
         {
-            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-            saveFileDialog1.Filter = descriptionFE + "|*" + fileExtension;
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog
+            {
+                Filter = descriptionFE + "|*" + fileExtension
+            };
             if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 XmlSerializer formatter = new XmlSerializer(typeof(Map));
@@ -1264,8 +1393,10 @@ namespace NetworkDesign
         private void OpenBuild(string fileExtension, string descriptionFE)
         {
             Map TempMap = new Map();
-            OpenFileDialog openFileDialog1 = new OpenFileDialog();
-            openFileDialog1.Filter = descriptionFE + "|*" + fileExtension;
+            OpenFileDialog openFileDialog1 = new OpenFileDialog
+            {
+                Filter = descriptionFE + "|*" + fileExtension
+            };
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 Decompress(openFileDialog1.FileName, openFileDialog1.FileName + "._temp");
@@ -1309,13 +1440,15 @@ namespace NetworkDesign
         /// <param name="descriptionFE">Описание заданного формата для отображения в диалоге</param>
         private void SaveTemplateMap(string fileExtension, string descriptionFE)
         {
-            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-            saveFileDialog1.Filter = descriptionFE + "|*" + fileExtension;
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog
+            {
+                Filter = descriptionFE + "|*" + fileExtension
+            };
             if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 XmlSerializer formatter = new XmlSerializer(typeof(Map));
                 Map TempMap = new Map();
-                foreach(var b in MyMap.Buildings.Buildings)
+                foreach (var b in MyMap.Buildings.Buildings)
                 {
                     TempMap.Buildings.Add(new Building(b));
                 }
@@ -1380,7 +1513,7 @@ namespace NetworkDesign
         {
             SearchDialog sd = new SearchDialog();
             sd.ShowDialog();
-            if (sd.text != ""  & sd.text != " ")
+            if (sd.text != "" & sd.text != " ")
             {
                 DrawLevel _drawLevel = MyMap.MyTexts.Search(sd.text);
                 if (_drawLevel.Level != -2)
@@ -1400,7 +1533,7 @@ namespace NetworkDesign
 
         private void toolStripButton10_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("заметка добавлена");
+            //MessageBox.Show("заметка добавлена");
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -1408,35 +1541,29 @@ namespace NetworkDesign
 
         }
 
-        private void toolStripButton11_Click(object sender, EventArgs e)
-        {
-            /*ElementParams elementParams = new ElementParams();
-            elementParams.ShowDialog();*/
-        }
-
-        private void toolStripButton12_Click(object sender, EventArgs e)
-        {
-            ImageTextures imageTextures = new ImageTextures(ref MyMap.NetworkElements);
-            imageTextures.ShowDialog();
-
-            /*ToolStripButton knopka = new ToolStripButton(images.Images[imageTextures.imageindex]);
-            toolStrip1.Items.Add(knopka);*/
-        }
-
         private void toolStripButton11_Click_1(object sender, EventArgs e) => MyMap.SetInstrument(9);
 
-        private void menuStrip1_MouseClick(object sender, MouseEventArgs e)
+        private void menuStrip1_MouseClick(object sender, MouseEventArgs e) => focusbox.Focus();
+
+        private void toolStrip1_MouseClick(object sender, MouseEventArgs e) => focusbox.Focus();
+
+        private unsafe void trackBar1_Scroll(object sender, EventArgs e)
         {
-            focusbox.Focus();
+            Zoom = (double)trackBar1.Value / 10d;
+            MyMap.RefreshRenderingArea();
         }
 
-        private void toolStrip1_MouseClick(object sender, MouseEventArgs e)
+        private void panel1_Scroll(object sender, ScrollEventArgs e)
         {
-            focusbox.Focus();
-        }
-
-        private void toolStripButton12_Click_1(object sender, EventArgs e)
-        {
+            if (e.Type == ScrollEventType.ThumbPosition)
+            {
+                asp = panel1.AutoScrollPosition;
+                //panel1.AutoScrollPosition = new Point(-4000, -4000);
+            }
+            else
+            {
+                //panel1.AutoScrollPosition = asp;
+            }
         }
 
         private void toolStripButton14_Click(object sender, EventArgs e) => MyMap.SetInstrument(10);

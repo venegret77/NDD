@@ -26,6 +26,8 @@ namespace NetworkDesign
         public override void Add(object elem)
         {
             Lines.Add((Line)elem);
+            Lines.Last().CalcCenterPoint();
+            Lines.Last().RecalWithZoom();
         }
 
         public override void Remove(int i)
@@ -76,7 +78,7 @@ namespace NetworkDesign
             {
                 _Line.Draw();
             }
-            TempLine.Draw();
+            TempLine.DrawTemp();
         }
 
         public override int Search(int x, int y, out double dist, DrawLevel dl)

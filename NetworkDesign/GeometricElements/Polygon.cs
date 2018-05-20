@@ -47,34 +47,18 @@ namespace NetworkDesign
             TempPoint = new Point();
         }
 
-        public override void CalcMaxMin(out int maxx, out int minx, out int maxy, out int miny)
-        {
-            maxx = Points[0].X; minx = Points[0].X;
-            maxy = Points[0].Y; miny = Points[0].Y;
-            foreach (var point in Points)
-            {
-                if (point.X > maxx)
-                    maxx = point.X;
-                if (point.X < minx)
-                    minx = point.X;
-                if (point.Y > maxy)
-                    maxy = point.Y;
-                if (point.Y < miny)
-                    miny = point.Y;
-            }
-        }
-
         public override double Search(int x, int y)
         {
             if (!delete)
             {
                 double res = 0;
-                CalcMaxMin(out int maxx, out int minx, out int maxy, out int miny);
-                foreach (var point in Points)
+                foreach (var p in Points)
                 {
-                    res += point.X - x + point.Y - y;
+                    res += (int)((double)p.X * MainForm.Zoom) - x;
+                    res += (int)((double)p.Y * MainForm.Zoom) - y;
                 }
                 res = Math.Abs(res);
+                CalcMaxMin(out int maxx, out int minx, out int maxy, out int miny);
                 if (x <= maxx & x >= minx & y <= maxy & y >= miny)
                 {
                     return res;
@@ -99,7 +83,7 @@ namespace NetworkDesign
                         G = (float)MainForm.colorSettings.PolygonColor.G / 255;
                         B = (float)MainForm.colorSettings.PolygonColor.B / 255;
                         A = (float)MainForm.colorSettings.PolygonColor.A / 255;
-                        Gl.glLineWidth(MainForm.colorSettings.LineWidth);
+                        Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom);
                     }
                     else
                     {
@@ -107,17 +91,16 @@ namespace NetworkDesign
                         G = (float)MainForm.colorSettings.ActiveElemColor.G / 255;
                         B = (float)MainForm.colorSettings.ActiveElemColor.B / 255;
                         A = (float)MainForm.colorSettings.ActiveElemColor.A / 255;
-                        Gl.glLineWidth(MainForm.colorSettings.LineWidth + 1);
+                        Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom + 1);
                     }
+                    Gl.glPushMatrix();
+                    Gl.glScaled(MainForm.Zoom, MainForm.Zoom, MainForm.Zoom);
                     Gl.glBegin(Gl.GL_LINE_LOOP);
                     Gl.glColor4f(R, G, B, A);
                     foreach (var point in Points)
-                    {
                         Gl.glVertex2d(point.X, point.Y);
-                    }
-                    if (TempPoint.X != 0 & TempPoint.Y != 0)
-                        Gl.glVertex2d(TempPoint.X, TempPoint.Y);
                     Gl.glEnd();
+                    Gl.glPopMatrix();
                 }
             }
         }
@@ -132,7 +115,7 @@ namespace NetworkDesign
                     G = (float)MainForm.colorSettings.BuildColor.G / 255;
                     B = (float)MainForm.colorSettings.BuildColor.B / 255;
                     A = (float)MainForm.colorSettings.BuildColor.A / 255;
-                    Gl.glLineWidth(MainForm.colorSettings.LineWidth);
+                    Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom);
                 }
                 else
                 {
@@ -140,17 +123,32 @@ namespace NetworkDesign
                     G = (float)MainForm.colorSettings.ActiveElemColor.G / 255;
                     B = (float)MainForm.colorSettings.ActiveElemColor.B / 255;
                     A = (float)MainForm.colorSettings.ActiveElemColor.A / 255;
-                    Gl.glLineWidth(MainForm.colorSettings.LineWidth + 1);
+                    Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom + 1);
                 }
+                Gl.glPushMatrix();
+                Gl.glScaled(MainForm.Zoom, MainForm.Zoom, MainForm.Zoom);
                 Gl.glBegin(Gl.GL_LINE_LOOP);
                 Gl.glColor4f(R, G, B, A);
                 foreach (var point in Points)
-                {
                     Gl.glVertex2d(point.X, point.Y);
-                }
-                if (TempPoint.X != 0 & TempPoint.Y != 0)
-                    Gl.glVertex2d(TempPoint.X, TempPoint.Y);
                 Gl.glEnd();
+                Gl.glPopMatrix();
+            }
+        }
+
+        public override void DrawTemp()
+        {
+            if (!delete)
+            {
+                Gl.glLineWidth(MainForm.colorSettings.LineWidth);
+                Gl.glPushMatrix();
+                Gl.glBegin(Gl.GL_LINE_LOOP);
+                Gl.glColor4f(0.6f, 0.6f, 0.6f, 0.5f);
+                foreach (var point in Points)
+                    Gl.glVertex2d(point.X, point.Y);
+                Gl.glVertex2d(TempPoint.X, TempPoint.Y);
+                Gl.glEnd();
+                Gl.glPopMatrix();
             }
         }
     }

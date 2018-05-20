@@ -16,6 +16,7 @@ namespace NetworkDesign
         public DrawLevel MainDL;
         public DrawLevel LocalDL;
         public double koef;
+        internal bool side;
 
         public Circle()
         {
@@ -56,46 +57,52 @@ namespace NetworkDesign
             delete = false;
         }
 
+        public Circle(int x, int y, int _radius, DrawLevel _MDL, DrawLevel _LDL, bool side)
+        {
+            MainCenterPoint = new Point(x, y);
+            radius = _radius;
+            MainDL = _MDL;
+            LocalDL = _LDL;
+            delete = false;
+            this.side = side;
+        }
+
         public override double Search(int x, int y)
         {
-            if (Math.Pow((x - MainCenterPoint.X), 2) + Math.Pow((y - MainCenterPoint.Y), 2) <= Math.Pow(radius,2))
-                return Math.Abs(MainCenterPoint.X - x + MainCenterPoint.Y - y);
+            if (Math.Pow((x - (double)MainCenterPoint.X * MainForm.Zoom), 2) + Math.Pow((y - (double)MainCenterPoint.Y * MainForm.Zoom), 2) <= Math.Pow((double)radius * MainForm.Zoom,2))
+                return Math.Abs((double)MainCenterPoint.X * MainForm.Zoom - x + (double)MainCenterPoint.Y * MainForm.Zoom - y);
             else
                 return -1;
         }
 
         public double SearchEnt(int x, int y)
         {
-            if (Math.Pow((x - MainCenterPoint.X), 2) + Math.Pow((y - MainCenterPoint.Y), 2) <= Math.Pow(MainForm.colorSettings.EntranceRadius, 2))
-                return Math.Abs(MainCenterPoint.X - x + MainCenterPoint.Y - y);
+            if (Math.Pow((x - (double)MainCenterPoint.X * MainForm.Zoom), 2) + Math.Pow((y - (double)MainCenterPoint.Y * MainForm.Zoom), 2) <= Math.Pow((double)MainForm.colorSettings.EntranceRadius * MainForm.Zoom, 2))
+                return Math.Abs((double)MainCenterPoint.X * MainForm.Zoom - x + (double)MainCenterPoint.Y * MainForm.Zoom - y);
             else
                 return -1;
         }
 
         public double SearchIW(int x, int y)
         {
-            if (Math.Pow((x - MainCenterPoint.X), 2) + Math.Pow((y - MainCenterPoint.Y), 2) <= Math.Pow(MainForm.colorSettings.InputWireRadius, 2))
-                return Math.Abs(MainCenterPoint.X - x + MainCenterPoint.Y - y);
-            else if (Math.Pow((x - MainCenterPoint.X), 2) + Math.Pow((y - MainCenterPoint.Y), 2) <= Math.Pow(MainForm.colorSettings.InputWireRadius, 2))
-                return Math.Abs(MainCenterPoint.X - x + MainCenterPoint.Y - y);
+            if (Math.Pow((x - (double)MainCenterPoint.X * MainForm.Zoom), 2) + Math.Pow((y - (double)MainCenterPoint.Y * MainForm.Zoom), 2) <= Math.Pow((double)MainForm.colorSettings.InputWireRadius * MainForm.Zoom, 2))
+                return Math.Abs((double)MainCenterPoint.X * MainForm.Zoom - x + (double)MainCenterPoint.Y * MainForm.Zoom - y);
             else
                 return -1;
         }
 
         internal double SearchEntInBuild(int x, int y)
         {
-            if (Math.Pow((x - LocalCenterPoint.X), 2) + Math.Pow((y - LocalCenterPoint.Y), 2) <= Math.Pow(MainForm.colorSettings.EntranceRadius, 2))
-                return Math.Abs(LocalCenterPoint.X - x + LocalCenterPoint.Y - y);
+            if (Math.Pow((x - (double)LocalCenterPoint.X * MainForm.Zoom), 2) + Math.Pow((y - (double)LocalCenterPoint.Y * MainForm.Zoom), 2) <= Math.Pow((double)MainForm.colorSettings.EntranceRadius * MainForm.Zoom, 2))
+                return Math.Abs((double)LocalCenterPoint.X * MainForm.Zoom - x + (double)LocalCenterPoint.Y * MainForm.Zoom - y);
             else
                 return -1;
         }
 
         public double SearchIWInBuild(int x, int y)
         {
-            if (Math.Pow((x - LocalCenterPoint.X), 2) + Math.Pow((y - LocalCenterPoint.Y), 2) <= Math.Pow(MainForm.colorSettings.InputWireRadius, 2))
-                return Math.Abs(LocalCenterPoint.X - x + LocalCenterPoint.Y - y);
-            else if (Math.Pow((x - LocalCenterPoint.X), 2) + Math.Pow((y - LocalCenterPoint.Y), 2) <= Math.Pow(MainForm.colorSettings.InputWireRadius, 2))
-                return Math.Abs(LocalCenterPoint.X - x + LocalCenterPoint.Y - y);
+            if (Math.Pow((x - (double)LocalCenterPoint.X * MainForm.Zoom), 2) + Math.Pow((y - (double)LocalCenterPoint.Y * MainForm.Zoom), 2) <= Math.Pow((double)MainForm.colorSettings.InputWireRadius * MainForm.Zoom, 2))
+                return Math.Abs((double)LocalCenterPoint.X * MainForm.Zoom - x + (double)LocalCenterPoint.Y * MainForm.Zoom - y);
             else
                 return -1;
         }
@@ -107,43 +114,49 @@ namespace NetworkDesign
 
         public override void Draw()
         {
-            if (!delete)
+            unsafe
             {
-                if (MainDL == MainForm.drawLevel)
+                if (!delete)
                 {
-                    if (!active)
+                    if (MainDL == MainForm.drawLevel)
                     {
-                        R = (float)MainForm.colorSettings.CircleColor.R / 255;
-                        G = (float)MainForm.colorSettings.CircleColor.G / 255;
-                        B = (float)MainForm.colorSettings.CircleColor.B / 255;
-                        A = (float)MainForm.colorSettings.CircleColor.A / 255;
-                        Gl.glLineWidth(MainForm.colorSettings.LineWidth);
+                        if (!active)
+                        {
+                            R = (float)MainForm.colorSettings.CircleColor.R / 255;
+                            G = (float)MainForm.colorSettings.CircleColor.G / 255;
+                            B = (float)MainForm.colorSettings.CircleColor.B / 255;
+                            A = (float)MainForm.colorSettings.CircleColor.A / 255;
+                            Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom);
+                        }
+                        else
+                        {
+                            R = (float)MainForm.colorSettings.ActiveElemColor.R / 255;
+                            G = (float)MainForm.colorSettings.ActiveElemColor.G / 255;
+                            B = (float)MainForm.colorSettings.ActiveElemColor.B / 255;
+                            A = (float)MainForm.colorSettings.ActiveElemColor.A / 255;
+                            Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom + 1);
+                        }
+                        Gl.glPushMatrix();
+                        Gl.glScaled(MainForm.Zoom, MainForm.Zoom, MainForm.Zoom);
+                        // Прорисовка окружности непосредственно.
+                        Gl.glBegin(Gl.GL_LINE_LOOP);
+                        Gl.glColor4f(R, G, B, A);
+                        // Устанавливаем центр окружности.
+                        //Gl.glVertex2d(CenterPoint.X, CenterPoint.Y);
+                        // Берём точку c координатой [radius; 0] и начинаем её поворачивать на 360 градусов.
+                        // Если нужна большая точность окружности в ущерб производительности, 
+                        // то изменяем шаг "10" на более мелкий, например, "1".
+                        for (int angle = 0; angle <= 360; angle += 1)
+                        {
+                            // Координаты x, y повёрнутые на заданный угол относительно начала координат.
+                            double x = radius * Math.Cos(angle * Math.PI / 180);
+                            double y = radius * Math.Sin(angle * Math.PI / 180);
+                            // Смещаем окрущность к её центру [xCentre; yCentre].
+                            Gl.glVertex2d(x + MainCenterPoint.X, y + MainCenterPoint.Y);
+                        }
+                        Gl.glEnd();
+                        Gl.glPopMatrix();
                     }
-                    else
-                    {
-                        R = (float)MainForm.colorSettings.ActiveElemColor.R / 255;
-                        G = (float)MainForm.colorSettings.ActiveElemColor.G / 255;
-                        B = (float)MainForm.colorSettings.ActiveElemColor.B / 255;
-                        A = (float)MainForm.colorSettings.ActiveElemColor.A / 255;
-                        Gl.glLineWidth(MainForm.colorSettings.LineWidth + 1);
-                    }
-                    // Прорисовка окружности непосредственно.
-                    Gl.glBegin(Gl.GL_LINE_LOOP);
-                    Gl.glColor4f(R, G, B, A);
-                    // Устанавливаем центр окружности.
-                    //Gl.glVertex2d(CenterPoint.X, CenterPoint.Y);
-                    // Берём точку c координатой [radius; 0] и начинаем её поворачивать на 360 градусов.
-                    // Если нужна большая точность окружности в ущерб производительности, 
-                    // то изменяем шаг "10" на более мелкий, например, "1".
-                    for (int angle = 0; angle <= 360; angle += 1)
-                    {
-                        // Координаты x, y повёрнутые на заданный угол относительно начала координат.
-                        double x = radius * Math.Cos(angle * Math.PI / 180);
-                        double y = radius * Math.Sin(angle * Math.PI / 180);
-                        // Смещаем окрущность к её центру [xCentre; yCentre].
-                        Gl.glVertex2d(x + MainCenterPoint.X, y + MainCenterPoint.Y);
-                    }
-                    Gl.glEnd();
                 }
             }
         }
@@ -161,7 +174,7 @@ namespace NetworkDesign
                         G = (float)MainForm.colorSettings.EntranceColor.G / 255;
                         B = (float)MainForm.colorSettings.EntranceColor.B / 255;
                         A = (float)MainForm.colorSettings.EntranceColor.A / 255;
-                        Gl.glLineWidth(MainForm.colorSettings.LineWidth);
+                        Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom);
                     }
                     else
                     {
@@ -169,8 +182,10 @@ namespace NetworkDesign
                         G = (float)MainForm.colorSettings.ActiveElemColor.G / 255;
                         B = (float)MainForm.colorSettings.ActiveElemColor.B / 255;
                         A = (float)MainForm.colorSettings.ActiveElemColor.A / 255;
-                        Gl.glLineWidth(MainForm.colorSettings.LineWidth + 1);
+                        Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom + 1);
                     }
+                    Gl.glPushMatrix();
+                    Gl.glScaled(MainForm.Zoom, MainForm.Zoom, MainForm.Zoom);
                     // Прорисовка окружности непосредственно.
                     Gl.glBegin(Gl.GL_TRIANGLE_FAN);
                     Gl.glColor4f(R, G, B, A);
@@ -188,6 +203,7 @@ namespace NetworkDesign
                         Gl.glVertex2d(x + MainCenterPoint.X, y + MainCenterPoint.Y);
                     }
                     Gl.glEnd();
+                    Gl.glPopMatrix();
                 }
                 else if (LocalDL == MainForm.drawLevel)
                 {
@@ -197,7 +213,7 @@ namespace NetworkDesign
                         G = (float)MainForm.colorSettings.EntranceColor.G / 255;
                         B = (float)MainForm.colorSettings.EntranceColor.B / 255;
                         A = (float)MainForm.colorSettings.EntranceColor.A / 255;
-                        Gl.glLineWidth(MainForm.colorSettings.LineWidth);
+                        Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom);
                     }
                     else
                     {
@@ -205,8 +221,10 @@ namespace NetworkDesign
                         G = (float)MainForm.colorSettings.ActiveElemColor.G / 255;
                         B = (float)MainForm.colorSettings.ActiveElemColor.B / 255;
                         A = (float)MainForm.colorSettings.ActiveElemColor.A / 255;
-                        Gl.glLineWidth(MainForm.colorSettings.LineWidth + 1);
+                        Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom + 1);
                     }
+                    Gl.glPushMatrix();
+                    Gl.glScaled(MainForm.Zoom, MainForm.Zoom, MainForm.Zoom);
                     // Прорисовка окружности непосредственно.
                     Gl.glBegin(Gl.GL_TRIANGLE_FAN);
                     Gl.glColor4f(R, G, B, A);
@@ -224,6 +242,7 @@ namespace NetworkDesign
                         Gl.glVertex2d(x + LocalCenterPoint.X, y + LocalCenterPoint.Y);
                     }
                     Gl.glEnd();
+                    Gl.glPopMatrix();
                 }
             }
         }
@@ -240,7 +259,7 @@ namespace NetworkDesign
                         G = (float)MainForm.colorSettings.InputWireColor.G / 255;
                         B = (float)MainForm.colorSettings.InputWireColor.B / 255;
                         A = (float)MainForm.colorSettings.InputWireColor.A / 255;
-                        Gl.glLineWidth(MainForm.colorSettings.LineWidth);
+                        Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom);
                     }
                     else
                     {
@@ -248,8 +267,10 @@ namespace NetworkDesign
                         G = (float)MainForm.colorSettings.ActiveElemColor.G / 255;
                         B = (float)MainForm.colorSettings.ActiveElemColor.B / 255;
                         A = (float)MainForm.colorSettings.ActiveElemColor.A / 255;
-                        Gl.glLineWidth(MainForm.colorSettings.LineWidth + 1);
+                        Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom + 1);
                     }
+                    Gl.glPushMatrix();
+                    Gl.glScaled(MainForm.Zoom, MainForm.Zoom, MainForm.Zoom);
                     // Прорисовка окружности непосредственно.
                     Gl.glBegin(Gl.GL_TRIANGLE_FAN);
                     Gl.glColor4f(R, G, B, A);
@@ -267,6 +288,7 @@ namespace NetworkDesign
                         Gl.glVertex2d(x + MainCenterPoint.X, y + MainCenterPoint.Y);
                     }
                     Gl.glEnd();
+                    Gl.glPopMatrix();
                 }
                 else if (LocalDL == MainForm.drawLevel)
                 {
@@ -276,7 +298,7 @@ namespace NetworkDesign
                         G = (float)MainForm.colorSettings.InputWireColor.G / 255;
                         B = (float)MainForm.colorSettings.InputWireColor.B / 255;
                         A = (float)MainForm.colorSettings.InputWireColor.A / 255;
-                        Gl.glLineWidth(MainForm.colorSettings.LineWidth);
+                        Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom);
                     }
                     else
                     {
@@ -284,8 +306,10 @@ namespace NetworkDesign
                         G = (float)MainForm.colorSettings.ActiveElemColor.G / 255;
                         B = (float)MainForm.colorSettings.ActiveElemColor.B / 255;
                         A = (float)MainForm.colorSettings.ActiveElemColor.A / 255;
-                        Gl.glLineWidth(MainForm.colorSettings.LineWidth + 1);
+                        Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom + 1);
                     }
+                    Gl.glPushMatrix();
+                    Gl.glScaled(MainForm.Zoom, MainForm.Zoom, MainForm.Zoom);
                     // Прорисовка окружности непосредственно.
                     Gl.glBegin(Gl.GL_TRIANGLE_FAN);
                     Gl.glColor4f(R, G, B, A);
@@ -303,6 +327,7 @@ namespace NetworkDesign
                         Gl.glVertex2d(x + LocalCenterPoint.X, y + LocalCenterPoint.Y);
                     }
                     Gl.glEnd();
+                    Gl.glPopMatrix();
                 }
             }
         }
@@ -327,7 +352,7 @@ namespace NetworkDesign
                     G = (float)MainForm.colorSettings.BuildColor.G / 255;
                     B = (float)MainForm.colorSettings.BuildColor.B / 255;
                     A = (float)MainForm.colorSettings.BuildColor.A / 255;
-                    Gl.glLineWidth(MainForm.colorSettings.LineWidth);
+                    Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom);
                 }
                 else
                 {
@@ -335,8 +360,10 @@ namespace NetworkDesign
                     G = (float)MainForm.colorSettings.ActiveElemColor.G / 255;
                     B = (float)MainForm.colorSettings.ActiveElemColor.B / 255;
                     A = (float)MainForm.colorSettings.ActiveElemColor.A / 255;
-                    Gl.glLineWidth(MainForm.colorSettings.LineWidth + 1);
+                    Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom + 1);
                 }
+                Gl.glPushMatrix();
+                Gl.glScaled(MainForm.Zoom, MainForm.Zoom, MainForm.Zoom);
                 // Прорисовка окружности непосредственно.
                 Gl.glBegin(Gl.GL_LINE_LOOP);
                 Gl.glColor4f(R, G, B, A);
@@ -354,7 +381,98 @@ namespace NetworkDesign
                     Gl.glVertex2d(x + MainCenterPoint.X, y + MainCenterPoint.Y);
                 }
                 Gl.glEnd();
+                Gl.glPopMatrix();
             }
+        }
+
+        public override void RecalWithZoom()
+        {
+            radius = (int)((double)radius / MainForm.Zoom);
+            MainCenterPoint = new Point((int)(MainCenterPoint.X / MainForm.Zoom), (int)(MainCenterPoint.Y / MainForm.Zoom));
+            LocalCenterPoint = new Point((int)(LocalCenterPoint.X / MainForm.Zoom), (int)(LocalCenterPoint.Y / MainForm.Zoom));
+        }
+
+        public override void DrawTemp()
+        {
+            if (!delete)
+            {
+                Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom);
+                Gl.glPushMatrix();
+                Gl.glBegin(Gl.GL_LINE_LOOP);
+                Gl.glColor4f(0.6f, 0.6f, 0.6f, 0.5f);
+                // Устанавливаем центр окружности.
+                //Gl.glVertex2d(CenterPoint.X, CenterPoint.Y);
+                // Берём точку c координатой [radius; 0] и начинаем её поворачивать на 360 градусов.
+                // Если нужна большая точность окружности в ущерб производительности, 
+                // то изменяем шаг "10" на более мелкий, например, "1".
+                for (int angle = 0; angle <= 360; angle += 1)
+                {
+                    // Координаты x, y повёрнутые на заданный угол относительно начала координат.
+                    double x = (double)radius * Math.Cos(angle * Math.PI / 180);
+                    double y = (double)radius * Math.Sin(angle * Math.PI / 180);
+                    // Смещаем окрущность к её центру [xCentre; yCentre].
+                    Gl.glVertex2d(x + MainCenterPoint.X, y + MainCenterPoint.Y);
+                }
+                Gl.glEnd();
+                Gl.glPopMatrix();
+            }
+        }
+
+        internal void DrawTempEnt()
+        {
+            if (!delete)
+            {
+                Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom);
+                Gl.glPushMatrix();
+                Gl.glBegin(Gl.GL_TRIANGLE_FAN);
+                Gl.glColor4f(0.6f, 0.6f, 0.6f, 0.5f);
+                // Устанавливаем центр окружности.
+                //Gl.glVertex2d(CenterPoint.X, CenterPoint.Y);
+                // Берём точку c координатой [radius; 0] и начинаем её поворачивать на 360 градусов.
+                // Если нужна большая точность окружности в ущерб производительности, 
+                // то изменяем шаг "10" на более мелкий, например, "1".
+                for (int angle = 0; angle <= 360; angle += 1)
+                {
+                    // Координаты x, y повёрнутые на заданный угол относительно начала координат.
+                    double x = (double)MainForm.colorSettings.EntranceRadius * MainForm.Zoom * Math.Cos(angle * Math.PI / 180);
+                    double y = (double)MainForm.colorSettings.EntranceRadius * MainForm.Zoom * Math.Sin(angle * Math.PI / 180);
+                    // Смещаем окрущность к её центру [xCentre; yCentre].
+                    Gl.glVertex2d(x + MainCenterPoint.X, y + MainCenterPoint.Y);
+                }
+                Gl.glEnd();
+                Gl.glPopMatrix();
+            }
+        }
+
+        internal void DrawTempIW()
+        {
+            if (!delete)
+            {
+                Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom);
+                Gl.glPushMatrix();
+                Gl.glBegin(Gl.GL_TRIANGLE_FAN);
+                Gl.glColor4f(0.6f, 0.6f, 0.6f, 0.5f);
+                // Устанавливаем центр окружности.
+                //Gl.glVertex2d(CenterPoint.X, CenterPoint.Y);
+                // Берём точку c координатой [radius; 0] и начинаем её поворачивать на 360 градусов.
+                // Если нужна большая точность окружности в ущерб производительности, 
+                // то изменяем шаг "10" на более мелкий, например, "1".
+                for (int angle = 0; angle <= 360; angle += 1)
+                {
+                    // Координаты x, y повёрнутые на заданный угол относительно начала координат.
+                    double x = (double)MainForm.colorSettings.InputWireRadius * MainForm.Zoom * Math.Cos(angle * Math.PI / 180);
+                    double y = (double)MainForm.colorSettings.InputWireRadius * MainForm.Zoom * Math.Sin(angle * Math.PI / 180);
+                    // Смещаем окрущность к её центру [xCentre; yCentre].
+                    Gl.glVertex2d(x + MainCenterPoint.X, y + MainCenterPoint.Y);
+                }
+                Gl.glEnd();
+                Gl.glPopMatrix();
+            }
+        }
+
+        public override void MoveElem(int x, int y)
+        {
+            MainCenterPoint = new Point((int)((double)x / MainForm.Zoom), (int)((double)y / MainForm.Zoom));
         }
     }
 }

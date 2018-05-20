@@ -30,29 +30,28 @@ namespace NetworkDesign
 
         public override double Search(int x, int y)
         {
-
             if (!delete)
             {
                 int maxx = 0, minx = 0, maxy = 0, miny = 0;
-                if (Points[0].X > Points[1].X)
+                if (((double)Points[0].X * MainForm.Zoom) > (double)(Points[1].X * MainForm.Zoom))
                 {
-                    maxx = Points[0].X;
-                    minx = Points[1].X;
+                    maxx = (int)((double)Points[0].X * MainForm.Zoom);
+                    minx = (int)((double)Points[1].X * MainForm.Zoom);
                 }
                 else
                 {
-                    maxx = Points[1].X;
-                    minx = Points[0].X;
+                    maxx = (int)((double)Points[1].X * MainForm.Zoom);
+                    minx = (int)((double)Points[0].X * MainForm.Zoom);
                 }
-                if (Points[0].Y > Points[1].Y)
+                if (((double)Points[0].Y * MainForm.Zoom) > (double)(Points[1].Y * MainForm.Zoom))
                 {
-                    maxy = Points[0].Y;
-                    miny = Points[1].Y;
+                    maxy = (int)((double)Points[0].Y * MainForm.Zoom);
+                    miny = (int)((double)Points[1].Y * MainForm.Zoom);
                 }
                 else
                 {
-                    maxy = Points[1].Y;
-                    miny = Points[0].Y;
+                    maxy = (int)((double)Points[1].Y * MainForm.Zoom);
+                    miny = (int)((double)Points[0].Y * MainForm.Zoom);
                 }
                 int lw = (int)MainForm.colorSettings.LineWidth + 1;
                 maxx += lw;
@@ -61,11 +60,11 @@ namespace NetworkDesign
                 miny -= lw;
                 if (x <= maxx & x >= minx & y <= maxy & y >= miny)
                 {
-                    double A = Points[1].Y - Points[0].Y;
-                    double B = Points[0].X - Points[1].X;
-                    double C = Points[0].X * (double)(Points[0].Y - Points[1].Y) + (double)Points[0].Y * (double)(Points[1].X - Points[0].X);
+                    double A = ((double)Points[1].Y * MainForm.Zoom) - ((double)Points[0].Y * MainForm.Zoom);
+                    double B = ((double)Points[0].X * MainForm.Zoom) - ((double)Points[1].X * MainForm.Zoom);
+                    double C = ((double)Points[0].X * MainForm.Zoom) * (((double)Points[0].Y * MainForm.Zoom) - ((double)Points[1].Y * MainForm.Zoom)) + ((double)Points[0].Y * MainForm.Zoom) * (((double)Points[1].X * MainForm.Zoom) - ((double)Points[0].X * MainForm.Zoom));
                     double d = Math.Abs(A * x + B * y + C) / Math.Sqrt((A * A) + (B * B));
-                    if (d < lw + 2)
+                    if (d < lw * MainForm.Zoom + 2)
                         return d;
                     else
                         return -1;
@@ -86,7 +85,7 @@ namespace NetworkDesign
                         G = (float)MainForm.colorSettings.LinesColor.G / 255;
                         B = (float)MainForm.colorSettings.LinesColor.B / 255;
                         A = (float)MainForm.colorSettings.LinesColor.A / 255;
-                        Gl.glLineWidth(MainForm.colorSettings.LineWidth);
+                        Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom);
                     }
                     else
                     {
@@ -94,13 +93,16 @@ namespace NetworkDesign
                         G = (float)MainForm.colorSettings.ActiveElemColor.G / 255;
                         B = (float)MainForm.colorSettings.ActiveElemColor.B / 255;
                         A = (float)MainForm.colorSettings.ActiveElemColor.A / 255;
-                        Gl.glLineWidth(MainForm.colorSettings.LineWidth + 1);
+                        Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom);
                     }
+                    Gl.glPushMatrix();
+                    Gl.glScaled(MainForm.Zoom, MainForm.Zoom, MainForm.Zoom);
                     Gl.glBegin(Gl.GL_LINES);
                     Gl.glColor4f(R, G, B, A);
                     Gl.glVertex2d(Points[0].X, Points[0].Y);
                     Gl.glVertex2d(Points[1].X, Points[1].Y);
                     Gl.glEnd();
+                    Gl.glPopMatrix();
                 }
             }
         }
@@ -113,6 +115,21 @@ namespace NetworkDesign
         public override void CalcMaxMin(out int maxx, out int minx, out int maxy, out int miny)
         {
             throw new NotImplementedException();
+        }
+
+        public override void DrawTemp()
+        {
+            if (!delete)
+            {
+                Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom);
+                Gl.glPushMatrix();
+                Gl.glBegin(Gl.GL_LINE_LOOP);
+                Gl.glColor4f(0.6f, 0.6f, 0.6f, 0.5f);
+                Gl.glVertex2d(Points[0].X, Points[0].Y);
+                Gl.glVertex2d(Points[1].X, Points[1].Y);
+                Gl.glEnd();
+                Gl.glPopMatrix();
+            }
         }
     }
 }

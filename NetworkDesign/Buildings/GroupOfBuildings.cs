@@ -26,11 +26,13 @@ namespace NetworkDesign
         public override void Add(object elem)
         {
             Buildings.Add((Building)elem);
+            Buildings.Last().CalcCenterPoint();
         }
 
         public override void Remove(int i)
         {
             Buildings[i] = new Building();
+            //Доделать проверку на наличие элементов в здании
         }
 
         public override void Choose(int i)

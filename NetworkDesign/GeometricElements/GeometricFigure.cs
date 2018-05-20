@@ -38,6 +38,9 @@ namespace NetworkDesign
         /// </summary>
         protected double alfa = 0;
 
+        public double CenterPointX = 0;
+        public double CenterPointY = 0;
+
         /// <summary>
         /// Устанавливает заданную активность
         /// </summary>
@@ -77,7 +80,41 @@ namespace NetworkDesign
         /// <param name="minx">Возвращаемый параметр X минимальное</param>
         /// <param name="maxy">Возвращаемый параметр Y максимальное</param>
         /// <param name="miny">Возвращаемый параметр Y минимальное</param>
-        public abstract void CalcMaxMin(out int maxx, out int minx, out int maxy, out int miny);
+        public virtual void CalcMaxMin(out int maxx, out int minx, out int maxy, out int miny)
+        {
+            maxx = (int)((double)Points[0].X * MainForm.Zoom);
+            minx = (int)((double)Points[0].X * MainForm.Zoom);
+            maxy = (int)((double)Points[0].Y * MainForm.Zoom);
+            miny = (int)((double)Points[0].Y * MainForm.Zoom);
+            foreach (var point in Points)
+            {
+                if ((int)((double)point.X * MainForm.Zoom) > maxx)
+                    maxx = (int)((double)point.X * MainForm.Zoom);
+                if ((int)((double)point.X * MainForm.Zoom) < minx)
+                    minx = (int)((double)point.X * MainForm.Zoom);
+                if ((int)((double)point.Y * MainForm.Zoom) > maxy)
+                    maxy = (int)((double)point.Y * MainForm.Zoom);
+                if ((int)((double)point.Y * MainForm.Zoom) < miny)
+                    miny = (int)((double)point.Y * MainForm.Zoom);
+            }
+        }
+        /// <summary>
+        /// Расчет центральной точки элемента
+        /// </summary>
+        public virtual void CalcCenterPoint()
+        {
+            double x = 0;
+            double y = 0;
+            int count = 0;
+            foreach (var p in Points)
+            {
+                x += (double)p.X * MainForm.Zoom;
+                y += (double)p.Y * MainForm.Zoom;
+                count++;
+            }
+            CenterPointX = x / (double)count;
+            CenterPointY = y / (double)count;
+        }
         /// <summary>
         /// Отрисовка
         /// </summary>
@@ -86,5 +123,28 @@ namespace NetworkDesign
         /// Отрисовка для здания
         /// </summary>
         public abstract void DrawB();
+        /// <summary>
+        /// Отрисовка временного элемента без учета зума и цветов
+        /// </summary>
+        public abstract void DrawTemp();
+        public virtual void MoveElem(int x, int y)
+        {
+            int difx = x - (int)CenterPointX;
+            int dify = y - (int)CenterPointY;
+            for (int i = 0; i < Points.Count; i++)
+            {
+                Points[i] = new Point(Points[i].X + difx, Points[i].Y + dify);
+            }
+        }
+        /// <summary>
+        /// Пересчет точек элемента в соответсии с зумом при добавлении временного в основной список
+        /// </summary>
+        public virtual void RecalWithZoom()
+        {
+            for (int i = 0; i < Points.Count; i++)
+            {
+                Points[i] = new Point((int)(Points[i].X / MainForm.Zoom), (int)(Points[i].Y / MainForm.Zoom));
+            }
+        }
     }
 }
