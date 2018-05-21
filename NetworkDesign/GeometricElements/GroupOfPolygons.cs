@@ -100,5 +100,21 @@ namespace NetworkDesign
             }
             return elems;
         }
+
+        public override List<EditRect> GenEditRects()
+        {
+            List<EditRect> _EditRects = new List<EditRect>();
+            for (int i = 0; i < Polygons.Count; i++)
+            {
+                if (Polygons[i].DL == MainForm.drawLevel & !Polygons[i].delete)
+                {
+                    for (int j = 0; j < Polygons[i].Points.Count; j++)
+                    {
+                        _EditRects.Add(new EditRect(Polygons[i].Points[j], 5, i, j));
+                    }
+                }
+            }
+            return _EditRects;
+        }
     }
 }

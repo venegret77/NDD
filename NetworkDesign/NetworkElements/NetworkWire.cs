@@ -12,11 +12,13 @@ namespace NetworkDesign.NetworkElements
     {
         public int ID;
         public bool IW;
+        public int Build;
 
-        public IDandIW(int iD, bool iW)
+        public IDandIW(int iD, bool iW, int build)
         {
             ID = iD;
             IW = iW;
+            Build = build;
         }
     }
 
@@ -31,8 +33,8 @@ namespace NetworkDesign.NetworkElements
         /// </summary>
         public Notes notes;
 
-        public IDandIW idiw1 = new IDandIW(-1, false);
-        public IDandIW idiw2 = new IDandIW(-1, false);
+        public IDandIW idiw1 = new IDandIW(-1, false, -1);
+        public IDandIW idiw2 = new IDandIW(-1, false, -1);
 
         public NetworkWire(int x, int y, DrawLevel _drawLevel, IDandIW _idiw1)
         {
@@ -133,12 +135,66 @@ namespace NetworkDesign.NetworkElements
 
         public override double Search(int x, int y)
         {
-            throw new NotImplementedException();
+            if (!delete)
+            {
+                for (int i = 0; i < Points.Count - 1; i++)
+                {
+                    int maxx = 0, minx = 0, maxy = 0, miny = 0;
+                    if (((double)Points[i].X * MainForm.Zoom) > (double)(Points[i + 1].X * MainForm.Zoom))
+                    {
+                        maxx = (int)((double)Points[i].X * MainForm.Zoom);
+                        minx = (int)((double)Points[i + 1].X * MainForm.Zoom);
+                    }
+                    else
+                    {
+                        maxx = (int)((double)Points[i + 1].X * MainForm.Zoom);
+                        minx = (int)((double)Points[i].X * MainForm.Zoom);
+                    }
+                    if (((double)Points[i].Y * MainForm.Zoom) > (double)(Points[i + 1].Y * MainForm.Zoom))
+                    {
+                        maxy = (int)((double)Points[i].Y * MainForm.Zoom);
+                        miny = (int)((double)Points[i + 1].Y * MainForm.Zoom);
+                    }
+                    else
+                    {
+                        maxy = (int)((double)Points[i + 1].Y * MainForm.Zoom);
+                        miny = (int)((double)Points[i].Y * MainForm.Zoom);
+                    }
+                    int lw = (int)MainForm.colorSettings.LineWidth + 1;
+                    maxx += lw;
+                    maxy += lw;
+                    minx -= lw;
+                    miny -= lw;
+                    if (x <= maxx & x >= minx & y <= maxy & y >= miny)
+                    {
+                        double A = ((double)Points[i + 1].Y * MainForm.Zoom) - ((double)Points[i].Y * MainForm.Zoom);
+                        double B = ((double)Points[i].X * MainForm.Zoom) - ((double)Points[i + 1].X * MainForm.Zoom);
+                        double C = ((double)Points[i].X * MainForm.Zoom) * (((double)Points[i].Y * MainForm.Zoom) - ((double)Points[i + 1].Y * MainForm.Zoom)) + ((double)Points[i].Y * MainForm.Zoom) * (((double)Points[i + 1].X * MainForm.Zoom) - ((double)Points[i].X * MainForm.Zoom));
+                        double d = Math.Abs(A * x + B * y + C) / Math.Sqrt((A * A) + (B * B));
+                        if (d < lw * MainForm.Zoom + 2)
+                            return d;
+                    }
+                }
+            }
+            return -1;
         }
 
         public override void DrawB()
         {
             throw new NotImplementedException();
+        }
+
+        internal void AddNewPoint()
+        {
+            int x = (Points.Last().X + Points[Points.Count - 2].X) / 2;
+            int y = (Points.Last().Y + Points[Points.Count - 2].Y) / 2;
+            Points.Insert(Points.Count - 1, new Point(x, y));
+        }
+
+        internal void RemovePoint()
+        {
+            if (Points.Count > 2)
+                Points.RemoveAt(Points.Count - 2);
         }
     }
 }

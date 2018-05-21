@@ -40,6 +40,8 @@ namespace NetworkDesign
 
         public int Search(int x, int y)
         {
+            x = (int)((double)x / MainForm.Zoom);
+            y = (int)((double)y / MainForm.Zoom);
             double xydif = EditRect.width * 2;
             int num = -1;
             for (int i = 0; i < EditRects.Count; i ++)
@@ -130,6 +132,11 @@ namespace NetworkDesign
         }
 
         public override List<object> GetInBuild(int build)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override List<EditRect> GenEditRects()
         {
             throw new NotImplementedException();
         }

@@ -6,22 +6,17 @@ using System.Threading.Tasks;
 
 namespace NetworkDesign
 {
-    public class ElemOfEdit
+    public struct ElemOfEdit
     {
         public int type; //1 - линия //2 - прямоугольник
+        public int id;
         public int point;
-        public int count;
 
-        public ElemOfEdit()
+        public ElemOfEdit(int type, int id, int point)
         {
-
-        }
-
-        public ElemOfEdit(int _type, int _point, int _count)
-        {
-            type = _type;
-            point = _point;
-            count = _count;
+            this.type = type;
+            this.id = id;
+            this.point = point;
         }
     }
 }

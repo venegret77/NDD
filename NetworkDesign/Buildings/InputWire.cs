@@ -26,13 +26,23 @@ namespace NetworkDesign
             InputWires.TempCircle = new Circle();
         }
 
+        /// <summary>
+        /// Добавить провод провода внутри здания между этажами
+        /// </summary>
         public void AddInBuild()
         {
-            InputWires.TempCircle.LocalCenterPoint = InputWires.TempCircle.MainCenterPoint;
+            InputWires.TempCircle.LocalCenterPoint = MainForm._GenZoomPoint(InputWires.TempCircle.MainCenterPoint);
             InputWires.Add(InputWires.TempCircle);
             InputWires.TempCircle = new Circle();
         }
 
+        /// <summary>
+        /// Добавление временного элемента
+        /// </summary>
+        /// <param name="x">Координата мыши X</param>
+        /// <param name="y">Координата мыши Y</param>
+        /// <param name="MDL">Уровень отображения</param>
+        /// <param name="LDL">Уровень отображения</param>
         public void AddTemp(int x, int y, DrawLevel MDL, DrawLevel LDL)
         {
             InputWires.TempCircle = new Circle(x, y, rad, MDL, LDL, side);

@@ -46,6 +46,11 @@ namespace NetworkDesign.NetworkElements
             //TempMyText.Draw();
         }
 
+        public override List<EditRect> GenEditRects()
+        {
+            throw new NotImplementedException();
+        }
+
         public override List<object> GetInBuild(int build)
         {
             List<object> elems = new List<object>();

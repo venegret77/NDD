@@ -334,7 +334,7 @@ namespace NetworkDesign
 
         public override void SetPoint(int x, int y, int i)
         {
-            throw new NotImplementedException();
+            radius = (int)((Math.Abs(MainCenterPoint.X - x) + Math.Abs(MainCenterPoint.Y - y)));
         }
 
         public override void CalcMaxMin(out int maxx, out int minx, out int maxy, out int miny)
@@ -388,8 +388,8 @@ namespace NetworkDesign
         public override void RecalWithZoom()
         {
             radius = (int)((double)radius / MainForm.Zoom);
-            MainCenterPoint = new Point((int)(MainCenterPoint.X / MainForm.Zoom), (int)(MainCenterPoint.Y / MainForm.Zoom));
-            LocalCenterPoint = new Point((int)(LocalCenterPoint.X / MainForm.Zoom), (int)(LocalCenterPoint.Y / MainForm.Zoom));
+            MainCenterPoint = MainForm._GenZoomPoint(MainCenterPoint);//new Point((int)(MainCenterPoint.X / MainForm.Zoom), (int)(MainCenterPoint.Y / MainForm.Zoom));
+            //LocalCenterPoint = new Point((int)(LocalCenterPoint.X / MainForm.Zoom), (int)(LocalCenterPoint.Y / MainForm.Zoom));
         }
 
         public override void DrawTemp()
@@ -473,6 +473,38 @@ namespace NetworkDesign
         public override void MoveElem(int x, int y)
         {
             MainCenterPoint = new Point((int)((double)x / MainForm.Zoom), (int)((double)y / MainForm.Zoom));
+        }
+
+        internal void DrawB(double koef)
+        {
+            if (!delete)
+            {
+                R = (float)MainForm.colorSettings.BuildColor.R / 255;
+                G = (float)MainForm.colorSettings.BuildColor.G / 255;
+                B = (float)MainForm.colorSettings.BuildColor.B / 255;
+                A = (float)MainForm.colorSettings.BuildColor.A / 255;
+                Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom * (float)koef);
+                Gl.glPushMatrix();
+                Gl.glScaled(MainForm.Zoom, MainForm.Zoom, MainForm.Zoom);
+                // Прорисовка окружности непосредственно.
+                Gl.glBegin(Gl.GL_LINE_LOOP);
+                Gl.glColor4f(R, G, B, A);
+                // Устанавливаем центр окружности.
+                //Gl.glVertex2d(CenterPoint.X, CenterPoint.Y);
+                // Берём точку c координатой [radius; 0] и начинаем её поворачивать на 360 градусов.
+                // Если нужна большая точность окружности в ущерб производительности, 
+                // то изменяем шаг "10" на более мелкий, например, "1".
+                for (int angle = 0; angle <= 360; angle += 1)
+                {
+                    // Координаты x, y повёрнутые на заданный угол относительно начала координат.
+                    double x = radius * Math.Cos(angle * Math.PI / 180);
+                    double y = radius * Math.Sin(angle * Math.PI / 180);
+                    // Смещаем окрущность к её центру [xCentre; yCentre].
+                    Gl.glVertex2d(x + MainCenterPoint.X, y + MainCenterPoint.Y);
+                }
+                Gl.glEnd();
+                Gl.glPopMatrix();
+            }
         }
     }
 }

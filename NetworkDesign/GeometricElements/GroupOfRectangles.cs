@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NetworkDesign
 {
-    public class GroupOfRectangles: GroupOfElements
+    public class GroupOfRectangles : GroupOfElements
     {
         public List<MyRectangle> Rectangles = new List<MyRectangle>();
         public MyRectangle TempRectangle = new MyRectangle(); //Текущий прямоугольник
@@ -101,14 +101,22 @@ namespace NetworkDesign
             return elems;
         }
 
-        /*public override List<object> ConvertToListObj()
+        public override List<EditRect> GenEditRects()
         {
-            List<object> list = new List<object>();
-            foreach (var elem in Rectangles)
+            List<EditRect> _EditRects = new List<EditRect>();
+            for (int i = 0; i < Rectangles.Count; i++)
             {
-                list.Add(elem);
+                if (Rectangles[i].DL == MainForm.drawLevel & !Rectangles[i].delete)
+                {
+                    Rectangles[i].CalcTempPoints();
+                    _EditRects.Add(new EditRect(Rectangles[i].Points[1], 2, i, 0));
+                    _EditRects.Add(new EditRect(Rectangles[i].Point12, 2, i, 12));
+                    _EditRects.Add(new EditRect(Rectangles[i].Point13, 2, i, 13));
+                    _EditRects.Add(new EditRect(Rectangles[i].Point24, 2, i, 24));
+                    _EditRects.Add(new EditRect(Rectangles[i].Point34, 2, i, 34));
+                }
             }
-            return list;
-        }*/
+            return _EditRects;
+        }
     }
 }

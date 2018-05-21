@@ -24,11 +24,18 @@ namespace NetworkDesign
 
         }
 
-        public EditRect(Point _coords, int _elem, int _point, int _count_elem)
+        /// <summary>
+        /// Конструктор
+        /// </summary>
+        /// <param name="_coords">Координаты точки</param>
+        /// <param name="_type">Тип элемента</param>
+        /// <param name="_point">Точка</param>
+        /// <param name="_id">Количество элементов</param>
+        public EditRect(Point _coords, int _type, int _id, int _point)
         {
             coords = _coords;
             CalcPoints();
-            elems.Add(new ElemOfEdit(_elem, _point, _count_elem));
+            elems.Add(new ElemOfEdit(_type, _id, _point));
         }
 
         public void Refresh(Point _coords)
@@ -47,7 +54,9 @@ namespace NetworkDesign
 
         public void Draw()
         {
-            Gl.glLineWidth(1);
+            Gl.glLineWidth((float)MainForm.Zoom);
+            Gl.glPushMatrix();
+            Gl.glScaled(MainForm.Zoom, MainForm.Zoom, MainForm.Zoom);
             Gl.glBegin(Gl.GL_LINE_LOOP);
             Gl.glColor4f(1, 0, 0, 1);
             Gl.glVertex2d(Point1.X, Point1.Y);
@@ -55,6 +64,7 @@ namespace NetworkDesign
             Gl.glVertex2d(Point4.X, Point4.Y);
             Gl.glVertex2d(Point3.X, Point3.Y);
             Gl.glEnd();
+            Gl.glPopMatrix();
         }
     }
 }

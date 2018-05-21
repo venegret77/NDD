@@ -22,15 +22,15 @@ namespace NetworkDesign.NetworkElements
             NetworkWires.Last().RecalWithZoom();
         }
 
-        public void CheckNW(int x, int y, int id)
+        public void CheckNW(int x, int y, int id, bool IW, int build)
         {
             foreach (var nw in NetworkWires)
             {
-                if (!nw.idiw1.IW & id == nw.idiw1.ID)
+                if (nw.idiw1.IW == IW & id == nw.idiw1.ID & nw.idiw1.Build == build)
                 {
                     nw.Points[0] = new Point(x, y);
                 }
-                if (!nw.idiw2.IW & id == nw.idiw2.ID)
+                if (nw.idiw2.IW == IW & id == nw.idiw2.ID & nw.idiw2.Build == build)
                 {
                     nw.Points[nw.Points.Count - 1] = new Point(x, y);
                 }
@@ -59,6 +59,22 @@ namespace NetworkDesign.NetworkElements
                 elem.Draw();
             }
             TempNetworkWire.DrawTemp();
+        }
+
+        public override List<EditRect> GenEditRects()
+        {
+            List<EditRect> _EditRects = new List<EditRect>();
+            for (int i = 0; i < NetworkWires.Count; i++)
+            {
+                if (NetworkWires[i].DL == MainForm.drawLevel & !NetworkWires[i].delete)
+                {
+                    for (int j = 1; j < NetworkWires[i].Points.Count - 1; j++)
+                    {
+                        _EditRects.Add(new EditRect(NetworkWires[i].Points[j], 9, i, j));
+                    }
+                }
+            }
+            return _EditRects;
         }
 
         public override List<object> GetInBuild(int build)

@@ -96,5 +96,10 @@ namespace NetworkDesign
         {
             throw new NotImplementedException();
         }
+
+        public override List<EditRect> GenEditRects()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

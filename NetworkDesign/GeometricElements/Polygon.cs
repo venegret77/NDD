@@ -151,5 +151,38 @@ namespace NetworkDesign
                 Gl.glPopMatrix();
             }
         }
+
+        internal void DrawB(double koef)
+        {
+            if (!delete)
+            {
+                R = (float)MainForm.colorSettings.BuildColor.R / 255;
+                G = (float)MainForm.colorSettings.BuildColor.G / 255;
+                B = (float)MainForm.colorSettings.BuildColor.B / 255;
+                A = (float)MainForm.colorSettings.BuildColor.A / 255;
+                Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom * (float)koef);
+                Gl.glPushMatrix();
+                Gl.glScaled(MainForm.Zoom, MainForm.Zoom, MainForm.Zoom);
+                Gl.glBegin(Gl.GL_LINE_LOOP);
+                Gl.glColor4f(R, G, B, A);
+                foreach (var point in Points)
+                    Gl.glVertex2d(point.X, point.Y);
+                Gl.glEnd();
+                Gl.glPopMatrix();
+            }
+        }
+
+        internal void AddNewPoint()
+        {
+            int x = (Points.Last().X + Points[0].X) / 2;
+            int y = (Points.Last().Y + Points[0].Y) / 2;
+            Points.Add(new Point(x, y));
+        }
+
+        internal void RemovePoint()
+        {
+            if (Points.Count > 3)
+                Points.RemoveAt(Points.Count - 1);
+        }
     }
 }

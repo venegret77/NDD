@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -44,6 +45,17 @@ namespace NetworkDesign.NetworkElements
                 elem.Draw();
             }
             TempNetworkElement.DrawTemp();
+        }
+
+        public override List<EditRect> GenEditRects()
+        {
+            List<EditRect> _EditRects = new List<EditRect>();
+            for (int i = 0; i < NetworkElements.Count; i++)
+            {
+                if (NetworkElements[i].DL == MainForm.drawLevel & !NetworkElements[i].delete)
+                    _EditRects.Add(new EditRect(new Point(NetworkElements[i].texture.location.X + (int)NetworkElements[i].texture.width, NetworkElements[i].texture.location.Y), 8, i, 0));
+            }
+            return _EditRects;
         }
 
         public override List<object> GetInBuild(int build)

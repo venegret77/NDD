@@ -85,6 +85,9 @@
             this.инструментыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.редактированиеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripButton10 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton12 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -259,9 +262,12 @@
             this.AddEntranceBtn,
             this.AddIWBtn,
             this.toolStripSeparator6,
+            this.toolStripButton14,
             this.toolStripButton13,
             this.toolStripButton11,
-            this.toolStripButton14});
+            this.toolStripButton10,
+            this.toolStripButton12,
+            this.toolStripSeparator7});
             this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(995, 25);
@@ -400,6 +406,7 @@
             this.AddPP.Size = new System.Drawing.Size(23, 22);
             this.AddPP.Text = "Добавить точку в многоугольник";
             this.AddPP.Visible = false;
+            this.AddPP.Click += new System.EventHandler(this.AddPP_Click);
             // 
             // DeletePP
             // 
@@ -410,6 +417,7 @@
             this.DeletePP.Size = new System.Drawing.Size(23, 22);
             this.DeletePP.Text = "Удалить точку из многоугольника";
             this.DeletePP.Visible = false;
+            this.DeletePP.Click += new System.EventHandler(this.DeletePP_Click);
             // 
             // toolStripButton4
             // 
@@ -644,6 +652,33 @@
             this.toolStripSeparator3.Name = "toolStripSeparator3";
             this.toolStripSeparator3.Size = new System.Drawing.Size(160, 6);
             // 
+            // toolStripButton10
+            // 
+            this.toolStripButton10.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton10.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton10.Image")));
+            this.toolStripButton10.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton10.Name = "toolStripButton10";
+            this.toolStripButton10.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButton10.Text = "Добавить точку для провода";
+            this.toolStripButton10.Visible = false;
+            this.toolStripButton10.Click += new System.EventHandler(this.toolStripButton10_Click);
+            // 
+            // toolStripButton12
+            // 
+            this.toolStripButton12.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton12.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton12.Image")));
+            this.toolStripButton12.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton12.Name = "toolStripButton12";
+            this.toolStripButton12.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButton12.Text = "Удалить точку провода";
+            this.toolStripButton12.Visible = false;
+            this.toolStripButton12.Click += new System.EventHandler(this.toolStripButton12_Click);
+            // 
+            // toolStripSeparator7
+            // 
+            this.toolStripSeparator7.Name = "toolStripSeparator7";
+            this.toolStripSeparator7.Size = new System.Drawing.Size(6, 25);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -656,7 +691,6 @@
             this.Name = "MainForm";
             this.Text = "Form1";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);
-            this.Load += new System.EventHandler(this.MainForm_Load);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.panel2.ResumeLayout(false);
@@ -731,6 +765,9 @@
         private System.Windows.Forms.TrackBar trackBar1;
         private System.Windows.Forms.ToolStripButton AddPP;
         private System.Windows.Forms.ToolStripButton DeletePP;
+        private System.Windows.Forms.ToolStripButton toolStripButton10;
+        private System.Windows.Forms.ToolStripButton toolStripButton12;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
     }
 }
 

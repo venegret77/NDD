@@ -17,7 +17,7 @@ namespace NetworkDesign
     public partial class MainForm : Form
     {
         public static string user = "";
-        MapSettings DefaultSettings = new MapSettings("DefaultMap", 5000, 5000);
+        MapSettings DefaultSettings = new MapSettings("DefaultMap", 1000, 1000);
         static public Map MyMap = new Map();
         static public DrawLevel drawLevel;
         static public ColorSettings colorSettings = new ColorSettings();
@@ -90,6 +90,10 @@ namespace NetworkDesign
             trackBar1.BringToFront();
             panel2.BackColor = Color.White;
             panel3.BackColor = Color.White;
+            FloorUP.Parent = this;
+            FloorDown.Parent = this;
+            FloorUP.BringToFront();
+            FloorDown.BringToFront();
             FloorUP.BackColor = Color.White;
             FloorDown.BackColor = Color.White;
             FloorUP.FlatAppearance.BorderSize = 0;
@@ -103,20 +107,29 @@ namespace NetworkDesign
             focusbox.Parent = this;
             focusbox.Visible = true;
             focusbox.Enabled = true;
-            focusbox.Location = new Point(10000000, 100000);
+            focusbox.Location = new Point(5000, 5000);
             Click += MainForm_Click;
             panel1.AutoScroll = true;
             panel1.AutoScrollPosition = new Point(AnT.Height / 2, AnT.Width / 2);
+            Timer time = new Timer();
+            time.Interval = 15;
+            time.Start();
+            time.Tick += Time_Tick;
+        }
+
+        private void Time_Tick(object sender, EventArgs e)
+        {
+            panel1.AutoScrollPosition = new Point(-asp.X, -asp.Y);
         }
 
         private void MainForm_Click(object sender, EventArgs e)
         {
-            focusbox.Focus();
+            //focusbox.Focus();
         }
 
         private void AnT_Click(object sender, EventArgs e)
         {
-            focusbox.Focus();
+            //focusbox.Focus();
         }
 
         /// <summary>
@@ -128,6 +141,7 @@ namespace NetworkDesign
         {
             Unfocus("Не выбран элемент");
             activeElem.item = MyMap.SearchElem(x, y, out activeElem.type, out activeElem.build, drawLevel);
+                
             switch (activeElem.type)
             {
                 case 1:
@@ -148,6 +162,10 @@ namespace NetworkDesign
                     DeleteBtn.Enabled = true;
                     if (drawLevel.Level == -1)
                         BuildBtn.Enabled = true;
+                    AddPP.Visible = true;
+                    AddPP.Enabled = true;
+                    DeletePP.Visible = true;
+                    DeletePP.Enabled = true;
                     break;
                 case 4:
                     MyMap.Buildings.Choose(activeElem.item);
@@ -179,6 +197,10 @@ namespace NetworkDesign
                     MyMap.NetworkWires.Choose(activeElem.item);
                     InfoLable.Text = "Выбран провод " + activeElem.item;
                     DeleteBtn.Enabled = true;
+                    toolStripButton12.Visible = true;
+                    toolStripButton12.Enabled = true;
+                    toolStripButton10.Visible = true;
+                    toolStripButton10.Enabled = true;
                     break;
                 case 360:
                     MyMap.Circles.Choose(activeElem.item);
@@ -403,7 +425,11 @@ namespace NetworkDesign
         private void AnT_MouseDown(object sender, MouseEventArgs e)
         {
             //Доделать косяк в нуле
-            panel1.AutoScrollPosition = new Point(Math.Abs(asp.X), Math.Abs(asp.Y));
+            if (asp.X == 0)
+                asp.X += 3;
+            if (asp.Y == 0)
+                asp.Y += 3;
+            panel1.AutoScrollPosition = new Point(Math.Abs(asp.X) /*+ Math.Abs(panel1.AutoScrollPosition.X)*/, Math.Abs(asp.Y) /*+ Math.Abs(panel1.AutoScrollPosition.Y)*/);
             int y = MyMap.RecalcMouseY(e.Y);
             int x = MyMap.RecalcMouseX(e.X);
             if (e.Button == MouseButtons.Left)
@@ -421,6 +447,7 @@ namespace NetworkDesign
                         MouseRects(x, y);
                         break;
                     case 3:
+                        SelectItems(x, y);
                         if (MyMap.EditRects.edit_active)
                         {
                             MyMap.EditRects.edit_active = false;
@@ -522,10 +549,13 @@ namespace NetworkDesign
                         MyMap.Rectangles.TempRectangle = new MyRectangle();
                         break;
                     case 5:
-                        MyMap.Polygons.TempPolygon.ClearTempPoint();
-                        MyMap.Polygons.active = false;
-                        MousePolygon(x, y);
-                        MyMap.Polygons.TempPolygon = new Polygon();
+                        if (MyMap.Polygons.TempPolygon.Points.Count > 2)
+                        {
+                            MyMap.Polygons.TempPolygon.ClearTempPoint();
+                            MyMap.Polygons.active = false;
+                            MousePolygon(x, y);
+                        }
+                        MyMap.Polygons.TempDefault();
                         break;
                     case 360:
                         MyMap.Circles.step = false;
@@ -754,16 +784,10 @@ namespace NetworkDesign
             if (MyMap.EditRects.edit_mode)
             {
                 MyMap.SetInstrument(0);
-                AddPP.Visible = false;
-                DeletePP.Visible = false;
             }
             else
             {
                 MyMap.SetInstrument(3);
-                AddPP.Visible = true;
-                AddPP.Enabled = false;
-                DeletePP.Visible = true;
-                DeletePP.Enabled = false;
                 MyMap.RefreshEditRect();
             }
         }
@@ -939,6 +963,16 @@ namespace NetworkDesign
             MyMap.DefaultTempElems();
             //
             InfoLable.Text = info;
+            //
+            AddPP.Visible = false;
+            AddPP.Enabled = false;
+            DeletePP.Visible = false;
+            DeletePP.Enabled = false;
+            //
+            toolStripButton12.Visible = false;
+            toolStripButton12.Enabled = false;
+            toolStripButton10.Visible = false;
+            toolStripButton10.Enabled = false;
             //
             BuildBtn.Enabled = false;
             DeleteBtn.Enabled = false;
@@ -1531,16 +1565,6 @@ namespace NetworkDesign
             }
         }
 
-        private void toolStripButton10_Click(object sender, EventArgs e)
-        {
-            //MessageBox.Show("заметка добавлена");
-        }
-
-        private void MainForm_Load(object sender, EventArgs e)
-        {
-
-        }
-
         private void toolStripButton11_Click_1(object sender, EventArgs e) => MyMap.SetInstrument(9);
 
         private void menuStrip1_MouseClick(object sender, MouseEventArgs e) => focusbox.Focus();
@@ -1553,17 +1577,30 @@ namespace NetworkDesign
             MyMap.RefreshRenderingArea();
         }
 
-        private void panel1_Scroll(object sender, ScrollEventArgs e)
+        private void panel1_Scroll(object sender, ScrollEventArgs e) => asp = panel1.AutoScrollPosition;
+
+        private void AddPP_Click(object sender, EventArgs e)
         {
-            if (e.Type == ScrollEventType.ThumbPosition)
-            {
-                asp = panel1.AutoScrollPosition;
-                //panel1.AutoScrollPosition = new Point(-4000, -4000);
-            }
-            else
-            {
-                //panel1.AutoScrollPosition = asp;
-            }
+            MyMap.Polygons.Polygons[activeElem.item].AddNewPoint();
+            MyMap.RefreshEditRect();
+        }
+
+        private void DeletePP_Click(object sender, EventArgs e)
+        {
+            MyMap.Polygons.Polygons[activeElem.item].RemovePoint();
+            MyMap.RefreshEditRect();
+        }
+
+        private void toolStripButton10_Click(object sender, EventArgs e)
+        {
+            MyMap.NetworkWires.NetworkWires[activeElem.item].AddNewPoint();
+            MyMap.RefreshEditRect();
+        }
+
+        private void toolStripButton12_Click(object sender, EventArgs e)
+        {
+            MyMap.NetworkWires.NetworkWires[activeElem.item].RemovePoint();
+            MyMap.RefreshEditRect();
         }
 
         private void toolStripButton14_Click(object sender, EventArgs e) => MyMap.SetInstrument(10);

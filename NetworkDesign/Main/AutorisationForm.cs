@@ -7,11 +7,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.DirectoryServices.AccountManagement;
+using System.DirectoryServices;
+using System.DirectoryServices.ActiveDirectory;
 
 namespace NetworkDesign
 {
     public partial class AutorisationForm : Form
     {
+        DirectoryEntry CurrentDomain;
+
         public AutorisationForm()
         {
             InitializeComponent();
@@ -39,7 +44,16 @@ namespace NetworkDesign
 
         private void button1_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Нет подключения к AD");
+            try
+            {
+                DirectoryEntry CurrentDomain = new DirectoryEntry();
+                MessageBox.Show(CurrentDomain.Name);
+                CurrentDomain.Close();
+            }
+            catch
+            {
+                MessageBox.Show("Нет подключения к AD");
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -208,6 +209,17 @@ namespace NetworkDesign
                 }
             }
             return elems;
+        }
+
+        public override List<EditRect> GenEditRects()
+        {
+            List<EditRect> _EditRects = new List<EditRect>();
+            for (int i = 0; i < Circles.Count; i++)
+            {
+                if (Circles[i].MainDL == MainForm.drawLevel &!Circles[i].delete)
+                    _EditRects.Add(new EditRect(new Point(Circles[i].MainCenterPoint.X + Circles[i].radius, Circles[i].MainCenterPoint.Y), 360, i, 0));
+            }
+            return _EditRects;
         }
     }
 }

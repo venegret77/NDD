@@ -169,7 +169,11 @@ namespace NetworkDesign
                         break;
                     case 6:
                         if (MainForm.drawLevel.Level == -1)
-                            Buildings.Buildings[MainForm.activeElem.build].MoveIW(x, y, id);
+                            Buildings.Buildings[MainForm.activeElem.build].MoveIW(x, y, id, MainForm.activeElem.build, NetworkWires);
+                        else
+                        {
+                            //Для проводов между потолком доделать
+                        }
                         break;
                     case 7:
                         if (MainForm.drawLevel.Level == -1)
@@ -189,18 +193,18 @@ namespace NetworkDesign
         /// <summary>
         /// Функция для установки инструмента
         /// </summary>
-        /// <param name="instrument">ID инструмента
-        /// 0 - курсор для выбора
-        /// 1 - линия
-        /// 2 - прямоугольник
-        /// 3 - редактирование
-        /// 5 - многоугольник
-        /// 6 - точки входа проводов
-        /// 7 - входы в здание
-        /// 8 - сетевые элементы
-        /// 9 - провод
-        /// 10 - текст
-        /// 360 - круг</param>
+        /// <param name="instrument">ID инструмента:
+        /// 0 - курсор для выбора;
+        /// 1 - линия;
+        /// 2 - прямоугольник;
+        /// 3 - редактирование;
+        /// 5 - многоугольник;
+        /// 6 - точки входа проводов;
+        /// 7 - входы в здание;
+        /// 8 - сетевые элементы;
+        /// 9 - провод;
+        /// 10 - текст;
+        /// 360 - круг;</param>
         public void SetInstrument(int instrument)
         {
             DefaultTempElems();
@@ -291,11 +295,39 @@ namespace NetworkDesign
         /// </summary>
         public void RefreshEditRect()
         {
-            if (EditRects.edit_mode)
+            EditRects = new GroupOfEditRects();
+            EditRects.EditRects.AddRange(_RefreshEditRect());
+        }
+
+        public List<EditRect> _RefreshEditRect()
+        {
+            List<EditRect> _EditRects = new List<EditRect>();
+            List<EditRect> EditRects = new List<EditRect>();
+            _EditRects.AddRange(Lines.GenEditRects());
+            _EditRects.AddRange(Rectangles.GenEditRects());
+            _EditRects.AddRange(Polygons.GenEditRects());
+            _EditRects.AddRange(Circles.GenEditRects());
+            _EditRects.AddRange(NetworkWires.GenEditRects());
+            _EditRects.AddRange(NetworkElements.GenEditRects());
+            /*EditRects.Add(_EditRects[0]);
+            for (int i = 1; i < _EditRects.Count; i++)
             {
-                EditRects = new GroupOfEditRects();
-                EditRects.RefreshEditRect(Lines, Rectangles, Polygons);
-            }
+                for (int j = 0; j < EditRects.Count; j++)
+                {
+                    if (EditRects[j].coords == _EditRects[i].coords)
+                    {
+                        EditRects[j].elems.Add(_EditRects[i].elems[0]);
+                        _EditRects.RemoveAt(i);
+                        i--;
+                        break;
+                    }
+                    else
+                    {
+                        EditRects.Add(_EditRects[i]);
+                    }
+                }
+            }*/
+            return _EditRects;
         }
 
         /// <summary>
@@ -400,63 +432,52 @@ namespace NetworkDesign
             return -1;
         }
 
-        public void SearchEditElem(int x, int y)
+        public bool SearchEditElem(int x, int y)
         {
             EditRects.editRect = -1;
             EditRects.editRect = EditRects.Search(x, y);
             if (EditRects.editRect == -1)
             {
                 EditRects.edit_active = false;
+                return false;
             }
             else
             {
                 EditRects.edit_active = true;
+                return true;
             }
         }
 
         public void MoveElements(int x, int y)
         {
-            int type = 0, item = 0, point = 0;
+            int type = 0, id = 0, point = 0;
             if (EditRects.edit_active)
             {
                 EditRects.EditRects[EditRects.editRect].Refresh(new Point(x, y));
                 for (int i = 0; i < EditRects.EditRects[EditRects.editRect].elems.Count; i++)
                 {
                     type = EditRects.EditRects[EditRects.editRect].elems[i].type;
-                    item = EditRects.EditRects[EditRects.editRect].elems[i].count;
+                    id = EditRects.EditRects[EditRects.editRect].elems[i].id;
                     point = EditRects.EditRects[EditRects.editRect].elems[i].point;
                     switch (type)
                     {
                         case 1:
-                            switch (point)
-                            {
-                                case 1:
-                                    Lines.Lines[item].SetPoint(x, y, 0);
-                                    break;
-                                case 2:
-                                    Lines.Lines[item].SetPoint(x, y, 1);
-                                    break;
-                            }
+                            Lines.Lines[id].SetPoint(x, y, point);
                             break;
                         case 2:
-                            /*switch (point)
-                            {
-                                case 12:
-                                    Rectangles.Rectangles[item].SetPoint(x, y);
-                                    break;
-                                case 13:
-                                    Rectangles.Rectangles[item].SetPoint13(x, y);
-                                    break;
-                                case 24:
-                                    Rectangles.Rectangles[item].SetPoint24(x, y);
-                                    break;
-                                case 34:
-                                    Rectangles.Rectangles[item].SetPoint34(x, y);
-                                    break;
-                            }*/
+                            Rectangles.Rectangles[id].SetPoint(x, y, point);
                             break;
-                        case 3:
-                            Polygons.Polygons[item].SetPoint(x, y, point);
+                        case 5:
+                            Polygons.Polygons[id].SetPoint(x, y, point);
+                            break;
+                        case 360:
+                            Circles.Circles[id].SetPoint(x, y, point);
+                            break;
+                        case 8:
+                            NetworkElements.NetworkElements[id].SetPoint(x, y, id, NetworkWires);
+                            break;
+                        case 9:
+                            NetworkWires.NetworkWires[id].SetPoint(x, y, point);
                             break;
                     }
                 }
@@ -482,15 +503,15 @@ namespace NetworkDesign
                 int IW = Buildings.Buildings[build].InputWires.CalcNearestIW(x, y, MainForm.drawLevel);
                 if (IW != -1)
                 {
-                    return new IDandIW(IW, true);
+                    return new IDandIW(IW, true, build);
                 }
             }
             else if (NE != -1 && NetworkElements.NetworkElements[NE].Options.CheckPorts())
             {
                 NetworkElements.NetworkElements[NE].Options.BusyPorts++;
-                return new IDandIW(NE, false);
+                return new IDandIW(NE, false, -1);
             }
-            return new IDandIW(-1, false);
+            return new IDandIW(-1, false, -1);
         }
 
         internal bool SearchNE(int x, int y)

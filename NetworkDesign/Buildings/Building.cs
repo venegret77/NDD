@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NetworkDesign.NetworkElements;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -188,14 +189,14 @@ namespace NetworkDesign
             {
                 isMoveIW = false;
                 InputWires.InputWires.TempCircle.LocalCenterPoint = CalcLocalPoint(InputWires.InputWires.TempCircle.MainCenterPoint);
-                InputWires.InputWires.Circles[id].MainCenterPoint = new Point(InputWires.InputWires.TempCircle.MainCenterPoint.X, InputWires.InputWires.TempCircle.MainCenterPoint.Y);
-                InputWires.InputWires.Circles[id].LocalCenterPoint = new Point(InputWires.InputWires.TempCircle.LocalCenterPoint.X, InputWires.InputWires.TempCircle.LocalCenterPoint.Y);
+                InputWires.InputWires.Circles[id].MainCenterPoint = MainForm._GenZoomPoint(new Point(InputWires.InputWires.TempCircle.MainCenterPoint.X, InputWires.InputWires.TempCircle.MainCenterPoint.Y));
+                InputWires.InputWires.Circles[id].LocalCenterPoint = MainForm._GenZoomPoint(new Point(InputWires.InputWires.TempCircle.LocalCenterPoint.X, InputWires.InputWires.TempCircle.LocalCenterPoint.Y));
                 InputWires.InputWires.Circles[id].delete = false;
                 InputWires.InputWires.TempDefault();
             }
         }
 
-        internal void MoveIW(int x, int y, int id)
+        internal void MoveIW(int x, int y, int id, int build, GroupOfNW networkWires)
         {
             this.id = id;
             isMoveIW = true;
@@ -209,6 +210,7 @@ namespace NetworkDesign
             };
             InputWires.InputWires.Circles[id].delete = true;
             MoveIW(x, y);
+            networkWires.CheckNW((int)((double)InputWires.InputWires.TempCircle.MainCenterPoint.X), (int)((double)InputWires.InputWires.TempCircle.MainCenterPoint.Y), id, true, build);
         }
 
         private void UpgrateFloors()
@@ -307,6 +309,12 @@ namespace NetworkDesign
                 MainCircle.SetActive(b);
         }
 
+        /// <summary>
+        /// Добавление входа в здание
+        /// </summary>
+        /// <param name="x">Координата мыши X</param>
+        /// <param name="y">Координата мыши Y</param>
+        /// <returns></returns>
         public bool AddEntrance(int x, int y)
         {
             if (!Entrances.step)
@@ -315,35 +323,28 @@ namespace NetworkDesign
                 if (basement)
                 {
                     Entrances.AddTemp(x, y, MainMapDL, new DrawLevel(LocalDL.Level, 1));
-                    /*if (type == 2)
-                        Entrances.Enterances.TempCircle.MainCenterPoint = Entrances.CalcNearestPoint(x, y, MainRectangle.Points[0], MainRectangle.Points[1]);
-                    else if (type == 3)
-                        Entrances.Enterances.TempCircle.MainCenterPoint = Entrances.CalcNearestPoint(x, y, MainPolygon.Points[0], MainPolygon.Points[1]);
-                    else if (type == 360)
-                        Entrances.NearestPoints(x, y, MainCircle);*/
                 }
                 else
                 { 
                     Entrances.AddTemp(x, y, MainMapDL, new DrawLevel(LocalDL.Level, 0));
-                    /*if (type == 2)
-                        Entrances.Enterances.TempCircle.MainCenterPoint = Entrances.CalcNearestPoint(x, y, MainRectangle.Points[0], MainRectangle.Points[1]);
-                    else if (type == 3)
-                        Entrances.Enterances.TempCircle.MainCenterPoint = Entrances.CalcNearestPoint(x, y, MainPolygon.Points[0], MainPolygon.Points[1]);
-                    else if (type == 360)
-                        Entrances.NearestPoints(x, y, MainCircle);*/
                 }
                 return false;
             }
             else
             {
                 Entrances.step = false;
-                Entrances.Enterances.TempCircle.LocalCenterPoint = CalcLocalPoint(Entrances.Enterances.TempCircle.MainCenterPoint);
+                Entrances.Enterances.TempCircle.LocalCenterPoint = CalcLocalPoint(MainForm._GenZoomPoint(Entrances.Enterances.TempCircle.MainCenterPoint));
                 Entrances.Enterances.TempCircle.koef = koef;
                 Entrances.Add();
                 return true;
             }
         }
 
+        /// <summary>
+        /// Расчет точки внутри здания //доделать точный расчет
+        /// </summary>
+        /// <param name="MainP">Точка на главном виде</param>
+        /// <returns>Возвращает нужную точку</returns>
         public Point CalcLocalPoint(Point MainP)
         {
             if (type == 360)
@@ -358,14 +359,18 @@ namespace NetworkDesign
             }
             else
             {
-                MainP = MainForm._GenZoomPoint(MainP);
                 Point LocalP = RotatePoint(-alfa, MP, MainP); 
                 LocalP.X -= Ox; LocalP.Y -= Oy;
                 LocalP.X = (int)(LocalP.X * koef); LocalP.Y = (int)(LocalP.Y * koef);
-                return MainForm.GenZoomPoint(LocalP);
+                return LocalP;
             }
         }
 
+        /// <summary>
+        /// Перемещение входа в здание по контуру фигуры в зависимости от типа фигуры
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
         public void MoveEntrance(int x, int y)
         {
             if (type == 2)
@@ -381,14 +386,20 @@ namespace NetworkDesign
             if (isMoveEnt & id != -1)
             {
                 isMoveEnt = false;
-                Entrances.Enterances.TempCircle.LocalCenterPoint = CalcLocalPoint(Entrances.Enterances.TempCircle.MainCenterPoint);
-                Entrances.Enterances.Circles[id].MainCenterPoint = new Point(Entrances.Enterances.TempCircle.MainCenterPoint.X, Entrances.Enterances.TempCircle.MainCenterPoint.Y);
+                Entrances.Enterances.TempCircle.LocalCenterPoint = CalcLocalPoint(MainForm._GenZoomPoint(Entrances.Enterances.TempCircle.MainCenterPoint));
+                Entrances.Enterances.Circles[id].MainCenterPoint = MainForm._GenZoomPoint(Entrances.Enterances.TempCircle.MainCenterPoint);//new Point(Entrances.Enterances.TempCircle.MainCenterPoint.X, Entrances.Enterances.TempCircle.MainCenterPoint.Y);
                 Entrances.Enterances.Circles[id].LocalCenterPoint = new Point(Entrances.Enterances.TempCircle.LocalCenterPoint.X, Entrances.Enterances.TempCircle.LocalCenterPoint.Y);
                 Entrances.Enterances.Circles[id].delete = false;
                 Entrances.Enterances.TempDefault();
             }
         }
 
+        /// <summary>
+        /// Перемещение входа в здание
+        /// </summary>
+        /// <param name="x">Координата мыши X</param>
+        /// <param name="y">Координата мыши Y</param>
+        /// <param name="id">Номер в списке перемещаемого входа</param>
         public void MoveEntrance(int x, int y, int id)
         {
             this.id = id;
@@ -396,7 +407,7 @@ namespace NetworkDesign
             var ent = Entrances.Enterances.Circles[id];
             Entrances.Enterances.TempCircle = new Circle
             {
-                MainCenterPoint = new Point(ent.MainCenterPoint.X, ent.MainCenterPoint.Y),
+                MainCenterPoint = MainForm.GenZoomPoint(ent.MainCenterPoint),//new Point(ent.MainCenterPoint.X, ent.MainCenterPoint.Y),
                 delete = false,
                 koef = ent.koef
             };
@@ -415,13 +426,19 @@ namespace NetworkDesign
             else
             {
                 InputWires.step = false;
-                //InputWires.InputWires.TempCircle.LocalCencerPoint = CalcLocalPoint(InputWires.InputWires.TempCircle.MainCenterPoint);
-                //InputWires.InputWires.TempCircle.koef = koef;
                 InputWires.AddInBuild();
                 return true;
             }
         }
 
+        /// <summary>
+        /// Добавление входа провода в здание
+        /// </summary>
+        /// <param name="x">Координата мыши X</param>
+        /// <param name="y">Координата мыши Y</param>
+        /// <param name="_side">true - входит сбоку в стену, false - входит сверху через потолок</param>
+        /// <param name="_floor">Этаж</param>
+        /// <returns></returns>
         public bool AddIW(int x, int y, bool _side, int _floor)
         {
             InputWires.side = _side;
@@ -431,12 +448,6 @@ namespace NetworkDesign
                 if (_side)
                 {
                     InputWires.AddTemp(x, y, MainMapDL, new DrawLevel(LocalDL.Level, _floor));
-                    /*if (type == 2)
-                        InputWires.InputWires.TempCircle.MainCenterPoint = InputWires.CalcNearestPoint(x, y, MainRectangle.Points[0], MainRectangle.Points[1]);
-                    else if (type == 3)
-                        InputWires.InputWires.TempCircle.MainCenterPoint = InputWires.CalcNearestPoint(x, y, MainPolygon.Points[0], MainPolygon.Points[1]);
-                    else if (type == 360)
-                        InputWires.NearestPoints(x, y, MainCircle);*/
                 }
                 else
                 {
@@ -448,7 +459,7 @@ namespace NetworkDesign
             else
             {
                 InputWires.step = false;
-                InputWires.InputWires.TempCircle.LocalCenterPoint = CalcLocalPoint(InputWires.InputWires.TempCircle.MainCenterPoint);
+                InputWires.InputWires.TempCircle.LocalCenterPoint = CalcLocalPoint(MainForm._GenZoomPoint(InputWires.InputWires.TempCircle.MainCenterPoint));
                 InputWires.InputWires.TempCircle.koef = koef;
                 InputWires.Add();
                 return true;
@@ -643,6 +654,9 @@ namespace NetworkDesign
             LocalPolygon.DL = LocalDL;
         }
 
+        /// <summary>
+        /// Завершение перемещение входа в здание или входа провода
+        /// </summary>
         internal void AddTemp()
         {
             if (isMoveEnt)
@@ -665,21 +679,21 @@ namespace NetworkDesign
                     if (MainMapDL == MainForm.drawLevel)
                         MainPolygon.DrawB();
                     else if (LocalDL.Level == MainForm.drawLevel.Level)
-                        LocalPolygon.DrawB();
+                        LocalPolygon.DrawB(koef);
                 }
                 else if (type == 2)
                 {
                     if (MainMapDL == MainForm.drawLevel)
                         MainRectangle.DrawB();
                     else if (LocalDL.Level == MainForm.drawLevel.Level)
-                        LocalRectangle.DrawB();
+                        LocalRectangle.DrawB(koef);
                 }
                 else if (type == 360)
                 {
                     if (MainMapDL == MainForm.drawLevel)
                         MainCircle.DrawB();
                     else if (LocalDL.Level == MainForm.drawLevel.Level)
-                        LocalCircle.DrawB();
+                        LocalCircle.DrawB(koef);
                 }
                 Entrances.Draw();
                 InputWires.Draw();

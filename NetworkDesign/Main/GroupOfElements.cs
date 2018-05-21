@@ -83,6 +83,8 @@ namespace NetworkDesign
         /// <returns></returns>
         public abstract List<object> GetInBuild(int build);
 
+        public abstract List<EditRect> GenEditRects();
+
         /// <summary>
         /// Отрисовка элементов
         /// </summary>

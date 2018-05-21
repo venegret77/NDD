@@ -117,7 +117,7 @@ namespace NetworkDesign
             int difx = x - (int)CenterPointX;
             int dify = y - (int)CenterPointY;
             texture.location = new Point(texture.location.X + difx, texture.location.Y + dify);
-            networkWires.CheckNW(texture.location.X + difx + (int)((double)texture.width / 2 * MainForm.Zoom), texture.location.Y + dify + (int)((double)texture.width / 2 * MainForm.Zoom), id);
+            networkWires.CheckNW(texture.location.X + difx + (int)((double)texture.width / 2 / MainForm.Zoom), texture.location.Y + dify + (int)((double)texture.width / 2 / MainForm.Zoom), id, false, -1);
         }
 
         /// <summary>
@@ -146,6 +146,12 @@ namespace NetworkDesign
             }
             CenterPointX = x / (double)count;
             CenterPointY = y / (double)count;
+        }
+
+        internal void SetPoint(int x, int y, int id, GroupOfNW networkWires)
+        {
+            texture.width = (int)((Math.Abs(texture.location.X - x) + Math.Abs(texture.location.Y - y)));
+            networkWires.CheckNW(texture.location.X + (int)((double)texture.width / 2 / MainForm.Zoom), texture.location.Y + (int)((double)texture.width / 2 / MainForm.Zoom), id, false, -1);
         }
     }
 }
