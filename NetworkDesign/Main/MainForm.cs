@@ -11,11 +11,14 @@ using System.Linq;
 using NetworkDesign.NetworkElements;
 using NetworkDesign.Main;
 using System.Diagnostics;
+using Tao.OpenGl;
+using Tao.DevIl;
 
 namespace NetworkDesign
 {
     public partial class MainForm : Form
     {
+        #region Объявление переменных
         public static string user = "";
         MapSettings DefaultSettings = new MapSettings("DefaultMap", 1000, 1000);
         static public Map MyMap = new Map();
@@ -26,6 +29,7 @@ namespace NetworkDesign
         static public List<string> ImagesURL = new List<string>();
         static public List<uint> Textures = new List<uint>();
         static public List<string> DeleteImages = new List<string>();
+        static public ImageList Images = new ImageList();
         static public bool isLoad = false;
         //
         static public int _Height = 0, _Width = 0;
@@ -39,10 +43,20 @@ namespace NetworkDesign
 
         static public bool isInit = false;
 
+        Stopwatch stopwatch = new Stopwatch();
+
+        public static int nebutnscount = 15;
+        static public List<NEButton> neButtons = new List<NEButton>();
+
         static public TextBox focusbox = new TextBox();
 
-        Point asp = new Point();
+        static public Filtres filtres = new Filtres();
 
+        Point asp = new Point();
+        #endregion
+        /// <summary>
+        /// Инициализация начальных параметров
+        /// </summary>
         public unsafe MainForm()
         {
             InitializeComponent();
@@ -74,7 +88,6 @@ namespace NetworkDesign
             AnT.MouseDoubleClick += AnT_MouseDoubleClick;
             // 
             AnT.InitializeContexts();
-            
             MyMap = new Map(DefaultSettings);
             Text = DefaultSettings.Name;
             drawLevel.Level = -1;
@@ -102,7 +115,9 @@ namespace NetworkDesign
             FloorDown.FlatStyle = FlatStyle.Flat;
             colorSettings = ColorSettings.Open();
             parametrs = Parametrs.Open();
-            ImagesURL = ImageTextures.Open();
+            ImagesURL = OpenTextures();
+            LoadImages();
+            filtres = new Filtres(true, true, true, true, true, true, true, true, true, true);
             focusbox.TabIndex = 99;
             focusbox.Parent = this;
             focusbox.Visible = true;
@@ -116,102 +131,7 @@ namespace NetworkDesign
             time.Start();
             time.Tick += Time_Tick;
         }
-
-        private void Time_Tick(object sender, EventArgs e)
-        {
-            panel1.AutoScrollPosition = new Point(-asp.X, -asp.Y);
-        }
-
-        private void MainForm_Click(object sender, EventArgs e)
-        {
-            //focusbox.Focus();
-        }
-
-        private void AnT_Click(object sender, EventArgs e)
-        {
-            //focusbox.Focus();
-        }
-
-        /// <summary>
-        /// Функция для поиска элемента, в который попал клик мыши
-        /// </summary>
-        /// <param name="x">Координата мыши X</param>
-        /// <param name="y">Координата мыши Y</param>
-        private void SelectItems(int x, int y)
-        {
-            Unfocus("Не выбран элемент");
-            activeElem.item = MyMap.SearchElem(x, y, out activeElem.type, out activeElem.build, drawLevel);
-                
-            switch (activeElem.type)
-            {
-                case 1:
-                    MyMap.Lines.Choose(activeElem.item);
-                    InfoLable.Text = "Выбрана линия " + activeElem.item;
-                    DeleteBtn.Enabled = true;
-                    break;
-                case 2:
-                    MyMap.Rectangles.Choose(activeElem.item);
-                    InfoLable.Text = "Выбран прямоугольник " + activeElem.item;
-                    DeleteBtn.Enabled = true;
-                    if (drawLevel.Level == -1)
-                        BuildBtn.Enabled = true;
-                    break;
-                case 3:
-                    MyMap.Polygons.Choose(activeElem.item);
-                    InfoLable.Text = "Выбран многоугольник " + activeElem.item;
-                    DeleteBtn.Enabled = true;
-                    if (drawLevel.Level == -1)
-                        BuildBtn.Enabled = true;
-                    AddPP.Visible = true;
-                    AddPP.Enabled = true;
-                    DeletePP.Visible = true;
-                    DeletePP.Enabled = true;
-                    break;
-                case 4:
-                    MyMap.Buildings.Choose(activeElem.item);
-                    InfoLable.Text = "Выбрано здание " + activeElem.item + " '" + MyMap.Buildings.Buildings[activeElem.item].Name + "'";
-                    DeleteBtn.Enabled = true;
-                    if (drawLevel.Level == -1)
-                    {
-                        BuildBtn.Enabled = true;
-                        AddEntranceBtn.Enabled = true;
-                        AddIWBtn.Enabled = true;
-                    }
-                    break;
-                case 6:
-                    InfoLable.Text = "Выбран вход провода в здание " + activeElem.build + " с ID " + activeElem.item;
-                    DeleteBtn.Enabled = true;
-                    MyMap.Buildings.Buildings[activeElem.build].InputWires.InputWires.Choose(activeElem.item);
-                    break;
-                case 7:
-                    InfoLable.Text = "Выбран вход в здание " + activeElem.build + " с ID " + activeElem.item;
-                    DeleteBtn.Enabled = true;
-                    MyMap.Buildings.Buildings[activeElem.build].Entrances.Enterances.Choose(activeElem.item);
-                    break;
-                case 8:
-                    MyMap.NetworkElements.Choose(activeElem.item);
-                    InfoLable.Text = "Выбран сетевой элемент " + activeElem.item;
-                    DeleteBtn.Enabled = true;
-                    break;
-                case 9:
-                    MyMap.NetworkWires.Choose(activeElem.item);
-                    InfoLable.Text = "Выбран провод " + activeElem.item;
-                    DeleteBtn.Enabled = true;
-                    toolStripButton12.Visible = true;
-                    toolStripButton12.Enabled = true;
-                    toolStripButton10.Visible = true;
-                    toolStripButton10.Enabled = true;
-                    break;
-                case 360:
-                    MyMap.Circles.Choose(activeElem.item);
-                    InfoLable.Text = "Выбрана окружность" + activeElem.item;
-                    DeleteBtn.Enabled = true;
-                    if (drawLevel.Level == -1)
-                        BuildBtn.Enabled = true;
-                    break;
-            }
-        }
-
+        #region Обработка кликов мыши для различных инструментов
         private void MouseLines(int x, int y)
         {
             var value = panel1.VerticalScroll.Value;
@@ -420,180 +340,219 @@ namespace NetworkDesign
             }
         }
 
-        Stopwatch stopwatch = new Stopwatch();
-
-        private void AnT_MouseDown(object sender, MouseEventArgs e)
+        private void MouseNEElems(int x, int y)
         {
-            //Доделать косяк в нуле
-            if (asp.X == 0)
-                asp.X += 3;
-            if (asp.Y == 0)
-                asp.Y += 3;
-            panel1.AutoScrollPosition = new Point(Math.Abs(asp.X) /*+ Math.Abs(panel1.AutoScrollPosition.X)*/, Math.Abs(asp.Y) /*+ Math.Abs(panel1.AutoScrollPosition.Y)*/);
-            int y = MyMap.RecalcMouseY(e.Y);
-            int x = MyMap.RecalcMouseX(e.X);
-            if (e.Button == MouseButtons.Left)
+            if (!MyMap.NetworkElements.step)
             {
-                switch (MyMap.RB)
-                {
-                    case 0:
-                        stopwatch.Restart();
-                        SelectItems(x, y);
-                        break;
-                    case 1:
-                        MouseLines(x, y);
-                        break;
-                    case 2:
-                        MouseRects(x, y);
-                        break;
-                    case 3:
-                        SelectItems(x, y);
-                        if (MyMap.EditRects.edit_active)
-                        {
-                            MyMap.EditRects.edit_active = false;
-                        }
-                        break;
-                    case 4:
-                        break;
-                    case 5:
-                        MyMap.Polygons.active = true;
-                        MousePolygon(x, y);
-                        break;
-                    case 360:
-                        MouseCircle(x, y);
-                        break;
-                    case 6:
-                        if (drawLevel.Level != -1)
-                        {
-                            if (drawLevel.Floor != 0)
-                            {
-                                if (!MyMap.Buildings.Buildings[activeElem.item].InputWires.step)
-                                {
-                                    MyMap.Buildings.Buildings[activeElem.item].AddIWInBuild(x, y, drawLevel);
-                                }
-                                else
-                                {
-                                    MyMap.Buildings.Buildings[activeElem.item].AddIWInBuild(x, y, drawLevel);
-                                    int lastindex = MyMap.Buildings.Buildings[activeElem.item].InputWires.InputWires.Circles.Count - 1;
-                                    Element elem = new Element(6, lastindex, MyMap.Buildings.Buildings[activeElem.item].InputWires.InputWires.Circles[lastindex], -1);
-                                    Element _elem = new Element(6, lastindex, new Circle(), -1);
-                                    MyMap.log.Add(new LogMessage("Добавил проход провода через потолок", elem, _elem, activeElem.item));
-                                    InfoLable.Text = "Добавил проход провода через потолок";
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (!MyMap.Buildings.Buildings[activeElem.item].InputWires.step)
-                            {
-                                InputWireForm IWF = new InputWireForm(MyMap.Buildings.Buildings[activeElem.item].floors_name);
-                                IWF.ShowDialog();
-                                if (IWF.dialogResult == DialogResult.OK)
-                                    MyMap.Buildings.Buildings[activeElem.item].AddIW(x, y, IWF.side, IWF.floor_index);
-                            }
-                            else
-                            {
-                                MyMap.Buildings.Buildings[activeElem.item].AddIW(x, y, false, -1);
-                                int lastindex = MyMap.Buildings.Buildings[activeElem.item].InputWires.InputWires.Circles.Count - 1;
-                                Element elem = new Element(6, lastindex, MyMap.Buildings.Buildings[activeElem.item].InputWires.InputWires.Circles[lastindex], -1);
-                                Element _elem = new Element(6, lastindex, new Circle(), -1);
-                                MyMap.log.Add(new LogMessage("Добавил вход провода в здание", elem, _elem, activeElem.item));
-                                InfoLable.Text = "Добавил вход провода в здание";
-                            }
-                        }
-                        break;
-                    case 7:
-                        if (MyMap.Buildings.Buildings[activeElem.item].AddEntrance(x, y))
-                        {
-                            int lastindex = MyMap.Buildings.Buildings[activeElem.item].Entrances.Enterances.Circles.Count - 1;
-                            Element elem = new Element(7, lastindex, MyMap.Buildings.Buildings[activeElem.item].Entrances.Enterances.Circles[lastindex], -1);
-                            Element _elem = new Element(7, lastindex, new Circle(), -1);
-                            MyMap.log.Add(new LogMessage("Добавил вход в здание", elem, _elem, activeElem.item));
-                            InfoLable.Text = "Добавил вход в здание";
-                        }
-                        break;
-                    case 8:
-                        MouseNE(x, y);
-                        break;
-                    case 9:
-                        MyMap.NetworkWires.active = true;
-                        MouseNW(x, y);
-                        break;
-                    case 10:
-                        MouseText(x, e.Y, y);
-                        break;
-                }
+                /*ImageTextures IT = new ImageTextures(ref MyMap.NetworkElements);
+                IT.ShowDialog();
+                if (IT.imageindex > -1)
+                {*/
+                    MyMap.NetworkElements.step = true;
+                    MyMap.NetworkElements.TempNetworkElement = new NetworkElement(new Texture(false, 50, new Point(x, y), MyMap.RB - nebutnscount), drawLevel);
+                //}
             }
-            if (e.Button == MouseButtons.Right)
+            else
             {
-                switch (MyMap.RB)
-                {
-                    case 0:
-                        SelectItems(x, y);
-                        if (activeElem.type == 4)
-                        {
-                            drawLevel.Level = activeElem.item;
-                            drawLevel.Floor = 0;
-                            ButtonReturnToMain.Enabled = true;
-                            UpgrateFloors();
-                            Unfocus("Выбрано здание " + activeElem.item + " '" + MyMap.Buildings.Buildings[activeElem.item].Name + "'");
-                            AddIWBtn.Enabled = true;
-                        }
-                        break;
-                    case 1:
-                        MyMap.Lines.step = false;
-                        MyMap.Lines.TempLine = new Line();
-                        break;
-                    case 2:
-                        MyMap.Rectangles.step_rect = 0;
-                        MyMap.Rectangles.TempRectangle = new MyRectangle();
-                        break;
-                    case 5:
-                        if (MyMap.Polygons.TempPolygon.Points.Count > 2)
-                        {
-                            MyMap.Polygons.TempPolygon.ClearTempPoint();
-                            MyMap.Polygons.active = false;
-                            MousePolygon(x, y);
-                        }
-                        MyMap.Polygons.TempDefault();
-                        break;
-                    case 360:
-                        MyMap.Circles.step = false;
-                        MyMap.Circles.TempCircle = new Circle();
-                        break;
-                    case 6:
-                        MyMap.Buildings.Buildings[activeElem.item].InputWires.step = false;
-                        MyMap.Buildings.Buildings[activeElem.item].InputWires.InputWires.TempCircle = new Circle();
-                        break;
-                    case 7:
-                        MyMap.Buildings.Buildings[activeElem.item].Entrances.step = false;
-                        MyMap.Buildings.Buildings[activeElem.item].Entrances.Enterances.TempCircle = new Circle();
-                        break;
-                    case 8:
-                        MyMap.NetworkElements.TempDefault();
-                        break;
-                    case 9:
-                        if (MyMap.NetworkWires.active)
-                        {
-                            int index = MyMap.NetworkWires.TempNetworkWire.Points.Count;
-                            if (index > 1)
-                            {
-                                MyMap.NetworkWires.TempNetworkWire.Points.RemoveAt(index - 1);
-                            }
-                            else
-                            {
-                                int id = MyMap.NetworkWires.TempNetworkWire.idiw1.ID;
-                                MyMap.NetworkElements.NetworkElements[id].Options.BusyPorts--;
-                                MyMap.NetworkWires.TempDefault();
-                            }
-                        }
-                        break;
-                }
+                MyMap.NetworkElements.Add(MyMap.NetworkElements.TempNetworkElement);
+                MyMap.NetworkElements.TempDefault();
+                int lastindex = MyMap.NetworkElements.NetworkElements.Count - 1;
+                Element elem = new Element(8, lastindex, MyMap.NetworkElements.NetworkElements[lastindex], -1);
+                Element _elem = new Element(8, lastindex, new NetworkElement(), -1);
+                MyMap.log.Add(new LogMessage("Добавил сетевой элемент", elem, _elem));
+                InfoLable.Text = "Добавил сетевой элемент";
+                CheckButtons(true);
             }
         }
 
+        #endregion
+        /// <summary>
+        /// Событие нажатия мыши по области отрисовки
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AnT_MouseDown(object sender, MouseEventArgs e)
+        {
+            panel1.AutoScrollPosition = asp;
+            int y = MyMap.RecalcMouseY(e.Y);
+            int x = MyMap.RecalcMouseX(e.X);
+            if (MyMap.RB >= nebutnscount & MyMap.RB != 360)
+            {
+                if (e.Button == MouseButtons.Left)
+                    MouseNEElems(x, y);
+                else if (e.Button == MouseButtons.Right)
+                    MyMap.NetworkElements.TempDefault();
+            }
+            else
+            {
+                if (e.Button == MouseButtons.Left)
+                {
+                    switch (MyMap.RB)
+                    {
+                        case 0:
+                            stopwatch.Restart();
+                            SelectItems(x, y);
+                            break;
+                        case 1:
+                            MouseLines(x, y);
+                            break;
+                        case 2:
+                            MouseRects(x, y);
+                            break;
+                        case 3:
+                            SelectItems(x, y);
+                            if (MyMap.EditRects.edit_active)
+                            {
+                                MyMap.EditRects.edit_active = false;
+                            }
+                            break;
+                        case 5:
+                            MyMap.Polygons.active = true;
+                            MousePolygon(x, y);
+                            break;
+                        case 360:
+                            MouseCircle(x, y);
+                            break;
+                        case 6:
+                            if (drawLevel.Level != -1)
+                            {
+                                if (drawLevel.Floor != 0)
+                                {
+                                    if (!MyMap.Buildings.Buildings[activeElem.item].InputWires.step)
+                                    {
+                                        MyMap.Buildings.Buildings[activeElem.item].AddIWInBuild(x, y, drawLevel);
+                                    }
+                                    else
+                                    {
+                                        MyMap.Buildings.Buildings[activeElem.item].AddIWInBuild(x, y, drawLevel);
+                                        int lastindex = MyMap.Buildings.Buildings[activeElem.item].InputWires.InputWires.Circles.Count - 1;
+                                        Element elem = new Element(6, lastindex, MyMap.Buildings.Buildings[activeElem.item].InputWires.InputWires.Circles[lastindex], -1);
+                                        Element _elem = new Element(6, lastindex, new Circle(), -1);
+                                        MyMap.log.Add(new LogMessage("Добавил проход провода через потолок", elem, _elem, activeElem.item));
+                                        InfoLable.Text = "Добавил проход провода через потолок";
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (!MyMap.Buildings.Buildings[activeElem.item].InputWires.step)
+                                {
+                                    InputWireForm IWF = new InputWireForm(MyMap.Buildings.Buildings[activeElem.item].floors_name);
+                                    IWF.ShowDialog();
+                                    if (IWF.dialogResult == DialogResult.OK)
+                                        MyMap.Buildings.Buildings[activeElem.item].AddIW(x, y, IWF.side, IWF.floor_index);
+                                }
+                                else
+                                {
+                                    MyMap.Buildings.Buildings[activeElem.item].AddIW(x, y, false, -1);
+                                    int lastindex = MyMap.Buildings.Buildings[activeElem.item].InputWires.InputWires.Circles.Count - 1;
+                                    Element elem = new Element(6, lastindex, MyMap.Buildings.Buildings[activeElem.item].InputWires.InputWires.Circles[lastindex], -1);
+                                    Element _elem = new Element(6, lastindex, new Circle(), -1);
+                                    MyMap.log.Add(new LogMessage("Добавил вход провода в здание", elem, _elem, activeElem.item));
+                                    InfoLable.Text = "Добавил вход провода в здание";
+                                }
+                            }
+                            break;
+                        case 7:
+                            if (MyMap.Buildings.Buildings[activeElem.item].AddEntrance(x, y))
+                            {
+                                int lastindex = MyMap.Buildings.Buildings[activeElem.item].Entrances.Enterances.Circles.Count - 1;
+                                Element elem = new Element(7, lastindex, MyMap.Buildings.Buildings[activeElem.item].Entrances.Enterances.Circles[lastindex], -1);
+                                Element _elem = new Element(7, lastindex, new Circle(), -1);
+                                MyMap.log.Add(new LogMessage("Добавил вход в здание", elem, _elem, activeElem.item));
+                                InfoLable.Text = "Добавил вход в здание";
+                            }
+                            break;
+                        case 8:
+                            MouseNE(x, y);
+                            break;
+                        case 9:
+                            MyMap.NetworkWires.active = true;
+                            MouseNW(x, y);
+                            break;
+                        case 10:
+                            MouseText(x, e.Y, y);
+                            break;
+                    }
+                }
+                if (e.Button == MouseButtons.Right)
+                {
+                    switch (MyMap.RB)
+                    {
+                        case 0:
+                            SelectItems(x, y);
+                            if (activeElem.type == 4)
+                            {
+                                drawLevel.Level = activeElem.item;
+                                drawLevel.Floor = 0;
+                                ReturnToMainBtn.Enabled = true;
+                                UpgrateFloors();
+                                Unfocus("Выбрано здание " + activeElem.item + " '" + MyMap.Buildings.Buildings[activeElem.item].Name + "'");
+                                IWBtn.Enabled = true;
+                            }
+                            break;
+                        case 1:
+                            MyMap.Lines.step = false;
+                            MyMap.Lines.TempLine = new Line();
+                            break;
+                        case 2:
+                            MyMap.Rectangles.step_rect = 0;
+                            MyMap.Rectangles.TempRectangle = new MyRectangle();
+                            break;
+                        case 5:
+                            if (MyMap.Polygons.TempPolygon.Points.Count > 2)
+                            {
+                                MyMap.Polygons.TempPolygon.ClearTempPoint();
+                                MyMap.Polygons.active = false;
+                                MousePolygon(x, y);
+                            }
+                            MyMap.Polygons.TempDefault();
+                            break;
+                        case 360:
+                            MyMap.Circles.step = false;
+                            MyMap.Circles.TempCircle = new Circle();
+                            break;
+                        case 6:
+                            MyMap.Buildings.Buildings[activeElem.item].InputWires.step = false;
+                            MyMap.Buildings.Buildings[activeElem.item].InputWires.InputWires.TempCircle = new Circle();
+                            break;
+                        case 7:
+                            MyMap.Buildings.Buildings[activeElem.item].Entrances.step = false;
+                            MyMap.Buildings.Buildings[activeElem.item].Entrances.Enterances.TempCircle = new Circle();
+                            break;
+                        case 8:
+                            MyMap.NetworkElements.TempDefault();
+                            break;
+                        case 9:
+                            if (MyMap.NetworkWires.active)
+                            {
+                                int index = MyMap.NetworkWires.TempNetworkWire.Points.Count;
+                                if (index > 1)
+                                {
+                                    MyMap.NetworkWires.TempNetworkWire.Points.RemoveAt(index - 1);
+                                }
+                                else
+                                {
+                                    int id = MyMap.NetworkWires.TempNetworkWire.idiw1.ID;
+                                    MyMap.NetworkElements.NetworkElements[id].Options.BusyPorts--;
+                                    MyMap.NetworkWires.TempDefault();
+                                }
+                            }
+                            break;
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// Событие двойного нажатия мыши по области отрисовки
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AnT_MouseDoubleClick(object sender, MouseEventArgs e)
         {
+            int difx = asp.X - panel1.AutoScrollPosition.X;
+            int dify = asp.Y - panel1.AutoScrollPosition.Y;
+            panel1.AutoScrollPosition = new Point(-difx, -dify);
             int y = MyMap.RecalcMouseY(e.Y);
             int x = MyMap.RecalcMouseX(e.X);
             if (e.Button == MouseButtons.Left)
@@ -608,9 +567,16 @@ namespace NetworkDesign
                 }
             }
         }
-
+        /// <summary>
+        /// Событие окончания нажатия мыши по области отрисовки
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AnT_MouseUp(object sender, MouseEventArgs e)
         {
+            int difx = asp.X - panel1.AutoScrollPosition.X;
+            int dify = asp.Y - panel1.AutoScrollPosition.Y;
+            panel1.AutoScrollPosition = new Point(-difx, -dify);
             if (e.Button == MouseButtons.Left)
             {
                 switch (MyMap.RB)
@@ -632,102 +598,116 @@ namespace NetworkDesign
                 }
             }
         }
-
+        /// <summary>
+        /// Событие движения мыши по области отрисовки
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AnT_MouseMove(object sender, MouseEventArgs e)
         {
             int y = MyMap.RecalcMouseY(e.Y);
             int x = MyMap.RecalcMouseX(e.X);
-            switch (MyMap.RB)
+            if (MyMap.RB >= nebutnscount & MyMap.RB != 360)
             {
-                case 0:
-                    if (e.Button == MouseButtons.Left & stopwatch.ElapsedMilliseconds > 500)
-                    {
-                        if (!MyMap.isMove)
+                if (MyMap.NetworkElements.step)
+                {
+                    MyMap.NetworkElements.TempNetworkElement.SetPoint(x, y);
+                }
+            }
+            else
+            {
+                switch (MyMap.RB)
+                {
+                    case 0:
+                        if (e.Button == MouseButtons.Left & stopwatch.ElapsedMilliseconds > 500)
                         {
-                            SelectItems(x, y);
-                            MyMap.MoveElem(x, y);
+                            if (!MyMap.isMove)
+                            {
+                                SelectItems(x, y);
+                                MyMap.MoveElem(x, y);
+                            }
+                            else
+                            {
+                                MyMap.MoveElem(x, y);
+                            }
                         }
-                        else
+                        break;
+                    case 1:
+                        if (MyMap.Lines.step)
                         {
-                            MyMap.MoveElem(x, y);
+                            MyMap.Lines.TempLine.SetPoint(x, y, 1);
                         }
-                    }
-                    break;
-                case 1:
-                    if (MyMap.Lines.step)
-                    {
-                        MyMap.Lines.TempLine.SetPoint(x, y, 1);
-                    }
-                    break;
-                case 2:
-                    if (MyMap.Rectangles.step_rect == 1)
-                    {
-                        MyMap.Rectangles.TempRectangle.SetPoint(x, y, 2);
-                    }
-                    else if (MyMap.Rectangles.step_rect == 2)
-                    {
-                        MyMap.Rectangles.TempRectangle.SetPoint(x, y, 34);
-                    }
-                    break;
-                case 3:
-                    if (e.Button == MouseButtons.Left)
-                    {
-                        if (!MyMap.EditRects.edit_active)
+                        break;
+                    case 2:
+                        if (MyMap.Rectangles.step_rect == 1)
                         {
-                            MyMap.SearchEditElem(x, y);
+                            MyMap.Rectangles.TempRectangle.SetPoint(x, y, 2);
                         }
-                        else
+                        else if (MyMap.Rectangles.step_rect == 2)
                         {
-                            MyMap.MoveElements(x, y);
+                            MyMap.Rectangles.TempRectangle.SetPoint(x, y, 34);
                         }
-                    }
-                    break;
-                case 5:
-                    if (MyMap.Polygons.active & MyMap.Polygons.step)
-                    {
-                        MyMap.Polygons.TempPolygon.SetTempPoint(x, y);
-                    }
-                    break;
-                case 360:
-                    if (MyMap.Circles.step)
-                    {
-                        MyMap.Circles.TempCircle.SetRadius(x, y);
-                    }
-                    break;
-                case 6:
-                    if (MyMap.Buildings.Buildings[activeElem.item].InputWires.step)
-                    {
-                        if (drawLevel.Level == -1)
+                        break;
+                    case 3:
+                        if (e.Button == MouseButtons.Left)
                         {
-                            MyMap.Buildings.Buildings[activeElem.item].MoveIW(x, y);
+                            if (!MyMap.EditRects.edit_active)
+                            {
+                                MyMap.SearchEditElem(x, y);
+                            }
+                            else
+                            {
+                                MyMap.MoveElements(x, y);
+                            }
                         }
-                        else
+                        break;
+                    case 5:
+                        if (MyMap.Polygons.active & MyMap.Polygons.step)
                         {
-                            MyMap.Buildings.Buildings[activeElem.item].MoveIWInBuild(x, y);
+                            MyMap.Polygons.TempPolygon.SetTempPoint(x, y);
                         }
-                    }
-                    break;
-                case 7:
-                    if (MyMap.Buildings.Buildings[activeElem.item].Entrances.step)
-                    {
-                        MyMap.Buildings.Buildings[activeElem.item].MoveEntrance(x, y);
-                    }
-                    break;
-                case 8:
-                    if (MyMap.NetworkElements.step)
-                    {
-                        MyMap.NetworkElements.TempNetworkElement.SetPoint(x, y);
-                    }
-                    break;
-                case 9:
-                    if (MyMap.NetworkWires.active & MyMap.NetworkWires.step)
-                    {
-                        MyMap.NetworkWires.TempNetworkWire.SetTempPoint(x, y);
-                    }
-                    break;
+                        break;
+                    case 360:
+                        if (MyMap.Circles.step)
+                        {
+                            MyMap.Circles.TempCircle.SetRadius(x, y);
+                        }
+                        break;
+                    case 6:
+                        if (MyMap.Buildings.Buildings[activeElem.item].InputWires.step)
+                        {
+                            if (drawLevel.Level == -1)
+                            {
+                                MyMap.Buildings.Buildings[activeElem.item].MoveIW(x, y);
+                            }
+                            else
+                            {
+                                MyMap.Buildings.Buildings[activeElem.item].MoveIWInBuild(x, y);
+                            }
+                        }
+                        break;
+                    case 7:
+                        if (MyMap.Buildings.Buildings[activeElem.item].Entrances.step)
+                        {
+                            MyMap.Buildings.Buildings[activeElem.item].MoveEntrance(x, y);
+                        }
+                        break;
+                    case 8:
+                        if (MyMap.NetworkElements.step)
+                        {
+                            MyMap.NetworkElements.TempNetworkElement.SetPoint(x, y);
+                        }
+                        break;
+                    case 9:
+                        if (MyMap.NetworkWires.active & MyMap.NetworkWires.step)
+                        {
+                            MyMap.NetworkWires.TempNetworkWire.SetTempPoint(x, y);
+                        }
+                        break;
+                }
             }
         }
-
+        #region Для работы с зумом
         static public Point GenZoomPoint(Point p)
         {
             return new Point((int)((double)p.X * Zoom), (int)((double)p.Y * Zoom));
@@ -767,8 +747,132 @@ namespace NetworkDesign
             };
             return _cir;
         }
+        #endregion
+        #region Прочие функции
+        /// <summary>
+        /// Обновление отображения кнопок после применения фильтров
+        /// </summary>
+        private void RefreshButtons()
+        {
+            if (!filtres.Poly)
+                PolygonBtn.Visible = false;
+            else
+                PolygonBtn.Visible = true;
+            if (!filtres.Line)
+                LineBtn.Visible = false;
+            else
+                LineBtn.Visible = true;
+            if (!filtres.Rect)
+                RectangleBtn.Visible = false;
+            else
+                RectangleBtn.Visible = true;
+            if (!filtres.Circ)
+                CircleBtn.Visible = false;
+            else
+                CircleBtn.Visible = true;
+            if (!filtres.NW)
+                NWBtn.Visible = false;
+            else
+                NWBtn.Visible = true;
+            if (!filtres.NE)
+                NEBtn.Visible = false;
+            else
+                NEBtn.Visible = true;
+            if (!filtres.Text)
+                TextBtn.Visible = false;
+            else
+                TextBtn.Visible = true;
+            if (!filtres.IW)
+                IWBtn.Visible = false;
+            else
+                IWBtn.Visible = true;
+            if (!filtres.Ent)
+                EntranceBtn.Visible = false;
+            else
+                EntranceBtn.Visible = true;
+        }
+        /// <summary>
+        /// Функция для поиска элемента, в который попал клик мыши
+        /// </summary>
+        /// <param name="x">Координата мыши X</param>
+        /// <param name="y">Координата мыши Y</param>
+        private void SelectItems(int x, int y)
+        {
+            Unfocus("Не выбран элемент");
+            activeElem.item = MyMap.SearchElem(x, y, out activeElem.type, out activeElem.build, drawLevel);
 
-
+            switch (activeElem.type)
+            {
+                case 1:
+                    MyMap.Lines.Choose(activeElem.item);
+                    InfoLable.Text = "Выбрана линия " + activeElem.item;
+                    DeleteBtn.Enabled = true;
+                    break;
+                case 2:
+                    MyMap.Rectangles.Choose(activeElem.item);
+                    InfoLable.Text = "Выбран прямоугольник " + activeElem.item;
+                    DeleteBtn.Enabled = true;
+                    if (drawLevel.Level == -1)
+                        ToBuildBtn.Enabled = true;
+                    break;
+                case 3:
+                    MyMap.Polygons.Choose(activeElem.item);
+                    InfoLable.Text = "Выбран многоугольник " + activeElem.item;
+                    DeleteBtn.Enabled = true;
+                    if (drawLevel.Level == -1)
+                        ToBuildBtn.Enabled = true;
+                    AddPP.Visible = true;
+                    AddPP.Enabled = true;
+                    DeletePP.Visible = true;
+                    DeletePP.Enabled = true;
+                    break;
+                case 4:
+                    MyMap.Buildings.Choose(activeElem.item);
+                    InfoLable.Text = "Выбрано здание " + activeElem.item + " '" + MyMap.Buildings.Buildings[activeElem.item].Name + "'";
+                    DeleteBtn.Enabled = true;
+                    if (drawLevel.Level == -1)
+                    {
+                        ToBuildBtn.Enabled = true;
+                        EntranceBtn.Enabled = true;
+                        IWBtn.Enabled = true;
+                    }
+                    break;
+                case 6:
+                    InfoLable.Text = "Выбран вход провода в здание " + activeElem.build + " с ID " + activeElem.item;
+                    DeleteBtn.Enabled = true;
+                    MyMap.Buildings.Buildings[activeElem.build].InputWires.InputWires.Choose(activeElem.item);
+                    break;
+                case 7:
+                    InfoLable.Text = "Выбран вход в здание " + activeElem.build + " с ID " + activeElem.item;
+                    DeleteBtn.Enabled = true;
+                    MyMap.Buildings.Buildings[activeElem.build].Entrances.Enterances.Choose(activeElem.item);
+                    break;
+                case 8:
+                    MyMap.NetworkElements.Choose(activeElem.item);
+                    InfoLable.Text = "Выбран сетевой элемент " + activeElem.item;
+                    DeleteBtn.Enabled = true;
+                    break;
+                case 9:
+                    MyMap.NetworkWires.Choose(activeElem.item);
+                    InfoLable.Text = "Выбран провод " + activeElem.item;
+                    DeleteBtn.Enabled = true;
+                    DelNWPBtn.Visible = true;
+                    DelNWPBtn.Enabled = true;
+                    AddNWPBtn.Visible = true;
+                    AddNWPBtn.Enabled = true;
+                    break;
+                case 360:
+                    MyMap.Circles.Choose(activeElem.item);
+                    InfoLable.Text = "Выбрана окружность" + activeElem.item;
+                    DeleteBtn.Enabled = true;
+                    if (drawLevel.Level == -1)
+                        ToBuildBtn.Enabled = true;
+                    break;
+            }
+        }
+        /// <summary>
+        /// Обновление наименований этажей при открытии здания
+        /// </summary>
         private void UpgrateFloors()
         {
             FloorDown.Visible = true;
@@ -778,185 +882,8 @@ namespace NetworkDesign
             label1.Text = floors_name[drawLevel.Floor];
             floor_index = drawLevel.Floor;
         }
-
-        private void toolStripButton5_Click(object sender, EventArgs e)
-        {
-            if (MyMap.EditRects.edit_mode)
-            {
-                MyMap.SetInstrument(0);
-            }
-            else
-            {
-                MyMap.SetInstrument(3);
-                MyMap.RefreshEditRect();
-            }
-        }
-
-        private void сохранитьToolStripButton1_Click(object sender, EventArgs e) => SaveMap(".ndm", "Network Design Map File");
-
         /// <summary>
-        /// Функция для сохранения карты в файл 
-        /// </summary>
-        /// <param name="fileExtension">Расширение файла в формате .*</param>
-        /// <param name="descriptionFE">Описание заданного формата для отображения в диалоге</param>
-        private void SaveMap(string fileExtension, string descriptionFE)
-        {
-            SaveFileDialog saveFileDialog1 = new SaveFileDialog
-            {
-                Filter = descriptionFE + "|*" + fileExtension
-            };
-            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
-            {
-                XmlSerializer formatter = new XmlSerializer(typeof(Map));
-                string filename;
-                if (saveFileDialog1.FileName.Contains(fileExtension))
-                {
-                    filename = saveFileDialog1.FileName;
-                }
-                else
-                {
-                    filename = saveFileDialog1.FileName + fileExtension;
-                }
-                // получаем поток, куда будем записывать сериализованный объект
-                using (FileStream fs = new FileStream(filename + "._temp", FileMode.OpenOrCreate))
-                {
-                    formatter.Serialize(fs, MyMap);
-                }
-                Compress(filename + "._temp", filename);
-                File.Delete(filename + "._temp");
-            }
-        }
-
-        /// <summary>
-        /// Функиця для архивации одного файла с использованием алгоритма сжатия ZIP
-        /// </summary>
-        /// <param name="sourceFile">Путь к исходному файлу</param>
-        /// <param name="compressedFile">Путь к получаемому файлу</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Не ликвидировать объекты несколько раз")]
-        public static void Compress(string sourceFile, string compressedFile)
-        {
-            // поток для чтения исходного файла
-            using (FileStream sourceStream = new FileStream(sourceFile, FileMode.OpenOrCreate))
-            {
-                // поток для записи сжатого файла
-                using (FileStream targetStream = File.Create(compressedFile))
-                {
-                    // поток архивации
-                    using (GZipStream compressionStream = new GZipStream(targetStream, CompressionMode.Compress))
-                    {
-                        sourceStream.CopyTo(compressionStream); // копируем байты из одного потока в другой
-                        /*Console.WriteLine("Сжатие файла {0} завершено. Исходный размер: {1}  сжатый размер: {2}.",
-                            sourceFile, sourceStream.Length.ToString(), targetStream.Length.ToString());*/
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Функция для разархивации одного файла с использованием алгоритма ZIP
-        /// </summary>
-        /// <param name="compressedFile">Путь к исходному файлу</param>
-        /// <param name="targetFile">Путь к получаемому файлу</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Не ликвидировать объекты несколько раз")]
-        public static void Decompress(string compressedFile, string targetFile)
-        {
-            // поток для чтения из сжатого файла
-            using (FileStream sourceStream = new FileStream(compressedFile, FileMode.OpenOrCreate))
-            {
-                // поток для записи восстановленного файла
-                using (FileStream targetStream = File.Create(targetFile))
-                {
-                    // поток разархивации
-                    using (GZipStream decompressionStream = new GZipStream(sourceStream, CompressionMode.Decompress))
-                    {
-                        decompressionStream.CopyTo(targetStream);
-                        //Console.WriteLine("Восстановлен файл: {0}", targetFile);
-                    }
-                }
-            }
-        }
-
-        private string SubStrDel(string str, string substr)
-        {
-            int n = str.IndexOf(substr);
-            str = str.Remove(n, substr.Length);
-            return str;
-        }
-
-        private void создатьToolStripButton1_Click(object sender, EventArgs e)
-        {
-            MapControl mapControl = new MapControl(MyMap.mapSetting);
-            mapControl.ShowDialog();
-            MyMap.SetNewSettings(mapControl.mapSettings);
-            //MyMap = new Map(mapControl.mapSettings);
-            Text = MyMap.mapSetting.Name;
-        }
-
-        private void открытьToolStripButton1_Click(object sender, EventArgs e) => OpenMap(".ndm", "Network Design Map File");
-
-        /// <summary>
-        /// Функция для открытия файла карты
-        /// </summary>
-        /// <param name="fileExtension">Расширение файла в формате .*</param>
-        /// <param name="descriptionFE">Описание заданного формата для отображения в диалоге</param>
-        private void OpenMap(string fileExtension, string descriptionFE)
-        {
-            OpenFileDialog openFileDialog1 = new OpenFileDialog
-            {
-                Filter = descriptionFE + "|*" + fileExtension
-            };
-            if (openFileDialog1.ShowDialog() == DialogResult.OK)
-            {
-                Decompress(openFileDialog1.FileName, openFileDialog1.FileName + "._temp");
-                XmlSerializer formatter = new XmlSerializer(typeof(Map));
-                // получаем поток, куда будем записывать сериализованный объект
-                using (FileStream fs = new FileStream(openFileDialog1.FileName + "._temp", FileMode.OpenOrCreate))
-                {
-                    Map TempMap = (Map)formatter.Deserialize(fs);
-                    MyMap.MapLoad(TempMap);
-                }
-                File.Delete(openFileDialog1.FileName + "._temp");
-            }
-            CheckButtons(true);
-        }
-
-        private void toolStripButton3_Click(object sender, EventArgs e) => MyMap.SetInstrument(0);
-
-        private void toolStripButton1_Click_1(object sender, EventArgs e) => MyMap.SetInstrument(1);
-
-        private void toolStripButton2_Click_1(object sender, EventArgs e) => MyMap.SetInstrument(5);
-
-        private void toolStripButton4_Click(object sender, EventArgs e) => MyMap.SetInstrument(2);
-
-        private void параметрыToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ColorDialogForm colorDialog = new ColorDialogForm();
-            colorDialog.ShowDialog();
-        }
-
-        private void создатьToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void открытьToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void сохранитьToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void посмотретьЛогToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            FormLog formlog = new FormLog(MyMap.log.Back);
-            formlog.Show();
-        }
-
-        /// <summary>
-        /// Функция для возврата элементов к исходному состоянию, без фокусировки на определенном элементе
+        /// Возврат элементов к исходному состоянию, без фокусировки на определенном элементе
         /// </summary>
         private void Unfocus(string info)
         {
@@ -969,19 +896,15 @@ namespace NetworkDesign
             DeletePP.Visible = false;
             DeletePP.Enabled = false;
             //
-            toolStripButton12.Visible = false;
-            toolStripButton12.Enabled = false;
-            toolStripButton10.Visible = false;
-            toolStripButton10.Enabled = false;
+            DelNWPBtn.Visible = false;
+            DelNWPBtn.Enabled = false;
+            AddNWPBtn.Visible = false;
+            AddNWPBtn.Enabled = false;
             //
-            BuildBtn.Enabled = false;
+            ToBuildBtn.Enabled = false;
             DeleteBtn.Enabled = false;
-            AddEntranceBtn.Enabled = false;
-            AddIWBtn.Enabled = false;
-            //
-            /*activeElem.type = -1;
-            activeElem.item = -1;
-            activeElem.build = -1;*/
+            EntranceBtn.Enabled = false;
+            IWBtn.Enabled = false;
             //
             MyMap.Lines.Choose(-1);
             MyMap.Rectangles.Choose(-1);
@@ -991,8 +914,10 @@ namespace NetworkDesign
             MyMap.NetworkElements.Choose(-1);
             MyMap.NetworkWires.Choose(-1);
         }
-
-        private void BuildBtn_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Преобразование зданий в фигуры и наоброт
+        /// </summary>
+        private void ToBuild()
         {
             if (activeElem.type == 4)
             {
@@ -1079,20 +1004,10 @@ namespace NetworkDesign
             }
         }
 
-        private void ButtonReturnToMain_Click(object sender, EventArgs e)
-        {
-            drawLevel.Level = -1;
-            drawLevel.Floor = -1;
-            ButtonReturnToMain.Enabled = false;
-            FloorUP.Visible = false;
-            FloorDown.Visible = false;
-            label1.Visible = false;
-            floor_index = 0;
-            floors_name = new List<string>();
-            Unfocus("Нет активного элемента");
-        }
-
-        private void DeleteBtn_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Удаление элемента
+        /// </summary>
+        private void DeleteElem()
         {
             Element elem, _elem;
             switch (activeElem.type)
@@ -1188,43 +1103,38 @@ namespace NetworkDesign
             }
             Unfocus("Удалил элемент");
         }
-
-        private void CheckButtons(bool clearForward)
+        /// <summary>
+        /// Поиск элемента
+        /// </summary>
+        private void Search()
         {
-            if (clearForward)
-                MyMap.log.ClearForward();
-            if (MyMap.log.NotNullBack())
-                BackBtn.Enabled = true;
-            else
-                BackBtn.Enabled = false;
-            if (MyMap.log.NotNullForward())
-                ForwardBrn.Enabled = true;
-            else
-                ForwardBrn.Enabled = false;
+            SearchDialog sd = new SearchDialog();
+            sd.ShowDialog();
+            if (sd.text != "" & sd.text != " ")
+            {
+                DrawLevel _drawLevel = MyMap.MyTexts.Search(sd.text);
+                if (_drawLevel.Level != -2)
+                {
+                    drawLevel = _drawLevel;
+                    ReturnToMainBtn.Enabled = true;
+                    UpgrateFloors();
+                    Unfocus("Выбрано здание " + activeElem.item + " '" + MyMap.Buildings.Buildings[activeElem.item].Name + "'");
+                    IWBtn.Enabled = true;
+                }
+                else
+                {
+                    MessageBox.Show("Не найдено");
+                }
+            }
         }
-
-        private void BackBtn_Click(object sender, EventArgs e)
-        {
-            Element _elem = MyMap.log.DeleteLastBack(out Element elem, out int buildid);
-            if (_elem.type != 7 & _elem.type != 6)
-                PharseElem(_elem, elem, true);
-            else
-                PharseElem(_elem, elem, buildid);
-            CheckButtons(false);
-            Unfocus("Нажата стрелочка назад");
-        }
-
-        private void ForwardBrn_Click(object sender, EventArgs e)
-        {
-            Element _elem = MyMap.log.DeleteLastForward(out Element elem, out int buildid);
-            if (_elem.type != 7 & _elem.type != 6)
-                PharseElem(_elem, elem, false);
-            else
-                PharseElem(_elem, elem, buildid);
-            CheckButtons(false);
-            Unfocus("Нажата стрелочка вперед");
-        }
-
+        #endregion
+        #region Различные функции для работы с логом
+        /// <summary>
+        /// Обработка элементов лога
+        /// </summary>
+        /// <param name="_elem"></param>
+        /// <param name="elem"></param>
+        /// <param name="b"></param>
         private void PharseElem(Element _elem, Element elem, bool b)
         {
             if (_elem.transform != -1)
@@ -1346,7 +1256,12 @@ namespace NetworkDesign
                 }
             }
         }
-
+        /// <summary>
+        /// Обработка элементов лога
+        /// </summary>
+        /// <param name="_elem"></param>
+        /// <param name="elem"></param>
+        /// <param name="buildid"></param>
         private void PharseElem(Element _elem, Element elem, int buildid)
         {
             switch (elem.type)
@@ -1359,29 +1274,107 @@ namespace NetworkDesign
                     break;
             }
         }
-
-        //private void domainUpDown1_SelectedItemChanged(object sender, EventArgs e) => drawLevel.Floor = domainUpDown1.SelectedIndex;
-
-        private void ToolStripButton6_Click_1(object sender, EventArgs e) => MyMap.SetInstrument(360);
-
-        private void AddEntranceBtn_Click(object sender, EventArgs e) => MyMap.SetInstrument(7);
-
-        private void AddIWBtn_Click(object sender, EventArgs e) => MyMap.SetInstrument(6);
-
-        private void ExporImportBuildBtn_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Проверка кнопок для лога
+        /// </summary>
+        /// <param name="clearForward"></param>
+        private void CheckButtons(bool clearForward)
         {
-            /*if (activeElem.type == 4)
-            {*/
-            SaveBuild(".build", "Building File");
-            /*}
+            if (clearForward)
+                MyMap.log.ClearForward();
+            if (MyMap.log.NotNullBack())
+                BackBtn.Enabled = true;
             else
+                BackBtn.Enabled = false;
+            if (MyMap.log.NotNullForward())
+                ForwardBrn.Enabled = true;
+            else
+                ForwardBrn.Enabled = false;
+        }
+        #endregion
+        #region Открытие, сохранение, экспорт, импорт
+        /// <summary>
+        /// Функция для сохранения карты в файл 
+        /// </summary>
+        /// <param name="fileExtension">Расширение файла в формате .*</param>
+        /// <param name="descriptionFE">Описание заданного формата для отображения в диалоге</param>
+        private void SaveMap(string fileExtension, string descriptionFE)
+        {
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog
             {
-                OpenBuild(".build", "Building File");
-            }*/
+                Filter = descriptionFE + "|*" + fileExtension
+            };
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                XmlSerializer formatter = new XmlSerializer(typeof(Map));
+                string filename;
+                if (saveFileDialog1.FileName.Contains(fileExtension))
+                {
+                    filename = saveFileDialog1.FileName;
+                }
+                else
+                {
+                    filename = saveFileDialog1.FileName + fileExtension;
+                }
+                // получаем поток, куда будем записывать сериализованный объект
+                using (FileStream fs = new FileStream(filename + "._temp", FileMode.OpenOrCreate))
+                {
+                    formatter.Serialize(fs, MyMap);
+                }
+                Compress(filename + "._temp", filename);
+                File.Delete(filename + "._temp");
+            }
         }
 
         /// <summary>
-        /// Функция для сохранения здания в файл 
+        /// Функиця для архивации одного файла с использованием алгоритма сжатия ZIP
+        /// </summary>
+        /// <param name="sourceFile">Путь к исходному файлу</param>
+        /// <param name="compressedFile">Путь к получаемому файлу</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Не ликвидировать объекты несколько раз")]
+        public static void Compress(string sourceFile, string compressedFile)
+        {
+            // поток для чтения исходного файла
+            using (FileStream sourceStream = new FileStream(sourceFile, FileMode.OpenOrCreate))
+            {
+                // поток для записи сжатого файла
+                using (FileStream targetStream = File.Create(compressedFile))
+                {
+                    // поток архивации
+                    using (GZipStream compressionStream = new GZipStream(targetStream, CompressionMode.Compress))
+                    {
+                        sourceStream.CopyTo(compressionStream); // копируем байты из одного потока в другой
+                        /*Console.WriteLine("Сжатие файла {0} завершено. Исходный размер: {1}  сжатый размер: {2}.",
+                            sourceFile, sourceStream.Length.ToString(), targetStream.Length.ToString());*/
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Функция для разархивации одного файла с использованием алгоритма ZIP
+        /// </summary>
+        /// <param name="compressedFile">Путь к исходному файлу</param>
+        /// <param name="targetFile">Путь к получаемому файлу</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Не ликвидировать объекты несколько раз")]
+        public static void Decompress(string compressedFile, string targetFile)
+        {
+            // поток для чтения из сжатого файла
+            using (FileStream sourceStream = new FileStream(compressedFile, FileMode.OpenOrCreate))
+            {
+                // поток для записи восстановленного файла
+                using (FileStream targetStream = File.Create(targetFile))
+                {
+                    // поток разархивации
+                    using (GZipStream decompressionStream = new GZipStream(sourceStream, CompressionMode.Decompress))
+                    {
+                        decompressionStream.CopyTo(targetStream);
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// Сохранение (экспорт) здания в файл 
         /// </summary>
         /// <param name="fileExtension">Расширение файла в формате .*</param>
         /// <param name="descriptionFE">Описание заданного формата для отображения в диалоге</param>
@@ -1418,9 +1411,8 @@ namespace NetworkDesign
                 File.Delete(filename + "._temp");
             }
         }
-
         /// <summary>
-        /// Функция для открытия карты файла
+        /// Открытие файла с картой сети
         /// </summary>
         /// <param name="fileExtension">Расширение файла в формате .*</param>
         /// <param name="descriptionFE">Описание заданного формата для отображения в диалоге</param>
@@ -1462,10 +1454,39 @@ namespace NetworkDesign
                 MyMap.Polygons.AddGroupElems(TempMap.Polygons.Polygons.ConvertAll(new Converter<Polygon, object>(Conv)));
             }
         }
-
-        static object Conv(object elem) => elem;
-
-        private void toolStripButton7_Click(object sender, EventArgs e) => SaveTemplateMap(".ndm", "Network Design Map File");
+        /// <summary>
+        /// Функция для открытия файла карты
+        /// </summary>
+        /// <param name="fileExtension">Расширение файла в формате .*</param>
+        /// <param name="descriptionFE">Описание заданного формата для отображения в диалоге</param>
+        private void OpenMap(string fileExtension, string descriptionFE)
+        {
+            OpenFileDialog openFileDialog1 = new OpenFileDialog
+            {
+                Filter = descriptionFE + "|*" + fileExtension
+            };
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                Decompress(openFileDialog1.FileName, openFileDialog1.FileName + "._temp");
+                XmlSerializer formatter = new XmlSerializer(typeof(Map));
+                // получаем поток, куда будем записывать сериализованный объект
+                using (FileStream fs = new FileStream(openFileDialog1.FileName + "._temp", FileMode.OpenOrCreate))
+                {
+                    Map TempMap = (Map)formatter.Deserialize(fs);
+                    MyMap.MapLoad(TempMap);
+                }
+                File.Delete(openFileDialog1.FileName + "._temp");
+            }
+            CheckButtons(true);
+            //CheckOptions();
+        }
+        /// <summary>
+        /// Проверяет на доступность параметры и текстуры для сетевых элементов
+        /// </summary>
+        private bool CheckOptions()
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// Функция для сохранения здания в файл 
@@ -1509,7 +1530,391 @@ namespace NetworkDesign
                 File.Delete(filename + "._temp");
             }
         }
+        /// <summary>
+        /// Конвертер
+        /// </summary>
+        /// <param name="elem"></param>
+        /// <returns></returns>
+        static object Conv(object elem) => elem;
+        #endregion
+        #region События
+        private void toolStripComboBox1_Click(object sender, EventArgs e)
+        {
 
+        }
+
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+            /*ImageTextures IT = new ImageTextures(ref MyMap.NetworkElements);
+            IT.ShowDialog();
+            if (IT.imageindex > -1)
+            {
+                neButtons.Add(new NEButton(new ToolStripButton(Images.Images[IT.imageindex]), IT.imageindex));
+                toolStrip1.Items.Add(neButtons.Last().toolStripButton);
+            }*/
+        }
+        private void создатьToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void открытьToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void сохранитьToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+        /// <summary>
+        /// Событие тика таймера
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Time_Tick(object sender, EventArgs e) => panel1.AutoScrollPosition = new Point(-asp.X, -asp.Y);
+        /// <summary>
+        /// Событие нажатия мыши по форме
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MainForm_Click(object sender, EventArgs e) => focusbox.Focus();
+        /// <summary>
+        /// Событие нажатия мыши по области отрисовки
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AnT_Click(object sender, EventArgs e) => focusbox.Focus();
+        /// <summary>
+        /// Событие нажатия кнопки параметры
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ParamsMapClick(object sender, EventArgs e)
+        {
+            ColorDialogForm colorDialog = new ColorDialogForm();
+            colorDialog.ShowDialog();
+        }
+        /// <summary>
+        /// Событие нажатия кнопки посмотреть лог
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ShowLogClick(object sender, EventArgs e)
+        {
+            FormLog formlog = new FormLog(MyMap.log.Back);
+            formlog.Show();
+        }
+        /// <summary>
+        /// Событие нажатия кнопки создания новой карты с заданными параметрами
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CreateMapClick(object sender, EventArgs e)
+        {
+            MapControl mapControl = new MapControl(MyMap.mapSetting);
+            mapControl.ShowDialog();
+            MyMap.SetNewSettings(mapControl.mapSettings);
+            //MyMap = new Map(mapControl.mapSettings);
+            Text = MyMap.mapSetting.Name;
+        }
+        /// <summary>
+        /// Событие нажатия кнопки сохранения карты
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SaveBtnClick(object sender, EventArgs e) => SaveMap(".ndm", "Network Design Map File");
+        /// <summary>
+        /// СОбытие нажатия кнопки открыть карту
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OpenMapClick(object sender, EventArgs e) => OpenMap(".ndm", "Network Design Map File");
+        /// <summary>
+        /// Событие нажатия кнопки сохранение шаблона карты
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SaveTemplateMapClick(object sender, EventArgs e) => SaveTemplateMap(".ndm", "Network Design Map File");
+        /// <summary>
+        /// Событие нажатия кнопки экспорт здания
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ExporBuildClick(object sender, EventArgs e) => SaveBuild(".build", "Building File");
+        /// <summary>
+        /// Событие нажатия кнопки испорта здания
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ImpotrBuildClick(object sender, EventArgs e) => OpenBuild(".build", "Building File");
+        /// <summary>
+        /// Собитые нажатия кнопки назад
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BackBtn_Click(object sender, EventArgs e)
+        {
+            Element _elem = MyMap.log.DeleteLastBack(out Element elem, out int buildid);
+            if (_elem.type != 7 & _elem.type != 6)
+                PharseElem(_elem, elem, true);
+            else
+                PharseElem(_elem, elem, buildid);
+            CheckButtons(false);
+            Unfocus("Нажата стрелочка назад");
+        }
+
+        /// <summary>
+        /// Событие нажатия кнопки вперед
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ForwardBrn_Click(object sender, EventArgs e)
+        {
+            Element _elem = MyMap.log.DeleteLastForward(out Element elem, out int buildid);
+            if (_elem.type != 7 & _elem.type != 6)
+                PharseElem(_elem, elem, false);
+            else
+                PharseElem(_elem, elem, buildid);
+            CheckButtons(false);
+            Unfocus("Нажата стрелочка вперед");
+        }
+        /// <summary>
+        /// Собитые нажатия кнопки курсор
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CursorClick(object sender, EventArgs e) => MyMap.SetInstrument(0);
+        /// <summary>
+        /// Событие нажатия кнопки линия
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void LineClick(object sender, EventArgs e) => MyMap.SetInstrument(1);
+        /// <summary>
+        /// Событие нажатия кнопки многоугольник
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void PolygonClick(object sender, EventArgs e) => MyMap.SetInstrument(5);
+        /// <summary>
+        /// Событие нажатия кнопки добавить точку у многоугольника
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AddPP_Click(object sender, EventArgs e)
+        {
+            MyMap.Polygons.Polygons[activeElem.item].AddNewPoint();
+            if (!MyMap.EditRects.edit_mode)
+            {
+                MyMap.SetInstrument(3);
+                MyMap.RefreshEditRect();
+            }
+            else
+            {
+                MyMap.RefreshEditRect();
+            }
+            //MyMap.RefreshEditRect();
+        }
+        /// <summary>
+        /// Событие нажатия кнопки удалить точку прямоугольника
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DeletePP_Click(object sender, EventArgs e)
+        {
+            MyMap.Polygons.Polygons[activeElem.item].RemovePoint();
+            if (!MyMap.EditRects.edit_mode)
+            {
+                MyMap.SetInstrument(3);
+                MyMap.RefreshEditRect();
+            }
+            else
+            {
+                MyMap.RefreshEditRect();
+            }
+            //MyMap.RefreshEditRect();
+        }
+        /// <summary>
+        /// Событие нажатия кнопки прямоугольник
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void RectangleClick(object sender, EventArgs e) => MyMap.SetInstrument(2);
+        /// <summary>
+        /// Событие нажатия кнопки круг
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ToolStripButton6_Click_1(object sender, EventArgs e) => MyMap.SetInstrument(360);
+        /// <summary>
+        /// Событие нажатия кнопки фильтры
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void FiltersBtn_Click(object sender, EventArgs e)
+        {
+            FiltersForm ff = new FiltersForm();
+            ff.ShowDialog();
+            RefreshButtons();
+        }
+        /// <summary>
+        /// Событие нажатия кнопки редактирования
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void EditClick(object sender, EventArgs e)
+        {
+            if (MyMap.EditRects.edit_mode)
+            {
+                MyMap.SetInstrument(0);
+            }
+            else
+            {
+                MyMap.SetInstrument(3);
+                MyMap.RefreshEditRect();
+            }
+        }
+        /// <summary>
+        /// Событие нажатия кнопки удаление элемента
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DeleteBtn_Click(object sender, EventArgs e) => DeleteElem();
+        /// <summary>
+        /// Событие нажатия кнопки поиск элемента
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SearchClick(object sender, EventArgs e) => Search();
+        /// <summary>
+        /// Событие нажатия кнопки преобразование в здание
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BuildBtn_Click(object sender, EventArgs e) => ToBuild();
+        /// <summary>
+        /// Событие нажатия кнопки вернуться на главный вид
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ButtonReturnToMain_Click(object sender, EventArgs e)
+        {
+            drawLevel.Level = -1;
+            drawLevel.Floor = -1;
+            ReturnToMainBtn.Enabled = false;
+            FloorUP.Visible = false;
+            FloorDown.Visible = false;
+            label1.Visible = false;
+            floor_index = 0;
+            floors_name = new List<string>();
+            Unfocus("Нет активного элемента");
+        }
+        /// <summary>
+        /// Событие нажатия кнопки входы в здание
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AddEntranceBtn_Click(object sender, EventArgs e) => MyMap.SetInstrument(7);
+        /// <summary>
+        /// Событие нажатия кнопки входы проводов в здание
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AddIWBtn_Click(object sender, EventArgs e) => MyMap.SetInstrument(6);
+        /// <summary>
+        /// Событие нажатия кнопки текст
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TextClick(object sender, EventArgs e) => MyMap.SetInstrument(10);
+        /// <summary>
+        /// Событие нажатия кнопки сетевые элементы
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void NEClick(object sender, EventArgs e)
+        {
+            MyMap.SetInstrument(8);
+            ImageTextures IT = new ImageTextures(ref MyMap.NetworkElements);
+            IT.ShowDialog();
+            /*if (IT.imageindex > -1)
+            {
+                neButtons.Add(new NEButton(new ToolStripButton(Images.Images[IT.imageindex]), IT.imageindex));
+                toolStrip1.Items.Add(neButtons.Last().toolStripButton);
+            }*/
+        }
+        /// <summary>
+        /// Событие нажатия кнопки провода
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void NWClick(object sender, EventArgs e) => MyMap.SetInstrument(9);
+        /// <summary>
+        /// Событие нажатия кнопки добавить точку для провода
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AddNWPClick(object sender, EventArgs e)
+        {
+            MyMap.NetworkWires.NetworkWires[activeElem.item].AddNewPoint();
+            MyMap.RefreshEditRect();
+        }
+        /// <summary>
+        /// Событие нажатия кнопки удалить точку для провода
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DelNWPClick(object sender, EventArgs e)
+        {
+            MyMap.NetworkWires.NetworkWires[activeElem.item].RemovePoint();
+            MyMap.RefreshEditRect();
+        }
+        /// <summary>
+        /// Событие прокрутки основной панели
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void panel1_Scroll(object sender, ScrollEventArgs e) => asp = panel1.AutoScrollPosition;
+        /// <summary>
+        /// Событие клика по меню
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void menuStrip1_MouseClick(object sender, MouseEventArgs e) => focusbox.Focus();
+        /// <summary>
+        /// Событие клика по меню инстурментов
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void toolStrip1_MouseClick(object sender, MouseEventArgs e) => focusbox.Focus();
+        /// <summary>
+        /// Событие прокрутки трэкбара (зум)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private unsafe void trackBar1_Scroll(object sender, EventArgs e)
+        {
+            Zoom = (double)trackBar1.Value / 10d;
+            MyMap.RefreshRenderingArea();
+        }
+        /// <summary>
+        /// Событие закрытия формы
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            ColorSettings.Save(colorSettings);
+            SaveTextures(ImagesURL);
+            Parametrs.Save(parametrs);
+            Application.Exit();
+        }
+        /// <summary>
+        /// Событие нажатия кнопки на этаж выше
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FloorUP_Click(object sender, EventArgs e)
         {
             if (floor_index != floors_name.Count - 1)
@@ -1519,7 +1924,11 @@ namespace NetworkDesign
                 drawLevel.Floor = floor_index;
             }
         }
-
+        /// <summary>
+        /// Событие нажатия кнопки на этаж ниже
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FloorDown_Click(object sender, EventArgs e)
         {
             if (floor_index != 0)
@@ -1529,82 +1938,192 @@ namespace NetworkDesign
                 drawLevel.Floor = floor_index;
             }
         }
-
-        private void toolStripButton8_Click(object sender, EventArgs e)
+        #endregion
+        #region Генерация текстур
+        static public ListView LoadImages()
         {
-            OpenBuild(".build", "Building File");
-        }
-
-        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            ColorSettings.Save(colorSettings);
-            ImageTextures.Save(ImagesURL);
-            Parametrs.Save(parametrs);
-            Application.Exit();
-        }
-
-        private void toolStripButton9_Click(object sender, EventArgs e)
-        {
-            SearchDialog sd = new SearchDialog();
-            sd.ShowDialog();
-            if (sd.text != "" & sd.text != " ")
+            ListView listView1 = new ListView();
+            if (!isLoad)
+                Textures.Clear();
+            int i = 0;
+            Images = new ImageList();
+            Images.ImageSize = new Size(200, 200);
+            listView1.Clear();
+            listView1.LargeImageList = Images;
+            listView1.SmallImageList = Images;
+            bool noexist = false;
+            for (int j = 0; j < ImagesURL.Count; j++)
             {
-                DrawLevel _drawLevel = MyMap.MyTexts.Search(sd.text);
-                if (_drawLevel.Level != -2)
+                if (File.Exists(Application.StartupPath + @"\Textures\" + ImagesURL[j]))
                 {
-                    drawLevel = _drawLevel;
-                    ButtonReturnToMain.Enabled = true;
-                    UpgrateFloors();
-                    Unfocus("Выбрано здание " + activeElem.item + " '" + MyMap.Buildings.Buildings[activeElem.item].Name + "'");
-                    AddIWBtn.Enabled = true;
+                    Image image = Image.FromFile(Application.StartupPath + @"\Textures\" + ImagesURL[j]);
+                    double koef = image.Height / 1000;
+                    if (image.Width / 1000 > koef)
+                        koef = image.Width / 1000;
+                    if (koef > 1)
+                    {
+                        Bitmap bitmap = new Bitmap(image, (int)(image.Width * koef), (int)(image.Height * koef));
+                        bitmap.Save(Application.StartupPath + @"\Textures\" + ImagesURL[j]);
+                        image = Image.FromFile(Application.StartupPath + @"\Textures\" + ImagesURL[j]);
+                        Images.Images.Add(image);
+                    }
+                    else
+                    {
+                        Images.Images.Add(image);
+                    }
+                    if (isLoad)
+                    {
+                        ListViewItem item = new ListViewItem();
+                        item.Text = "";
+                        item.ImageIndex = i;
+                        listView1.Items.Add(item);
+                        i++;
+                    }
+                    else
+                    {
+                        if (!GenTex(j, Application.StartupPath + @"\Textures\" + ImagesURL[j]))
+                        {
+                            ImagesURL.RemoveAt(j);
+                            j--;
+                        }
+                        else
+                        {
+                            ListViewItem item = new ListViewItem();
+                            item.Text = "";
+                            item.ImageIndex = i;
+                            listView1.Items.Add(item);
+                            i++;
+                        }
+                    }
                 }
                 else
                 {
-                    MessageBox.Show("Не найдено");
+                    noexist = true;
+                    ImagesURL.RemoveAt(j);
+                    j--;
                 }
+            }
+            if (noexist)
+            {
+                MessageBox.Show("Один или несколько файлов недоступны");
+            }
+            MainForm.isLoad = true;
+            return listView1;
+        }
+        static public List<string> OpenTextures()
+        {
+            if (!Directory.Exists(Application.StartupPath + @"\Textures"))
+            {
+                Directory.CreateDirectory(Application.StartupPath + @"\Textures");
+                SaveTextures(new List<string>());
+                return new List<string>();
+            }
+            if (!File.Exists(Application.StartupPath + @"\Textures\ListOfTextures"))
+            {
+                SaveTextures(new List<string>());
+                return new List<string>();
+            }
+            XmlSerializer formatter = new XmlSerializer(typeof(List<string>));
+            using (FileStream fs = new FileStream(Application.StartupPath + @"\Textures\ListOfTextures", FileMode.Open))
+            {
+                return (List<string>)formatter.Deserialize(fs);
+            }
+        }
+        static public void SaveTextures(List<string> imglist)
+        {
+            XmlSerializer formatter = new XmlSerializer(typeof(List<string>));
+            using (FileStream fs = new FileStream(Application.StartupPath + @"\Textures\ListOfTextures", FileMode.Create))
+            {
+                formatter.Serialize(fs, imglist);
+            }
+        }
+        /// <summary>
+        /// Генерация текстуры
+        /// </summary>
+        /// <param name="id">Идентификатор текстуры в списке ссылок</param>
+        /// <param name="url">Ссылка</param>
+        public static bool GenTex(int id, string url)
+        {
+            // создаем изображение с идентификатором imageId 
+            Il.ilGenImages(1, out int imageId);
+            // делаем изображение текущим 
+            Il.ilBindImage(imageId);
+            // пробуем загрузить изображение 
+            if (Il.ilLoadImage(url))
+            {
+                // если загрузка прошла успешно 
+                // сохраняем размеры изображения 
+                int width = Il.ilGetInteger(Il.IL_IMAGE_WIDTH);
+                int height = Il.ilGetInteger(Il.IL_IMAGE_HEIGHT);
+
+                // определяем число бит на пиксель 
+                int bitspp = Il.ilGetInteger(Il.IL_IMAGE_BITS_PER_PIXEL);
+
+                switch (bitspp) // в зависимости от полученного результата 
+                {
+                    // создаем текстуру, используя режим GL_RGB или GL_RGBA 
+                    case 24:
+                        MainForm.Textures.Add(MakeGlTexture(Gl.GL_RGB, Il.ilGetData(), width, height));
+                        break;
+                    case 32:
+                        MainForm.Textures.Add(MakeGlTexture(Gl.GL_RGBA, Il.ilGetData(), width, height));
+                        break;
+                }
+                // очищаем память 
+                Il.ilDeleteImages(1, ref imageId);
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
 
-        private void toolStripButton11_Click_1(object sender, EventArgs e) => MyMap.SetInstrument(9);
-
-        private void menuStrip1_MouseClick(object sender, MouseEventArgs e) => focusbox.Focus();
-
-        private void toolStrip1_MouseClick(object sender, MouseEventArgs e) => focusbox.Focus();
-
-        private unsafe void trackBar1_Scroll(object sender, EventArgs e)
+        /// <summary>
+        /// Создание текстуры в памяти OpenGL
+        /// </summary>
+        /// <param name="Format">Формат изображения</param>
+        /// <param name="pixels">Пиксели</param>
+        /// <param name="w">Ширина</param>
+        /// <param name="h">Высота</param>
+        /// <returns></returns>
+        public static uint MakeGlTexture(int Format, IntPtr pixels, int w, int h)
         {
-            Zoom = (double)trackBar1.Value / 10d;
-            MyMap.RefreshRenderingArea();
+            // идентификатор текстурного объекта 
+            uint texObject;
+
+            // генерируем текстурный объект 
+            Gl.glGenTextures(1, out texObject);
+
+            // устанавливаем режим упаковки пикселей 
+            Gl.glPixelStorei(Gl.GL_UNPACK_ALIGNMENT, 1);
+
+            // создаем привязку к только что созданной текстуре 
+            Gl.glBindTexture(Gl.GL_TEXTURE_2D, texObject);
+
+            // устанавливаем режим фильтрации и повторения текстуры 
+            //Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_S, Gl.GL_REPEAT);
+            //Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_T, Gl.GL_REPEAT);
+            Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_LINEAR);
+            Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR);
+            Gl.glTexEnvf(Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_REPLACE);
+            //Gl.glTexEnvi(Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_MODULATE);
+
+            // создаем RGB или RGBA текстуру 
+            switch (Format)
+            {
+                case Gl.GL_RGB:
+                    Gl.glTexImage2D(Gl.GL_TEXTURE_2D, 0, Gl.GL_RGB, w, h, 0, Gl.GL_RGB, Gl.GL_UNSIGNED_BYTE, pixels);
+                    break;
+
+                case Gl.GL_RGBA:
+                    Gl.glTexImage2D(Gl.GL_TEXTURE_2D, 0, Gl.GL_RGBA, w, h, 0, Gl.GL_RGBA, Gl.GL_UNSIGNED_BYTE, pixels);
+                    break;
+            }
+
+            // возвращаем идентификатор текстурного объекта 
+            return texObject;
         }
-
-        private void panel1_Scroll(object sender, ScrollEventArgs e) => asp = panel1.AutoScrollPosition;
-
-        private void AddPP_Click(object sender, EventArgs e)
-        {
-            MyMap.Polygons.Polygons[activeElem.item].AddNewPoint();
-            MyMap.RefreshEditRect();
-        }
-
-        private void DeletePP_Click(object sender, EventArgs e)
-        {
-            MyMap.Polygons.Polygons[activeElem.item].RemovePoint();
-            MyMap.RefreshEditRect();
-        }
-
-        private void toolStripButton10_Click(object sender, EventArgs e)
-        {
-            MyMap.NetworkWires.NetworkWires[activeElem.item].AddNewPoint();
-            MyMap.RefreshEditRect();
-        }
-
-        private void toolStripButton12_Click(object sender, EventArgs e)
-        {
-            MyMap.NetworkWires.NetworkWires[activeElem.item].RemovePoint();
-            MyMap.RefreshEditRect();
-        }
-
-        private void toolStripButton14_Click(object sender, EventArgs e) => MyMap.SetInstrument(10);
-
-        private void toolStripButton13_Click(object sender, EventArgs e) => MyMap.SetInstrument(8);
+        #endregion
     }
 }

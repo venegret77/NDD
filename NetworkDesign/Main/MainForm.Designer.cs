@@ -43,36 +43,42 @@
             this.FloorDown = new System.Windows.Forms.Button();
             this.FloorUP = new System.Windows.Forms.Button();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.создатьToolStripButton1 = new System.Windows.Forms.ToolStripButton();
-            this.сохранитьToolStripButton1 = new System.Windows.Forms.ToolStripButton();
-            this.открытьToolStripButton1 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton7 = new System.Windows.Forms.ToolStripButton();
+            this.NewMapBtn = new System.Windows.Forms.ToolStripButton();
+            this.SaveBtn = new System.Windows.Forms.ToolStripButton();
+            this.OpenBtn = new System.Windows.Forms.ToolStripButton();
+            this.SaveTemplateBtn = new System.Windows.Forms.ToolStripButton();
             this.ExporBuildBtn = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton8 = new System.Windows.Forms.ToolStripButton();
+            this.ImportBuildBtn = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.BackBtn = new System.Windows.Forms.ToolStripButton();
             this.ForwardBrn = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
+            this.FiltersBtn = new System.Windows.Forms.ToolStripButton();
+            this.SearchBrn = new System.Windows.Forms.ToolStripButton();
+            this.CursorBtn = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+            this.LineBtn = new System.Windows.Forms.ToolStripButton();
+            this.PolygonBtn = new System.Windows.Forms.ToolStripButton();
             this.AddPP = new System.Windows.Forms.ToolStripButton();
             this.DeletePP = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton6 = new System.Windows.Forms.ToolStripButton();
+            this.RectangleBtn = new System.Windows.Forms.ToolStripButton();
+            this.CircleBtn = new System.Windows.Forms.ToolStripButton();
+            this.TextBtn = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
+            this.EditBtn = new System.Windows.Forms.ToolStripButton();
             this.DeleteBtn = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripButton9 = new System.Windows.Forms.ToolStripButton();
-            this.BuildBtn = new System.Windows.Forms.ToolStripButton();
-            this.ButtonReturnToMain = new System.Windows.Forms.ToolStripButton();
-            this.AddEntranceBtn = new System.Windows.Forms.ToolStripButton();
-            this.AddIWBtn = new System.Windows.Forms.ToolStripButton();
+            this.ToBuildBtn = new System.Windows.Forms.ToolStripButton();
+            this.ReturnToMainBtn = new System.Windows.Forms.ToolStripButton();
+            this.EntranceBtn = new System.Windows.Forms.ToolStripButton();
+            this.IWBtn = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripButton13 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton11 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton14 = new System.Windows.Forms.ToolStripButton();
+            this.NEBtn = new System.Windows.Forms.ToolStripButton();
+            this.NWBtn = new System.Windows.Forms.ToolStripButton();
+            this.AddNWPBtn = new System.Windows.Forms.ToolStripButton();
+            this.DelNWPBtn = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.файлToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.создатьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -85,9 +91,6 @@
             this.инструментыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.редактированиеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripButton10 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton12 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -203,7 +206,6 @@
             // FloorDown
             // 
             this.FloorDown.BackColor = System.Drawing.Color.Transparent;
-            this.FloorDown.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("FloorDown.BackgroundImage")));
             this.FloorDown.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.FloorDown.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.FloorDown.Location = new System.Drawing.Point(921, 249);
@@ -217,10 +219,8 @@
             // FloorUP
             // 
             this.FloorUP.BackColor = System.Drawing.Color.Transparent;
-            this.FloorUP.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("FloorUP.BackgroundImage")));
             this.FloorUP.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.FloorUP.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.FloorUP.Image = ((System.Drawing.Image)(resources.GetObject("FloorUP.Image")));
             this.FloorUP.ImageAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.FloorUP.Location = new System.Drawing.Point(921, 193);
             this.FloorUP.Name = "FloorUP";
@@ -235,39 +235,42 @@
             this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.toolStrip1.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.создатьToolStripButton1,
-            this.сохранитьToolStripButton1,
-            this.открытьToolStripButton1,
-            this.toolStripButton7,
+            this.NewMapBtn,
+            this.SaveBtn,
+            this.OpenBtn,
+            this.SaveTemplateBtn,
             this.ExporBuildBtn,
-            this.toolStripButton8,
+            this.ImportBuildBtn,
             this.toolStripSeparator4,
             this.BackBtn,
             this.ForwardBrn,
             this.toolStripSeparator,
-            this.toolStripButton3,
-            this.toolStripButton1,
-            this.toolStripButton2,
+            this.FiltersBtn,
+            this.SearchBrn,
+            this.CursorBtn,
+            this.toolStripSeparator8,
+            this.LineBtn,
+            this.PolygonBtn,
             this.AddPP,
             this.DeletePP,
-            this.toolStripButton4,
-            this.toolStripButton6,
+            this.RectangleBtn,
+            this.CircleBtn,
+            this.TextBtn,
             this.toolStripSeparator1,
-            this.toolStripButton5,
+            this.EditBtn,
             this.DeleteBtn,
             this.toolStripSeparator5,
-            this.toolStripButton9,
-            this.BuildBtn,
-            this.ButtonReturnToMain,
-            this.AddEntranceBtn,
-            this.AddIWBtn,
+            this.ToBuildBtn,
+            this.ReturnToMainBtn,
+            this.EntranceBtn,
+            this.IWBtn,
             this.toolStripSeparator6,
-            this.toolStripButton14,
-            this.toolStripButton13,
-            this.toolStripButton11,
-            this.toolStripButton10,
-            this.toolStripButton12,
-            this.toolStripSeparator7});
+            this.NEBtn,
+            this.NWBtn,
+            this.AddNWPBtn,
+            this.DelNWPBtn,
+            this.toolStripSeparator7,
+            this.toolStripButton1});
             this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(995, 25);
@@ -275,45 +278,45 @@
             this.toolStrip1.Text = "toolStrip1";
             this.toolStrip1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.toolStrip1_MouseClick);
             // 
-            // создатьToolStripButton1
+            // NewMapBtn
             // 
-            this.создатьToolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.создатьToolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("создатьToolStripButton1.Image")));
-            this.создатьToolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.создатьToolStripButton1.Name = "создатьToolStripButton1";
-            this.создатьToolStripButton1.Size = new System.Drawing.Size(23, 22);
-            this.создатьToolStripButton1.Text = "&Создать";
-            this.создатьToolStripButton1.Click += new System.EventHandler(this.создатьToolStripButton1_Click);
+            this.NewMapBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.NewMapBtn.Image = ((System.Drawing.Image)(resources.GetObject("NewMapBtn.Image")));
+            this.NewMapBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.NewMapBtn.Name = "NewMapBtn";
+            this.NewMapBtn.Size = new System.Drawing.Size(23, 22);
+            this.NewMapBtn.Text = "&Создать";
+            this.NewMapBtn.Click += new System.EventHandler(this.CreateMapClick);
             // 
-            // сохранитьToolStripButton1
+            // SaveBtn
             // 
-            this.сохранитьToolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.сохранитьToolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("сохранитьToolStripButton1.Image")));
-            this.сохранитьToolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.сохранитьToolStripButton1.Name = "сохранитьToolStripButton1";
-            this.сохранитьToolStripButton1.Size = new System.Drawing.Size(23, 22);
-            this.сохранитьToolStripButton1.Text = "&Сохранить";
-            this.сохранитьToolStripButton1.Click += new System.EventHandler(this.сохранитьToolStripButton1_Click);
+            this.SaveBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.SaveBtn.Image = ((System.Drawing.Image)(resources.GetObject("SaveBtn.Image")));
+            this.SaveBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.SaveBtn.Name = "SaveBtn";
+            this.SaveBtn.Size = new System.Drawing.Size(23, 22);
+            this.SaveBtn.Text = "&Сохранить";
+            this.SaveBtn.Click += new System.EventHandler(this.SaveBtnClick);
             // 
-            // открытьToolStripButton1
+            // OpenBtn
             // 
-            this.открытьToolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.открытьToolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("открытьToolStripButton1.Image")));
-            this.открытьToolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.открытьToolStripButton1.Name = "открытьToolStripButton1";
-            this.открытьToolStripButton1.Size = new System.Drawing.Size(23, 22);
-            this.открытьToolStripButton1.Text = "&Открыть";
-            this.открытьToolStripButton1.Click += new System.EventHandler(this.открытьToolStripButton1_Click);
+            this.OpenBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.OpenBtn.Image = ((System.Drawing.Image)(resources.GetObject("OpenBtn.Image")));
+            this.OpenBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.OpenBtn.Name = "OpenBtn";
+            this.OpenBtn.Size = new System.Drawing.Size(23, 22);
+            this.OpenBtn.Text = "&Открыть";
+            this.OpenBtn.Click += new System.EventHandler(this.OpenMapClick);
             // 
-            // toolStripButton7
+            // SaveTemplateBtn
             // 
-            this.toolStripButton7.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton7.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton7.Image")));
-            this.toolStripButton7.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton7.Name = "toolStripButton7";
-            this.toolStripButton7.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton7.Text = "Сохранить шаблон карты";
-            this.toolStripButton7.Click += new System.EventHandler(this.toolStripButton7_Click);
+            this.SaveTemplateBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.SaveTemplateBtn.Image = ((System.Drawing.Image)(resources.GetObject("SaveTemplateBtn.Image")));
+            this.SaveTemplateBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.SaveTemplateBtn.Name = "SaveTemplateBtn";
+            this.SaveTemplateBtn.Size = new System.Drawing.Size(23, 22);
+            this.SaveTemplateBtn.Text = "Сохранить шаблон карты";
+            this.SaveTemplateBtn.Click += new System.EventHandler(this.SaveTemplateMapClick);
             // 
             // ExporBuildBtn
             // 
@@ -323,17 +326,17 @@
             this.ExporBuildBtn.Name = "ExporBuildBtn";
             this.ExporBuildBtn.Size = new System.Drawing.Size(23, 22);
             this.ExporBuildBtn.Text = "Экспорт здания";
-            this.ExporBuildBtn.Click += new System.EventHandler(this.ExporImportBuildBtn_Click);
+            this.ExporBuildBtn.Click += new System.EventHandler(this.ExporBuildClick);
             // 
-            // toolStripButton8
+            // ImportBuildBtn
             // 
-            this.toolStripButton8.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton8.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton8.Image")));
-            this.toolStripButton8.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton8.Name = "toolStripButton8";
-            this.toolStripButton8.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton8.Text = "Импорт здания";
-            this.toolStripButton8.Click += new System.EventHandler(this.toolStripButton8_Click);
+            this.ImportBuildBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.ImportBuildBtn.Image = ((System.Drawing.Image)(resources.GetObject("ImportBuildBtn.Image")));
+            this.ImportBuildBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.ImportBuildBtn.Name = "ImportBuildBtn";
+            this.ImportBuildBtn.Size = new System.Drawing.Size(23, 22);
+            this.ImportBuildBtn.Text = "Импорт здания";
+            this.ImportBuildBtn.Click += new System.EventHandler(this.ImpotrBuildClick);
             // 
             // toolStripSeparator4
             // 
@@ -367,35 +370,60 @@
             this.toolStripSeparator.Name = "toolStripSeparator";
             this.toolStripSeparator.Size = new System.Drawing.Size(6, 25);
             // 
-            // toolStripButton3
+            // FiltersBtn
             // 
-            this.toolStripButton3.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton3.Image")));
-            this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton3.Name = "toolStripButton3";
-            this.toolStripButton3.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton3.Text = "Выбор элементов";
-            this.toolStripButton3.Click += new System.EventHandler(this.toolStripButton3_Click);
+            this.FiltersBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.FiltersBtn.Image = ((System.Drawing.Image)(resources.GetObject("FiltersBtn.Image")));
+            this.FiltersBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.FiltersBtn.Name = "FiltersBtn";
+            this.FiltersBtn.Size = new System.Drawing.Size(23, 22);
+            this.FiltersBtn.Text = "Фильтры";
+            this.FiltersBtn.Click += new System.EventHandler(this.FiltersBtn_Click);
             // 
-            // toolStripButton1
+            // SearchBrn
             // 
-            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
-            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton1.Text = "Линия";
-            this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click_1);
+            this.SearchBrn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.SearchBrn.Image = ((System.Drawing.Image)(resources.GetObject("SearchBrn.Image")));
+            this.SearchBrn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.SearchBrn.Name = "SearchBrn";
+            this.SearchBrn.Size = new System.Drawing.Size(23, 22);
+            this.SearchBrn.Text = "toolStripButton9";
+            this.SearchBrn.Click += new System.EventHandler(this.SearchClick);
             // 
-            // toolStripButton2
+            // CursorBtn
             // 
-            this.toolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
-            this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton2.Name = "toolStripButton2";
-            this.toolStripButton2.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton2.Text = "Многоугольник";
-            this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click_1);
+            this.CursorBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.CursorBtn.Image = ((System.Drawing.Image)(resources.GetObject("CursorBtn.Image")));
+            this.CursorBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.CursorBtn.Name = "CursorBtn";
+            this.CursorBtn.Size = new System.Drawing.Size(23, 22);
+            this.CursorBtn.Text = "Выбор элементов";
+            this.CursorBtn.Click += new System.EventHandler(this.CursorClick);
+            // 
+            // toolStripSeparator8
+            // 
+            this.toolStripSeparator8.Name = "toolStripSeparator8";
+            this.toolStripSeparator8.Size = new System.Drawing.Size(6, 25);
+            // 
+            // LineBtn
+            // 
+            this.LineBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.LineBtn.Image = ((System.Drawing.Image)(resources.GetObject("LineBtn.Image")));
+            this.LineBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.LineBtn.Name = "LineBtn";
+            this.LineBtn.Size = new System.Drawing.Size(23, 22);
+            this.LineBtn.Text = "Линия";
+            this.LineBtn.Click += new System.EventHandler(this.LineClick);
+            // 
+            // PolygonBtn
+            // 
+            this.PolygonBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.PolygonBtn.Image = ((System.Drawing.Image)(resources.GetObject("PolygonBtn.Image")));
+            this.PolygonBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.PolygonBtn.Name = "PolygonBtn";
+            this.PolygonBtn.Size = new System.Drawing.Size(23, 22);
+            this.PolygonBtn.Text = "Многоугольник";
+            this.PolygonBtn.Click += new System.EventHandler(this.PolygonClick);
             // 
             // AddPP
             // 
@@ -419,40 +447,50 @@
             this.DeletePP.Visible = false;
             this.DeletePP.Click += new System.EventHandler(this.DeletePP_Click);
             // 
-            // toolStripButton4
+            // RectangleBtn
             // 
-            this.toolStripButton4.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton4.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton4.Image")));
-            this.toolStripButton4.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton4.Name = "toolStripButton4";
-            this.toolStripButton4.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton4.Text = "Прямоугольник";
-            this.toolStripButton4.Click += new System.EventHandler(this.toolStripButton4_Click);
+            this.RectangleBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.RectangleBtn.Image = ((System.Drawing.Image)(resources.GetObject("RectangleBtn.Image")));
+            this.RectangleBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.RectangleBtn.Name = "RectangleBtn";
+            this.RectangleBtn.Size = new System.Drawing.Size(23, 22);
+            this.RectangleBtn.Text = "Прямоугольник";
+            this.RectangleBtn.Click += new System.EventHandler(this.RectangleClick);
             // 
-            // toolStripButton6
+            // CircleBtn
             // 
-            this.toolStripButton6.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton6.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton6.Image")));
-            this.toolStripButton6.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton6.Name = "toolStripButton6";
-            this.toolStripButton6.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton6.Text = "Круг";
-            this.toolStripButton6.Click += new System.EventHandler(this.ToolStripButton6_Click_1);
+            this.CircleBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.CircleBtn.Image = ((System.Drawing.Image)(resources.GetObject("CircleBtn.Image")));
+            this.CircleBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.CircleBtn.Name = "CircleBtn";
+            this.CircleBtn.Size = new System.Drawing.Size(23, 22);
+            this.CircleBtn.Text = "Круг";
+            this.CircleBtn.Click += new System.EventHandler(this.ToolStripButton6_Click_1);
+            // 
+            // TextBtn
+            // 
+            this.TextBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.TextBtn.Image = ((System.Drawing.Image)(resources.GetObject("TextBtn.Image")));
+            this.TextBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.TextBtn.Name = "TextBtn";
+            this.TextBtn.Size = new System.Drawing.Size(23, 22);
+            this.TextBtn.Text = "Текст";
+            this.TextBtn.Click += new System.EventHandler(this.TextClick);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
             // 
-            // toolStripButton5
+            // EditBtn
             // 
-            this.toolStripButton5.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton5.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton5.Image")));
-            this.toolStripButton5.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton5.Name = "toolStripButton5";
-            this.toolStripButton5.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton5.Text = "Редактирование";
-            this.toolStripButton5.Click += new System.EventHandler(this.toolStripButton5_Click);
+            this.EditBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.EditBtn.Image = ((System.Drawing.Image)(resources.GetObject("EditBtn.Image")));
+            this.EditBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.EditBtn.Name = "EditBtn";
+            this.EditBtn.Size = new System.Drawing.Size(23, 22);
+            this.EditBtn.Text = "Редактирование";
+            this.EditBtn.Click += new System.EventHandler(this.EditClick);
             // 
             // DeleteBtn
             // 
@@ -470,94 +508,111 @@
             this.toolStripSeparator5.Name = "toolStripSeparator5";
             this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
             // 
-            // toolStripButton9
+            // ToBuildBtn
             // 
-            this.toolStripButton9.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton9.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton9.Image")));
-            this.toolStripButton9.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton9.Name = "toolStripButton9";
-            this.toolStripButton9.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton9.Text = "toolStripButton9";
-            this.toolStripButton9.Click += new System.EventHandler(this.toolStripButton9_Click);
+            this.ToBuildBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.ToBuildBtn.Enabled = false;
+            this.ToBuildBtn.Image = ((System.Drawing.Image)(resources.GetObject("ToBuildBtn.Image")));
+            this.ToBuildBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.ToBuildBtn.Name = "ToBuildBtn";
+            this.ToBuildBtn.Size = new System.Drawing.Size(23, 22);
+            this.ToBuildBtn.Text = "Преобразовать в здание/фигуру";
+            this.ToBuildBtn.Click += new System.EventHandler(this.BuildBtn_Click);
             // 
-            // BuildBtn
+            // ReturnToMainBtn
             // 
-            this.BuildBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.BuildBtn.Enabled = false;
-            this.BuildBtn.Image = ((System.Drawing.Image)(resources.GetObject("BuildBtn.Image")));
-            this.BuildBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.BuildBtn.Name = "BuildBtn";
-            this.BuildBtn.Size = new System.Drawing.Size(23, 22);
-            this.BuildBtn.Text = "Преобразовать в здание/фигуру";
-            this.BuildBtn.Click += new System.EventHandler(this.BuildBtn_Click);
+            this.ReturnToMainBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.ReturnToMainBtn.Enabled = false;
+            this.ReturnToMainBtn.Image = ((System.Drawing.Image)(resources.GetObject("ReturnToMainBtn.Image")));
+            this.ReturnToMainBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.ReturnToMainBtn.Name = "ReturnToMainBtn";
+            this.ReturnToMainBtn.Size = new System.Drawing.Size(23, 22);
+            this.ReturnToMainBtn.Text = "К главному виду";
+            this.ReturnToMainBtn.Click += new System.EventHandler(this.ButtonReturnToMain_Click);
             // 
-            // ButtonReturnToMain
+            // EntranceBtn
             // 
-            this.ButtonReturnToMain.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.ButtonReturnToMain.Enabled = false;
-            this.ButtonReturnToMain.Image = ((System.Drawing.Image)(resources.GetObject("ButtonReturnToMain.Image")));
-            this.ButtonReturnToMain.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.ButtonReturnToMain.Name = "ButtonReturnToMain";
-            this.ButtonReturnToMain.Size = new System.Drawing.Size(23, 22);
-            this.ButtonReturnToMain.Text = "К главному виду";
-            this.ButtonReturnToMain.Click += new System.EventHandler(this.ButtonReturnToMain_Click);
+            this.EntranceBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.EntranceBtn.Enabled = false;
+            this.EntranceBtn.Image = ((System.Drawing.Image)(resources.GetObject("EntranceBtn.Image")));
+            this.EntranceBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.EntranceBtn.Name = "EntranceBtn";
+            this.EntranceBtn.Size = new System.Drawing.Size(23, 22);
+            this.EntranceBtn.Text = "Добавить вход";
+            this.EntranceBtn.Click += new System.EventHandler(this.AddEntranceBtn_Click);
             // 
-            // AddEntranceBtn
+            // IWBtn
             // 
-            this.AddEntranceBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.AddEntranceBtn.Enabled = false;
-            this.AddEntranceBtn.Image = ((System.Drawing.Image)(resources.GetObject("AddEntranceBtn.Image")));
-            this.AddEntranceBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.AddEntranceBtn.Name = "AddEntranceBtn";
-            this.AddEntranceBtn.Size = new System.Drawing.Size(23, 22);
-            this.AddEntranceBtn.Text = "Добавить вход";
-            this.AddEntranceBtn.Click += new System.EventHandler(this.AddEntranceBtn_Click);
-            // 
-            // AddIWBtn
-            // 
-            this.AddIWBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.AddIWBtn.Enabled = false;
-            this.AddIWBtn.Image = ((System.Drawing.Image)(resources.GetObject("AddIWBtn.Image")));
-            this.AddIWBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.AddIWBtn.Name = "AddIWBtn";
-            this.AddIWBtn.Size = new System.Drawing.Size(23, 22);
-            this.AddIWBtn.Text = "Добавить вход провода";
-            this.AddIWBtn.Click += new System.EventHandler(this.AddIWBtn_Click);
+            this.IWBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.IWBtn.Enabled = false;
+            this.IWBtn.Image = ((System.Drawing.Image)(resources.GetObject("IWBtn.Image")));
+            this.IWBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.IWBtn.Name = "IWBtn";
+            this.IWBtn.Size = new System.Drawing.Size(23, 22);
+            this.IWBtn.Text = "Добавить вход провода";
+            this.IWBtn.Click += new System.EventHandler(this.AddIWBtn_Click);
             // 
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
             this.toolStripSeparator6.Size = new System.Drawing.Size(6, 25);
             // 
-            // toolStripButton13
+            // NEBtn
             // 
-            this.toolStripButton13.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton13.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton13.Image")));
-            this.toolStripButton13.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton13.Name = "toolStripButton13";
-            this.toolStripButton13.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton13.Text = "Элементы сети";
-            this.toolStripButton13.Click += new System.EventHandler(this.toolStripButton13_Click);
+            this.NEBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.NEBtn.Image = ((System.Drawing.Image)(resources.GetObject("NEBtn.Image")));
+            this.NEBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.NEBtn.Name = "NEBtn";
+            this.NEBtn.Size = new System.Drawing.Size(23, 22);
+            this.NEBtn.Text = "Элементы сети";
+            this.NEBtn.Click += new System.EventHandler(this.NEClick);
             // 
-            // toolStripButton11
+            // NWBtn
             // 
-            this.toolStripButton11.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton11.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton11.Image")));
-            this.toolStripButton11.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton11.Name = "toolStripButton11";
-            this.toolStripButton11.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton11.Text = "Провод";
-            this.toolStripButton11.Click += new System.EventHandler(this.toolStripButton11_Click_1);
+            this.NWBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.NWBtn.Image = ((System.Drawing.Image)(resources.GetObject("NWBtn.Image")));
+            this.NWBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.NWBtn.Name = "NWBtn";
+            this.NWBtn.Size = new System.Drawing.Size(23, 22);
+            this.NWBtn.Text = "Провод";
+            this.NWBtn.Click += new System.EventHandler(this.NWClick);
             // 
-            // toolStripButton14
+            // AddNWPBtn
             // 
-            this.toolStripButton14.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton14.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton14.Image")));
-            this.toolStripButton14.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton14.Name = "toolStripButton14";
-            this.toolStripButton14.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton14.Text = "Текст";
-            this.toolStripButton14.Click += new System.EventHandler(this.toolStripButton14_Click);
+            this.AddNWPBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.AddNWPBtn.Image = ((System.Drawing.Image)(resources.GetObject("AddNWPBtn.Image")));
+            this.AddNWPBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.AddNWPBtn.Name = "AddNWPBtn";
+            this.AddNWPBtn.Size = new System.Drawing.Size(23, 22);
+            this.AddNWPBtn.Text = "Добавить точку для провода";
+            this.AddNWPBtn.Visible = false;
+            this.AddNWPBtn.Click += new System.EventHandler(this.AddNWPClick);
+            // 
+            // DelNWPBtn
+            // 
+            this.DelNWPBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.DelNWPBtn.Image = ((System.Drawing.Image)(resources.GetObject("DelNWPBtn.Image")));
+            this.DelNWPBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.DelNWPBtn.Name = "DelNWPBtn";
+            this.DelNWPBtn.Size = new System.Drawing.Size(23, 22);
+            this.DelNWPBtn.Text = "Удалить точку провода";
+            this.DelNWPBtn.Visible = false;
+            this.DelNWPBtn.Click += new System.EventHandler(this.DelNWPClick);
+            // 
+            // toolStripSeparator7
+            // 
+            this.toolStripSeparator7.Name = "toolStripSeparator7";
+            this.toolStripSeparator7.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolStripButton1
+            // 
+            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
+            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton1.Name = "toolStripButton1";
+            this.toolStripButton1.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButton1.Text = "Меню сетевых элементов";
+            this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
             // 
             // menuStrip1
             // 
@@ -622,14 +677,14 @@
             this.параметрыToolStripMenuItem.Name = "параметрыToolStripMenuItem";
             this.параметрыToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
             this.параметрыToolStripMenuItem.Text = "Параметры...";
-            this.параметрыToolStripMenuItem.Click += new System.EventHandler(this.параметрыToolStripMenuItem_Click);
+            this.параметрыToolStripMenuItem.Click += new System.EventHandler(this.ParamsMapClick);
             // 
             // посмотретьЛогToolStripMenuItem
             // 
             this.посмотретьЛогToolStripMenuItem.Name = "посмотретьЛогToolStripMenuItem";
             this.посмотретьЛогToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
             this.посмотретьЛогToolStripMenuItem.Text = "Посмотреть лог...";
-            this.посмотретьЛогToolStripMenuItem.Click += new System.EventHandler(this.посмотретьЛогToolStripMenuItem_Click);
+            this.посмотретьЛогToolStripMenuItem.Click += new System.EventHandler(this.ShowLogClick);
             // 
             // инструментыToolStripMenuItem
             // 
@@ -642,7 +697,6 @@
             // 
             // редактированиеToolStripMenuItem
             // 
-            this.редактированиеToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("редактированиеToolStripMenuItem.Image")));
             this.редактированиеToolStripMenuItem.Name = "редактированиеToolStripMenuItem";
             this.редактированиеToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
             this.редактированиеToolStripMenuItem.Text = "Редактирование";
@@ -651,33 +705,6 @@
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
             this.toolStripSeparator3.Size = new System.Drawing.Size(160, 6);
-            // 
-            // toolStripButton10
-            // 
-            this.toolStripButton10.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton10.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton10.Image")));
-            this.toolStripButton10.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton10.Name = "toolStripButton10";
-            this.toolStripButton10.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton10.Text = "Добавить точку для провода";
-            this.toolStripButton10.Visible = false;
-            this.toolStripButton10.Click += new System.EventHandler(this.toolStripButton10_Click);
-            // 
-            // toolStripButton12
-            // 
-            this.toolStripButton12.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton12.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton12.Image")));
-            this.toolStripButton12.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton12.Name = "toolStripButton12";
-            this.toolStripButton12.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton12.Text = "Удалить точку провода";
-            this.toolStripButton12.Visible = false;
-            this.toolStripButton12.Click += new System.EventHandler(this.toolStripButton12_Click);
-            // 
-            // toolStripSeparator7
-            // 
-            this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(6, 25);
             // 
             // MainForm
             // 
@@ -713,19 +740,19 @@
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripButton toolStripButton5;
+        private System.Windows.Forms.ToolStripButton EditBtn;
         private System.Windows.Forms.ToolStripPanel BottomToolStripPanel;
         private System.Windows.Forms.ToolStripPanel TopToolStripPanel;
         private System.Windows.Forms.ToolStripPanel RightToolStripPanel;
         private System.Windows.Forms.ToolStripPanel LeftToolStripPanel;
         private System.Windows.Forms.ToolStripContentPanel ContentPanel;
-        private System.Windows.Forms.ToolStripButton сохранитьToolStripButton1;
-        private System.Windows.Forms.ToolStripButton создатьToolStripButton1;
-        private System.Windows.Forms.ToolStripButton открытьToolStripButton1;
-        private System.Windows.Forms.ToolStripButton toolStripButton3;
-        private System.Windows.Forms.ToolStripButton toolStripButton1;
-        private System.Windows.Forms.ToolStripButton toolStripButton2;
-        private System.Windows.Forms.ToolStripButton toolStripButton4;
+        private System.Windows.Forms.ToolStripButton SaveBtn;
+        private System.Windows.Forms.ToolStripButton NewMapBtn;
+        private System.Windows.Forms.ToolStripButton OpenBtn;
+        private System.Windows.Forms.ToolStripButton CursorBtn;
+        private System.Windows.Forms.ToolStripButton LineBtn;
+        private System.Windows.Forms.ToolStripButton PolygonBtn;
+        private System.Windows.Forms.ToolStripButton RectangleBtn;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem файлToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem создатьToolStripMenuItem;
@@ -742,32 +769,35 @@
         private System.Windows.Forms.ToolStripButton BackBtn;
         private System.Windows.Forms.ToolStripButton ForwardBrn;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
-        private System.Windows.Forms.ToolStripButton BuildBtn;
-        private System.Windows.Forms.ToolStripButton ButtonReturnToMain;
+        private System.Windows.Forms.ToolStripButton ToBuildBtn;
+        private System.Windows.Forms.ToolStripButton ReturnToMainBtn;
         private System.Windows.Forms.ToolStripButton DeleteBtn;
         private System.Windows.Forms.Label InfoLable;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel3;
-        private System.Windows.Forms.ToolStripButton toolStripButton6;
-        private System.Windows.Forms.ToolStripButton AddEntranceBtn;
-        private System.Windows.Forms.ToolStripButton AddIWBtn;
+        private System.Windows.Forms.ToolStripButton CircleBtn;
+        private System.Windows.Forms.ToolStripButton EntranceBtn;
+        private System.Windows.Forms.ToolStripButton IWBtn;
         private System.Windows.Forms.ToolStripButton ExporBuildBtn;
-        private System.Windows.Forms.ToolStripButton toolStripButton7;
+        private System.Windows.Forms.ToolStripButton SaveTemplateBtn;
         private System.Windows.Forms.Button FloorDown;
         private System.Windows.Forms.Button FloorUP;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ToolStripButton toolStripButton8;
-        private System.Windows.Forms.ToolStripButton toolStripButton9;
+        private System.Windows.Forms.ToolStripButton ImportBuildBtn;
+        private System.Windows.Forms.ToolStripButton SearchBrn;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
-        private System.Windows.Forms.ToolStripButton toolStripButton13;
-        private System.Windows.Forms.ToolStripButton toolStripButton11;
-        private System.Windows.Forms.ToolStripButton toolStripButton14;
+        private System.Windows.Forms.ToolStripButton NEBtn;
+        private System.Windows.Forms.ToolStripButton NWBtn;
+        private System.Windows.Forms.ToolStripButton TextBtn;
         private System.Windows.Forms.TrackBar trackBar1;
         private System.Windows.Forms.ToolStripButton AddPP;
         private System.Windows.Forms.ToolStripButton DeletePP;
-        private System.Windows.Forms.ToolStripButton toolStripButton10;
-        private System.Windows.Forms.ToolStripButton toolStripButton12;
+        private System.Windows.Forms.ToolStripButton AddNWPBtn;
+        private System.Windows.Forms.ToolStripButton DelNWPBtn;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
+        private System.Windows.Forms.ToolStripButton FiltersBtn;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
+        private System.Windows.Forms.ToolStripButton toolStripButton1;
     }
 }
 

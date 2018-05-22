@@ -38,6 +38,7 @@
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -47,6 +48,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <SignManifests>false</SignManifests>
@@ -152,6 +154,13 @@
     <Compile Include="GeometricElements\GeometricFigure.cs" />
     <Compile Include="Buildings\Entrance.cs" />
     <Compile Include="GeometricElements\GroupOfCircle.cs" />
+    <Compile Include="Main\FiltersForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Main\FiltersForm.Designer.cs">
+      <DependentUpon>FiltersForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Filtres.cs" />
     <Compile Include="Main\GroupOfElements.cs" />
     <Compile Include="Buildings\InputWire.cs" />
     <Compile Include="Buildings\InputWireForm.cs">
@@ -264,6 +273,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Buildings\InputWireForm.resx">
       <DependentUpon>InputWireForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Main\FiltersForm.resx">
+      <DependentUpon>FiltersForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Main\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
