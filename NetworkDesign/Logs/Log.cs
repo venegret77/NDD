@@ -18,6 +18,15 @@ namespace NetworkDesign
 
         public void Add(LogMessage logMessage)
         {
+            if (logMessage._elem.transform == -2)
+            {
+                LogMessage lastelem = Back.Last();
+                if (lastelem._elem.transform == -2 & lastelem._elem.type == logMessage._elem.type & lastelem._elem.index == logMessage._elem.index)
+                {
+                    logMessage._elem = (Element)lastelem._elem.Clone();
+                    Back.RemoveAt(Back.Count - 1);
+                }
+            }
             Back.Add(logMessage);
         }
 

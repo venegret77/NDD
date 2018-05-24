@@ -23,7 +23,7 @@ namespace NetworkDesign.NetworkElements
 
         public override void Choose(int i)
         {
-            /*for (int j = 0; j < MyTexts.Count; j++)
+            for (int j = 0; j < MyTexts.Count; j++)
             {
                 if (j != i)
                 {
@@ -33,15 +33,15 @@ namespace NetworkDesign.NetworkElements
                 {
                     MyTexts[j].SetActive(true);
                 }
-            }*/
+            }
         }
 
         public override void Draw()
         {
             foreach (var elem in MyTexts)
             {
-                //elem.Draw();
-                elem.DrawTB();
+                elem.Draw();
+                //elem.DrawTB();
             }
             //TempMyText.Draw();
         }
@@ -72,14 +72,38 @@ namespace NetworkDesign.NetworkElements
         public DrawLevel Search(string text)
         {
             foreach (var elem in MyTexts)
-                if (elem.TextBox.Text == text)
+            {
+                if (elem.text == text)
                     return elem.DL;
+            }
+            foreach (var elem in MyTexts)
+            {
+                if (elem.text.IndexOf(text) != -1)
+                    return elem.DL;
+            }
             return new DrawLevel(-2, -2);
         }
 
         public override int Search(int x, int y, DrawLevel dl)
         {
-            throw new NotImplementedException();
+            int _i = -1;
+            double _count = Double.MaxValue;
+            for (int i = 0; i < MyTexts.Count; i++)
+            {
+                if (dl == MyTexts[i].DL)
+                {
+                    double count = MyTexts[i].Search(x, y);
+                    if (count < _count & count != -1)
+                    {
+                        _count = count;
+                        _i = i;
+                    }
+                }
+            }
+            if (_i != -1)
+                return _i;
+            else
+                return -1;
         }
 
         public override int Search(int x, int y, out double dist, DrawLevel dl)

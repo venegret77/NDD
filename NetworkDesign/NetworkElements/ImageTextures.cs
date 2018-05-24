@@ -16,8 +16,9 @@ namespace NetworkDesign.NetworkElements
 {
     public partial class ImageTextures : Form
     {
+        public int action = -1;
         GroupOfNE NetworkElements = new GroupOfNE();
-        
+
         public int imageindex = -1;
         //int i = 0;
 
@@ -58,13 +59,41 @@ namespace NetworkDesign.NetworkElements
             {
                 imageindex = listView1.SelectedIndices[0];
                 toolStripButton2.Enabled = true;
-                toolStripButton3.Enabled = true;
+                //toolStripButton3.Enabled = true;
+                //toolStripButton4.Enabled = true;
+                bool isLable = false;
+                toolStripButton4.Enabled = true;
+                toolStripButton5.Enabled = false;
+                foreach (var neb in MainForm.neButtons)
+                {
+                    if (neb.id == imageindex)
+                    {
+                        isLable = true;
+                    }
+                    else
+                    {
+                        if (!isLable)
+                            isLable = false;
+                    }
+                    if (isLable)
+                    {
+                        toolStripButton4.Enabled = false;
+                        toolStripButton5.Enabled = true;
+                    }
+                    else
+                    {
+                        toolStripButton4.Enabled = true;
+                        toolStripButton5.Enabled = false;
+                    }
+                }
             }
             else
             {
                 imageindex = -1;
                 toolStripButton2.Enabled = false;
-                toolStripButton3.Enabled = false;
+                //toolStripButton3.Enabled = false;
+                toolStripButton4.Enabled = false;
+                toolStripButton5.Enabled = false;
             }
         }
 
@@ -91,26 +120,32 @@ namespace NetworkDesign.NetworkElements
                     }
                     else
                     {
-                        Image image = Image.FromFile(openFileDialog1.FileName);
-                        double koef = (double)image.Height / 1000;
-                        if (image.Width / 1000 > koef)
-                            koef = (double)image.Width / 1000;
-                        if (koef > 1)
-                        {
-                            Size newsize = new Size((int)(image.Width / koef), (int)(image.Height / koef));
-                            Bitmap bitmap = new Bitmap(image, newsize);
-                            bitmap.Save(Application.StartupPath + @"\Textures\" + openFileDialog1.SafeFileName);
-                        }
-                        else
-                        {
-                            File.Copy(openFileDialog1.FileName, Application.StartupPath + @"\Textures\" + openFileDialog1.SafeFileName, true);
+                        if (!File.Exists(Application.StartupPath + @"\Textures\" + openFileDialog1.SafeFileName))
+                            {
+                            Image image = Image.FromFile(openFileDialog1.FileName);
+                            double koef = (double)image.Height / 1000;
+                            if (image.Width / 1000 > koef)
+                                koef = (double)image.Width / 1000;
+                            if (koef > 1)
+                            {
+                                Size newsize = new Size((int)(image.Width / koef), (int)(image.Height / koef));
+                                Bitmap bitmap = new Bitmap(image, newsize);
+                                bitmap.Save(Application.StartupPath + @"\Textures\" + openFileDialog1.SafeFileName);
+                            }
+                            else
+                            {
+                                File.Copy(openFileDialog1.FileName, Application.StartupPath + @"\Textures\" + openFileDialog1.SafeFileName, true);
+                            }
                         }
                         MainForm.ImagesURL.Add(openFileDialog1.SafeFileName);
-                        MainForm.isLoad = false;
-                        GetImages();
+                        //MainForm.isLoad = false;
+                        //GetImages();
                         //Возможно доделать не генерировать каждый раз новые текстуры
                         if (delete)
                             MainForm.DeleteImages.Remove(_item);
+                        action = 0;
+                        imageindex = MainForm.ImagesURL.Count - 1;
+                        Close();
                     }
                 }
             }
@@ -123,6 +158,7 @@ namespace NetworkDesign.NetworkElements
         private void toolStripButton3_Click(object sender, EventArgs e)
         {
             imageindex = listView1.SelectedIndices[0];
+            action = 0;
             Close();
         }
 
@@ -131,23 +167,66 @@ namespace NetworkDesign.NetworkElements
             bool used = false;
             foreach (var item in NetworkElements.NetworkElements)
             {
-                if (item.texture.idimage == imageindex)
+                if (!item.delete)
+                    if (item.texture.idimage == imageindex)
+                        used = true;
+            }
+            foreach (var neb in MainForm.neButtons)
+            {
+                if (neb.id == imageindex)
                     used = true;
             }
             if (used)
                 MessageBox.Show("Невозможно удалить данную текстуру, т.к. она используется другим элементом");
             else
             {
-                MainForm.DeleteImages.Add(MainForm.ImagesURL[imageindex]);
+                /*MainForm.DeleteImages.Add(MainForm.ImagesURL[imageindex]);
                 MainForm.ImagesURL.RemoveAt(imageindex);
                 MainForm.isLoad = false;
                 MainForm.LoadImages();
+                GetImages();
+                foreach (var neb in MainForm.neButtons)
+                {
+                    if (neb.id > imageindex)
+                    {
+                        int newid = neb.id - 1;
+                        neb.id = newid;
+                        neb.toolStripButton.Image = MainForm.Images.Images[newid];
+                        neb.textname = MainForm.ImagesURL[newid];
+                    }
+                }
                 foreach (var item in NetworkElements.NetworkElements)
                 {
-                    if (item.texture.idimage > imageindex)
+                    if (!item.delete)
+                        if (item.texture.idimage > imageindex)
                         item.texture.idimage--;
-                }
+                }*/
+                action = 3;
+                Close();
             }
+        }
+
+        /// <summary>
+        /// Добавить ярлык
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void toolStripButton4_Click(object sender, EventArgs e)
+        {
+            action = 1;
+            Close();
+            //MainForm.neButtons.Add(new Main.NEButton(new ToolStripButton(MainForm.Images.Images[imageindex]), imageindex, MainForm.ImagesURL[imageindex]));
+        }
+
+        /// <summary>
+        /// Удалить ярлык
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void toolStripButton5_Click(object sender, EventArgs e)
+        {
+            action = 2;
+            Close();
         }
     }
 }

@@ -2,22 +2,24 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
+using Tao.DevIl;
 using Tao.OpenGl;
 
 namespace NetworkDesign.Main
 {
-    public class MyText
+    public class MyText : ICloneable
     {
         /// <summary>
         /// Переменная, показывающая выбран в текущий момент элемент или нет
         /// </summary>
-        //protected bool active = false;
+        protected bool active = false;
         /// <summary>
         /// Уровень отображения элемента
         /// </summary>
@@ -26,29 +28,10 @@ namespace NetworkDesign.Main
         /// Переменная, показывающая удален элемент или нет
         /// </summary>
         public bool delete = false;
-        //public Point location;
-        //public Size size;
-        //public uint texture_text = 0;
-        [XmlIgnore()]
-        public TextBox TextBox;
-
-        [XmlElement("TextBox")]
-        public MyTB tb
-        {
-            get { return new MyTB(TextBox.Text, TextBox.Location, TextBox.Size); }
-            set
-            {
-                TextBox = new TextBox
-                 {
-                     Text = value.Text,
-                     Location = value.Location,
-                     Size = value.size,
-                     Parent = MainForm.AnT,
-                     BackColor = Color.White,
-                     BorderStyle = BorderStyle.None
-                 };
-            }
-        }
+        public Point location;
+        public Size size;
+        public uint idtexture = 0;
+        public string text = "";
 
         public MyText()
         {
@@ -58,85 +41,79 @@ namespace NetworkDesign.Main
         public MyText(DrawLevel dL, Point location, TextBox textBox)
         {
             DL = dL;
-            //this.location = location;
-            //InitText(textBox);
-            TextBox = new TextBox
-            {
-                Text = textBox.Text,
-                Location = textBox.Location,
-                Size = textBox.Size,
-                Parent = textBox.Parent,
-                BackColor = Color.White,
-                BorderStyle = BorderStyle.None
-            };
-            this.TextBox.KeyDown += TextBox_KeyDown;
+            this.location = MainForm._GenZoomPoint(location);
+            this.text = textBox.Text;
+            InitText(textBox);
         }
 
-        private void TextBox_KeyDown(object sender, KeyEventArgs e)
+        public void InitText(TextBox textBox)
         {
-            Size size = TextRenderer.MeasureText(TextBox.Text, TextBox.Font);
-            TextBox.Width = size.Width;
-            TextBox.Height = size.Height;
-            if (e.KeyCode == Keys.Enter)
-            {
-                Unfocus();
-            }
-        }
-
-        public void Unfocus()
-        {
-            MainForm.focusbox.Focus();
-        }
-
-        /*public void InitText(TextBox textBox)
-        {
-            size = TextRenderer.MeasureText(textBox.Text, textBox.Font);
+            // ! Создаем шрифт 
+            Font font = new Font(FontFamily.GenericSansSerif, (float)(textBox.Font.Size / (float)MainForm.zoom));
+            size = TextRenderer.MeasureText(textBox.Text, font);
             size.Height += 2;
             size.Width += 2;
             Bitmap text_bmp = new Bitmap(size.Width, size.Height);
             // ! Создаем поверхность рисования GDI+ из картинки 
             Graphics gfx = Graphics.FromImage(text_bmp);
+            gfx.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
             // ! Очищаем поверхность рисования цветом 
-            gfx.Clear(Color.FromArgb(255, Color.White));
-            // ! Создаем шрифт 
-            Font font = new Font(Control.DefaultFont, FontStyle.Regular);
+            gfx.Clear(Color.FromArgb(0, 255, 255, 255));
             // ! Отрисовываем строку в поверхность рисования (в картинку) 
             gfx.DrawString(textBox.Text, font, Brushes.Black, new PointF(1, 1));
             // ! Вытягиваем данные из картинки 
-            BitmapData data = text_bmp.LockBits(new Rectangle(0, 0, text_bmp.Width, text_bmp.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+            //BitmapData data = text_bmp.LockBits(new Rectangle(0, 0, text_bmp.Width, text_bmp.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+            Il.ilGenImages(1, out int imageId);
+            // делаем изображение текущим 
+            Il.ilBindImage(imageId);
+            string url = Application.StartupPath + @"\###temp.mttex.###";
+            if (File.Exists(url))
+                File.Delete(url);
+            text_bmp.Save(url);
+            if (Il.ilLoadImage(url))
+            {
+                int width = Il.ilGetInteger(Il.IL_IMAGE_WIDTH);
+                int height = Il.ilGetInteger(Il.IL_IMAGE_HEIGHT);
 
-            // ! Генерируем тектурный ID
-            Gl.glGenTextures(1, out texture_text);
-            // ! Делаем текстуру текущей
-            Gl.glBindTexture(Gl.GL_TEXTURE_2D, texture_text);
+                // определяем число бит на пиксель 
+                int bitspp = Il.ilGetInteger(Il.IL_IMAGE_BITS_PER_PIXEL);
 
-            // ! Настраиваем свойства текстура
-            Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_LINEAR);
-            Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR);
-            Gl.glTexEnvf(Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_REPLACE);
-            // ! Подгружаем данные из картинки в текстуру
-            Gl.glTexImage2D(Gl.GL_TEXTURE_2D, 0, Gl.GL_RGBA, text_bmp.Width, text_bmp.Height, 0, Gl.GL_BGRA, Gl.GL_UNSIGNED_BYTE, data.Scan0);
-
-            text_bmp.UnlockBits(data);
-        }*/
+                switch (bitspp) // в зависимости от полученного результата 
+                {
+                    // создаем текстуру, используя режим GL_RGB или GL_RGBA 
+                    case 24:
+                        MainForm.MTTextures.Add(MainForm.MakeGlTexture(Gl.GL_RGB, Il.ilGetData(), width, height));
+                        idtexture = (uint)MainForm.MTTextures.Count - 1;
+                        break;
+                    case 32:
+                        MainForm.MTTextures.Add(MainForm.MakeGlTexture(Gl.GL_RGBA, Il.ilGetData(), width, height));
+                        idtexture = (uint)MainForm.MTTextures.Count - 1;
+                        break;
+                }
+                // очищаем память 
+                Il.ilDeleteImages(1, ref imageId);
+            }
+            if (File.Exists(url))
+                File.Delete(url);
+        }
 
         /// <summary>
         /// Устанавливает заданную активность
         /// </summary>
         /// <param name="_active"></param>
-        /*public void SetActive(bool _active)
+        public void SetActive(bool _active)
         {
             active = _active;
-        }*/
+        }
 
         /// <summary>
         /// Проверка активности
         /// </summary>
         /// <returns>Возвращает активен элемент или нет</returns>
-        /*public bool CheckActive()
+        public bool CheckActive()
         {
             return active;
-        }*/
+        }
 
         /// <summary>
         /// Устанавливает заданную точку на заданные координаты
@@ -144,10 +121,10 @@ namespace NetworkDesign.Main
         /// <param name="x">Координата X</param>
         /// <param name="y">Координата Y</param>
         /// <param name="i">Номер точки в списке</param>
-        /*public void SetPoint(int x, int y, int i)
+        public void SetPoint(int x, int y, int i)
         {
             throw new NotImplementedException();
-        }*/
+        }
 
         /// <summary>
         /// Поиск элемента, попавшего в заданные координаты
@@ -155,55 +132,84 @@ namespace NetworkDesign.Main
         /// <param name="x">Координата X</param>
         /// <param name="y">Коодината Y</param>
         /// <returns></returns>
-        /*public double Search(int x, int y)
+        public double Search(int x, int y)
         {
-            throw new NotImplementedException();
-        }*/
+            if (!delete)
+            {
+                int xmin = (int)((double)location.X * MainForm.zoom);
+                int xmax = (int)((double)(location.X + size.Width) * MainForm.zoom);
+                int ymax = (int)((double)location.Y * MainForm.zoom);
+                int ymin = (int)((double)(location.Y - size.Height) * MainForm.zoom);
+                if (x <= xmax & x >= xmin & y <= ymax & y >= ymin)
+                    return (double)(xmin + xmax + ymin + ymax) / 4d;
+            }
+                return -1;
+        }
 
         /// <summary>
         /// Отрисовка
         /// </summary>
-        /*public void Draw()
+        public void Draw()
         {
             if (!delete & DL == MainForm.drawLevel)
             {
                 Gl.glColor4f(1, 1, 1, 1);
-                // включаем режим текстурирования 
+                Gl.glPushMatrix();
+                Gl.glScaled(MainForm.zoom, MainForm.zoom, MainForm.zoom);
                 Gl.glEnable(Gl.GL_TEXTURE_2D);
                 // включаем режим текстурирования, указывая идентификатор mGlTextureObject 
-                Gl.glBindTexture(Gl.GL_TEXTURE_2D, texture_text);
+                Gl.glBindTexture(Gl.GL_TEXTURE_2D, MainForm.MTTextures[(int)idtexture]);
                 // отрисовываем полигон 
                 Gl.glBegin(Gl.GL_QUADS);
                 // указываем поочередно вершины и текстурные координаты 
                 Gl.glVertex2d(location.X, location.Y - size.Height);
-                Gl.glTexCoord2f(0, 0);
-                Gl.glVertex2d(location.X, location.Y);
-                Gl.glTexCoord2f(1, 0);
-                Gl.glVertex2d(location.X + size.Width, location.Y);
-                Gl.glTexCoord2f(1, 1);
-                Gl.glVertex2d(location.X + size.Width, location.Y - size.Height);
                 Gl.glTexCoord2f(0, 1);
+                Gl.glVertex2d(location.X, location.Y);
+                Gl.glTexCoord2f(1, 1);
+                Gl.glVertex2d(location.X + size.Width, location.Y);
+                Gl.glTexCoord2f(1, 0);
+                Gl.glVertex2d(location.X + size.Width, location.Y - size.Height);
+                Gl.glTexCoord2f(0, 0);
                 // завершаем отрисовку 
                 Gl.glEnd();
                 // отключаем режим текстурирования 
                 Gl.glDisable(Gl.GL_TEXTURE_2D);
+                Gl.glPopMatrix();
             }
-        }*/
+        }
 
-        public void DrawTB()
+        public object Clone()
+        {
+            return new MyText
+            {
+                delete = this.delete,
+                DL = this.DL,
+                location = new Point(this.location.X, this.location.Y),
+                size = new Size(this.size.Width,this.size.Height),
+                text = this.text,
+                idtexture = this.idtexture
+            };
+        }
+
+        /*public void DrawTB()
         {
             if (DL == MainForm.drawLevel)
             {
+                TextBox.Location = MainForm.GenZoomPoint(ML);
+                TextBox.Font = new Font(MF.FontFamily, MF.Size * (float)MainForm.zoom);
+                Size size = TextRenderer.MeasureText(TextBox.Text, TextBox.Font);
+                TextBox.Width = size.Width + 1;
+                TextBox.Height = size.Height;
                 TextBox.Visible = true;
             }
             else
             {
                 TextBox.Visible = false;
             }
-        }
+        }*/
     }
 
-    public struct MyTB
+    /*public struct MyTB
     {
         public string Text;
         public Point Location;
@@ -215,5 +221,5 @@ namespace NetworkDesign.Main
             Location = location;
             this.size = size;
         }
-    }
+    }*/
 }

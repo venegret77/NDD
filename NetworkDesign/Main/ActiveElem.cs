@@ -11,5 +11,6 @@ namespace NetworkDesign
         public int type;
         public int item;
         public int build;
+        public object obj;
     }
 }

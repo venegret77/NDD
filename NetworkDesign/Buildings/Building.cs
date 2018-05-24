@@ -175,10 +175,10 @@ namespace NetworkDesign
                 radius = MainCircle.radius,
                 DL = LocalDL
             };
-            if (MainForm._Height >= MainForm._Width)
-                koef = ((MainForm._Height / 2) - 150) / MainCircle.radius;
+            if (MainForm.AnT.Height >= MainForm.AnT.Width)
+                koef = ((MainForm.AnT.Height / 2) - 150d * MainForm.zoom) / MainCircle.radius;
             else
-                koef = ((MainForm._Width / 2) - 150) / MainCircle.radius;
+                koef = ((MainForm.AnT.Width / 2) - 150d * MainForm.zoom) / MainCircle.radius;
             LocalCircle.radius = (int)(LocalCircle.radius * koef);
             LocalCircle.MainCenterPoint = new Point(0, 0);
         }
@@ -277,8 +277,8 @@ namespace NetworkDesign
             }
             else if (type == 360)
             {
-                difx = (int)((double)x / MainForm.Zoom) - MainCircle.MainCenterPoint.X;
-                dify = (int)((double)y / MainForm.Zoom) - MainCircle.MainCenterPoint.Y;
+                difx = (int)((double)x / MainForm.zoom) - MainCircle.MainCenterPoint.X;
+                dify = (int)((double)y / MainForm.zoom) - MainCircle.MainCenterPoint.Y;
                 MainCircle.MoveElem(x, y);
             }
             Entrances.MoveElem(difx, dify);
@@ -354,14 +354,14 @@ namespace NetworkDesign
                     X = MainP.X,
                     Y = MainP.Y
                 };
-                LocalP = new Point((int)(LocalCircle.radius * Math.Cos(Entrances.angle * Math.PI / 180) + LocalCircle.MainCenterPoint.X), (int)(LocalCircle.radius * Math.Sin(Entrances.angle * Math.PI / 180) + LocalCircle.MainCenterPoint.Y));
+                LocalP = new Point((int)((double)LocalCircle.radius * Math.Cos(Entrances.angle * Math.PI / 180) + (double)LocalCircle.MainCenterPoint.X), (int)((double)LocalCircle.radius * Math.Sin(Entrances.angle * Math.PI / 180) + (double)LocalCircle.MainCenterPoint.Y));
                 return LocalP;
             }
             else
             {
                 Point LocalP = RotatePoint(-alfa, MP, MainP);
                 LocalP.X -= Ox; LocalP.Y -= Oy;
-                LocalP.X = (int)(LocalP.X * koef); LocalP.Y = (int)(LocalP.Y * koef);
+                LocalP.X = (int)((double)LocalP.X * koef); LocalP.Y = (int)((double)LocalP.Y * koef);
                 return LocalP;
             }
         }
@@ -560,13 +560,13 @@ namespace NetworkDesign
             LocalRectangle.CalcMaxMin(out int maxx, out int minx, out int maxy, out int miny);
             int difx = maxx - minx;
             int dify = maxy - miny;
-            koef = (double)(MainForm._Height - 100) / (double)dify;
-            if (((double)(MainForm._Width - 100) / (double)difx) < koef)
-                koef = (double)(MainForm._Width - 100) / (double)difx;
+            koef = (double)(MainForm.AnT.Height - 100d * MainForm.zoom) / (double)dify;
+            if (((double)(MainForm.AnT.Width - 100d * MainForm.zoom) / (double)difx) < koef)
+                koef = (double)(MainForm.AnT.Width - 100d * MainForm.zoom) / (double)difx;
             Ox = (LocalRectangle.Points[0].X + LocalRectangle.Points[1].X + LocalRectangle.Points[2].X + LocalRectangle.Points[3].X) / 4;
             Oy = (LocalRectangle.Points[0].Y + LocalRectangle.Points[1].Y + LocalRectangle.Points[2].Y + LocalRectangle.Points[3].Y) / 4;
-            _Ox = (MainForm._Width) / 2;
-            _Oy = (MainForm._Height) / 2;
+            _Ox = (MainForm.AnT.Width) / 2;
+            _Oy = (MainForm.AnT.Height) / 2;
             for (int i = 0; i < 4; i++)
             {
                 double x = LocalRectangle.Points[i].X - Ox;
@@ -631,11 +631,11 @@ namespace NetworkDesign
             LocalPolygon.CalcMaxMin(out int maxx, out int minx, out int maxy, out int miny);
             int difx = maxx - minx;
             int dify = maxy - miny;
-            koef = (double)(MainForm._Height - 150) / (double)dify;
-            if (((double)(MainForm._Width - 150) / (double)difx) < koef)
-                koef = (double)(MainForm._Width - 150) / (double)difx;
-            _Ox = (MainForm._Width) / 2;
-            _Oy = (MainForm._Height) / 2;
+            koef = (double)(MainForm.AnT.Height - 150d * MainForm.zoom) / (double)dify;
+            if (((double)(MainForm.AnT.Width - 150d * MainForm.zoom) / (double)difx) < koef)
+                koef = (double)(MainForm.AnT.Width - 150d * MainForm.zoom) / (double)difx;
+            _Ox = (MainForm.AnT.Width) / 2;
+            _Oy = (MainForm.AnT.Height) / 2;
             for (int i = 0; i < LocalPolygon.Points.Count; i++)
             {
                 Ox += LocalPolygon.Points[i].X;

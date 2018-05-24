@@ -12,7 +12,7 @@ namespace NetworkDesign.NetworkElements
     /// <summary>
     /// Сетевые параметры
     /// </summary>
-    public class NetworkSettings
+    public class NetworkSettings : ICloneable
     {
         /// <summary>
         /// Список параметров сетевых устройств
@@ -61,6 +61,21 @@ namespace NetworkDesign.NetworkElements
             else
                 return false;
         }
+
+        public object Clone()
+        {
+            List<NetworkParametr> options = new List<NetworkParametr>();
+            foreach (var p in Options)
+                options.Add(new NetworkParametr(p.ID, p.Name, p.Value));
+            return new NetworkSettings
+            {
+                BusyPorts = this.BusyPorts,
+                Name = this.Name,
+                Throughput = this.Throughput,
+                TotalPorts = this.TotalPorts,
+                Options = options
+            };
+        }
     }
 
     /// <summary>
@@ -88,6 +103,10 @@ namespace NetworkDesign.NetworkElements
             Value = value;
         }
 
+        public NetworkParametr()
+        {
+        }
+
         public void SetNewID()
         {
             ID--;
@@ -108,7 +127,7 @@ namespace NetworkDesign.NetworkElements
         }
     }
 
-    public class Parametrs
+    public class Parametrs : ICloneable
     {
         public List<string> Params = new List<string>();
 
@@ -161,6 +180,63 @@ namespace NetworkDesign.NetworkElements
             {
                 return (Parametrs)formatter.Deserialize(fs);
             }
+        }
+
+        static public void _Open()
+        {
+            Parametrs parametrs = new Parametrs();
+            if (!Directory.Exists(Application.StartupPath + @"\Configurations"))
+            {
+                Directory.CreateDirectory(Application.StartupPath + @"\Configurations");
+                Save(parametrs);
+                MainForm.parametrs = parametrs;
+            }
+            if (!File.Exists(Application.StartupPath + @"\Configurations\NetworkSettings"))
+            {
+                Save(parametrs);
+                MainForm.parametrs = parametrs;
+            }
+            XmlSerializer formatter = new XmlSerializer(typeof(Parametrs));
+            using (FileStream fs = new FileStream(Application.StartupPath + @"\###tempdirectory._temp###\NetworkSettings", FileMode.Open))
+            {
+                Parametrs _parametrs = (Parametrs)formatter.Deserialize(fs);
+                Parametrs __parametres = (Parametrs)MainForm.parametrs.Clone();
+                //MainForm.parametrs = new Parametrs();
+                MainForm.parametrs = (Parametrs)_parametrs.Clone();
+                int id = -1;
+                for (int i = 0; i < __parametres.Params.Count; i++)
+                {
+                    id = -1;
+                    for (int j = 0; j < MainForm.parametrs.Params.Count; j++)
+                    {
+                        if (MainForm.parametrs.Params[j] == __parametres.Params[i])
+                        {
+                            id = i;
+                            break;
+                        }
+                    }
+                    if (id != -1)
+                    {
+                        __parametres.Params.RemoveAt(id);
+                        i--;
+                    }
+                    else
+                        MainForm.parametrs.Add(__parametres.Params[i]);
+                }
+            }
+        }
+
+        public object Clone()
+        {
+            List<string> _params = new List<string>();
+            foreach (var p in Params)
+            {
+                _params.Add(p);
+            }
+            return new Parametrs
+            {
+                Params = _params
+            };
         }
     }
 }

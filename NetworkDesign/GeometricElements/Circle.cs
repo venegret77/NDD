@@ -69,40 +69,40 @@ namespace NetworkDesign
 
         public override double Search(int x, int y)
         {
-            if (Math.Pow((x - (double)MainCenterPoint.X * MainForm.Zoom), 2) + Math.Pow((y - (double)MainCenterPoint.Y * MainForm.Zoom), 2) <= Math.Pow((double)radius * MainForm.Zoom,2))
-                return Math.Abs((double)MainCenterPoint.X * MainForm.Zoom - x + (double)MainCenterPoint.Y * MainForm.Zoom - y);
+            if (Math.Pow((x - (double)MainCenterPoint.X * MainForm.zoom), 2) + Math.Pow((y - (double)MainCenterPoint.Y * MainForm.zoom), 2) <= Math.Pow((double)radius * MainForm.zoom,2))
+                return Math.Abs((double)MainCenterPoint.X * MainForm.zoom - x + (double)MainCenterPoint.Y * MainForm.zoom - y);
             else
                 return -1;
         }
 
         public double SearchEnt(int x, int y)
         {
-            if (Math.Pow((x - (double)MainCenterPoint.X * MainForm.Zoom), 2) + Math.Pow((y - (double)MainCenterPoint.Y * MainForm.Zoom), 2) <= Math.Pow((double)MainForm.colorSettings.EntranceRadius * MainForm.Zoom, 2))
-                return Math.Abs((double)MainCenterPoint.X * MainForm.Zoom - x + (double)MainCenterPoint.Y * MainForm.Zoom - y);
+            if (Math.Pow((x - (double)MainCenterPoint.X * MainForm.zoom), 2) + Math.Pow((y - (double)MainCenterPoint.Y * MainForm.zoom), 2) <= Math.Pow((double)MainForm.colorSettings.EntranceRadius * MainForm.zoom, 2))
+                return Math.Abs((double)MainCenterPoint.X * MainForm.zoom - x + (double)MainCenterPoint.Y * MainForm.zoom - y);
             else
                 return -1;
         }
 
         public double SearchIW(int x, int y)
         {
-            if (Math.Pow((x - (double)MainCenterPoint.X * MainForm.Zoom), 2) + Math.Pow((y - (double)MainCenterPoint.Y * MainForm.Zoom), 2) <= Math.Pow((double)MainForm.colorSettings.InputWireRadius * MainForm.Zoom, 2))
-                return Math.Abs((double)MainCenterPoint.X * MainForm.Zoom - x + (double)MainCenterPoint.Y * MainForm.Zoom - y);
+            if (Math.Pow((x - (double)MainCenterPoint.X * MainForm.zoom), 2) + Math.Pow((y - (double)MainCenterPoint.Y * MainForm.zoom), 2) <= Math.Pow((double)MainForm.colorSettings.InputWireRadius * MainForm.zoom, 2))
+                return Math.Abs((double)MainCenterPoint.X * MainForm.zoom - x + (double)MainCenterPoint.Y * MainForm.zoom - y);
             else
                 return -1;
         }
 
         internal double SearchEntInBuild(int x, int y)
         {
-            if (Math.Pow((x - (double)LocalCenterPoint.X * MainForm.Zoom), 2) + Math.Pow((y - (double)LocalCenterPoint.Y * MainForm.Zoom), 2) <= Math.Pow((double)MainForm.colorSettings.EntranceRadius * MainForm.Zoom, 2))
-                return Math.Abs((double)LocalCenterPoint.X * MainForm.Zoom - x + (double)LocalCenterPoint.Y * MainForm.Zoom - y);
+            if (Math.Pow((x - (double)LocalCenterPoint.X * MainForm.zoom), 2) + Math.Pow((y - (double)LocalCenterPoint.Y * MainForm.zoom), 2) <= Math.Pow((double)MainForm.colorSettings.EntranceRadius * MainForm.zoom, 2))
+                return Math.Abs((double)LocalCenterPoint.X * MainForm.zoom - x + (double)LocalCenterPoint.Y * MainForm.zoom - y);
             else
                 return -1;
         }
 
         public double SearchIWInBuild(int x, int y)
         {
-            if (Math.Pow((x - (double)LocalCenterPoint.X * MainForm.Zoom), 2) + Math.Pow((y - (double)LocalCenterPoint.Y * MainForm.Zoom), 2) <= Math.Pow((double)MainForm.colorSettings.InputWireRadius * MainForm.Zoom, 2))
-                return Math.Abs((double)LocalCenterPoint.X * MainForm.Zoom - x + (double)LocalCenterPoint.Y * MainForm.Zoom - y);
+            if (Math.Pow((x - (double)LocalCenterPoint.X * MainForm.zoom), 2) + Math.Pow((y - (double)LocalCenterPoint.Y * MainForm.zoom), 2) <= Math.Pow((double)MainForm.colorSettings.InputWireRadius * MainForm.zoom, 2))
+                return Math.Abs((double)LocalCenterPoint.X * MainForm.zoom - x + (double)LocalCenterPoint.Y * MainForm.zoom - y);
             else
                 return -1;
         }
@@ -126,7 +126,7 @@ namespace NetworkDesign
                             G = (float)MainForm.colorSettings.CircleColor.G / 255;
                             B = (float)MainForm.colorSettings.CircleColor.B / 255;
                             A = (float)MainForm.colorSettings.CircleColor.A / 255;
-                            Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom);
+                            Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.zoom);
                         }
                         else
                         {
@@ -134,10 +134,10 @@ namespace NetworkDesign
                             G = (float)MainForm.colorSettings.ActiveElemColor.G / 255;
                             B = (float)MainForm.colorSettings.ActiveElemColor.B / 255;
                             A = (float)MainForm.colorSettings.ActiveElemColor.A / 255;
-                            Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom + 1);
+                            Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.zoom + 1);
                         }
                         Gl.glPushMatrix();
-                        Gl.glScaled(MainForm.Zoom, MainForm.Zoom, MainForm.Zoom);
+                        Gl.glScaled(MainForm.zoom, MainForm.zoom, MainForm.zoom);
                         // Прорисовка окружности непосредственно.
                         Gl.glBegin(Gl.GL_LINE_LOOP);
                         Gl.glColor4f(R, G, B, A);
@@ -174,7 +174,7 @@ namespace NetworkDesign
                         G = (float)MainForm.colorSettings.EntranceColor.G / 255;
                         B = (float)MainForm.colorSettings.EntranceColor.B / 255;
                         A = (float)MainForm.colorSettings.EntranceColor.A / 255;
-                        Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom);
+                        Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.zoom);
                     }
                     else
                     {
@@ -182,10 +182,10 @@ namespace NetworkDesign
                         G = (float)MainForm.colorSettings.ActiveElemColor.G / 255;
                         B = (float)MainForm.colorSettings.ActiveElemColor.B / 255;
                         A = (float)MainForm.colorSettings.ActiveElemColor.A / 255;
-                        Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom + 1);
+                        Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.zoom + 1);
                     }
                     Gl.glPushMatrix();
-                    Gl.glScaled(MainForm.Zoom, MainForm.Zoom, MainForm.Zoom);
+                    Gl.glScaled(MainForm.zoom, MainForm.zoom, MainForm.zoom);
                     // Прорисовка окружности непосредственно.
                     Gl.glBegin(Gl.GL_TRIANGLE_FAN);
                     Gl.glColor4f(R, G, B, A);
@@ -213,7 +213,7 @@ namespace NetworkDesign
                         G = (float)MainForm.colorSettings.EntranceColor.G / 255;
                         B = (float)MainForm.colorSettings.EntranceColor.B / 255;
                         A = (float)MainForm.colorSettings.EntranceColor.A / 255;
-                        Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom);
+                        Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.zoom);
                     }
                     else
                     {
@@ -221,10 +221,10 @@ namespace NetworkDesign
                         G = (float)MainForm.colorSettings.ActiveElemColor.G / 255;
                         B = (float)MainForm.colorSettings.ActiveElemColor.B / 255;
                         A = (float)MainForm.colorSettings.ActiveElemColor.A / 255;
-                        Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom + 1);
+                        Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.zoom + 1);
                     }
                     Gl.glPushMatrix();
-                    Gl.glScaled(MainForm.Zoom, MainForm.Zoom, MainForm.Zoom);
+                    Gl.glScaled(MainForm.zoom, MainForm.zoom, MainForm.zoom);
                     // Прорисовка окружности непосредственно.
                     Gl.glBegin(Gl.GL_TRIANGLE_FAN);
                     Gl.glColor4f(R, G, B, A);
@@ -259,7 +259,7 @@ namespace NetworkDesign
                         G = (float)MainForm.colorSettings.InputWireColor.G / 255;
                         B = (float)MainForm.colorSettings.InputWireColor.B / 255;
                         A = (float)MainForm.colorSettings.InputWireColor.A / 255;
-                        Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom);
+                        Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.zoom);
                     }
                     else
                     {
@@ -267,10 +267,10 @@ namespace NetworkDesign
                         G = (float)MainForm.colorSettings.ActiveElemColor.G / 255;
                         B = (float)MainForm.colorSettings.ActiveElemColor.B / 255;
                         A = (float)MainForm.colorSettings.ActiveElemColor.A / 255;
-                        Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom + 1);
+                        Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.zoom + 1);
                     }
                     Gl.glPushMatrix();
-                    Gl.glScaled(MainForm.Zoom, MainForm.Zoom, MainForm.Zoom);
+                    Gl.glScaled(MainForm.zoom, MainForm.zoom, MainForm.zoom);
                     // Прорисовка окружности непосредственно.
                     Gl.glBegin(Gl.GL_TRIANGLE_FAN);
                     Gl.glColor4f(R, G, B, A);
@@ -298,7 +298,7 @@ namespace NetworkDesign
                         G = (float)MainForm.colorSettings.InputWireColor.G / 255;
                         B = (float)MainForm.colorSettings.InputWireColor.B / 255;
                         A = (float)MainForm.colorSettings.InputWireColor.A / 255;
-                        Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom);
+                        Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.zoom);
                     }
                     else
                     {
@@ -306,10 +306,10 @@ namespace NetworkDesign
                         G = (float)MainForm.colorSettings.ActiveElemColor.G / 255;
                         B = (float)MainForm.colorSettings.ActiveElemColor.B / 255;
                         A = (float)MainForm.colorSettings.ActiveElemColor.A / 255;
-                        Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom + 1);
+                        Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.zoom + 1);
                     }
                     Gl.glPushMatrix();
-                    Gl.glScaled(MainForm.Zoom, MainForm.Zoom, MainForm.Zoom);
+                    Gl.glScaled(MainForm.zoom, MainForm.zoom, MainForm.zoom);
                     // Прорисовка окружности непосредственно.
                     Gl.glBegin(Gl.GL_TRIANGLE_FAN);
                     Gl.glColor4f(R, G, B, A);
@@ -352,7 +352,7 @@ namespace NetworkDesign
                     G = (float)MainForm.colorSettings.BuildColor.G / 255;
                     B = (float)MainForm.colorSettings.BuildColor.B / 255;
                     A = (float)MainForm.colorSettings.BuildColor.A / 255;
-                    Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom);
+                    Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.zoom);
                 }
                 else
                 {
@@ -360,10 +360,10 @@ namespace NetworkDesign
                     G = (float)MainForm.colorSettings.ActiveElemColor.G / 255;
                     B = (float)MainForm.colorSettings.ActiveElemColor.B / 255;
                     A = (float)MainForm.colorSettings.ActiveElemColor.A / 255;
-                    Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom + 1);
+                    Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.zoom + 1);
                 }
                 Gl.glPushMatrix();
-                Gl.glScaled(MainForm.Zoom, MainForm.Zoom, MainForm.Zoom);
+                Gl.glScaled(MainForm.zoom, MainForm.zoom, MainForm.zoom);
                 // Прорисовка окружности непосредственно.
                 Gl.glBegin(Gl.GL_LINE_LOOP);
                 Gl.glColor4f(R, G, B, A);
@@ -387,7 +387,7 @@ namespace NetworkDesign
 
         public override void RecalWithZoom()
         {
-            radius = (int)((double)radius / MainForm.Zoom);
+            radius = (int)((double)radius / MainForm.zoom);
             MainCenterPoint = MainForm._GenZoomPoint(MainCenterPoint);//new Point((int)(MainCenterPoint.X / MainForm.Zoom), (int)(MainCenterPoint.Y / MainForm.Zoom));
             //LocalCenterPoint = new Point((int)(LocalCenterPoint.X / MainForm.Zoom), (int)(LocalCenterPoint.Y / MainForm.Zoom));
         }
@@ -396,7 +396,7 @@ namespace NetworkDesign
         {
             if (!delete)
             {
-                Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom);
+                Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.zoom);
                 Gl.glPushMatrix();
                 Gl.glBegin(Gl.GL_LINE_LOOP);
                 Gl.glColor4f(0.6f, 0.6f, 0.6f, 0.5f);
@@ -422,7 +422,7 @@ namespace NetworkDesign
         {
             if (!delete)
             {
-                Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom);
+                Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.zoom);
                 Gl.glPushMatrix();
                 Gl.glBegin(Gl.GL_TRIANGLE_FAN);
                 Gl.glColor4f(0.6f, 0.6f, 0.6f, 0.5f);
@@ -434,8 +434,8 @@ namespace NetworkDesign
                 for (int angle = 0; angle <= 360; angle += 1)
                 {
                     // Координаты x, y повёрнутые на заданный угол относительно начала координат.
-                    double x = (double)MainForm.colorSettings.EntranceRadius * MainForm.Zoom * Math.Cos(angle * Math.PI / 180);
-                    double y = (double)MainForm.colorSettings.EntranceRadius * MainForm.Zoom * Math.Sin(angle * Math.PI / 180);
+                    double x = (double)MainForm.colorSettings.EntranceRadius * MainForm.zoom * Math.Cos(angle * Math.PI / 180);
+                    double y = (double)MainForm.colorSettings.EntranceRadius * MainForm.zoom * Math.Sin(angle * Math.PI / 180);
                     // Смещаем окрущность к её центру [xCentre; yCentre].
                     Gl.glVertex2d(x + MainCenterPoint.X, y + MainCenterPoint.Y);
                 }
@@ -448,7 +448,7 @@ namespace NetworkDesign
         {
             if (!delete)
             {
-                Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom);
+                Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.zoom);
                 Gl.glPushMatrix();
                 Gl.glBegin(Gl.GL_TRIANGLE_FAN);
                 Gl.glColor4f(0.6f, 0.6f, 0.6f, 0.5f);
@@ -460,8 +460,8 @@ namespace NetworkDesign
                 for (int angle = 0; angle <= 360; angle += 1)
                 {
                     // Координаты x, y повёрнутые на заданный угол относительно начала координат.
-                    double x = (double)MainForm.colorSettings.InputWireRadius * MainForm.Zoom * Math.Cos(angle * Math.PI / 180);
-                    double y = (double)MainForm.colorSettings.InputWireRadius * MainForm.Zoom * Math.Sin(angle * Math.PI / 180);
+                    double x = (double)MainForm.colorSettings.InputWireRadius * MainForm.zoom * Math.Cos(angle * Math.PI / 180);
+                    double y = (double)MainForm.colorSettings.InputWireRadius * MainForm.zoom * Math.Sin(angle * Math.PI / 180);
                     // Смещаем окрущность к её центру [xCentre; yCentre].
                     Gl.glVertex2d(x + MainCenterPoint.X, y + MainCenterPoint.Y);
                 }
@@ -472,7 +472,23 @@ namespace NetworkDesign
 
         public override void MoveElem(int x, int y)
         {
-            MainCenterPoint = new Point((int)((double)x / MainForm.Zoom), (int)((double)y / MainForm.Zoom));
+            MainCenterPoint = new Point((int)((double)x / MainForm.zoom), (int)((double)y / MainForm.zoom));
+        }
+
+        public override object Clone()
+        {
+            return new Circle
+            {
+                DL = this.DL,
+                MainDL = this.MainDL,
+                LocalDL = this.LocalDL,
+                MainCenterPoint = this.MainCenterPoint,
+                koef = this.koef,
+                LocalCenterPoint = this.LocalCenterPoint,
+                radius = this.radius,
+                side = this.side,
+                delete = false
+            };
         }
 
         internal void DrawB(double koef)
@@ -483,9 +499,9 @@ namespace NetworkDesign
                 G = (float)MainForm.colorSettings.BuildColor.G / 255;
                 B = (float)MainForm.colorSettings.BuildColor.B / 255;
                 A = (float)MainForm.colorSettings.BuildColor.A / 255;
-                Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom * (float)koef);
+                Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.zoom * (float)koef);
                 Gl.glPushMatrix();
-                Gl.glScaled(MainForm.Zoom, MainForm.Zoom, MainForm.Zoom);
+                Gl.glScaled(MainForm.zoom, MainForm.zoom, MainForm.zoom);
                 // Прорисовка окружности непосредственно.
                 Gl.glBegin(Gl.GL_LINE_LOOP);
                 Gl.glColor4f(R, G, B, A);

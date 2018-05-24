@@ -11,7 +11,7 @@ namespace NetworkDesign
     /// <summary>
     /// Элемент сети
     /// </summary>
-    public class NetworkElement
+    public class NetworkElement : ICloneable
     {
         /// <summary>
         /// Выбран элемент или нет
@@ -24,7 +24,7 @@ namespace NetworkDesign
         /// <summary>
         /// Заметки
         /// </summary>
-        public Notes notes;
+        public Notes notes = new Notes();
         /// <summary>
         /// Уровень отображения
         /// </summary>
@@ -94,10 +94,10 @@ namespace NetworkDesign
         /// <returns></returns>
         public double Search(int x, int y)
         {
-            double xmin = (double)texture.location.X * MainForm.Zoom;
-            double xmax = (double)(texture.location.X + texture.width * MainForm.Zoom) * MainForm.Zoom;
-            double ymin = (double)texture.location.Y * MainForm.Zoom;
-            double ymax = (double)(texture.location.Y + texture.width * MainForm.Zoom) * MainForm.Zoom;
+            double xmin = (double)texture.location.X * MainForm.zoom;
+            double xmax = (double)(texture.location.X + texture.width * MainForm.zoom) * MainForm.zoom;
+            double ymin = (double)texture.location.Y * MainForm.zoom;
+            double ymax = (double)(texture.location.Y + texture.width * MainForm.zoom) * MainForm.zoom;
             if (x <= xmax & x >= xmin & y <= ymax & y >= ymin)
                 return 1;
             else
@@ -117,7 +117,7 @@ namespace NetworkDesign
             int difx = x - (int)CenterPointX;
             int dify = y - (int)CenterPointY;
             texture.location = new Point(texture.location.X + difx, texture.location.Y + dify);
-            networkWires.CheckNW(texture.location.X + difx + (int)((double)texture.width / 2 / MainForm.Zoom), texture.location.Y + dify + (int)((double)texture.width / 2 / MainForm.Zoom), id, false, -1);
+            networkWires.CheckNW(texture.location.X + difx + (int)((double)texture.width / 2 / MainForm.zoom), texture.location.Y + dify + (int)((double)texture.width / 2 / MainForm.zoom), id, false, -1);
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace NetworkDesign
         public void RecalWithZoom()
         {
             texture.location = MainForm._GenZoomPoint(texture.location);
-            texture.width = (texture.width / (float)MainForm.Zoom);
+            texture.width = (texture.width / (float)MainForm.zoom);
         }
 
         /// <summary>
@@ -140,8 +140,8 @@ namespace NetworkDesign
             int count = 0;
             foreach (var p in texture.Points)
             {
-                x += (double)p.X * MainForm.Zoom;
-                y += (double)p.Y * MainForm.Zoom;
+                x += (double)p.X * MainForm.zoom;
+                y += (double)p.Y * MainForm.zoom;
                 count++;
             }
             CenterPointX = x / (double)count;
@@ -151,7 +151,21 @@ namespace NetworkDesign
         internal void SetPoint(int x, int y, int id, GroupOfNW networkWires)
         {
             texture.width = (int)((Math.Abs(texture.location.X - x) + Math.Abs(texture.location.Y - y)));
-            networkWires.CheckNW(texture.location.X + (int)((double)texture.width / 2 / MainForm.Zoom), texture.location.Y + (int)((double)texture.width / 2 / MainForm.Zoom), id, false, -1);
+            networkWires.CheckNW(texture.location.X + (int)((double)texture.width / 2 / MainForm.zoom), texture.location.Y + (int)((double)texture.width / 2 / MainForm.zoom), id, false, -1);
+        }
+
+        public object Clone()
+        {
+            return new NetworkElement
+            {
+                texture = (Texture)this.texture.Clone(),
+                Options = (NetworkSettings)this.Options.Clone(),
+                //notes = notes.Copy(),
+                DL = this.DL,
+                CenterPointX = this.CenterPointX,
+                CenterPointY = this.CenterPointY,
+                delete = this.delete
+            };
         }
     }
 }

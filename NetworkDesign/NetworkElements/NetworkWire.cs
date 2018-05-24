@@ -31,7 +31,7 @@ namespace NetworkDesign.NetworkElements
         /// <summary>
         /// Заметки
         /// </summary>
-        public Notes notes;
+        public Notes notes = new Notes();
 
         public IDandIW idiw1 = new IDandIW(-1, false, -1);
         public IDandIW idiw2 = new IDandIW(-1, false, -1);
@@ -95,7 +95,7 @@ namespace NetworkDesign.NetworkElements
                         G = (float)color.G / 255;
                         B = (float)color.B / 255;
                         A = (float)color.A / 255;
-                        Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom);
+                        Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.zoom);
                     }
                     else
                     {
@@ -103,10 +103,10 @@ namespace NetworkDesign.NetworkElements
                         G = (float)MainForm.colorSettings.ActiveElemColor.G / 255;
                         B = (float)MainForm.colorSettings.ActiveElemColor.B / 255;
                         A = (float)MainForm.colorSettings.ActiveElemColor.A / 255;
-                        Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom + 1);
+                        Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.zoom + 1);
                     }
                     Gl.glPushMatrix();
-                    Gl.glScaled(MainForm.Zoom, MainForm.Zoom, MainForm.Zoom);
+                    Gl.glScaled(MainForm.zoom, MainForm.zoom, MainForm.zoom);
                     Gl.glBegin(Gl.GL_LINE_STRIP);
                     Gl.glColor4f(R, G, B, A);
                     foreach (var point in Points)
@@ -140,25 +140,25 @@ namespace NetworkDesign.NetworkElements
                 for (int i = 0; i < Points.Count - 1; i++)
                 {
                     int maxx = 0, minx = 0, maxy = 0, miny = 0;
-                    if (((double)Points[i].X * MainForm.Zoom) > (double)(Points[i + 1].X * MainForm.Zoom))
+                    if (((double)Points[i].X * MainForm.zoom) > (double)(Points[i + 1].X * MainForm.zoom))
                     {
-                        maxx = (int)((double)Points[i].X * MainForm.Zoom);
-                        minx = (int)((double)Points[i + 1].X * MainForm.Zoom);
+                        maxx = (int)((double)Points[i].X * MainForm.zoom);
+                        minx = (int)((double)Points[i + 1].X * MainForm.zoom);
                     }
                     else
                     {
-                        maxx = (int)((double)Points[i + 1].X * MainForm.Zoom);
-                        minx = (int)((double)Points[i].X * MainForm.Zoom);
+                        maxx = (int)((double)Points[i + 1].X * MainForm.zoom);
+                        minx = (int)((double)Points[i].X * MainForm.zoom);
                     }
-                    if (((double)Points[i].Y * MainForm.Zoom) > (double)(Points[i + 1].Y * MainForm.Zoom))
+                    if (((double)Points[i].Y * MainForm.zoom) > (double)(Points[i + 1].Y * MainForm.zoom))
                     {
-                        maxy = (int)((double)Points[i].Y * MainForm.Zoom);
-                        miny = (int)((double)Points[i + 1].Y * MainForm.Zoom);
+                        maxy = (int)((double)Points[i].Y * MainForm.zoom);
+                        miny = (int)((double)Points[i + 1].Y * MainForm.zoom);
                     }
                     else
                     {
-                        maxy = (int)((double)Points[i + 1].Y * MainForm.Zoom);
-                        miny = (int)((double)Points[i].Y * MainForm.Zoom);
+                        maxy = (int)((double)Points[i + 1].Y * MainForm.zoom);
+                        miny = (int)((double)Points[i].Y * MainForm.zoom);
                     }
                     int lw = (int)MainForm.colorSettings.LineWidth + 1;
                     maxx += lw;
@@ -167,11 +167,11 @@ namespace NetworkDesign.NetworkElements
                     miny -= lw;
                     if (x <= maxx & x >= minx & y <= maxy & y >= miny)
                     {
-                        double A = ((double)Points[i + 1].Y * MainForm.Zoom) - ((double)Points[i].Y * MainForm.Zoom);
-                        double B = ((double)Points[i].X * MainForm.Zoom) - ((double)Points[i + 1].X * MainForm.Zoom);
-                        double C = ((double)Points[i].X * MainForm.Zoom) * (((double)Points[i].Y * MainForm.Zoom) - ((double)Points[i + 1].Y * MainForm.Zoom)) + ((double)Points[i].Y * MainForm.Zoom) * (((double)Points[i + 1].X * MainForm.Zoom) - ((double)Points[i].X * MainForm.Zoom));
+                        double A = ((double)Points[i + 1].Y * MainForm.zoom) - ((double)Points[i].Y * MainForm.zoom);
+                        double B = ((double)Points[i].X * MainForm.zoom) - ((double)Points[i + 1].X * MainForm.zoom);
+                        double C = ((double)Points[i].X * MainForm.zoom) * (((double)Points[i].Y * MainForm.zoom) - ((double)Points[i + 1].Y * MainForm.zoom)) + ((double)Points[i].Y * MainForm.zoom) * (((double)Points[i + 1].X * MainForm.zoom) - ((double)Points[i].X * MainForm.zoom));
                         double d = Math.Abs(A * x + B * y + C) / Math.Sqrt((A * A) + (B * B));
-                        if (d < lw * MainForm.Zoom + 2)
+                        if (d < lw * MainForm.zoom + 2)
                             return d;
                     }
                 }
@@ -195,6 +195,27 @@ namespace NetworkDesign.NetworkElements
         {
             if (Points.Count > 2)
                 Points.RemoveAt(Points.Count - 2);
+        }
+
+        public override object Clone()
+        {
+            List<Point> points = new List<Point>();
+            foreach (var p in Points)
+            {
+                points.Add(new Point(p.X, p.Y));
+            }
+            return new NetworkWire
+            {
+                idiw1 = new IDandIW(this.idiw1.ID, this.idiw1.IW, this.idiw1.Build),
+                idiw2 = new IDandIW(this.idiw2.ID, this.idiw2.IW, this.idiw2.Build),
+                //notes = notes.Copy(),
+                Throughput = this.Throughput,
+                DL = this.DL,
+                Points = points,
+                CenterPointX = this.CenterPointX,
+                CenterPointY = this.CenterPointY,
+                delete = this.delete
+            };
         }
     }
 }

@@ -13,7 +13,7 @@ namespace NetworkDesign.NetworkElements
     /// <summary>
     /// Текстура
     /// </summary>
-    public class Texture
+    public class Texture : ICloneable
     {
         /// <summary>
         /// Векторная текстура или нет
@@ -122,7 +122,7 @@ namespace NetworkDesign.NetworkElements
                 G = (float)color.G / 255;
                 B = (float)color.B / 255;
                 A = (float)color.A / 255;
-                Gl.glLineWidth(2 * (float)MainForm.Zoom);
+                Gl.glLineWidth(2 * (float)MainForm.zoom);
             }
             else
             {
@@ -130,10 +130,10 @@ namespace NetworkDesign.NetworkElements
                 G = (float)MainForm.colorSettings.ActiveElemColor.G / 255;
                 B = (float)MainForm.colorSettings.ActiveElemColor.B / 255;
                 A = (float)MainForm.colorSettings.ActiveElemColor.A / 255;
-                Gl.glLineWidth(3 * (float)MainForm.Zoom);
+                Gl.glLineWidth(3 * (float)MainForm.zoom);
             }
             Gl.glPushMatrix();
-            Gl.glScaled(MainForm.Zoom, MainForm.Zoom, MainForm.Zoom);
+            Gl.glScaled(MainForm.zoom, MainForm.zoom, MainForm.zoom);
             Gl.glColor4f(R, G, B, A);
             Gl.glBegin(Gl.GL_LINE_LOOP);
             Gl.glVertex2d(location.X - 1, location.Y - 1);
@@ -178,6 +178,17 @@ namespace NetworkDesign.NetworkElements
                 DrawVectImage();
             else
                 DrawRastrImage(Throughput, active);
+        }
+
+        public object Clone()
+        {
+            return new Texture
+            {
+                idimage = this.idimage,
+                location = new Point(this.location.X, this.location.Y),
+                vect = this.vect,
+                width = this.width
+            };
         }
     }
 }

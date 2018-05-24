@@ -35,7 +35,7 @@ namespace NetworkDesign
                 if (textBox1.Text != "")
                 {
                     MainForm mf = new MainForm();
-                    MainForm.user = textBox1.Text;
+                    MainForm.user = new Main.User(textBox1.Text, textBox1.Text);
                     mf.Show();
                     Hide();
                 }

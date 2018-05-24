@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace NetworkDesign
 {
-    public abstract class GeometricFigure
+    public abstract class GeometricFigure : ICloneable
     {
         /// <summary>
         /// Переменная, показывающая выбран в текущий момент элемент или нет
@@ -82,20 +82,20 @@ namespace NetworkDesign
         /// <param name="miny">Возвращаемый параметр Y минимальное</param>
         public virtual void CalcMaxMin(out int maxx, out int minx, out int maxy, out int miny)
         {
-            maxx = (int)((double)Points[0].X * MainForm.Zoom);
-            minx = (int)((double)Points[0].X * MainForm.Zoom);
-            maxy = (int)((double)Points[0].Y * MainForm.Zoom);
-            miny = (int)((double)Points[0].Y * MainForm.Zoom);
+            maxx = (int)((double)Points[0].X * MainForm.zoom);
+            minx = (int)((double)Points[0].X * MainForm.zoom);
+            maxy = (int)((double)Points[0].Y * MainForm.zoom);
+            miny = (int)((double)Points[0].Y * MainForm.zoom);
             foreach (var point in Points)
             {
-                if ((int)((double)point.X * MainForm.Zoom) > maxx)
-                    maxx = (int)((double)point.X * MainForm.Zoom);
-                if ((int)((double)point.X * MainForm.Zoom) < minx)
-                    minx = (int)((double)point.X * MainForm.Zoom);
-                if ((int)((double)point.Y * MainForm.Zoom) > maxy)
-                    maxy = (int)((double)point.Y * MainForm.Zoom);
-                if ((int)((double)point.Y * MainForm.Zoom) < miny)
-                    miny = (int)((double)point.Y * MainForm.Zoom);
+                if ((int)((double)point.X * MainForm.zoom) > maxx)
+                    maxx = (int)((double)point.X * MainForm.zoom);
+                if ((int)((double)point.X * MainForm.zoom) < minx)
+                    minx = (int)((double)point.X * MainForm.zoom);
+                if ((int)((double)point.Y * MainForm.zoom) > maxy)
+                    maxy = (int)((double)point.Y * MainForm.zoom);
+                if ((int)((double)point.Y * MainForm.zoom) < miny)
+                    miny = (int)((double)point.Y * MainForm.zoom);
             }
         }
         /// <summary>
@@ -108,8 +108,8 @@ namespace NetworkDesign
             int count = 0;
             foreach (var p in Points)
             {
-                x += (double)p.X * MainForm.Zoom;
-                y += (double)p.Y * MainForm.Zoom;
+                x += (double)p.X * MainForm.zoom;
+                y += (double)p.Y * MainForm.zoom;
                 count++;
             }
             CenterPointX = x / (double)count;
@@ -143,8 +143,27 @@ namespace NetworkDesign
         {
             for (int i = 0; i < Points.Count; i++)
             {
-                Points[i] = new Point((int)(Points[i].X / MainForm.Zoom), (int)(Points[i].Y / MainForm.Zoom));
+                Points[i] = new Point((int)(Points[i].X / MainForm.zoom), (int)(Points[i].Y / MainForm.zoom));
             }
         }
+
+        public abstract object Clone();
+        /*{
+            List<Point> points = new List<Point>();
+            foreach (var p in Points)
+            {
+                points.Add(new Point(p.X, p.Y));
+            }
+            MyRectangle mr = new MyRectangle
+            {
+                alfa = this.alfa,
+                DL = this.DL,
+                Points = points,
+                CenterPointX = this.CenterPointX,
+                CenterPointY = this.CenterPointY,
+                delete = this.delete
+            };
+            return mr;
+        }*/
     }
 }

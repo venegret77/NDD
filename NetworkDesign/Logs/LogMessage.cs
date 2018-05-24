@@ -22,7 +22,7 @@ namespace NetworkDesign
 
         public LogMessage(string _Text, Element elem_, Element _elem_)
         {
-            User = MainForm.user;
+            User = MainForm.user.login;
             dateTime = DateTime.Now;
             Text = _Text;
             elem = elem_;

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NetworkDesign
 {
-    public struct Element
+    public struct Element : ICloneable
     {
         public int type;
         public int index;
@@ -19,6 +19,17 @@ namespace NetworkDesign
             index = _index;
             elem = _elem;
             transform = _transform;
+        }
+
+        public object Clone()
+        {
+            return new Element
+            {
+                type = this.type,
+                index = this.index,
+                elem = this.elem,
+                transform = this.transform
+            };
         }
     }
 }

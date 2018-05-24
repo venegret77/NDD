@@ -129,8 +129,8 @@ namespace NetworkDesign
 
         public void RefreshRenderingArea()
         {
-            int Height = (int)((double)mapSetting.Height * MainForm.Zoom);
-            int Width = (int)((double)mapSetting.Width * MainForm.Zoom);
+            int Height = (int)((double)mapSetting.Height * MainForm.zoom);
+            int Width = (int)((double)mapSetting.Width * MainForm.zoom);
             MainForm.AnT.Height = Height;
             MainForm.AnT.Width = Width;
             Gl.glViewport(0, 0, Width, Height);
@@ -210,7 +210,7 @@ namespace NetworkDesign
         /// 360 - круг;</param>
         public void SetInstrument(int instrument)
         {
-            DefaultTempElems();
+            DefaultTempElems(true);
             MainForm.AnT.Cursor = Cursors.Cross;
             RB = instrument;
             if (instrument == 3)
@@ -231,14 +231,15 @@ namespace NetworkDesign
         /// <summary>
         /// Функция для задания параметров по умолчанию временным переменным
         /// </summary>
-        public void DefaultTempElems()
+        public void DefaultTempElems(bool er)
         {
             Lines.TempDefault();
             Polygons.TempDefault();
             Rectangles.TempDefault();
             Circles.TempDefault();
             Buildings.TempDefault();
-            EditRects.TempDefault();
+            if (er)
+                EditRects.TempDefault();
             NetworkWires.TempDefault();
             NetworkElements.TempDefault();
         }
@@ -351,6 +352,15 @@ namespace NetworkDesign
         public int SearchElem(int x, int y, out int type, out int buildindex, DrawLevel dl)
         {
             buildindex = -1;
+            if (MainForm.filtres.Text)
+            {
+                int text = MyTexts.Search(x, y, dl);
+                if (text != -1)
+                {
+                    type = 10;
+                    return text;
+                }
+            }
             if (MainForm.filtres.Line)
             {
                 int line = Lines.Search(x, y, dl);
@@ -472,6 +482,21 @@ namespace NetworkDesign
             return -1;
         }
 
+        /// <summary>
+        /// Возврат элементов к исходному состоянию, без фокусировки на определенном элементе
+        /// </summary>
+        public void Unfocus(bool er)
+        {
+            DefaultTempElems(er);
+            Lines.Choose(-1);
+            Rectangles.Choose(-1);
+            Polygons.Choose(-1);
+            Buildings.Choose(-1);
+            Circles.Choose(-1);
+            NetworkElements.Choose(-1);
+            NetworkWires.Choose(-1);
+        }
+
         public bool SearchEditElem(int x, int y)
         {
             EditRects.editRect = -1;
@@ -483,6 +508,32 @@ namespace NetworkDesign
             }
             else
             {
+                Unfocus(false);
+                int type = EditRects.EditRects[EditRects.editRect].elems[0].type;
+                int id = EditRects.EditRects[EditRects.editRect].elems[0].id;
+                MainForm.activeElem.type = type;
+                MainForm.activeElem.item = id;
+                switch (type)
+                {
+                    case 1:
+                        Lines.Choose(id);
+                        break;
+                    case 2:
+                        Rectangles.Choose(id);
+                        break;
+                    case 3:
+                        Polygons.Choose(id);
+                        break;
+                    case 360:
+                        Circles.Choose(id);
+                        break;
+                    case 8:
+                        NetworkElements.Choose(id);
+                        break;
+                    case 9:
+                        NetworkWires.Choose(id);
+                        break;
+                }
                 EditRects.edit_active = true;
                 return true;
             }
@@ -490,6 +541,8 @@ namespace NetworkDesign
 
         public void MoveElements(int x, int y)
         {
+            x = (int)((double)x / MainForm.zoom);
+            y = (int)((double)y / MainForm.zoom);
             int type = 0, id = 0, point = 0;
             if (EditRects.edit_active)
             {
@@ -526,12 +579,12 @@ namespace NetworkDesign
 
         public int RecalcMouseY(int y)
         {
-            return (int)((double)mapSetting.Height / 2d * MainForm.Zoom) - y;
+            return (int)((double)mapSetting.Height / 2d * MainForm.zoom) - y;
         }
 
         public int RecalcMouseX(int x)
         {
-            return x - (int)((double)mapSetting.Width / 2d * MainForm.Zoom);
+            return x - (int)((double)mapSetting.Width / 2d * MainForm.zoom);
         }
 
         public IDandIW ChechNE(int x, int y)
@@ -573,8 +626,9 @@ namespace NetworkDesign
             int NW = NetworkWires.Search(x, y, MainForm.drawLevel);
             if (NW != -1)
             {
-                NWSettings nws = new NWSettings(NetworkWires.NetworkWires[NW].Throughput);
+                NWSettings nws = new NWSettings(NetworkWires.NetworkWires[NW].Throughput, NetworkWires.NetworkWires[NW].notes);
                 nws.ShowDialog();
+                NetworkWires.NetworkWires[NW].notes = nws.notes.Copy();
                 NetworkWires.NetworkWires[NW].Throughput = nws.Throughput;
                 return true;
             }

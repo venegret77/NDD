@@ -221,8 +221,8 @@ namespace NetworkDesign
                 double res = 0;
                 foreach (var p in Points)
                 {
-                    res += (int)((double)p.X * MainForm.Zoom) - x;
-                    res += (int)((double)p.Y * MainForm.Zoom) - y;
+                    res += (int)((double)p.X * MainForm.zoom) - x;
+                    res += (int)((double)p.Y * MainForm.zoom) - y;
                 }
                 res = Math.Abs(res);
                 int maxx, minx;
@@ -252,7 +252,7 @@ namespace NetworkDesign
                         G = (float)MainForm.colorSettings.RectColor.G / 255;
                         B = (float)MainForm.colorSettings.RectColor.B / 255;
                         A = (float)MainForm.colorSettings.RectColor.A / 255;
-                        Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom);
+                        Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.zoom);
                     }
                     else
                     {
@@ -260,10 +260,10 @@ namespace NetworkDesign
                         G = (float)MainForm.colorSettings.ActiveElemColor.G / 255;
                         B = (float)MainForm.colorSettings.ActiveElemColor.B / 255;
                         A = (float)MainForm.colorSettings.ActiveElemColor.A / 255;
-                        Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom + 1);
+                        Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.zoom + 1);
                     }
                     Gl.glPushMatrix();
-                    Gl.glScaled(MainForm.Zoom, MainForm.Zoom, MainForm.Zoom);
+                    Gl.glScaled(MainForm.zoom, MainForm.zoom, MainForm.zoom);
                     Gl.glBegin(Gl.GL_LINE_LOOP);
                     Gl.glColor4f(R, G, B, A);
                     Gl.glVertex2d(Points[0].X, Points[0].Y);
@@ -303,7 +303,7 @@ namespace NetworkDesign
                     G = (float)MainForm.colorSettings.BuildColor.G / 255;
                     B = (float)MainForm.colorSettings.BuildColor.B / 255;
                     A = (float)MainForm.colorSettings.BuildColor.A / 255;
-                    Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom);
+                    Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.zoom);
                 }
                 else
                 {
@@ -311,10 +311,10 @@ namespace NetworkDesign
                     G = (float)MainForm.colorSettings.ActiveElemColor.G / 255;
                     B = (float)MainForm.colorSettings.ActiveElemColor.B / 255;
                     A = (float)MainForm.colorSettings.ActiveElemColor.A / 255;
-                    Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom + 1);
+                    Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.zoom + 1);
                 }
                 Gl.glPushMatrix();
-                Gl.glScaled(MainForm.Zoom, MainForm.Zoom, MainForm.Zoom);
+                Gl.glScaled(MainForm.zoom, MainForm.zoom, MainForm.zoom);
                 Gl.glBegin(Gl.GL_LINE_LOOP);
                 Gl.glColor4f(R, G, B, A);
                 Gl.glVertex2d(Points[0].X, Points[0].Y);
@@ -334,9 +334,9 @@ namespace NetworkDesign
                 G = (float)MainForm.colorSettings.BuildColor.G / 255;
                 B = (float)MainForm.colorSettings.BuildColor.B / 255;
                 A = (float)MainForm.colorSettings.BuildColor.A / 255;
-                Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.Zoom * (float)koef);
+                Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.zoom * (float)koef);
                 Gl.glPushMatrix();
-                Gl.glScaled(MainForm.Zoom, MainForm.Zoom, MainForm.Zoom);
+                Gl.glScaled(MainForm.zoom, MainForm.zoom, MainForm.zoom);
                 Gl.glBegin(Gl.GL_LINE_LOOP);
                 Gl.glColor4f(R, G, B, A);
                 Gl.glVertex2d(Points[0].X, Points[0].Y);
@@ -346,6 +346,24 @@ namespace NetworkDesign
                 Gl.glEnd();
                 Gl.glPopMatrix();
             }
+        }
+
+        public override object Clone()
+        {
+            List<Point> points = new List<Point>();
+            foreach (var p in Points)
+            {
+                points.Add(new Point(p.X, p.Y));
+            }
+            return new MyRectangle
+            {
+                alfa = this.alfa,
+                DL = this.DL,
+                Points = points,
+                CenterPointX = this.CenterPointX,
+                CenterPointY = this.CenterPointY,
+                delete = false
+            };
         }
     }
 }

@@ -29,6 +29,7 @@ namespace NetworkDesign.NetworkElements
         public NESettings(NetworkSettings Options, GroupOfNE NetworkElements)
         {
             InitializeComponent();
+            StartPosition = FormStartPosition.CenterScreen;
             this.Options = Options;
             this.NetworkElements = NetworkElements;
             PharseOptions();
