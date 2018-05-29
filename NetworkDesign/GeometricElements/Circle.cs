@@ -99,12 +99,19 @@ namespace NetworkDesign
                 return -1;
         }
 
-        public double SearchIWInBuild(int x, int y)
+        public double SearchIWInBuild(int x, int y, DrawLevel dl)
         {
-            if (Math.Pow((x - (double)LocalCenterPoint.X * MainForm.zoom), 2) + Math.Pow((y - (double)LocalCenterPoint.Y * MainForm.zoom), 2) <= Math.Pow((double)MainForm.colorSettings.InputWireRadius * MainForm.zoom, 2))
-                return Math.Abs((double)LocalCenterPoint.X * MainForm.zoom - x + (double)LocalCenterPoint.Y * MainForm.zoom - y);
-            else
-                return -1;
+            if (dl == LocalDL)
+            {
+                if (Math.Pow((x - (double)LocalCenterPoint.X * MainForm.zoom), 2) + Math.Pow((y - (double)LocalCenterPoint.Y * MainForm.zoom), 2) <= Math.Pow((double)MainForm.colorSettings.InputWireRadius * MainForm.zoom, 2))
+                    return Math.Abs((double)LocalCenterPoint.X * MainForm.zoom - x + (double)LocalCenterPoint.Y * MainForm.zoom - y);
+            }
+            else if (dl == MainDL)
+            {
+                if (Math.Pow((x - (double)MainCenterPoint.X * MainForm.zoom), 2) + Math.Pow((y - (double)MainCenterPoint.Y * MainForm.zoom), 2) <= Math.Pow((double)MainForm.colorSettings.InputWireRadius * MainForm.zoom, 2))
+                    return Math.Abs((double)MainCenterPoint.X * MainForm.zoom - x + (double)MainCenterPoint.Y * MainForm.zoom - y);
+            }
+            return -1;
         }
 
         public void SetRadius(int x, int y)

@@ -9,7 +9,7 @@ namespace NetworkDesign.Main
     /// <summary>
     /// Пользователь
     /// </summary>
-    public struct User : ICloneable
+    /*public struct User : ICloneable
     {
         /// <summary>
         /// ФИО
@@ -113,5 +113,5 @@ namespace NetworkDesign.Main
                 EditAccessLevel = this.EditAccessLevel
             };
         }
-    }
+    }*/
 }

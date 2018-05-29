@@ -45,7 +45,7 @@ namespace NetworkDesign
 
             foreach (var mess in log)
             {
-                dataGridView1.Rows.Add(mess.User,mess.dateTime,mess.Text);
+                dataGridView1.Rows.Add(mess.username,mess.dateTime,mess.Text);
             }
             StartPosition = FormStartPosition.CenterParent;
         }

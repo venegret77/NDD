@@ -171,12 +171,12 @@ namespace NetworkDesign
                         Buildings.Buildings[id].CalcCenterPoint();
                         break;
                     case 6:
-                        if (MainForm.drawLevel.Level == -1)
+                        /*if (MainForm.drawLevel.Level == -1)
                             Buildings.Buildings[MainForm.activeElem.build].MoveIW(x, y, id, MainForm.activeElem.build, NetworkWires);
                         else
-                        {
-                            //Для проводов между потолком доделать
-                        }
+                        {*/
+                            Buildings.Buildings[MainForm.activeElem.build].MoveIW(x, y, id, MainForm.activeElem.build, NetworkWires);
+                        //}
                         break;
                     case 7:
                         if (MainForm.drawLevel.Level == -1)
@@ -589,21 +589,40 @@ namespace NetworkDesign
 
         public IDandIW ChechNE(int x, int y)
         {
-            int NE = NetworkElements.Search(x, y, MainForm.drawLevel);
-            int build = Buildings.Search(x, y, out double distbuild, MainForm.drawLevel);
-            if (build != -1)
+            if (MainForm.drawLevel.Level == -1)
             {
+                int NE = NetworkElements.Search(x, y, MainForm.drawLevel);
+                if (NE != -1 && NetworkElements.NetworkElements[NE].Options.CheckPorts())
+                {
+                    NetworkElements.NetworkElements[NE].Options.BusyPorts++;
+                    return new IDandIW(NE, false, -1);
+                }
+                int build = Buildings.Search(x, y, out double distbuild, MainForm.drawLevel);
+                if (build != -1)
+                {
+                    int IW = Buildings.Buildings[build].InputWires.CalcNearestIW(x, y, MainForm.drawLevel);
+                    if (IW != -1)
+                    {
+                        return new IDandIW(IW, true, build);
+                    }
+                }
+            }
+            else
+            {
+                int NE = NetworkElements.Search(x, y, MainForm.drawLevel);
+                if (NE != -1 && NetworkElements.NetworkElements[NE].Options.CheckPorts())
+                {
+                    NetworkElements.NetworkElements[NE].Options.BusyPorts++;
+                    return new IDandIW(NE, false, -1);
+                }
+                int build = MainForm.drawLevel.Level;
                 int IW = Buildings.Buildings[build].InputWires.CalcNearestIW(x, y, MainForm.drawLevel);
                 if (IW != -1)
                 {
                     return new IDandIW(IW, true, build);
                 }
             }
-            else if (NE != -1 && NetworkElements.NetworkElements[NE].Options.CheckPorts())
-            {
-                NetworkElements.NetworkElements[NE].Options.BusyPorts++;
-                return new IDandIW(NE, false, -1);
-            }
+            //Доделать для элементов внутри зданий
             return new IDandIW(-1, false, -1);
         }
 
@@ -626,7 +645,7 @@ namespace NetworkDesign
             int NW = NetworkWires.Search(x, y, MainForm.drawLevel);
             if (NW != -1)
             {
-                NWSettings nws = new NWSettings(NetworkWires.NetworkWires[NW].Throughput, NetworkWires.NetworkWires[NW].notes);
+                NWSettings nws = new NWSettings(NetworkWires.NetworkWires[NW].Throughput, ref NetworkWires.NetworkWires[NW].notes);
                 nws.ShowDialog();
                 NetworkWires.NetworkWires[NW].notes = nws.notes.Copy();
                 NetworkWires.NetworkWires[NW].Throughput = nws.Throughput;

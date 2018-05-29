@@ -153,12 +153,6 @@
   <ItemGroup>
     <Compile Include="Main\Action.cs" />
     <Compile Include="Main\ActiveElem.cs" />
-    <Compile Include="Main\AutorisationForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Main\AutorisationForm.Designer.cs">
-      <DependentUpon>AutorisationForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="GeometricElements\Circle.cs" />
     <Compile Include="GeometricElements\GeometricFigure.cs" />
     <Compile Include="Buildings\Entrance.cs" />
@@ -180,7 +174,6 @@
     </Compile>
     <Compile Include="Main\MyText.cs" />
     <Compile Include="Main\NEButton.cs" />
-    <Compile Include="Main\User.cs" />
     <Compile Include="Main\GroupOfMT.cs" />
     <Compile Include="NetworkElements\NESettings.cs">
       <SubType>Form</SubType>
@@ -268,9 +261,6 @@
     <Compile Include="Main\SearchDialog.Designer.cs">
       <DependentUpon>SearchDialog.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Main\AutorisationForm.resx">
-      <DependentUpon>AutorisationForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Buildings\BuildForm.resx">
       <DependentUpon>BuildForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -309,6 +299,7 @@
     <EmbeddedResource Include="Main\SearchDialog.resx">
       <DependentUpon>SearchDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="ClassDiagram1.cd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -334,7 +325,9 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="NotUsed\" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="Resources\cursor.png" />
   </ItemGroup>

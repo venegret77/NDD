@@ -1,6 +1,7 @@
 ﻿using NetworkDesign.Main;
 using System;
 using System.Collections.Generic;
+using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,24 +14,23 @@ namespace NetworkDesign.NetworkElements
         /// <summary>
         /// Пользователь
         /// </summary>
-        public User user;
+        public int userid;
 
         public Note()
         {
         }
 
-        public Note(string note, User user)
+        public Note(string note, UserPrincipal user)
         {
             this.note = note;
-            this.user = user;
+            this.userid = user.GetHashCode();
         }
 
         public object Clone()
         {
             return new Note
             {
-                note = this.note,
-                user = (User)this.user.Clone()
+                note = this.note
             };
         }
     }
@@ -55,16 +55,24 @@ namespace NetworkDesign.NetworkElements
             notes.Add(note);
         }
 
-        public void Edit(int id, string text)
+        public bool Edit(int id, string text)
         {
-            if (MainForm.user == notes[id].user | MainForm.user.accessLevel.EditAccessLevel)
+            if (MainForm.user.GetHashCode() == notes[id].userid | MainForm.edit)
+            {
                 notes[id].note = text;
+                return true;
+            }
+            return false;
         }
 
-        public void Remove(int id)
+        public bool Remove(int id)
         {
-            if (MainForm.user == notes[id].user | MainForm.user.accessLevel.EditAccessLevel)
+            if (MainForm.user.GetHashCode() == notes[id].userid | MainForm.edit)
+            {
                 notes.RemoveAt(id);
+                return true;
+            }
+            return false;
         }
 
         internal Notes Copy()

@@ -53,6 +53,12 @@ namespace NetworkDesign
             InputWires.TempCircle.MainCenterPoint = new Point(x, y);
         }
 
+        public void SetTempPointInBuild(int x, int y)
+        {
+            InputWires.TempCircle.MainCenterPoint = new Point(x, y);
+            InputWires.TempCircle.LocalCenterPoint = new Point(x, y);
+        }
+
         public void CheckIW(int x, int y, MyRectangle mainRectangle)
         {
             if (mainRectangle.Search(x, y) != -1)
@@ -69,6 +75,24 @@ namespace NetworkDesign
         {
             if (cir.Search(x, y) != -1)
                 SetTempPoint(x, y);
+        }
+
+        public void CheckIWInBuild(int x, int y, MyRectangle mainRectangle)
+        {
+            if (mainRectangle.Search(x, y) != -1)
+                SetTempPointInBuild(x, y);
+        }
+
+        public void CheckIWInBuild(int x, int y, Polygon mainPolygon)
+        {
+            if (mainPolygon.Search(x, y) != -1)
+                SetTempPointInBuild(x, y);
+        }
+
+        public void CheckIWInBuild(int x, int y, Circle cir)
+        {
+            if (cir.Search(x, y) != -1)
+                SetTempPointInBuild(x, y);
         }
 
         public int CalcNearestIW(int x, int y, DrawLevel dl)

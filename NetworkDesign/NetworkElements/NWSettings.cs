@@ -18,7 +18,7 @@ namespace NetworkDesign.NetworkElements
         bool edit = false;
         public Notes notes;
 
-        public NWSettings(long throughput, Notes notes)
+        public NWSettings(long throughput, ref Notes notes)
         {
             InitializeComponent();
             StartPosition = FormStartPosition.CenterScreen;
@@ -75,7 +75,6 @@ namespace NetworkDesign.NetworkElements
             RefreshLable();
             foreach (var note in notes.notes)
             {
-                listBox2.Items.Add(note.user.login + ": ");
                 listBox1.Items.Add(note.note);
             }
         }
@@ -86,13 +85,13 @@ namespace NetworkDesign.NetworkElements
                 Throughput = (Int64)(numericUpDown1.Value * kr);
             else
                 Throughput = (Int64)(numericUpDown1.Value);
-            Notes _notes = new Notes();
+            /*Notes _notes = new Notes();
             for (int i = 0; i < notes.notes.Count; i++)
             {
                 notes.notes[i].note = listBox1.Items[i].ToString();
-                _notes.Add(new Note(listBox1.Items[i].ToString(), (User)notes.notes[i].user.Clone()));
+                _notes.Add(new Note(listBox1.Items[i].ToString(), notes.notes[i].user));
             }
-            notes = _notes.Copy();
+            notes = _notes.Copy();*/
         }
 
         private void numericUpDown1_ValueChanged_1(object sender, EventArgs e)
@@ -119,7 +118,7 @@ namespace NetworkDesign.NetworkElements
             textBox1.Text = "";
             if (listBox1.SelectedIndex != -1)
             {
-                textBox1.Text = listBox1.SelectedItem.ToString();
+                textBox1.Text = listBox1.SelectedItem.ToString().Split(new char[] { ':' }).Last();
                 textBox1.Focus();
                 button2.Enabled = true;
                 button3.Enabled = true;
@@ -133,22 +132,25 @@ namespace NetworkDesign.NetworkElements
 
         private void button2_Click(object sender, EventArgs e)
         {
-            listBox1.Items.RemoveAt(listBox1.SelectedIndex);
+            if (notes.Remove(listBox1.SelectedIndex))
+            {
+                listBox1.Items.RemoveAt(listBox1.SelectedIndex);
+            }
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            edit = true;
-            listBox1.SelectedItem = textBox1.Text;
+            string text = MainForm.user.DisplayName.ToString() + ":" + textBox1.Text;
+            if (notes.Edit(listBox1.SelectedIndex, text));
+                listBox1.Items[listBox1.SelectedIndex] = text;
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             if (textBox1.Text != "" & textBox1.Text != " ")
             {
-                listBox1.Items.Add(textBox1.Text);
-                listBox2.Items.Add(MainForm.user.login + ":");
-                notes.Add(new Note("", MainForm.user));
+                listBox1.Items.Add(MainForm.user.DisplayName.ToString() + ":" + textBox1.Text);
+                notes.Add(new Note(MainForm.user.DisplayName.ToString() + ":" + textBox1.Text, MainForm.user));
             }
             textBox1.Text = "";
             listBox1.Focus();
@@ -156,19 +158,12 @@ namespace NetworkDesign.NetworkElements
 
         private void textBox1_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Enter)
-            {
-                if (edit)
-                    listBox1.SelectedItem = textBox1.Text;
-                else
-                {
-                    listBox1.Items.Add(textBox1.Text);
-                    listBox2.Items.Add(MainForm.user.login + ":");
-                    notes.Add(new Note("", MainForm.user));
-                }
-                textBox1.Text = "";
-                listBox1.Focus();
-            }
+        }
+
+        private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == 58)
+                e.Handled = true;
         }
     }
 }

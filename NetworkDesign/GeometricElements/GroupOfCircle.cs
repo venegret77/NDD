@@ -129,19 +129,16 @@ namespace NetworkDesign
                 //Внутри
                 if (dl.Level != -1)
                 {
-                    if (dl == Circles[i].LocalDL)
+                    double _dist = Circles[i].SearchIWInBuild(x, y, dl);
+                    if (dist == -1 & _dist != -1)
                     {
-                        double _dist = Circles[i].SearchEntInBuild(x, y);
-                        if (dist == -1 & _dist != -1)
-                        {
-                            dist = _dist;
-                            index = i;
-                        }
-                        else if (_dist < dist & _dist != -1)
-                        {
-                            dist = _dist;
-                            index = i;
-                        }
+                        dist = _dist;
+                        index = i;
+                    }
+                    else if (_dist < dist & _dist != -1)
+                    {
+                        dist = _dist;
+                        index = i;
                     }
                 }
                 //Снаружи

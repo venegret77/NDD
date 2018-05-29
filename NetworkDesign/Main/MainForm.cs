@@ -13,13 +13,15 @@ using NetworkDesign.Main;
 using System.Diagnostics;
 using Tao.OpenGl;
 using Tao.DevIl;
+using System.DirectoryServices.AccountManagement;
 
 namespace NetworkDesign
 {
     public partial class MainForm : Form
     {
         #region Объявление переменных
-        public static Main.User user = new Main.User();
+        public static UserPrincipal user;
+        public static bool edit;
         MapSettings DefaultSettings = new MapSettings("DefaultMap", 1000, 1000);
         static public Map MyMap = new Map();
         static public DrawLevel drawLevel;
@@ -45,8 +47,7 @@ namespace NetworkDesign
         static public bool isInit = false;
 
         Stopwatch stopwatch = new Stopwatch();
-
-        //private int tscount = 0;
+        
         public static int nebutnscount = 15;
         static public List<NEButton> neButtons = new List<NEButton>();
 
@@ -60,13 +61,15 @@ namespace NetworkDesign
 
         Point asp = new Point();
         #endregion
+
         /// <summary>
         /// Инициализация начальных параметров
         /// </summary>
-        public unsafe MainForm()
+        public MainForm()
         {
             InitializeComponent();
             StartPosition = FormStartPosition.CenterScreen;
+            user = Autorisation(out edit);
             AnT.Parent = panel1;
             //panel1.Controls.Add(AnT);
             // AnT
@@ -139,12 +142,33 @@ namespace NetworkDesign
             Click += MainForm_Click;
             panel1.AutoScroll = true;
             panel1.AutoScrollPosition = new Point(AnT.Height / 2, AnT.Width / 2);
-            Timer time = new Timer();
-            time.Interval = 15;
+            Timer time = new Timer
+            {
+                Interval = 15
+            };
             time.Start();
             time.Tick += Time_Tick;
-            //tscount = toolStrip1.Items.Count;
         }
+
+        public static UserPrincipal Autorisation(out bool edit)
+        {
+            UserPrincipal user;
+            user = UserPrincipal.Current;
+            var group = user.GetGroups();
+            foreach (var g in group)
+            {
+                if (g.Name == "Администраторы")
+                {
+                    edit = true;
+                    return user;
+                }
+            }
+            edit = false;
+            if (user != null)
+                return user;
+            return null;
+        }
+
         #region Обработка кликов мыши для различных инструментов
         private void MouseLines(int x, int y)
         {
@@ -1371,6 +1395,7 @@ namespace NetworkDesign
             {
                 case 6:
                     MyMap.Buildings.Buildings[buildid].InputWires.InputWires.Circles[elem.index] = (Circle)elem.elem;
+                    // Доделать движение проводов
                     break;
                 case 7:
                     MyMap.Buildings.Buildings[buildid].Entrances.Enterances.Circles[elem.index] = (Circle)elem.elem;
@@ -2318,6 +2343,14 @@ namespace NetworkDesign
                 formatter.Serialize(fs, imglist);
             }
         }
+
+        private void panel1_Scroll_1(object sender, ScrollEventArgs e) => asp = panel1.AutoScrollPosition;
+
+        private void CopyBtn_Click(object sender, EventArgs e)
+        {
+
+        }
+
         /// <summary>
         /// Генерация текстуры
         /// </summary>

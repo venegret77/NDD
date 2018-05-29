@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,7 +9,8 @@ namespace NetworkDesign
 {
     public class LogMessage
     {
-        public string User = "DefaultUser";
+        public int userid;
+        public string username;
         public DateTime dateTime = new DateTime();
         public string Text = "";
         public Element elem;
@@ -22,7 +24,8 @@ namespace NetworkDesign
 
         public LogMessage(string _Text, Element elem_, Element _elem_)
         {
-            User = MainForm.user.login;
+            username = MainForm.user.DisplayName;
+            userid = MainForm.user.GetHashCode();
             dateTime = DateTime.Now;
             Text = _Text;
             elem = elem_;
@@ -38,9 +41,9 @@ namespace NetworkDesign
             buildid = _buildid;
         }
 
-        public override string ToString()
+        /*public override string ToString()
         {
             return User + ": " + dateTime.ToShortDateString() + " " + dateTime.ToShortTimeString() + ": " + Text;
-        }
+        }*/
     }
 }
