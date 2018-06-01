@@ -62,6 +62,46 @@ namespace NetworkDesign.NetworkElements
                 return false;
         }
 
+        public override string ToString()
+        {
+            string settings = "";
+            settings = "Устройство " + Name + ":" + Environment.NewLine;
+            settings += "Пропускная способность: ";
+            long kr = 0;
+            if (Throughput >= 1000 & Throughput < 1000000)
+                kr = 1000;
+            else if (Throughput >= 1000000 & Throughput < 1000000000)
+                kr = 1000000;
+            else if (Throughput >= 1000000000 & Throughput < 1000000000000)
+                kr = 1000000000;
+            else if (Throughput >= 1000000000000)
+                kr = 1000000000000;
+            switch (kr)
+            {
+                case 0:
+                    settings += (Throughput).ToString() + "(б/с)";
+                    break;
+                case 1000:
+                    settings += (Throughput / kr).ToString() + "(Кб/с)";
+                    break;
+                case 1000000:
+                    settings += (Throughput / kr).ToString() + "(Мб/с)";
+                    break;
+                case 1000000000:
+                    settings += (Throughput / kr).ToString() + "(Гб/с)";
+                    break;
+                case 1000000000000:
+                    settings += (Throughput / kr).ToString() + "(Тб/с)";
+                    break;
+            }
+            settings += Environment.NewLine + "Порты: " + TotalPorts.ToString() + " - общее количество портов; " + BusyPorts.ToString() + " - количество занятых портов" + Environment.NewLine;
+            foreach (var opt in Options)
+            {
+                settings += opt.ToString() + Environment.NewLine;
+            }
+            return settings;
+        }
+
         public object Clone()
         {
             List<NetworkParametr> options = new List<NetworkParametr>();
@@ -124,6 +164,11 @@ namespace NetworkDesign.NetworkElements
         internal void SetNewName(int id, string name)
         {
             Name = MainForm.parametrs.Params[id];
+        }
+
+        public override string ToString()
+        {
+            return Name + ": " + Value;
         }
     }
 

@@ -41,5 +41,19 @@ namespace NetworkDesign
             dialogResult = DialogResult.No;
             Close();
         }
+
+        private void BuildForm_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BuildForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (name == "" | name == " ")
+            {
+                MessageBox.Show("Пожалуйста введите имя здания");
+                e.Cancel = true;
+            }
+        }
     }
 }

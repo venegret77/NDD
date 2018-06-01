@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -38,6 +39,8 @@ namespace NetworkDesign
         public Log log = new Log();
         //Здания
         public GroupOfBuildings Buildings = new GroupOfBuildings();
+
+        public int UserID;
         //Другое
         [XmlIgnore()]
         public Timer RenderTimer = new Timer();
@@ -102,6 +105,8 @@ namespace NetworkDesign
             Gl.glLoadIdentity();
             Gl.glClearColor(1, 1, 1, 1);
             Gl.glPushMatrix();
+            if (MainForm.filtres.NW)
+                NetworkWires.Draw();
             if (MainForm.filtres.Build)
                 Buildings.Draw();
             if (MainForm.filtres.Poly)
@@ -112,8 +117,6 @@ namespace NetworkDesign
                 Rectangles.Draw();
             if (MainForm.filtres.Circ)
                 Circles.Draw();
-            if (MainForm.filtres.NW)
-                NetworkWires.Draw();
             if (MainForm.filtres.NE)
                 NetworkElements.Draw();
             if (MainForm.filtres.Text)
@@ -123,8 +126,56 @@ namespace NetworkDesign
                 EditRects.Draw();
             }
             Gl.glPopMatrix();
-            Gl.glFlush();
             MainForm.AnT.Invalidate();
+        }
+
+        public void DrawingWOF()
+        {
+            Gl.glClear(Gl.GL_CLEAR | Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);
+            Gl.glLoadIdentity();
+            Gl.glClearColor(1, 1, 1, 1);
+            Gl.glPushMatrix();
+            NetworkWires.Draw();
+            Buildings.Draw();
+            Polygons.Draw();
+            Lines.Draw();
+            Rectangles.Draw();
+            Circles.Draw();
+            NetworkElements.Draw();
+            MyTexts.Draw();
+            Gl.glFinish();
+            MainForm.AnT.Invalidate();
+        }
+
+        public void ExportListNE(string path)
+        {
+            using (StreamWriter sw = new StreamWriter(path, false, Encoding.Default))
+            {
+                sw.WriteLine("Список элементов для карты сети " + mapSetting.Name);
+                for (int i = 0; i < Buildings.Buildings.Count; i++)
+                {
+                    sw.WriteLine("Здание " + Buildings.Buildings[i].Name + ":");
+                    for (int n = 0; n < Buildings.Buildings[i].floors_name.Count; n++)
+                    {
+                        sw.WriteLine(Buildings.Buildings[i].floors_name[n] + ":");
+                        for (int j = 0; j < NetworkElements.NetworkElements.Count; j++)
+                        {
+                            if (NetworkElements.NetworkElements[j].DL.Level == i & NetworkElements.NetworkElements[j].DL.Floor == n)
+                            {
+                                sw.WriteLine(NetworkElements.NetworkElements[j].Options.ToString());
+                            }
+                        }
+                    }
+                }
+                sw.WriteLine("Прочие сетевые элементы: ");
+                for (int j = 0; j < NetworkElements.NetworkElements.Count; j++)
+                {
+                    if (NetworkElements.NetworkElements[j].DL.Level == -1 & NetworkElements.NetworkElements[j].DL.Floor == -1)
+                    {
+                        sw.WriteLine(NetworkElements.NetworkElements[j].Options.ToString());
+                    }
+                }
+            }
         }
 
         public void RefreshRenderingArea()
@@ -171,12 +222,7 @@ namespace NetworkDesign
                         Buildings.Buildings[id].CalcCenterPoint();
                         break;
                     case 6:
-                        /*if (MainForm.drawLevel.Level == -1)
-                            Buildings.Buildings[MainForm.activeElem.build].MoveIW(x, y, id, MainForm.activeElem.build, NetworkWires);
-                        else
-                        {*/
-                            Buildings.Buildings[MainForm.activeElem.build].MoveIW(x, y, id, MainForm.activeElem.build, NetworkWires);
-                        //}
+                        Buildings.Buildings[MainForm.activeElem.build].MoveIW(x, y, id, MainForm.activeElem.build, NetworkWires);
                         break;
                     case 7:
                         if (MainForm.drawLevel.Level == -1)
@@ -379,27 +425,6 @@ namespace NetworkDesign
                     return NE;
                 }
             }
-            if (MainForm.filtres.NW)
-            {
-                int NW = NetworkWires.Search(x, y, dl);
-                if (NW != -1)
-                {
-                    type = 9;
-                    return NW;
-                }
-            }
-            double distrect = -1;
-            int rect = -1;
-            if (MainForm.filtres.Rect)
-            {
-                rect = Rectangles.Search(x, y, out distrect, dl);
-            }
-            double distbline = -1;
-            int bline = -1;
-            if (MainForm.filtres.Poly)
-            {
-                bline = Polygons.Search(x, y, out distbline, dl);
-            }
             int build = -1;
             double distbuild = -1;
             if (MainForm.drawLevel.Level != -1)
@@ -427,9 +452,57 @@ namespace NetworkDesign
             }
             else
             {
-                if(MainForm.filtres.Build)
+                for (int i = 0; i < Buildings.Buildings.Count; i++)
+                {
+                    int entrance = Buildings.Buildings[i].Entrances.CalcNearestEnterise(x, y, dl);
+                    if (entrance != -1)
+                    {
+                        buildindex = i;
+                        type = 7;
+                        return entrance;
+                    }
+                    int IW = Buildings.Buildings[i].InputWires.CalcNearestIW(x, y, dl);
+                    if (IW != -1)
+                    {
+                        buildindex = i;
+                        type = 6;
+                        return IW;
+                    }
+                }
+                if (MainForm.filtres.NW)
+                {
+                    int NW = NetworkWires.Search(x, y, dl);
+                    if (NW != -1)
+                    {
+                        type = 9;
+                        return NW;
+                    }
+                }
+                if (MainForm.filtres.Build)
                     build = Buildings.Search(x, y, out distbuild, dl);
             }
+            if (MainForm.filtres.NW)
+            {
+                int NW = NetworkWires.Search(x, y, dl);
+                if (NW != -1)
+                {
+                    type = 9;
+                    return NW;
+                }
+            }
+            double distrect = -1;
+            int rect = -1;
+            if (MainForm.filtres.Rect)
+            {
+                rect = Rectangles.Search(x, y, out distrect, dl);
+            }
+            double distbline = -1;
+            int bline = -1;
+            if (MainForm.filtres.Poly)
+            {
+                bline = Polygons.Search(x, y, out distbline, dl);
+            }
+
             double distcircle = -1;
             int circle = -1;
             if (MainForm.filtres.Circ)
@@ -446,7 +519,7 @@ namespace NetworkDesign
                 distcircle = Int32.MaxValue;
             if (distbuild < distrect & distbuild < distbline & distbuild < distcircle)
             {
-                int entrance = Buildings.Buildings[build].Entrances.CalcNearestEnterise(x, y, dl);
+                /*int entrance = Buildings.Buildings[build].Entrances.CalcNearestEnterise(x, y, dl);
                 if (entrance != -1)
                 {
                     buildindex = build;
@@ -459,7 +532,7 @@ namespace NetworkDesign
                     buildindex = build;
                     type = 6;
                     return IW;
-                }
+                }*/
                 type = 4;
                 return build;
             }
@@ -497,19 +570,20 @@ namespace NetworkDesign
             NetworkWires.Choose(-1);
         }
 
-        public bool SearchEditElem(int x, int y)
+        public bool SearchEditElem(int x, int y, out int type)
         {
             EditRects.editRect = -1;
             EditRects.editRect = EditRects.Search(x, y);
             if (EditRects.editRect == -1)
             {
                 EditRects.edit_active = false;
+                type = -1;
                 return false;
             }
             else
             {
                 Unfocus(false);
-                int type = EditRects.EditRects[EditRects.editRect].elems[0].type;
+                type = EditRects.EditRects[EditRects.editRect].elems[0].type;
                 int id = EditRects.EditRects[EditRects.editRect].elems[0].id;
                 MainForm.activeElem.type = type;
                 MainForm.activeElem.item = id;
@@ -521,7 +595,7 @@ namespace NetworkDesign
                     case 2:
                         Rectangles.Choose(id);
                         break;
-                    case 3:
+                    case 5:
                         Polygons.Choose(id);
                         break;
                     case 360:
@@ -538,7 +612,11 @@ namespace NetworkDesign
                 return true;
             }
         }
-
+        /// <summary>
+        /// Перемещение элемента с помощью прямоугольника редактирования
+        /// </summary>
+        /// <param name="x">Координата X</param>
+        /// <param name="y">Координата Y</param>
         public void MoveElements(int x, int y)
         {
             x = (int)((double)x / MainForm.zoom);
@@ -576,12 +654,20 @@ namespace NetworkDesign
                 }
             }
         }
-
+        /// <summary>
+        /// Пересчет координаты Y из оконных координат в координаты OpenGL
+        /// </summary>
+        /// <param name="y">Координата мыши Y</param>
+        /// <returns></returns>
         public int RecalcMouseY(int y)
         {
             return (int)((double)mapSetting.Height / 2d * MainForm.zoom) - y;
         }
-
+        /// <summary>
+        /// Пересчет координаты X из оконных координат в координаты OpenGL
+        /// </summary>
+        /// <param name="x">Координата мыши X</param>
+        /// <returns></returns>
         public int RecalcMouseX(int x)
         {
             return x - (int)((double)mapSetting.Width / 2d * MainForm.zoom);

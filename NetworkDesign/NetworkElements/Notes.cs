@@ -26,6 +26,11 @@ namespace NetworkDesign.NetworkElements
             this.userid = user.GetHashCode();
         }
 
+        public override string ToString()
+        {
+            return note;
+        }
+
         public object Clone()
         {
             return new Note

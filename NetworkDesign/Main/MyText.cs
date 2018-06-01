@@ -32,6 +32,7 @@ namespace NetworkDesign.Main
         public Size size;
         public uint idtexture = 0;
         public string text = "";
+        public float fontsize = 14;
 
         public MyText()
         {
@@ -48,28 +49,87 @@ namespace NetworkDesign.Main
 
         public void InitText(TextBox textBox)
         {
+            fontsize = (float)(textBox.Font.Size / (float)MainForm.zoom);
             // ! Создаем шрифт 
             Font font = new Font(FontFamily.GenericSansSerif, (float)(textBox.Font.Size / (float)MainForm.zoom));
             size = TextRenderer.MeasureText(textBox.Text, font);
             size.Height += 2;
             size.Width += 2;
-            Bitmap text_bmp = new Bitmap(size.Width, size.Height);
+            Size _size = new Size();
+            Font _font = new Font(FontFamily.GenericSansSerif, 150);
+            _size = TextRenderer.MeasureText(textBox.Text, _font);
+            _size.Height += 2;
+            _size.Width += 2;
+            Bitmap text_bmp = new Bitmap(_size.Width, _size.Height);
             // ! Создаем поверхность рисования GDI+ из картинки 
             Graphics gfx = Graphics.FromImage(text_bmp);
             gfx.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
             // ! Очищаем поверхность рисования цветом 
             gfx.Clear(Color.FromArgb(0, 255, 255, 255));
             // ! Отрисовываем строку в поверхность рисования (в картинку) 
-            gfx.DrawString(textBox.Text, font, Brushes.Black, new PointF(1, 1));
+            gfx.DrawString(textBox.Text, _font, Brushes.Black, new PointF(1, 1));
+            string url = Application.StartupPath + @"\###temp.mttex.###";
+            Bitmap bitmap = new Bitmap(text_bmp, 1024, 256);
+            bitmap.Save(url);
+            bitmap.Dispose();
             // ! Вытягиваем данные из картинки 
-            //BitmapData data = text_bmp.LockBits(new Rectangle(0, 0, text_bmp.Width, text_bmp.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
             Il.ilGenImages(1, out int imageId);
             // делаем изображение текущим 
             Il.ilBindImage(imageId);
-            string url = Application.StartupPath + @"\###temp.mttex.###";
+            if (Il.ilLoadImage(url))
+            {
+                int width = Il.ilGetInteger(Il.IL_IMAGE_WIDTH);
+                int height = Il.ilGetInteger(Il.IL_IMAGE_HEIGHT);
+
+                // определяем число бит на пиксель 
+                int bitspp = Il.ilGetInteger(Il.IL_IMAGE_BITS_PER_PIXEL);
+
+                switch (bitspp) // в зависимости от полученного результата 
+                {
+                    // создаем текстуру, используя режим GL_RGB или GL_RGBA 
+                    case 24:
+                        MainForm.MTTextures.Add(MainForm.MakeGlTexture(Gl.GL_RGB, Il.ilGetData(), width, height));
+                        idtexture = (uint)MainForm.MTTextures.Count - 1;
+                        break;
+                    case 32:
+                        MainForm.MTTextures.Add(MainForm.MakeGlTexture(Gl.GL_RGBA, Il.ilGetData(), width, height));
+                        idtexture = (uint)MainForm.MTTextures.Count - 1;
+                        break;
+                }
+                // очищаем память 
+                Il.ilDeleteImages(1, ref imageId);
+            }
             if (File.Exists(url))
                 File.Delete(url);
-            text_bmp.Save(url);
+        }
+
+        public void MapLoadGenTextures()
+        {
+            Font font = new Font(FontFamily.GenericSansSerif, fontsize);
+            size = TextRenderer.MeasureText(text, font);
+            size.Height += 2;
+            size.Width += 2;
+            Size _size = new Size();
+            Font _font = new Font(FontFamily.GenericSansSerif, 150);
+            _size = TextRenderer.MeasureText(text, _font);
+            _size.Height += 2;
+            _size.Width += 2;
+            Bitmap text_bmp = new Bitmap(_size.Width, _size.Height);
+            // ! Создаем поверхность рисования GDI+ из картинки 
+            Graphics gfx = Graphics.FromImage(text_bmp);
+            gfx.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
+            // ! Очищаем поверхность рисования цветом 
+            gfx.Clear(Color.FromArgb(0, 255, 255, 255));
+            // ! Отрисовываем строку в поверхность рисования (в картинку) 
+            gfx.DrawString(text, _font, Brushes.Black, new PointF(1, 1));
+            string url = Application.StartupPath + @"\###temp.mttex.###";
+            Bitmap bitmap = new Bitmap(text_bmp, 1024, 256);
+            bitmap.Save(url);
+            bitmap.Dispose();
+            // ! Вытягиваем данные из картинки 
+            Il.ilGenImages(1, out int imageId);
+            // делаем изображение текущим 
+            Il.ilBindImage(imageId);
             if (Il.ilLoadImage(url))
             {
                 int width = Il.ilGetInteger(Il.IL_IMAGE_WIDTH);

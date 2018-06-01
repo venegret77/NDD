@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -317,6 +318,21 @@ namespace NetworkDesign.NetworkElements
             Options.TotalPorts = (int)numericUpDown2.Value;
             numericUpDown2.Minimum = Options.BusyPorts;
             RefreshPorts();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Ping ping = new Ping();
+                var result = ping.Send(textBox2.Text);
+                if (result.Status == IPStatus.Success)
+                    checkBox1.Checked = true;
+            }
+            catch
+            {
+                checkBox1.Checked = false;
+            }
         }
     }
 }

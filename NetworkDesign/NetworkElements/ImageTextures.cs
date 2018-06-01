@@ -26,7 +26,7 @@ namespace NetworkDesign.NetworkElements
         {
             StartPosition = FormStartPosition.CenterScreen;
             InitializeComponent();
-            openFileDialog1.Filter = "Image files (*.jpg, *.jpeg, *.png) | *.jpg; *.jpeg; *.png";
+            openFileDialog1.Filter = "Image files (*.png) | *.png";
             this.NetworkElements = NetworkElements;
             GetImages();
         }
@@ -121,20 +121,18 @@ namespace NetworkDesign.NetworkElements
                     else
                     {
                         if (!File.Exists(Application.StartupPath + @"\Textures\" + openFileDialog1.SafeFileName))
+                        {
+                            File.Copy(openFileDialog1.FileName, Application.StartupPath + @"\Textures\" + openFileDialog1.SafeFileName, true);
+                            Image image = Image.FromFile(Application.StartupPath + @"\Textures\" + openFileDialog1.SafeFileName);
+                            Bitmap bitmap = new Bitmap(image);
+                            if (image.Height != 1024 | image.Width != 1024)
                             {
-                            Image image = Image.FromFile(openFileDialog1.FileName);
-                            double koef = (double)image.Height / 1000;
-                            if (image.Width / 1000 > koef)
-                                koef = (double)image.Width / 1000;
-                            if (koef > 1)
-                            {
-                                Size newsize = new Size((int)(image.Width / koef), (int)(image.Height / koef));
-                                Bitmap bitmap = new Bitmap(image, newsize);
+                                bitmap.Dispose();
+                                bitmap = new Bitmap(image, 1024, 1024);
+                                image.Dispose();
                                 bitmap.Save(Application.StartupPath + @"\Textures\" + openFileDialog1.SafeFileName);
-                            }
-                            else
-                            {
-                                File.Copy(openFileDialog1.FileName, Application.StartupPath + @"\Textures\" + openFileDialog1.SafeFileName, true);
+                                bitmap.Dispose();
+                                //image = Image.FromFile(Application.StartupPath + @"\Textures\" + openFileDialog1.SafeFileName);
                             }
                         }
                         MainForm.ImagesURL.Add(openFileDialog1.SafeFileName);

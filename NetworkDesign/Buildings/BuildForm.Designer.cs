@@ -124,7 +124,9 @@
             this.Controls.Add(this.button1);
             this.Controls.Add(this.numericUpDown1);
             this.Name = "BuildForm";
-            this.Text = "BuildForm";
+            this.Text = "Здание";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.BuildForm_FormClosing);
+            this.Load += new System.EventHandler(this.BuildForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

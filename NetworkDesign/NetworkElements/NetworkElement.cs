@@ -95,9 +95,9 @@ namespace NetworkDesign
         public double Search(int x, int y)
         {
             double xmin = (double)texture.location.X * MainForm.zoom;
-            double xmax = (double)(texture.location.X + texture.width * MainForm.zoom) * MainForm.zoom;
+            double xmax = (double)(texture.location.X + texture.width) * MainForm.zoom;
             double ymin = (double)texture.location.Y * MainForm.zoom;
-            double ymax = (double)(texture.location.Y + texture.width * MainForm.zoom) * MainForm.zoom;
+            double ymax = (double)(texture.location.Y + texture.width) * MainForm.zoom;
             if (x <= xmax & x >= xmin & y <= ymax & y >= ymin)
                 return 1;
             else
@@ -117,7 +117,7 @@ namespace NetworkDesign
             int difx = x - (int)CenterPointX;
             int dify = y - (int)CenterPointY;
             texture.location = new Point(texture.location.X + difx, texture.location.Y + dify);
-            networkWires.CheckNW(texture.location.X + difx + (int)((double)texture.width / 2 / MainForm.zoom), texture.location.Y + dify + (int)((double)texture.width / 2 / MainForm.zoom), id, false, -1);
+            networkWires.CheckNW(texture.location.X + (int)((double)texture.width / 2), texture.location.Y + (int)((double)texture.width / 2), id, false, -1, DL);
         }
 
         /// <summary>
@@ -151,7 +151,7 @@ namespace NetworkDesign
         internal void SetPoint(int x, int y, int id, GroupOfNW networkWires)
         {
             texture.width = (int)((Math.Abs(texture.location.X - x) + Math.Abs(texture.location.Y - y)));
-            networkWires.CheckNW(texture.location.X + (int)((double)texture.width / 2 / MainForm.zoom), texture.location.Y + (int)((double)texture.width / 2 / MainForm.zoom), id, false, -1);
+            networkWires.CheckNW(texture.location.X + (int)((double)texture.width / 2 / MainForm.zoom), texture.location.Y + (int)((double)texture.width / 2 / MainForm.zoom), id, false, -1, DL);
         }
 
         public object Clone()
