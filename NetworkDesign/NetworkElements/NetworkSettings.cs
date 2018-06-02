@@ -209,6 +209,8 @@ namespace NetworkDesign.NetworkElements
         static public Parametrs Open()
         {
             Parametrs parametrs = new Parametrs();
+            parametrs.Add("IP");
+            parametrs.Add("MAC");
             if (!Directory.Exists(Application.StartupPath + @"\Configurations"))
             {
                 Directory.CreateDirectory(Application.StartupPath + @"\Configurations");

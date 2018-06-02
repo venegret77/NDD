@@ -71,7 +71,7 @@ namespace NetworkDesign.NetworkElements
         private void DrawRastrImageTemp()
         {
             Gl.glLineWidth(MainForm.colorSettings.LineWidth);
-            Gl.glPushMatrix();
+            //Gl.glPushMatrix();
             Gl.glColor4f(0.6f, 0.6f, 0.6f, 0.5f);
             Gl.glBegin(Gl.GL_LINE_LOOP);
             Gl.glVertex2d(location.X - 1, location.Y - 1);
@@ -99,7 +99,7 @@ namespace NetworkDesign.NetworkElements
             Gl.glEnd();
             // отключаем режим текстурирования 
             Gl.glDisable(Gl.GL_TEXTURE_2D);
-            Gl.glPopMatrix();
+            //Gl.glPopMatrix();
         }
 
         public Texture()
@@ -132,8 +132,8 @@ namespace NetworkDesign.NetworkElements
                 A = (float)MainForm.colorSettings.ActiveElemColor.A / 255;
                 Gl.glLineWidth(3 * (float)MainForm.zoom);
             }
-            Gl.glPushMatrix();
-            Gl.glScaled(MainForm.zoom, MainForm.zoom, MainForm.zoom);
+            //Gl.glPushMatrix();
+            //Gl.glScaled(MainForm.zoom, MainForm.zoom, MainForm.zoom);
             Gl.glColor4f(R, G, B, A);
             Gl.glBegin(Gl.GL_LINE_LOOP);
             Gl.glVertex2d(location.X - 1, location.Y - 1);
@@ -161,7 +161,7 @@ namespace NetworkDesign.NetworkElements
             Gl.glEnd();
             // отключаем режим текстурирования 
             Gl.glDisable(Gl.GL_TEXTURE_2D);
-            Gl.glPopMatrix();
+            //Gl.glPopMatrix();
         }
 
         /// <summary>

@@ -169,7 +169,6 @@ namespace NetworkDesign
             {
                 circle.Draw();
             }
-            TempCircle.DrawTemp();
         }
 
         public void DrawEnt()
@@ -178,7 +177,6 @@ namespace NetworkDesign
             {
                 circle.DrawEnt();
             }
-            TempCircle.DrawTempEnt();
         }
 
         public void DrawIW()
@@ -187,6 +185,15 @@ namespace NetworkDesign
             {
                 circle.DrawIW();
             }
+        }
+
+        public void DrawTempEnt()
+        {
+            TempCircle.DrawTempEnt();
+        }
+
+        public void DrawTempIW()
+        {
             TempCircle.DrawTempIW();
         }
 
@@ -217,6 +224,11 @@ namespace NetworkDesign
                     _EditRects.Add(new EditRect(new Point(Circles[i].MainCenterPoint.X + Circles[i].radius, Circles[i].MainCenterPoint.Y), 360, i, 0));
             }
             return _EditRects;
+        }
+
+        public override void DrawTemp()
+        {
+            TempCircle.DrawTemp();
         }
     }
 }

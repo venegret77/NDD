@@ -272,6 +272,11 @@ namespace NetworkDesign
             InputWires.DrawIW();
         }
 
+        public void DrawTemp()
+        {
+            InputWires.DrawTempIW();
+        }
+
         public void MoveElem(int difx, int dify)
         {
             foreach (var cir in InputWires.Circles)

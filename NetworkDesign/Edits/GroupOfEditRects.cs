@@ -89,5 +89,10 @@ namespace NetworkDesign
         {
             throw new NotImplementedException();
         }
+
+        public override void DrawTemp()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

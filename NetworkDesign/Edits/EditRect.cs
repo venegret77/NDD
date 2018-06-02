@@ -55,8 +55,8 @@ namespace NetworkDesign
         public void Draw()
         {
             Gl.glLineWidth((float)MainForm.zoom);
-            Gl.glPushMatrix();
-            Gl.glScaled(MainForm.zoom, MainForm.zoom, MainForm.zoom);
+            //Gl.glPushMatrix();
+            //Gl.glScaled(MainForm.zoom, MainForm.zoom, MainForm.zoom);
             Gl.glBegin(Gl.GL_LINE_LOOP);
             Gl.glColor4f(1, 0, 0, 1);
             Gl.glVertex2d(Point1.X, Point1.Y);
@@ -64,7 +64,7 @@ namespace NetworkDesign
             Gl.glVertex2d(Point4.X, Point4.Y);
             Gl.glVertex2d(Point3.X, Point3.Y);
             Gl.glEnd();
-            Gl.glPopMatrix();
+            //Gl.glPopMatrix();
         }
     }
 }

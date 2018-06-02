@@ -143,8 +143,8 @@ namespace NetworkDesign
                             A = (float)MainForm.colorSettings.ActiveElemColor.A / 255;
                             Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.zoom + 1);
                         }
-                        Gl.glPushMatrix();
-                        Gl.glScaled(MainForm.zoom, MainForm.zoom, MainForm.zoom);
+                        //Gl.glPushMatrix();
+                        //Gl.glScaled(MainForm.zoom, MainForm.zoom, MainForm.zoom);
                         // Прорисовка окружности непосредственно.
                         Gl.glBegin(Gl.GL_LINE_LOOP);
                         Gl.glColor4f(R, G, B, A);
@@ -162,7 +162,7 @@ namespace NetworkDesign
                             Gl.glVertex2d(x + MainCenterPoint.X, y + MainCenterPoint.Y);
                         }
                         Gl.glEnd();
-                        Gl.glPopMatrix();
+                        //Gl.glPopMatrix();
                     }
                 }
             }
@@ -191,8 +191,8 @@ namespace NetworkDesign
                         A = (float)MainForm.colorSettings.ActiveElemColor.A / 255;
                         Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.zoom + 1);
                     }
-                    Gl.glPushMatrix();
-                    Gl.glScaled(MainForm.zoom, MainForm.zoom, MainForm.zoom);
+                    //Gl.glPushMatrix();
+                    //Gl.glScaled(MainForm.zoom, MainForm.zoom, MainForm.zoom);
                     // Прорисовка окружности непосредственно.
                     Gl.glBegin(Gl.GL_TRIANGLE_FAN);
                     Gl.glColor4f(R, G, B, A);
@@ -210,7 +210,7 @@ namespace NetworkDesign
                         Gl.glVertex2d(x + MainCenterPoint.X, y + MainCenterPoint.Y);
                     }
                     Gl.glEnd();
-                    Gl.glPopMatrix();
+                    //Gl.glPopMatrix();
                 }
                 else if (LocalDL == MainForm.drawLevel)
                 {
@@ -230,8 +230,8 @@ namespace NetworkDesign
                         A = (float)MainForm.colorSettings.ActiveElemColor.A / 255;
                         Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.zoom + 1);
                     }
-                    Gl.glPushMatrix();
-                    Gl.glScaled(MainForm.zoom, MainForm.zoom, MainForm.zoom);
+                    //Gl.glPushMatrix();
+                    //Gl.glScaled(MainForm.zoom, MainForm.zoom, MainForm.zoom);
                     // Прорисовка окружности непосредственно.
                     Gl.glBegin(Gl.GL_TRIANGLE_FAN);
                     Gl.glColor4f(R, G, B, A);
@@ -249,7 +249,7 @@ namespace NetworkDesign
                         Gl.glVertex2d(x + LocalCenterPoint.X, y + LocalCenterPoint.Y);
                     }
                     Gl.glEnd();
-                    Gl.glPopMatrix();
+                    //Gl.glPopMatrix();
                 }
             }
         }
@@ -276,8 +276,8 @@ namespace NetworkDesign
                         A = (float)MainForm.colorSettings.ActiveElemColor.A / 255;
                         Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.zoom + 1);
                     }
-                    Gl.glPushMatrix();
-                    Gl.glScaled(MainForm.zoom, MainForm.zoom, MainForm.zoom);
+                    //Gl.glPushMatrix();
+                    //Gl.glScaled(MainForm.zoom, MainForm.zoom, MainForm.zoom);
                     // Прорисовка окружности непосредственно.
                     Gl.glBegin(Gl.GL_TRIANGLE_FAN);
                     Gl.glColor4f(R, G, B, A);
@@ -295,7 +295,7 @@ namespace NetworkDesign
                         Gl.glVertex2d(x + MainCenterPoint.X, y + MainCenterPoint.Y);
                     }
                     Gl.glEnd();
-                    Gl.glPopMatrix();
+                    //Gl.glPopMatrix();
                 }
                 else if (LocalDL == MainForm.drawLevel)
                 {
@@ -315,8 +315,8 @@ namespace NetworkDesign
                         A = (float)MainForm.colorSettings.ActiveElemColor.A / 255;
                         Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.zoom + 1);
                     }
-                    Gl.glPushMatrix();
-                    Gl.glScaled(MainForm.zoom, MainForm.zoom, MainForm.zoom);
+                    //Gl.glPushMatrix();
+                    //Gl.glScaled(MainForm.zoom, MainForm.zoom, MainForm.zoom);
                     // Прорисовка окружности непосредственно.
                     Gl.glBegin(Gl.GL_TRIANGLE_FAN);
                     Gl.glColor4f(R, G, B, A);
@@ -334,7 +334,7 @@ namespace NetworkDesign
                         Gl.glVertex2d(x + LocalCenterPoint.X, y + LocalCenterPoint.Y);
                     }
                     Gl.glEnd();
-                    Gl.glPopMatrix();
+                    //Gl.glPopMatrix();
                 }
             }
         }
@@ -369,8 +369,8 @@ namespace NetworkDesign
                     A = (float)MainForm.colorSettings.ActiveElemColor.A / 255;
                     Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.zoom + 1);
                 }
-                Gl.glPushMatrix();
-                Gl.glScaled(MainForm.zoom, MainForm.zoom, MainForm.zoom);
+                //Gl.glPushMatrix();
+                //Gl.glScaled(MainForm.zoom, MainForm.zoom, MainForm.zoom);
                 // Прорисовка окружности непосредственно.
                 Gl.glBegin(Gl.GL_LINE_LOOP);
                 Gl.glColor4f(R, G, B, A);
@@ -388,7 +388,7 @@ namespace NetworkDesign
                     Gl.glVertex2d(x + MainCenterPoint.X, y + MainCenterPoint.Y);
                 }
                 Gl.glEnd();
-                Gl.glPopMatrix();
+                //Gl.glPopMatrix();
             }
         }
 
@@ -507,8 +507,8 @@ namespace NetworkDesign
                 B = (float)MainForm.colorSettings.BuildColor.B / 255;
                 A = (float)MainForm.colorSettings.BuildColor.A / 255;
                 Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.zoom * (float)koef);
-                Gl.glPushMatrix();
-                Gl.glScaled(MainForm.zoom, MainForm.zoom, MainForm.zoom);
+                //Gl.glPushMatrix();
+                //Gl.glScaled(MainForm.zoom, MainForm.zoom, MainForm.zoom);
                 // Прорисовка окружности непосредственно.
                 Gl.glBegin(Gl.GL_LINE_LOOP);
                 Gl.glColor4f(R, G, B, A);
@@ -526,7 +526,7 @@ namespace NetworkDesign
                     Gl.glVertex2d(x + MainCenterPoint.X, y + MainCenterPoint.Y);
                 }
                 Gl.glEnd();
-                Gl.glPopMatrix();
+                //Gl.glPopMatrix();
             }
         }
     }

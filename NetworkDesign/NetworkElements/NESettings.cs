@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Net;
 using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,7 +15,7 @@ namespace NetworkDesign.NetworkElements
     public partial class NESettings : Form
     {
         public GroupOfNE NetworkElements;
-        const int requiredparameters = 0;
+        const int requiredparameters = 2;
         public NetworkSettings Options;
         bool add = false;
         bool edit = false;
@@ -254,7 +255,11 @@ namespace NetworkDesign.NetworkElements
                 Options.Throughput = (Int64)(numericUpDown1.Value * kr);
             else
                 Options.Throughput = (Int64)(numericUpDown1.Value);
-            for (int i = 0; i < listBox1.Items.Count; i++)
+            for (int i = 0; i < requiredparameters; i++)
+            {
+                Options.Options.Add(new NetworkParametr(i, listBox2.Items[i].ToString(), listBox1.Items[i].ToString()));
+            }
+            for (int i = requiredparameters; i < listBox1.Items.Count; i++)
             {
                 if (!isEmpty(listBox1.Items[i].ToString()))
                 {
@@ -327,7 +332,10 @@ namespace NetworkDesign.NetworkElements
                 Ping ping = new Ping();
                 var result = ping.Send(textBox2.Text);
                 if (result.Status == IPStatus.Success)
+                {
                     checkBox1.Checked = true;
+                    listBox1.Items[0] = result.Address.ToString();
+                }
             }
             catch
             {

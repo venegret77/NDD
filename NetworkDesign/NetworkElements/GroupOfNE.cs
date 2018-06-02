@@ -72,7 +72,6 @@ namespace NetworkDesign.NetworkElements
             {
                 elem.Draw();
             }
-            TempNetworkElement.DrawTemp();
         }
 
         public override List<EditRect> GenEditRects()
@@ -127,6 +126,11 @@ namespace NetworkDesign.NetworkElements
             TempNetworkElement = new NetworkElement();
             step = false;
             active = false;
+        }
+
+        public override void DrawTemp()
+        {
+            TempNetworkElement.DrawTemp();
         }
     }
 }

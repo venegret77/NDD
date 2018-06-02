@@ -89,5 +89,6 @@ namespace NetworkDesign
         /// Отрисовка элементов
         /// </summary>
         public abstract void Draw();
+        public abstract void DrawTemp();
     }
 }

@@ -219,5 +219,10 @@ namespace NetworkDesign
         {
             Enterances.DrawEnt();
         }
+
+        public void DrawTemp()
+        {
+            Enterances.DrawTempEnt();
+        }
     }
 }

@@ -78,7 +78,6 @@ namespace NetworkDesign
             {
                 _Line.Draw();
             }
-            TempLine.DrawTemp();
         }
 
         public override int Search(int x, int y, out double dist, DrawLevel dl)
@@ -111,6 +110,11 @@ namespace NetworkDesign
                 }
             }
             return _EditRects;
+        }
+
+        public override void DrawTemp()
+        {
+            TempLine.DrawTemp();
         }
     }
 }

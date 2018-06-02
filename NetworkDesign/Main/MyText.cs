@@ -214,8 +214,8 @@ namespace NetworkDesign.Main
             if (!delete & DL == MainForm.drawLevel)
             {
                 Gl.glColor4f(1, 1, 1, 1);
-                Gl.glPushMatrix();
-                Gl.glScaled(MainForm.zoom, MainForm.zoom, MainForm.zoom);
+                //Gl.glPushMatrix();
+                //Gl.glScaled(MainForm.zoom, MainForm.zoom, MainForm.zoom);
                 Gl.glEnable(Gl.GL_TEXTURE_2D);
                 // включаем режим текстурирования, указывая идентификатор mGlTextureObject 
                 Gl.glBindTexture(Gl.GL_TEXTURE_2D, MainForm.MTTextures[(int)idtexture]);
@@ -234,7 +234,7 @@ namespace NetworkDesign.Main
                 Gl.glEnd();
                 // отключаем режим текстурирования 
                 Gl.glDisable(Gl.GL_TEXTURE_2D);
-                Gl.glPopMatrix();
+                //Gl.glPopMatrix();
             }
         }
 

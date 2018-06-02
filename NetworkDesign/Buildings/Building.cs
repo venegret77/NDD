@@ -84,6 +84,12 @@ namespace NetworkDesign
             InputWires = new InputWire();
         }
 
+        internal void DrawTemp()
+        {
+            Entrances.DrawTemp();
+            InputWires.DrawTemp();
+        }
+
         public Building(string _Name, bool _loft, bool _basement, int floors_count, Polygon _pol, int index)
         {
             Name = _Name;

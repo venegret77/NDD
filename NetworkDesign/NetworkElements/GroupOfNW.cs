@@ -58,6 +58,10 @@ namespace NetworkDesign.NetworkElements
             {
                 elem.Draw();
             }
+        }
+
+        public override void DrawTemp()
+        {
             TempNetworkWire.DrawTemp();
         }
 

@@ -95,14 +95,14 @@ namespace NetworkDesign
                         A = (float)MainForm.colorSettings.ActiveElemColor.A / 255;
                         Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.zoom);
                     }
-                    Gl.glPushMatrix();
-                    Gl.glScaled(MainForm.zoom, MainForm.zoom, MainForm.zoom);
+                    //Gl.glPushMatrix();
+                    //Gl.glScaled(MainForm.zoom, MainForm.zoom, MainForm.zoom);
                     Gl.glBegin(Gl.GL_LINES);
                     Gl.glColor4f(R, G, B, A);
                     Gl.glVertex2d(Points[0].X, Points[0].Y);
                     Gl.glVertex2d(Points[1].X, Points[1].Y);
                     Gl.glEnd();
-                    Gl.glPopMatrix();
+                    //Gl.glPopMatrix();
                 }
             }
         }

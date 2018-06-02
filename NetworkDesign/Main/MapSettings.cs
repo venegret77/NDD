@@ -8,15 +8,34 @@ namespace NetworkDesign
 {
     public struct MapSettings
     {
-        public string Name; //Имя
-        public int Height; //Высота
-        public int Width; //Ширина
+        public string Name;
+        public int Height;
+        public int Width;
+        public int Left;
+        public int Right;
+        public int Top;
+        public int Bottom;
 
-        public MapSettings(string _Name, int _Height, int _Width)
+        public MapSettings(string name, int height, int width)
         {
-            Name = _Name;
-            Height = _Height;
-            Width = _Width;
+            Name = name;
+            Height = height;
+            Width = width;
+            Left = -Width / 2;
+            Right = Width / 2;
+            Top = Height / 2;
+            Bottom = -Height / 2;
+        }
+
+        public MapSettings(string name, int left, int right, int top, int bottom)
+        {
+            Name = name;
+            Left = left;
+            Right = right;
+            Top = top;
+            Bottom = bottom;
+            Height = Top - Bottom;
+            Width = Right - Left;
         }
     }
 }

@@ -46,6 +46,11 @@ namespace NetworkDesign.NetworkElements
             //TempMyText.Draw();
         }
 
+        public override void DrawTemp()
+        {
+            throw new NotImplementedException();
+        }
+
         public override List<EditRect> GenEditRects()
         {
             throw new NotImplementedException();

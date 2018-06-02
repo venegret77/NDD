@@ -104,7 +104,9 @@ namespace NetworkDesign
             Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);
             Gl.glLoadIdentity();
             Gl.glClearColor(1, 1, 1, 1);
+            DrawTemp();
             Gl.glPushMatrix();
+            Gl.glScaled(MainForm.zoom, MainForm.zoom, MainForm.zoom);
             if (MainForm.filtres.NW)
                 NetworkWires.Draw();
             if (MainForm.filtres.Build)
@@ -127,6 +129,17 @@ namespace NetworkDesign
             }
             Gl.glPopMatrix();
             MainForm.AnT.Invalidate();
+        }
+
+        public void DrawTemp()
+        {
+            NetworkWires.DrawTemp();
+            Buildings.DrawTemp();
+            Polygons.DrawTemp();
+            Lines.DrawTemp();
+            Rectangles.DrawTemp();
+            Circles.DrawTemp();
+            NetworkElements.DrawTemp();
         }
 
         public void DrawingWOF()
@@ -178,10 +191,14 @@ namespace NetworkDesign
             }
         }
 
-        public void RefreshRenderingArea()
+        public void ResizeRenderingArea()
         {
             int Height = (int)((double)mapSetting.Height * MainForm.zoom);
             int Width = (int)((double)mapSetting.Width * MainForm.zoom);
+            int Left = (int)((double)mapSetting.Left * MainForm.zoom);
+            int Right = (int)((double)mapSetting.Right * MainForm.zoom);
+            int Top = (int)((double)mapSetting.Top * MainForm.zoom);
+            int Bottom = (int)((double)mapSetting.Bottom * MainForm.zoom);
             MainForm.AnT.Height = Height;
             MainForm.AnT.Width = Width;
             Gl.glViewport(0, 0, Width, Height);
@@ -190,7 +207,7 @@ namespace NetworkDesign
             // очистка матрицы 
             Gl.glLoadIdentity();
             // установка перспективы 
-            Glu.gluOrtho2D(-Width / 2, Width / 2, -Height / 2, Height / 2);
+            Glu.gluOrtho2D(Left, Right, Bottom, Top);
             // установка объектно-видовой матрицы 
             Gl.glMatrixMode(Gl.GL_MODELVIEW);
             Gl.glLoadIdentity();

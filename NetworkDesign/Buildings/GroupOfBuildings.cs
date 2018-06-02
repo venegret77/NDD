@@ -87,6 +87,14 @@ namespace NetworkDesign
             }
         }
 
+        public override void DrawTemp()
+        {
+            foreach (var build in Buildings)
+            {
+                build.DrawTemp();
+            }
+        }
+
         public override int Search(int x, int y, DrawLevel dl)
         {
             throw new NotImplementedException();

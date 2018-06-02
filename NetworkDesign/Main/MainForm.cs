@@ -62,7 +62,6 @@ namespace NetworkDesign
 
         Point asp = new Point();
         #endregion
-
         /// <summary>
         /// Инициализация начальных параметров
         /// </summary>
@@ -150,26 +149,6 @@ namespace NetworkDesign
             time.Start();
             time.Tick += Time_Tick;
         }
-
-        public static UserPrincipal Autorisation(out bool edit)
-        {
-            UserPrincipal user;
-            user = UserPrincipal.Current;
-            var group = user.GetGroups();
-            foreach (var g in group)
-            {
-                if (g.Name == "Администраторы")
-                {
-                    edit = true;
-                    return user;
-                }
-            }
-            edit = false;
-            if (user != null)
-                return user;
-            return null;
-        }
-
         #region Обработка кликов мыши для различных инструментов
         private void MouseLines(int x, int y)
         {
@@ -661,6 +640,10 @@ namespace NetworkDesign
             panel1.AutoScrollPosition = new Point(-asp.X, -asp.Y);
             int y = MyMap.RecalcMouseY(e.Y);
             int x = MyMap.RecalcMouseX(e.X);
+            if (e.Button == MouseButtons.Left)
+            {
+                ChechEdges(x, y);
+            }
             if (MyMap.RB >= nebutnscount & MyMap.RB != 360)
             {
                 if (MyMap.NetworkElements.step)
@@ -785,6 +768,46 @@ namespace NetworkDesign
                 }
             }
         }
+
+        private void ChechEdges(int x, int y)
+        {
+            int n = (int)(10d * zoom);
+            bool refresh = false;
+            int Left = MyMap.mapSetting.Left;
+            int Right = MyMap.mapSetting.Right;
+            int Top = MyMap.mapSetting.Top;
+            int Bottom = MyMap.mapSetting.Bottom;
+            if (x < Left + n)
+            {
+                Left = x - n;
+                Right = -Left;
+                refresh = true;
+            }
+            if (x > Right - n)
+            {
+                Right = x + n;
+                Left = -Right;
+                refresh = true;
+            }
+            if (y > Top - n)
+            {
+                Top = y + n;
+                Bottom = -Top;
+                refresh = true;
+            }
+            if (y < Bottom + n)
+            {
+                Bottom = y - n;
+                Top = -Bottom;
+                refresh = true;
+            }
+            if (refresh)
+            {
+                MyMap.mapSetting = new MapSettings(MyMap.mapSetting.Name, Left, Right, Top, Bottom);
+                MyMap.ResizeRenderingArea();
+                refresh = false;
+            }
+        }
         #region Для работы с зумом
         static public Point GenZoomPoint(Point p)
         {
@@ -827,6 +850,29 @@ namespace NetworkDesign
         }
         #endregion
         #region Прочие функции
+        /// <summary>
+        /// Авторизация
+        /// </summary>
+        /// <param name="edit"></param>
+        /// <returns></returns>
+        public static UserPrincipal Autorisation(out bool edit)
+        {
+            UserPrincipal user;
+            user = UserPrincipal.Current;
+            var group = user.GetGroups();
+            foreach (var g in group)
+            {
+                if (g.Name == "Администраторы")
+                {
+                    edit = true;
+                    return user;
+                }
+            }
+            edit = false;
+            if (user != null)
+                return user;
+            return null;
+        }
         /// <summary>
         /// Обновление отображения кнопок после применения фильтров
         /// </summary>
@@ -2191,7 +2237,7 @@ namespace NetworkDesign
         private unsafe void trackBar1_Scroll(object sender, EventArgs e)
         {
             zoom = (double)trackBar1.Value / 10d;
-            MyMap.RefreshRenderingArea();
+            MyMap.ResizeRenderingArea();
         }
         /// <summary>
         /// Событие закрытия формы
