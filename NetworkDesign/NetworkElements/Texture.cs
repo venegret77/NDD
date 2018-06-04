@@ -109,7 +109,7 @@ namespace NetworkDesign.NetworkElements
         /// <summary>
         /// Отрисовка растрового изображения
         /// </summary>
-        private void DrawRastrImage(Int64 Throughput, bool active)
+        private void DrawRastrImage(Int64 Throughput, bool active, bool isPing)
         {
             if (!active)
             {
@@ -162,6 +162,24 @@ namespace NetworkDesign.NetworkElements
             // отключаем режим текстурирования 
             Gl.glDisable(Gl.GL_TEXTURE_2D);
             //Gl.glPopMatrix();
+            Gl.glLineWidth(1);
+            if (isPing == null)
+                Gl.glColor4f(0.6f, 0.6f, 0.6f, 1);
+            else if (isPing)
+                Gl.glColor4f(0, 1, 0, 1);
+            else
+                Gl.glColor4f(1, 0, 0, 1);
+            int _x = location.X + (int)width + 1;
+            int _y = location.Y - 1;
+            Gl.glBegin(Gl.GL_TRIANGLE_FAN);
+            Gl.glVertex2d(_x, _y);
+            for (int angle = 0; angle <= 360; angle += 1)
+            {
+                double x = 5 * Math.Cos(angle * Math.PI / 180);
+                double y = 5 * Math.Sin(angle * Math.PI / 180);
+                Gl.glVertex2d(x + _x, y + _y);
+            }
+            Gl.glEnd();
         }
 
         /// <summary>
@@ -172,12 +190,12 @@ namespace NetworkDesign.NetworkElements
 
         }
 
-        public void Draw(Int64 Throughput, bool active)
+        public void Draw(Int64 Throughput, bool active, bool isPing)
         {
             if (vect)
                 DrawVectImage();
             else
-                DrawRastrImage(Throughput, active);
+                DrawRastrImage(Throughput, active, isPing);
         }
 
         public object Clone()

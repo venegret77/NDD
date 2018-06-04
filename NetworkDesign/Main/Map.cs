@@ -329,6 +329,7 @@ namespace NetworkDesign
             MyTexts = TempMap.MyTexts;
             log = TempMap.log;
             SetInstrument(RB);
+            ResizeRenderingArea();
         }
 
         /// <summary>
@@ -734,7 +735,7 @@ namespace NetworkDesign
             int NE = NetworkElements.Search(x, y, MainForm.drawLevel);
             if (NE != -1)
             {
-                NESettings nes = new NESettings(NetworkElements.NetworkElements[NE].Options, NetworkElements);
+                NESettings nes = new NESettings(NetworkElements.NetworkElements[NE].Options, NetworkElements, ref NetworkElements.NetworkElements[NE].notes);
                 nes.ShowDialog();
                 NetworkElements = nes.NetworkElements;
                 NetworkElements.NetworkElements[NE].Options = nes.Options;

@@ -34,6 +34,7 @@ namespace NetworkDesign.NetworkElements
         /// Пропускная способность
         /// </summary>
         public Int64 Throughput = 100000000;
+        public bool isPing = false;
 
         public NetworkSettings()
         {

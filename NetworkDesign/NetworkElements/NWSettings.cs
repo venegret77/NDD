@@ -141,7 +141,7 @@ namespace NetworkDesign.NetworkElements
         private void button3_Click(object sender, EventArgs e)
         {
             string text = MainForm.user.DisplayName.ToString() + ":" + textBox1.Text;
-            if (notes.Edit(listBox1.SelectedIndex, text));
+            if (notes.Edit(listBox1.SelectedIndex, text))
                 listBox1.Items[listBox1.SelectedIndex] = text;
         }
 

@@ -19,10 +19,10 @@ namespace NetworkDesign
         public bool open = false;
         public bool delete = true;
         //
-        private double koef = 1;
-        private double alfa = 0;
-        private Point MP = new Point();
-        private int Ox, Oy, _Ox, _Oy;
+        public double koef = 1;
+        public double alfa = 0;
+        public Point MP = new Point();
+        public int Ox, Oy, _Ox, _Oy;
         //
         public Polygon MainPolygon = new Polygon();
         public Polygon _MainPolygon = new Polygon();
@@ -196,7 +196,7 @@ namespace NetworkDesign
             if (isMoveIW & id != -1 & !isInBuild)
             {
                 isMoveIW = false;
-                InputWires.InputWires.TempCircle.LocalCenterPoint = CalcLocalPoint(InputWires.InputWires.TempCircle.MainCenterPoint);
+                InputWires.InputWires.TempCircle.LocalCenterPoint = CalcLocalPoint(MainForm._GenZoomPoint(InputWires.InputWires.TempCircle.MainCenterPoint));
                 InputWires.InputWires.Circles[id].MainCenterPoint = MainForm._GenZoomPoint(new Point(InputWires.InputWires.TempCircle.MainCenterPoint.X, InputWires.InputWires.TempCircle.MainCenterPoint.Y));
                 InputWires.InputWires.Circles[id].LocalCenterPoint = /*MainForm._GenZoomPoint(*/new Point(InputWires.InputWires.TempCircle.LocalCenterPoint.X, InputWires.InputWires.TempCircle.LocalCenterPoint.Y/*)*/);
                 InputWires.InputWires.Circles[id].delete = false;
@@ -206,7 +206,7 @@ namespace NetworkDesign
             {
                 isMoveIW = false;
                 isInBuild = false;
-                InputWires.InputWires.TempCircle.LocalCenterPoint = CalcLocalPoint(InputWires.InputWires.TempCircle.MainCenterPoint);
+                InputWires.InputWires.TempCircle.LocalCenterPoint = new Point(InputWires.InputWires.TempCircle.MainCenterPoint.X, InputWires.InputWires.TempCircle.MainCenterPoint.Y);
                 InputWires.InputWires.Circles[id].MainCenterPoint = MainForm._GenZoomPoint(new Point(InputWires.InputWires.TempCircle.MainCenterPoint.X, InputWires.InputWires.TempCircle.MainCenterPoint.Y));
                 InputWires.InputWires.Circles[id].LocalCenterPoint = /*MainForm._GenZoomPoint(*/new Point(InputWires.InputWires.TempCircle.LocalCenterPoint.X, InputWires.InputWires.TempCircle.LocalCenterPoint.Y/*)*/);
                 InputWires.InputWires.Circles[id].delete = false;
@@ -216,40 +216,42 @@ namespace NetworkDesign
 
         internal void MoveIW(int x, int y, int id, int build, GroupOfNW networkWires)
         {
-            this.id = id;
-            isMoveIW = true;
             var iw = InputWires.InputWires.Circles[id];
-            if (iw.MainDL.Level == -1)
+            if (iw.MainDL.Level == -1 & MainForm.drawLevel.Level == -1)
             {
+                this.id = id;
+                isMoveIW = true;
                 InputWires.InputWires.TempCircle = new Circle
                 {
-                    MainCenterPoint = new Point(iw.MainCenterPoint.X, iw.MainCenterPoint.Y),
+                    MainCenterPoint = MainForm.GenZoomPoint(iw.MainCenterPoint),
                     delete = false,
                     koef = iw.koef,
                     side = iw.side
                 };
                 InputWires.InputWires.Circles[id].delete = true;
                 MoveIW(x, y);
-                InputWires.InputWires.TempCircle.LocalCenterPoint = CalcLocalPoint(InputWires.InputWires.TempCircle.MainCenterPoint);
+                InputWires.InputWires.TempCircle.LocalCenterPoint = CalcLocalPoint(MainForm._GenZoomPoint(InputWires.InputWires.TempCircle.MainCenterPoint));
                 Point point = MainForm._GenZoomPoint(InputWires.InputWires.TempCircle.MainCenterPoint);
                 Point _point = InputWires.InputWires.TempCircle.LocalCenterPoint;
                 networkWires.CheckNW(point.X, point.Y, id, true, build, iw.MainDL);
                 networkWires.CheckNW(_point.X, _point.Y, id, true, build, iw.LocalDL);
             }
-            else
+            else if (iw.MainDL.Level != -1 & MainForm.drawLevel.Level != -1)
             {
+                this.id = id;
+                isMoveIW = true;
                 isInBuild = true;
                 InputWires.InputWires.TempCircle = new Circle
                 {
-                    MainCenterPoint = new Point(iw.MainCenterPoint.X, iw.MainCenterPoint.Y),
-                    LocalCenterPoint = new Point(iw.LocalCenterPoint.X, iw.LocalCenterPoint.Y),
+                    MainCenterPoint = MainForm.GenZoomPoint(iw.MainCenterPoint),
+                    LocalCenterPoint = MainForm.GenZoomPoint(iw.LocalCenterPoint),
                     delete = false,
                     koef = iw.koef,
                     side = iw.side
                 };
                 InputWires.InputWires.Circles[id].delete = true;
                 MoveIWInBuild(x, y);
-                InputWires.InputWires.TempCircle.LocalCenterPoint = CalcLocalPoint(InputWires.InputWires.TempCircle.MainCenterPoint);
+                InputWires.InputWires.TempCircle.LocalCenterPoint = new Point(InputWires.InputWires.TempCircle.MainCenterPoint.X, InputWires.InputWires.TempCircle.MainCenterPoint.Y);
                 Point point = MainForm._GenZoomPoint(InputWires.InputWires.TempCircle.MainCenterPoint);
                 Point _point = InputWires.InputWires.TempCircle.LocalCenterPoint;
                 networkWires.CheckNW(point.X, point.Y, id, true, MainForm.drawLevel.Level, InputWires.InputWires.TempCircle.MainDL);
@@ -395,15 +397,14 @@ namespace NetworkDesign
             {
                 Point LocalP = new Point
                 {
-                    X = MainP.X,
-                    Y = MainP.Y
+                    X = (int)(((double)MainP.X - (double)MainCircle.MainCenterPoint.X) * koef),
+                    Y = (int)(((double)MainP.Y - (double)MainCircle.MainCenterPoint.Y) * koef),
                 };
-                LocalP = new Point((int)((double)LocalCircle.radius * Math.Cos(Entrances.angle * Math.PI / 180) + (double)LocalCircle.MainCenterPoint.X), (int)((double)LocalCircle.radius * Math.Sin(Entrances.angle * Math.PI / 180) + (double)LocalCircle.MainCenterPoint.Y));
                 return LocalP;
             }
             else
             {
-                Point LocalP = RotatePoint(-alfa, MP, MainForm._GenZoomPoint(MainP));
+                Point LocalP = RotatePoint(-alfa, MP, MainP);
                 LocalP.X -= Ox; LocalP.Y -= Oy;
                 LocalP.X = (int)((double)LocalP.X * koef); LocalP.Y = (int)((double)LocalP.Y * koef);
                 return LocalP;
@@ -496,7 +497,6 @@ namespace NetworkDesign
                 else
                 {
                     InputWires.AddTemp(x, y, MainMapDL, new DrawLevel(LocalDL.Level, floors_name.Count - 1));
-
                 }
                 return false;
             }

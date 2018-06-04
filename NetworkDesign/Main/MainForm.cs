@@ -68,6 +68,9 @@ namespace NetworkDesign
         public MainForm()
         {
             InitializeComponent();
+            SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+            SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+            SetStyle(ControlStyles.UserPaint, true);
             StartPosition = FormStartPosition.CenterScreen;
             user = Autorisation(out edit);
             AnT.Parent = panel1;
@@ -78,7 +81,7 @@ namespace NetworkDesign
             AnT.AutoCheckErrors = false;
             AnT.AutoFinish = false;
             AnT.AutoMakeCurrent = true;
-            AnT.AutoSize = true;
+            //AnT.AutoSize = true;
             AnT.AutoSwapBuffers = true;
             AnT.BackColor = Color.Black;
             AnT.ColorBits = ((byte)(32));
@@ -87,6 +90,7 @@ namespace NetworkDesign
             AnT.Location = new Point(3, 3);
             AnT.Name = "AnT";
             AnT.Size = new Size(1000, 1000);
+            //AnT.AutoScroll = true;
             AnT.StencilBits = ((byte)(0));
             AnT.TabIndex = 1;
             //AnT.AutoScroll = true;
@@ -140,7 +144,7 @@ namespace NetworkDesign
             focusbox.Enabled = true;
             focusbox.Location = new Point(5000, 5000);
             Click += MainForm_Click;
-            panel1.AutoScroll = true;
+            //panel1.AutoScroll = true;
             panel1.AutoScrollPosition = new Point(AnT.Height / 2, AnT.Width / 2);
             Timer time = new Timer
             {
@@ -152,7 +156,7 @@ namespace NetworkDesign
         #region Обработка кликов мыши для различных инструментов
         private void MouseLines(int x, int y)
         {
-            var value = panel1.VerticalScroll.Value;
+            //var value = panel1.VerticalScroll.Value;
             if (!MyMap.Lines.step)
             {
                 MyMap.Lines.step = true;
@@ -397,7 +401,7 @@ namespace NetworkDesign
         private void AnT_MouseDown(object sender, MouseEventArgs e)
         {
             if (panel1.AutoScrollPosition != asp)
-            panel1.AutoScrollPosition = new Point(-asp.X, -asp.Y);
+                panel1.AutoScrollPosition = new Point(-asp.X, -asp.Y);
             int y = MyMap.RecalcMouseY(e.Y);
             int x = MyMap.RecalcMouseX(e.X);
             if (MyMap.RB >= nebutnscount & MyMap.RB != 360)
@@ -467,7 +471,9 @@ namespace NetworkDesign
                                     InputWireForm IWF = new InputWireForm(MyMap.Buildings.Buildings[activeElem.item].floors_name);
                                     IWF.ShowDialog();
                                     if (IWF.dialogResult == DialogResult.OK)
+                                    {
                                         MyMap.Buildings.Buildings[activeElem.item].AddIW(x, y, IWF.side, IWF.floor_index);
+                                    }
                                 }
                                 else
                                 {
@@ -515,7 +521,7 @@ namespace NetworkDesign
                                 ReturnToMainBtn.Enabled = true;
                                 UpgrateFloors();
                                 Unfocus("Выбрано здание " + activeElem.item + " '" + MyMap.Buildings.Buildings[activeElem.item].Name + "'");
-                                IWBtn.Enabled = false;
+                                IWBtn.Enabled = true;
                             }
                             break;
                         case 1:
@@ -637,7 +643,7 @@ namespace NetworkDesign
         /// <param name="e"></param>
         private void AnT_MouseMove(object sender, MouseEventArgs e)
         {
-            panel1.AutoScrollPosition = new Point(-asp.X, -asp.Y);
+            //panel1.AutoScrollPosition = new Point(-asp.X, -asp.Y);
             int y = MyMap.RecalcMouseY(e.Y);
             int x = MyMap.RecalcMouseX(e.X);
             if (e.Button == MouseButtons.Left)
@@ -771,39 +777,47 @@ namespace NetworkDesign
 
         private void ChechEdges(int x, int y)
         {
+            int dif = 0;
             int n = (int)(10d * zoom);
             bool refresh = false;
-            int Left = MyMap.mapSetting.Left;
-            int Right = MyMap.mapSetting.Right;
-            int Top = MyMap.mapSetting.Top;
-            int Bottom = MyMap.mapSetting.Bottom;
+            double Left = (double)MyMap.mapSetting.Left * zoom;
+            double Right = (double)MyMap.mapSetting.Right * zoom;
+            double Top = (double)MyMap.mapSetting.Top * zoom;
+            double Bottom = (double)MyMap.mapSetting.Bottom * zoom;
             if (x < Left + n)
             {
-                Left = x - n;
-                Right = -Left;
+                dif = (int)(x - n - Left);
+                MyMap.mapSetting = new MapSettings(MyMap.mapSetting.Name, MyMap.mapSetting.Left + dif, 
+                    MyMap.mapSetting.Right - dif, MyMap.mapSetting.Top, MyMap.mapSetting.Bottom);
                 refresh = true;
             }
             if (x > Right - n)
             {
-                Right = x + n;
-                Left = -Right;
+                dif = (int)(x + n - Right);
+                MyMap.mapSetting = new MapSettings(MyMap.mapSetting.Name, MyMap.mapSetting.Left - dif,
+                    MyMap.mapSetting.Right + dif, MyMap.mapSetting.Top, MyMap.mapSetting.Bottom);
                 refresh = true;
             }
             if (y > Top - n)
             {
-                Top = y + n;
-                Bottom = -Top;
+                dif = (int)(y + n - Top);
+                //Top = y + n;
+                //Bottom = -Top;
+                MyMap.mapSetting = new MapSettings(MyMap.mapSetting.Name, MyMap.mapSetting.Left,
+                    MyMap.mapSetting.Right, MyMap.mapSetting.Top + dif, MyMap.mapSetting.Bottom - dif);
                 refresh = true;
             }
             if (y < Bottom + n)
             {
-                Bottom = y - n;
-                Top = -Bottom;
+                dif = (int)(y - n - Bottom);
+                //Bottom = y - n;
+                //Top = -Bottom;
+                MyMap.mapSetting = new MapSettings(MyMap.mapSetting.Name, MyMap.mapSetting.Left,
+                    MyMap.mapSetting.Right, MyMap.mapSetting.Top - dif, MyMap.mapSetting.Bottom + dif);
                 refresh = true;
             }
             if (refresh)
             {
-                MyMap.mapSetting = new MapSettings(MyMap.mapSetting.Name, Left, Right, Top, Bottom);
                 MyMap.ResizeRenderingArea();
                 refresh = false;
             }
@@ -1166,12 +1180,20 @@ namespace NetworkDesign
                     CheckButtons(true);
                     break;
                 case 6:
-                    elem = new Element(6, activeElem.item, new Circle(), -1);
-                    _elem = new Element(6, activeElem.item, MyMap.Buildings.Buildings[activeElem.build].InputWires.InputWires.Circles[activeElem.item].Clone(), -1);
-                    MyMap.log.Add(new LogMessage("Удалил вход провода в здание", elem, _elem, activeElem.build));
-                    InfoLable.Text = "Удалил вход провода в здание";
-                    MyMap.Buildings.Buildings[activeElem.build].InputWires.InputWires.Remove(activeElem.item);
-                    CheckButtons(true);
+                    if (CheckIW())
+                    {
+                        elem = new Element(6, activeElem.item, new Circle(), -1);
+                        _elem = new Element(6, activeElem.item, MyMap.Buildings.Buildings[activeElem.build].InputWires.InputWires.Circles[activeElem.item].Clone(), -1);
+                        MyMap.log.Add(new LogMessage("Удалил вход провода в здание", elem, _elem, activeElem.build));
+                        InfoLable.Text = "Удалил вход провода в здание";
+                        MyMap.Buildings.Buildings[activeElem.build].InputWires.InputWires.Remove(activeElem.item);
+                        CheckButtons(true);
+                    }
+                    else
+                    {
+                        Unfocus("Невозможно удалить элемент");
+                        return;
+                    }
                     break;
                 case 7:
                     elem = new Element(7, activeElem.item, new Circle(), -1);
@@ -1184,7 +1206,8 @@ namespace NetworkDesign
                 case 8:
                     if (MyMap.NetworkElements.NetworkElements[activeElem.item].Options.BusyPorts != 0)
                     {
-                        MessageBox.Show("Невозможно удалить сетевое устройство");
+                        Unfocus("Невозможно удалить элемент");
+                        return;
                     }
                     else
                     {
@@ -1224,6 +1247,19 @@ namespace NetworkDesign
             }
             Unfocus("Удалил элемент");
         }
+
+        private bool CheckIW()
+        {
+            foreach (var elem in MyMap.NetworkWires.NetworkWires)
+            {
+                if (elem.idiw1 == new IDandIW(activeElem.item,true,activeElem.build))
+                    return false;
+                if (elem.idiw2 == new IDandIW(activeElem.item, true, activeElem.build))
+                    return false;
+            }
+            return true;
+        }
+
         /// <summary>
         /// Поиск элемента
         /// </summary>
@@ -1399,7 +1435,6 @@ namespace NetworkDesign
                         if (_elem.transform == -2)
                         {
                             Point location = new Point((int)(MyMap.NetworkElements.NetworkElements[elem.index].texture.location.X + MyMap.NetworkElements.NetworkElements[elem.index].texture.width / 2), (int)(MyMap.NetworkElements.NetworkElements[elem.index].texture.location.Y + MyMap.NetworkElements.NetworkElements[elem.index].texture.width / 2));
-                            location = _GenZoomPoint(location);
                             MyMap.NetworkWires.CheckNW(location.X, location.Y, elem.index, false, -1, MyMap.NetworkElements.NetworkElements[elem.index].DL);
                             //MyMap.NetworkElements.NetworkElements[elem.index].MoveElem(location.X, location.Y, elem.index, MyMap.NetworkWires);
                         }
@@ -1466,6 +1501,14 @@ namespace NetworkDesign
                 case 6:
                     MyMap.Buildings.Buildings[buildid].InputWires.InputWires.Circles[elem.index] = (Circle)elem.elem;
                     // Доделать движение проводов
+                    if (_elem.transform == -2)
+                    {
+                        Point location = new Point(MyMap.Buildings.Buildings[buildid].InputWires.InputWires.Circles[elem.index].MainCenterPoint.X, MyMap.Buildings.Buildings[buildid].InputWires.InputWires.Circles[elem.index].MainCenterPoint.Y);
+                        Point _location = new Point(MyMap.Buildings.Buildings[buildid].InputWires.InputWires.Circles[elem.index].LocalCenterPoint.X, MyMap.Buildings.Buildings[buildid].InputWires.InputWires.Circles[elem.index].LocalCenterPoint.Y);
+                        MyMap.NetworkWires.CheckNW(location.X, location.Y, elem.index, true, buildid, MyMap.Buildings.Buildings[buildid].InputWires.InputWires.Circles[elem.index].MainDL);
+                        MyMap.NetworkWires.CheckNW(_location.X, _location.Y, elem.index, true, buildid, MyMap.Buildings.Buildings[buildid].InputWires.InputWires.Circles[elem.index].LocalDL);
+                        //MyMap.NetworkElements.NetworkElements[elem.index].MoveElem(location.X, location.Y, elem.index, MyMap.NetworkWires);
+                    }
                     break;
                 case 7:
                     MyMap.Buildings.Buildings[buildid].Entrances.Enterances.Circles[elem.index] = (Circle)elem.elem;
@@ -2517,6 +2560,50 @@ namespace NetworkDesign
                 MyMap.ExportListNE(filename);
             }
         }
+
+        private void pingToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Timer PingDeviceTimer = new Timer();
+            PingDeviceTimer.Interval = 1000;
+            PingDeviceTimer.Tick += PingDeviceTimer_Tick;
+            if (!isPing)
+            {
+                PingDeviceTimer.Start();
+                isPing = true;
+            }
+            else
+            {
+                PingDeviceTimer.Stop();
+                isPing = false;
+            }
+        }
+
+        private void PingDeviceTimer_Tick(object sender, EventArgs e)
+        {
+            if (isReady)
+            {
+                isReady = false;
+                foreach (var ne in MyMap.NetworkElements.NetworkElements)
+                {
+                    ne.Ping();
+                }
+                isReady = true;
+            }
+        }
+
+        private bool isReady = true;
+        private bool isPing = false;
+
+        /*private void panel1_Scroll_1(object sender, ScrollEventArgs e)
+        {
+            if (e.NewValue != 0)
+            {
+                if (e.ScrollOrientation == ScrollOrientation.HorizontalScroll)
+                    asp = new Point(-panel1.AutoScrollPosition.X - e.NewValue, -panel1.AutoScrollPosition.Y);
+                else
+                    asp = new Point(-panel1.AutoScrollPosition.X, -panel1.AutoScrollPosition.Y - e.NewValue);
+            }
+        }*/
 
         /// <summary>
         /// Генерация текстуры

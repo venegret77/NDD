@@ -22,18 +22,20 @@ namespace NetworkDesign.NetworkElements
         int id = -1;
         string _Name = "";
         Int64 kr = 1000000;
+        public Notes notes;
 
         public NESettings()
         {
             InitializeComponent();
         }
 
-        public NESettings(NetworkSettings Options, GroupOfNE NetworkElements)
+        public NESettings(NetworkSettings Options, GroupOfNE NetworkElements, ref Notes note)
         {
             InitializeComponent();
             StartPosition = FormStartPosition.CenterScreen;
             this.Options = Options;
             this.NetworkElements = NetworkElements;
+            this.notes = note;
             PharseOptions();
         }
 
@@ -104,6 +106,10 @@ namespace NetworkDesign.NetworkElements
                     }
                 }
             }
+            foreach (var note in notes.notes)
+            {
+                listBox3.Items.Add(note.note);
+            }
         }
 
         public void RefreshPorts()
@@ -127,7 +133,7 @@ namespace NetworkDesign.NetworkElements
                 if (add)
                 {
                     bool copy = false;
-                    foreach(var param in MainForm.parametrs.Params)
+                    foreach (var param in MainForm.parametrs.Params)
                     {
                         if (param == text)
                             copy = true;
@@ -242,6 +248,14 @@ namespace NetworkDesign.NetworkElements
         private void toolStripButton4_Click(object sender, EventArgs e)
         {
             //Очистка листбокс1
+            if (tabControl1.SelectedTab.Name == "tabPage1")
+            {
+
+            }
+            else
+            {
+
+            }
         }
 
         private void ElementParams_FormClosed(object sender, FormClosedEventArgs e) => SaveParams();
@@ -333,13 +347,65 @@ namespace NetworkDesign.NetworkElements
                 var result = ping.Send(textBox2.Text);
                 if (result.Status == IPStatus.Success)
                 {
-                    checkBox1.Checked = true;
+                    Options.isPing = true;
+                    radioButton1.Checked = true;
                     listBox1.Items[0] = result.Address.ToString();
                 }
             }
             catch
             {
-                checkBox1.Checked = false;
+                Options.isPing = false;
+                radioButton1.Checked = false;
+            }
+        }
+
+        private void listBox3_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            edit = false;
+            textBox3.Text = "";
+            if (listBox3.SelectedIndex != -1)
+            {
+                textBox3.Text = listBox3.SelectedItem.ToString().Split(new char[] { ':' }).Last();
+                textBox3.Focus();
+                button3.Enabled = true;
+                button4.Enabled = true;
+            }
+            else
+            {
+                button3.Enabled = false;
+                button4.Enabled = false;
+            }
+        }
+
+        private void textBox3_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == 58)
+                e.Handled = true;
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if (textBox3.Text != "" & textBox3.Text != " ")
+            {
+                listBox3.Items.Add(MainForm.user.DisplayName.ToString() + ":" + textBox3.Text);
+                notes.Add(new Note(MainForm.user.DisplayName.ToString() + ":" + textBox3.Text, MainForm.user));
+            }
+            textBox3.Text = "";
+            listBox3.Focus();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            string text = MainForm.user.DisplayName.ToString() + ":" + textBox3.Text;
+            if (notes.Edit(listBox3.SelectedIndex, text))
+                listBox3.Items[listBox3.SelectedIndex] = text;
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            if (notes.Remove(listBox3.SelectedIndex))
+            {
+                listBox3.Items.RemoveAt(listBox3.SelectedIndex);
             }
         }
     }

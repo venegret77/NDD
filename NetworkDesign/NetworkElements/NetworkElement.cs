@@ -3,8 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
+using Tao.OpenGl;
 
 namespace NetworkDesign
 {
@@ -109,9 +111,51 @@ namespace NetworkDesign
         public void Draw()
         {
             if (!delete & DL == MainForm.drawLevel)
-                texture.Draw(Options.Throughput, active);
+                texture.Draw(Options.Throughput, active, Options.isPing);
         }
-
+        /// <summary>
+        /// Пинг устройства
+        /// </summary>
+        public async void Ping()
+        {
+            Options.isPing = await Send();
+        }
+        /// <summary>
+        /// Запрос
+        /// </summary>
+        /// <returns></returns>
+        private Task<bool> Send()
+        {
+            return Task.Run(() =>
+            {
+                bool _result = false;
+                if (!delete & DL == MainForm.drawLevel)
+                {
+                    try
+                    {
+                        Ping ping = new Ping();
+                        var result = ping.Send(Options.Name);
+                        if (result.Status == IPStatus.Success)
+                        {
+                            Options.Options[0] = new NetworkParametr(0, "IP", result.Address.ToString());
+                            _result = true;
+                        }
+                    }
+                    catch
+                    {
+                        _result = false;
+                    }
+                }
+                return _result;
+            });
+        }
+        /// <summary>
+        /// Перемещение элемента
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="id"></param>
+        /// <param name="networkWires"></param>
         internal void MoveElem(int x, int y, int id, GroupOfNW networkWires)
         {
             int difx = x - (int)CenterPointX;
@@ -119,7 +163,6 @@ namespace NetworkDesign
             texture.location = new Point(texture.location.X + difx, texture.location.Y + dify);
             networkWires.CheckNW(texture.location.X + (int)((double)texture.width / 2), texture.location.Y + (int)((double)texture.width / 2), id, false, -1, DL);
         }
-
         /// <summary>
         /// Пересчет точек элемента в соответсии с зумом при добавлении временного в основной список
         /// </summary>
@@ -160,7 +203,7 @@ namespace NetworkDesign
             {
                 texture = (Texture)this.texture.Clone(),
                 Options = (NetworkSettings)this.Options.Clone(),
-                //notes = notes.Copy(),
+                notes = notes.Copy(),
                 DL = this.DL,
                 CenterPointX = this.CenterPointX,
                 CenterPointY = this.CenterPointY,

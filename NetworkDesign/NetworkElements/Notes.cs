@@ -35,7 +35,8 @@ namespace NetworkDesign.NetworkElements
         {
             return new Note
             {
-                note = this.note
+                note = this.note,
+                userid = this.userid
             };
         }
     }

@@ -16,7 +16,7 @@ namespace NetworkDesign
         public DrawLevel MainDL;
         public DrawLevel LocalDL;
         public double koef;
-        internal bool side;
+        public bool side;
 
         public Circle()
         {

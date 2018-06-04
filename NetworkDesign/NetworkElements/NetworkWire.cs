@@ -20,6 +20,22 @@ namespace NetworkDesign.NetworkElements
             IW = iW;
             Build = build;
         }
+
+        public static bool operator ==(IDandIW idiw1, IDandIW idiw2)
+        {
+            if (idiw1.ID == idiw2.ID & idiw1.IW == idiw2.IW & idiw1.Build == idiw2.Build)
+                return true;
+            else
+                return false;
+        }
+
+        public static bool operator !=(IDandIW idiw1, IDandIW idiw2)
+        {
+            if (idiw1.ID == idiw2.ID & idiw1.IW == idiw2.IW & idiw1.Build == idiw2.Build)
+                return false;
+            else
+                return true;
+        }
     }
 
     public class NetworkWire : GeometricFigure
@@ -208,7 +224,7 @@ namespace NetworkDesign.NetworkElements
             {
                 idiw1 = new IDandIW(this.idiw1.ID, this.idiw1.IW, this.idiw1.Build),
                 idiw2 = new IDandIW(this.idiw2.ID, this.idiw2.IW, this.idiw2.Build),
-                //notes = notes.Copy(),
+                notes = notes.Copy(),
                 Throughput = this.Throughput,
                 DL = this.DL,
                 Points = points,

@@ -160,20 +160,19 @@ namespace NetworkDesign
         /// <param name="cir">Круг</param>
         public void NearestPoints(int x, int y, Circle cir)
         {
-            double vect = double.MaxValue;
-            angle = 0;
-            for (int _angle = 0; _angle <= 360; _angle += 1)
-            {
-                double _x = cir.radius * Math.Cos(_angle * Math.PI / 180) + cir.MainCenterPoint.X;
-                double _y = cir.radius * Math.Sin(_angle * Math.PI / 180) + cir.MainCenterPoint.Y;
-                double _vect = Math.Abs((x - _x) + (y - _y));
-                if (_vect < vect)
-                {
-                    angle = _angle;
-                    vect = _vect;
-                }
-            }
+            Point mcp = cir.MainCenterPoint;
+            angle = CalcAlfa(mcp, new Point(x, y)) * 57.2958d;
+            if (x < mcp.X)
+                angle += 180;
             Enterances.TempCircle.MainCenterPoint = new Point((int)(cir.radius * Math.Cos(angle * Math.PI / 180) + cir.MainCenterPoint.X), (int)(cir.radius * Math.Sin(angle * Math.PI / 180) + cir.MainCenterPoint.Y));
+        }
+
+        private double CalcAlfa(Point Point1, Point Point2)
+        {
+            double cat1 = Point2.Y - Point1.Y; //Противолежащий
+            double cat2 = Point2.X - Point1.X; //Прилежащий
+            double alfa = Math.Atan(cat1 / cat2);
+            return alfa;
         }
 
         private bool CheckInterval(int x, int y, Point p1, Point p2)
