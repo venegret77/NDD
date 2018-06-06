@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace NetworkDesign
 {
-    public class InputWire
+    public class InputWire: ICloneable
     {
         public GroupOfCircle InputWires = new GroupOfCircle();
         private int rad = 5;
@@ -192,7 +192,7 @@ namespace NetworkDesign
                     p2 = i + 1;
                 }
             }
-            _d = CalcPointToLine(x, y, pol.Points[pol.Points.Count - 1], pol.Points[1]);
+            _d = CalcPointToLine(x, y, pol.Points[pol.Points.Count - 1], pol.Points[0]);
             if (_d < d)
             {
                 d = _d;
@@ -282,6 +282,17 @@ namespace NetworkDesign
             {
                 cir.MainCenterPoint = new Point(cir.MainCenterPoint.X + difx, cir.MainCenterPoint.Y + dify);
             }
+        }
+
+        public object Clone()
+        {
+            return new InputWire
+            {
+                angle = this.angle,
+                step = this.step,
+                InputWires = (GroupOfCircle)this.InputWires.Clone(),
+                side = this.side
+            };
         }
     }
 }

@@ -489,9 +489,9 @@ namespace NetworkDesign
                 DL = this.DL,
                 MainDL = this.MainDL,
                 LocalDL = this.LocalDL,
-                MainCenterPoint = this.MainCenterPoint,
+                MainCenterPoint = new Point(this.MainCenterPoint.X, MainCenterPoint.Y),
                 koef = this.koef,
-                LocalCenterPoint = this.LocalCenterPoint,
+                LocalCenterPoint = new Point(this.LocalCenterPoint.X, LocalCenterPoint.Y),
                 radius = this.radius,
                 side = this.side,
                 delete = false

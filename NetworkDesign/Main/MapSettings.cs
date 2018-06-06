@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NetworkDesign
 {
-    public struct MapSettings
+    public struct SizeRenderingArea
     {
         public string Name;
         public int Height;
@@ -16,7 +16,7 @@ namespace NetworkDesign
         public int Top;
         public int Bottom;
 
-        public MapSettings(string name, int height, int width)
+        public SizeRenderingArea(string name, int height, int width)
         {
             Name = name;
             Height = height;
@@ -27,7 +27,7 @@ namespace NetworkDesign
             Bottom = -Height / 2;
         }
 
-        public MapSettings(string name, int left, int right, int top, int bottom)
+        public SizeRenderingArea(string name, int left, int right, int top, int bottom)
         {
             Name = name;
             Left = left;

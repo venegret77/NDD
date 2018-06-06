@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace NetworkDesign
 {
-    public class GroupOfCircle: GroupOfElements
+    public class GroupOfCircle: GroupOfElements , ICloneable
     {
         public List<Circle> Circles = new List<Circle>();
         public Circle TempCircle = new Circle();
@@ -229,6 +229,19 @@ namespace NetworkDesign
         public override void DrawTemp()
         {
             TempCircle.DrawTemp();
+        }
+
+        public object Clone()
+        {
+            List<Circle> circles = new List<Circle>();
+            foreach (var c in Circles)
+            {
+                circles.Add((Circle)c.Clone());
+            }
+            return new GroupOfCircle
+            {
+                Circles = circles
+            };
         }
     }
 }

@@ -30,7 +30,8 @@ namespace NetworkDesign.Main
         public bool delete = false;
         public Point location;
         public Size size;
-        public uint idtexture = 0;
+        public int idtexturefromlist = -1;
+        public int idtexture = -1;
         public string text = "";
         public float fontsize = 14;
 
@@ -56,7 +57,7 @@ namespace NetworkDesign.Main
             size.Height += 2;
             size.Width += 2;
             Size _size = new Size();
-            Font _font = new Font(FontFamily.GenericSansSerif, 150);
+            Font _font = new Font(FontFamily.GenericSansSerif, 30);
             _size = TextRenderer.MeasureText(textBox.Text, _font);
             _size.Height += 2;
             _size.Width += 2;
@@ -69,7 +70,7 @@ namespace NetworkDesign.Main
             // ! Отрисовываем строку в поверхность рисования (в картинку) 
             gfx.DrawString(textBox.Text, _font, Brushes.Black, new PointF(1, 1));
             string url = Application.StartupPath + @"\###temp.mttex.###";
-            Bitmap bitmap = new Bitmap(text_bmp, 1024, 256);
+            Bitmap bitmap = new Bitmap(text_bmp, RecalcSize(_size));
             bitmap.Save(url);
             bitmap.Dispose();
             // ! Вытягиваем данные из картинки 
@@ -89,11 +90,13 @@ namespace NetworkDesign.Main
                     // создаем текстуру, используя режим GL_RGB или GL_RGBA 
                     case 24:
                         MainForm.MTTextures.Add(MainForm.MakeGlTexture(Gl.GL_RGB, Il.ilGetData(), width, height));
-                        idtexture = (uint)MainForm.MTTextures.Count - 1;
+                        idtexture = (int)MainForm.MTTextures.Last();
+                        idtexturefromlist = MainForm.MTTextures.Count - 1;
                         break;
                     case 32:
                         MainForm.MTTextures.Add(MainForm.MakeGlTexture(Gl.GL_RGBA, Il.ilGetData(), width, height));
-                        idtexture = (uint)MainForm.MTTextures.Count - 1;
+                        idtexture = (int)MainForm.MTTextures.Last();
+                        idtexturefromlist = MainForm.MTTextures.Count - 1;
                         break;
                 }
                 // очищаем память 
@@ -103,14 +106,14 @@ namespace NetworkDesign.Main
                 File.Delete(url);
         }
 
-        public void MapLoadGenTextures()
+        public void GenNewTexture()
         {
             Font font = new Font(FontFamily.GenericSansSerif, fontsize);
             size = TextRenderer.MeasureText(text, font);
             size.Height += 2;
             size.Width += 2;
             Size _size = new Size();
-            Font _font = new Font(FontFamily.GenericSansSerif, 150);
+            Font _font = new Font(FontFamily.GenericSansSerif, 30);
             _size = TextRenderer.MeasureText(text, _font);
             _size.Height += 2;
             _size.Width += 2;
@@ -123,7 +126,7 @@ namespace NetworkDesign.Main
             // ! Отрисовываем строку в поверхность рисования (в картинку) 
             gfx.DrawString(text, _font, Brushes.Black, new PointF(1, 1));
             string url = Application.StartupPath + @"\###temp.mttex.###";
-            Bitmap bitmap = new Bitmap(text_bmp, 1024, 256);
+            Bitmap bitmap = new Bitmap(text_bmp, RecalcSize(_size));
             bitmap.Save(url);
             bitmap.Dispose();
             // ! Вытягиваем данные из картинки 
@@ -143,11 +146,13 @@ namespace NetworkDesign.Main
                     // создаем текстуру, используя режим GL_RGB или GL_RGBA 
                     case 24:
                         MainForm.MTTextures.Add(MainForm.MakeGlTexture(Gl.GL_RGB, Il.ilGetData(), width, height));
-                        idtexture = (uint)MainForm.MTTextures.Count - 1;
+                        idtexture = (int)MainForm.MTTextures.Last();
+                        idtexturefromlist = MainForm.MTTextures.Count - 1;
                         break;
                     case 32:
                         MainForm.MTTextures.Add(MainForm.MakeGlTexture(Gl.GL_RGBA, Il.ilGetData(), width, height));
-                        idtexture = (uint)MainForm.MTTextures.Count - 1;
+                        idtexture = (int)MainForm.MTTextures.Last();
+                        idtexturefromlist = MainForm.MTTextures.Count - 1;
                         break;
                 }
                 // очищаем память 
@@ -155,6 +160,34 @@ namespace NetworkDesign.Main
             }
             if (File.Exists(url))
                 File.Delete(url);
+        }
+
+        private Size RecalcSize(Size size)
+        {
+            Size result = new Size();
+            int sizewidth = size.Width;
+            int sizeheight = size.Height;
+            byte pow = 0;
+            while (sizewidth > 0)
+            {
+                sizewidth >>= 1;
+                pow++;
+            }
+            pow--;
+            result.Width = (int)Math.Pow(2, pow);
+            pow = 0;
+            while (sizeheight > 0)
+            {
+                sizeheight >>= 1;
+                pow++;
+            }
+            pow--;
+            result.Height = (int)Math.Pow(2, pow);
+            if (result.Width > 1024)
+                result.Width = 1024;
+            if (result.Height > 1024)
+                result.Height = 1024;
+            return result;
         }
 
         /// <summary>
@@ -218,7 +251,7 @@ namespace NetworkDesign.Main
                 //Gl.glScaled(MainForm.zoom, MainForm.zoom, MainForm.zoom);
                 Gl.glEnable(Gl.GL_TEXTURE_2D);
                 // включаем режим текстурирования, указывая идентификатор mGlTextureObject 
-                Gl.glBindTexture(Gl.GL_TEXTURE_2D, MainForm.MTTextures[(int)idtexture]);
+                Gl.glBindTexture(Gl.GL_TEXTURE_2D, MainForm.MTTextures[(int)idtexturefromlist]);
                 // отрисовываем полигон 
                 Gl.glBegin(Gl.GL_QUADS);
                 // указываем поочередно вершины и текстурные координаты 
@@ -238,6 +271,11 @@ namespace NetworkDesign.Main
             }
         }
 
+        internal void MoveElem(int x, int y)
+        {
+            location = MainForm._GenZoomPoint(new Point(x - (int)((double) size.Width / 2d * MainForm.zoom), y + (int)((double)size.Height / 2d * MainForm.zoom)));
+        }
+
         public object Clone()
         {
             return new MyText
@@ -247,7 +285,9 @@ namespace NetworkDesign.Main
                 location = new Point(this.location.X, this.location.Y),
                 size = new Size(this.size.Width,this.size.Height),
                 text = this.text,
-                idtexture = this.idtexture
+                idtexturefromlist = this.idtexturefromlist,
+                idtexture = this.idtexture,
+                fontsize = this.fontsize
             };
         }
 

@@ -113,6 +113,14 @@ namespace NetworkDesign
             trackBar1.Parent = this;
             trackBar1.BringToFront();
             panel2.BackColor = Color.White;
+            FloorUP.Parent = this;
+            FloorDown.Parent = this;
+            FloorUP.BringToFront();
+            FloorDown.BringToFront();
+            FloorUP.BackColor = Color.White;
+            FloorDown.BackColor = Color.White;
+            FloorUP.FlatAppearance.BorderSize = 0;
+            FloorUP.FlatStyle = FlatStyle.Flat;
             FloorDown.FlatAppearance.BorderSize = 0;
             FloorDown.FlatStyle = FlatStyle.Flat;
             colorSettings = ColorSettings.Open();
@@ -144,14 +152,6 @@ namespace NetworkDesign
             };
             time.Start();
             time.Tick += Time_Tick;
-            FloorUP.Parent = panel1;
-            FloorDown.Parent = panel1;
-            FloorUP.BringToFront();
-            FloorDown.BringToFront();
-            FloorUP.BackColor = Color.White;
-            FloorDown.BackColor = Color.White;
-            FloorUP.FlatAppearance.BorderSize = 0;
-            FloorUP.FlatStyle = FlatStyle.Flat;
         }
         #region Обработка кликов мыши для различных инструментов
         private void MouseLines(int x, int y)
@@ -332,14 +332,12 @@ namespace NetworkDesign
                     Visible = true,
                     Enabled = true,
                     Location = new Point(x, y),
-                    Text = "",
-                    Multiline = true
+                    Text = ""
                 };
             }
             textBox.Focus();
             textBox.KeyDown += TextBox_KeyDown;
             textBox.LostFocus += TextBox_LostFocus;
-            textBox.KeyUp += TextBox_KeyUp;
         }
 
         private int textid = -1;
@@ -348,12 +346,8 @@ namespace NetworkDesign
         {
             textid = id;
             focusbox.Focus();
-            Point location = GenZoomPoint(MyMap.MyTexts.MyTexts[textid].location);
-            Point _location = new Point(location.X + (int)((double)MyMap.mapSetting.Width * zoom / 2d), (int)((double)MyMap.mapSetting.Height * zoom / 2d) - location.Y);
+            Point location = MyMap.MyTexts.MyTexts[textid].location;
             float fontsize = MyMap.MyTexts.MyTexts[textid].fontsize;
-            Size size = new Size((int)((double)MyMap.MyTexts.MyTexts[textid].size.Width * zoom), (int)((double)MyMap.MyTexts.MyTexts[textid].size.Height * zoom));
-            string text = MyMap.MyTexts.MyTexts[textid].text;
-            MyMap.MyTexts.MyTexts[textid].delete = true;
             if (textBox == null || textBox.Text == "")
             {
                 textBox = new TextBox
@@ -363,24 +357,13 @@ namespace NetworkDesign
                     BorderStyle = BorderStyle.None,
                     Visible = true,
                     Enabled = true,
-                    Location = _location,
-                    Size = size,
-                    Font = new Font(FontFamily.GenericSansSerif, fontsize * (float)zoom),
-                    Text = text,
-                    Multiline = true
+                    Location = new Point(, ),
+                    Text = ""
                 };
             }
             textBox.Focus();
             textBox.KeyDown += TextBox_KeyDown;
             textBox.LostFocus += TextBox_LostFocus;
-            textBox.KeyUp += TextBox_KeyUp;
-        }
-
-        private void TextBox_KeyUp(object sender, KeyEventArgs e)
-        {
-            Size size = TextRenderer.MeasureText(textBox.Text, textBox.Font);
-            textBox.Width = size.Width + 10;
-            textBox.Height = size.Height;
         }
 
         private void TextBox_LostFocus(object sender, EventArgs e)
@@ -396,39 +379,27 @@ namespace NetworkDesign
                     MyMap.log.Add(new LogMessage("Добавил надпись", elem, _elem));
                     InfoLable.Text = "Добавил надпись";
                 }
-                else
+                /*else
                 {
-                    MyMap.MyTexts.MyTexts[textid].text = textBox.Text;
-                    MyMap.MyTexts.MyTexts[textid].delete = false;
-                    MyMap.MyTexts.MyTexts[textid].GenNewTexture();
-                    UpdateTextLogAdd(textid);
-                    textid = -1;
-                }
+                    Element elem = new Element(10, textid, MyMap.MyTexts.MyTexts[textid].Clone(), -2);
+                    MyMap.MyTexts.MyTexts[textid] = new MyText(drawLevel, new Point(MyMap.RecalcMouseX(x), MyMap.RecalcMouseY(y)), textBox);
+                    Element _elem = new Element(10, textid, MyMap.MyTexts.MyTexts[textid].Clone(), -2);
+                    MyMap.log.Add(new LogMessage("Изменил надпись", elem, _elem));
+                    InfoLable.Text = "Изменил надпись";
+                }*/
                 CheckButtons(true);
-            }
-            else
-            {
-                if (textid != -1)
-                    MyMap.MyTexts.MyTexts[textid].delete = false;
             }
             textBox.Dispose();
         }
 
-        bool isControl = false;
-
         private void TextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.ControlKey)
-            {
-                isControl = true;
-            }
-            if (!isControl & e.KeyCode == Keys.Enter)
+            Size size = TextRenderer.MeasureText(textBox.Text, textBox.Font);
+            textBox.Width = size.Width + 10;
+            textBox.Height = size.Height;
+            if (e.KeyCode == Keys.Enter)
             {
                 focusbox.Focus();
-            }
-            if (e.KeyCode != Keys.ControlKey)
-            {
-                isControl = false;
             }
         }
 
@@ -583,7 +554,6 @@ namespace NetworkDesign
                             SelectItems(x, y);
                             if (activeElem.type == 4)
                             {
-                                MyMap.ResizeRenderingArea(activeElem.item);
                                 drawLevel.Level = activeElem.item;
                                 drawLevel.Floor = 0;
                                 ReturnToMainBtn.Enabled = true;
@@ -664,16 +634,12 @@ namespace NetworkDesign
                     case 0:
                         //Доделать редактирование надписей
                         if (MyMap.SearchNE(x, y))
-                        {
-                            CheckButtons(true);
                             break;
-                        }
                         if (MyMap.SearchNW(x, y))
                             break;
                         if (MyMap.SearchText(x, y, out int id))
                         {
-                            UpdateTextLogAdd(id);
-                            MouseText(id);
+                            MouseText(x, y, id);
                         }
                         break;
                 }
@@ -851,6 +817,54 @@ namespace NetworkDesign
                 }
             }
         }
+
+        private void ChechEdges(int x, int y)
+        {
+            int dif = 0;
+            int n = (int)(10d * zoom);
+            bool refresh = false;
+            double Left = (double)MyMap.mapSetting.Left * zoom;
+            double Right = (double)MyMap.mapSetting.Right * zoom;
+            double Top = (double)MyMap.mapSetting.Top * zoom;
+            double Bottom = (double)MyMap.mapSetting.Bottom * zoom;
+            if (x < Left + n)
+            {
+                dif = (int)(x - n - Left);
+                MyMap.mapSetting = new SizeRenderingArea(MyMap.mapSetting.Name, MyMap.mapSetting.Left + dif, 
+                    MyMap.mapSetting.Right - dif, MyMap.mapSetting.Top, MyMap.mapSetting.Bottom);
+                refresh = true;
+            }
+            if (x > Right - n)
+            {
+                dif = (int)(x + n - Right);
+                MyMap.mapSetting = new SizeRenderingArea(MyMap.mapSetting.Name, MyMap.mapSetting.Left - dif,
+                    MyMap.mapSetting.Right + dif, MyMap.mapSetting.Top, MyMap.mapSetting.Bottom);
+                refresh = true;
+            }
+            if (y > Top - n)
+            {
+                dif = (int)(y + n - Top);
+                //Top = y + n;
+                //Bottom = -Top;
+                MyMap.mapSetting = new SizeRenderingArea(MyMap.mapSetting.Name, MyMap.mapSetting.Left,
+                    MyMap.mapSetting.Right, MyMap.mapSetting.Top + dif, MyMap.mapSetting.Bottom - dif);
+                refresh = true;
+            }
+            if (y < Bottom + n)
+            {
+                dif = (int)(y - n - Bottom);
+                //Bottom = y - n;
+                //Top = -Bottom;
+                MyMap.mapSetting = new SizeRenderingArea(MyMap.mapSetting.Name, MyMap.mapSetting.Left,
+                    MyMap.mapSetting.Right, MyMap.mapSetting.Top - dif, MyMap.mapSetting.Bottom + dif);
+                refresh = true;
+            }
+            if (refresh)
+            {
+                MyMap.ResizeRenderingArea();
+                refresh = false;
+            }
+        }
         #region Для работы с зумом
         static public Point GenZoomPoint(Point p)
         {
@@ -893,58 +907,6 @@ namespace NetworkDesign
         }
         #endregion
         #region Прочие функции
-        /// <summary>
-        /// Проверка границ области отрисовки для главного вида
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        private void ChechEdges(int x, int y)
-        {
-            int dif = 0;
-            int n = (int)(10d * zoom);
-            bool refresh = false;
-            double Left = (double)MyMap.mapSetting.Left * zoom;
-            double Right = (double)MyMap.mapSetting.Right * zoom;
-            double Top = (double)MyMap.mapSetting.Top * zoom;
-            double Bottom = (double)MyMap.mapSetting.Bottom * zoom;
-            if (x < Left + n)
-            {
-                dif = (int)(x - n - Left);
-                MyMap.mapSetting = new SizeRenderingArea(MyMap.mapSetting.Name, MyMap.mapSetting.Left + dif,
-                    MyMap.mapSetting.Right - dif, MyMap.mapSetting.Top, MyMap.mapSetting.Bottom);
-                refresh = true;
-            }
-            if (x > Right - n)
-            {
-                dif = (int)(x + n - Right);
-                MyMap.mapSetting = new SizeRenderingArea(MyMap.mapSetting.Name, MyMap.mapSetting.Left - dif,
-                    MyMap.mapSetting.Right + dif, MyMap.mapSetting.Top, MyMap.mapSetting.Bottom);
-                refresh = true;
-            }
-            if (y > Top - n)
-            {
-                dif = (int)(y + n - Top);
-                //Top = y + n;
-                //Bottom = -Top;
-                MyMap.mapSetting = new SizeRenderingArea(MyMap.mapSetting.Name, MyMap.mapSetting.Left,
-                    MyMap.mapSetting.Right, MyMap.mapSetting.Top + dif, MyMap.mapSetting.Bottom - dif);
-                refresh = true;
-            }
-            if (y < Bottom + n)
-            {
-                dif = (int)(y - n - Bottom);
-                //Bottom = y - n;
-                //Top = -Bottom;
-                MyMap.mapSetting = new SizeRenderingArea(MyMap.mapSetting.Name, MyMap.mapSetting.Left,
-                    MyMap.mapSetting.Right, MyMap.mapSetting.Top - dif, MyMap.mapSetting.Bottom + dif);
-                refresh = true;
-            }
-            if (refresh)
-            {
-                MyMap.ResizeRenderingArea();
-                refresh = false;
-            }
-        }
         /// <summary>
         /// Авторизация
         /// </summary>
@@ -1126,10 +1088,7 @@ namespace NetworkDesign
             ToBuildBtn.Enabled = false;
             DeleteBtn.Enabled = false;
             EntranceBtn.Enabled = false;
-            if (drawLevel.Level == -1)
-                IWBtn.Enabled = false;
-            else
-                IWBtn.Enabled = true;
+            IWBtn.Enabled = false;
             //
             MyMap.Unfocus(true);
         }
@@ -1146,8 +1105,8 @@ namespace NetworkDesign
                     {
                         MyMap.Rectangles.Add(MyMap.Buildings.Buildings[activeElem.item].MainRectangle);
                         int lastindex = MyMap.Rectangles.Rectangles.Count - 1;
-                        Element elem = new Element(4, activeElem.item, MyMap.Buildings.Buildings[activeElem.item].Clone(), 1);
-                        Element _elem = new Element(2, lastindex, MyMap.Rectangles.Rectangles[lastindex].Clone(), 1);
+                        Element elem = new Element(4, activeElem.item, MyMap.Buildings.Buildings[activeElem.item], 1);
+                        Element _elem = new Element(2, lastindex, MyMap.Rectangles.Rectangles[lastindex], 1);
                         MyMap.log.Add(new LogMessage("Преобразовал здание в прямоугольник", elem, _elem));
                         CheckButtons(true);
                         MyMap.Buildings.Remove(activeElem.item);
@@ -1160,8 +1119,8 @@ namespace NetworkDesign
                     {
                         MyMap.Polygons.Add(MyMap.Buildings.Buildings[activeElem.item].MainPolygon);
                         int lastindex = MyMap.Polygons.Polygons.Count - 1;
-                        Element elem = new Element(4, activeElem.item, MyMap.Buildings.Buildings[activeElem.item].Clone(), 2);
-                        Element _elem = new Element(3, lastindex, MyMap.Polygons.Polygons[lastindex].Clone(), 2);
+                        Element elem = new Element(4, activeElem.item, MyMap.Buildings.Buildings[activeElem.item], 2);
+                        Element _elem = new Element(3, lastindex, MyMap.Polygons.Polygons[lastindex], 2);
                         MyMap.log.Add(new LogMessage("Преобразовал здание в многоугольник", elem, _elem));
                         CheckButtons(true);
                         MyMap.Buildings.Remove(activeElem.item);
@@ -1174,8 +1133,8 @@ namespace NetworkDesign
                     {
                         MyMap.Circles.Add(MyMap.Buildings.Buildings[activeElem.item].MainCircle);
                         int lastindex = MyMap.Circles.Circles.Count - 1;
-                        Element elem = new Element(4, activeElem.item, MyMap.Buildings.Buildings[activeElem.item].Clone(), 5);
-                        Element _elem = new Element(360, lastindex, MyMap.Circles.Circles[lastindex].Clone(), 5);
+                        Element elem = new Element(4, activeElem.item, MyMap.Buildings.Buildings[activeElem.item], 5);
+                        Element _elem = new Element(360, lastindex, MyMap.Circles.Circles[lastindex], 5);
                         MyMap.log.Add(new LogMessage("Преобразовал здание в окружность", elem, _elem));
                         CheckButtons(true);
                         MyMap.Buildings.Remove(activeElem.item);
@@ -1185,29 +1144,14 @@ namespace NetworkDesign
             }
             else if (MessageBox.Show("", "Обозначить зданием?", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
-                /*int pk = 1;
-                if (activeElem.type == 2)
-                {
-                    MyMap.Rectangles.Rectangles[activeElem.item].CalcMaxMin(out int maxx, out int minx, out int maxy, out int miny);
-                    int height = maxy - miny;
-                    int width = maxx - minx;
-                    pk = width / height;
-                }
-                else if (activeElem.type == 3)
-                {
-                    MyMap.Polygons.Polygons[activeElem.item].CalcMaxMin(out int maxx, out int minx, out int maxy, out int miny);
-                    int height = maxy - miny;
-                    int width = maxx - minx;
-                    pk = width / height;
-                }*/
                 BuildForm buildForm = new BuildForm();
                 buildForm.ShowDialog();
                 if (activeElem.type == 2)
                 {
-                    MyMap.Buildings.Add(new Building(buildForm.name, buildForm.loft, buildForm.basement, buildForm.count, MyMap.Rectangles.Rectangles[activeElem.item], MyMap.Buildings.Buildings.Count, buildForm.width));
+                    MyMap.Buildings.Add(new Building(buildForm.name, buildForm.loft, buildForm.basement, buildForm.count, MyMap.Rectangles.Rectangles[activeElem.item], MyMap.Buildings.Buildings.Count));
                     int lastindex = MyMap.Buildings.Buildings.Count - 1;
-                    Element elem = new Element(2, activeElem.item, MyMap.Rectangles.Rectangles[activeElem.item].Clone(), 3);
-                    Element _elem = new Element(4, lastindex, MyMap.Buildings.Buildings[lastindex].Clone(), 3);
+                    Element elem = new Element(2, activeElem.item, MyMap.Rectangles.Rectangles[activeElem.item], 3);
+                    Element _elem = new Element(4, lastindex, MyMap.Buildings.Buildings[lastindex], 3);
                     MyMap.log.Add(new LogMessage("Преобразовал прямоугольник в здание", elem, _elem));
                     CheckButtons(true);
                     MyMap.Rectangles.Remove(activeElem.item);
@@ -1215,10 +1159,10 @@ namespace NetworkDesign
                 }
                 else if (activeElem.type == 3)
                 {
-                    MyMap.Buildings.Add(new Building(buildForm.name, buildForm.loft, buildForm.basement, buildForm.count, MyMap.Polygons.Polygons[activeElem.item], MyMap.Buildings.Buildings.Count, buildForm.width));
+                    MyMap.Buildings.Add(new Building(buildForm.name, buildForm.loft, buildForm.basement, buildForm.count, MyMap.Polygons.Polygons[activeElem.item], MyMap.Buildings.Buildings.Count));
                     int lastindex = MyMap.Buildings.Buildings.Count - 1;
-                    Element elem = new Element(3, activeElem.item, MyMap.Polygons.Polygons[activeElem.item].Clone(), 4);
-                    Element _elem = new Element(4, lastindex, MyMap.Buildings.Buildings[lastindex].Clone(), 4);
+                    Element elem = new Element(3, activeElem.item, MyMap.Polygons.Polygons[activeElem.item], 4);
+                    Element _elem = new Element(4, lastindex, MyMap.Buildings.Buildings[lastindex], 4);
                     MyMap.log.Add(new LogMessage("Преобразовал многоугольник в здание", elem, _elem));
                     CheckButtons(true);
                     MyMap.Polygons.Remove(activeElem.item);
@@ -1226,10 +1170,10 @@ namespace NetworkDesign
                 }
                 else if (activeElem.type == 360)
                 {
-                    MyMap.Buildings.Add(new Building(buildForm.name, buildForm.loft, buildForm.basement, buildForm.count, MyMap.Circles.Circles[activeElem.item], MyMap.Buildings.Buildings.Count, buildForm.width));
+                    MyMap.Buildings.Add(new Building(buildForm.name, buildForm.loft, buildForm.basement, buildForm.count, MyMap.Circles.Circles[activeElem.item], MyMap.Buildings.Buildings.Count));
                     int lastindex = MyMap.Buildings.Buildings.Count - 1;
-                    Element elem = new Element(360, activeElem.item, MyMap.Circles.Circles[activeElem.item].Clone(), 6);
-                    Element _elem = new Element(4, lastindex, MyMap.Buildings.Buildings[lastindex].Clone(), 6);
+                    Element elem = new Element(360, activeElem.item, MyMap.Circles.Circles[activeElem.item], 6);
+                    Element _elem = new Element(4, lastindex, MyMap.Buildings.Buildings[lastindex], 6);
                     MyMap.log.Add(new LogMessage("Преобразовал окружность в здание", elem, _elem));
                     CheckButtons(true);
                     MyMap.Circles.Remove(activeElem.item);
@@ -1399,24 +1343,6 @@ namespace NetworkDesign
         /// <summary>
         /// Запись в лог перемещений элементов
         /// </summary>
-        private void UpdateTextLogAdd(int id)
-        {
-            object elem =  MyMap.MyTexts.MyTexts[id].Clone();
-            if (isMoveLog)
-            {
-                isMoveLog = false;
-                _MoveElem = new Element(10, id, elem, -2);
-                MyMap.log.Add(new LogMessage("Изменил надпись", _MoveElem, MoveElem));
-            }
-            else
-            {
-                isMoveLog = true;
-                MoveElem = new Element(10, id, elem, -2);
-            }
-        }
-        /// <summary>
-        /// Запись в лог перемещений элементов
-        /// </summary>
         private void MoveLogAdd()
         {
             object elem = new object();
@@ -1430,9 +1356,6 @@ namespace NetworkDesign
                     break;
                 case 3:
                     elem = MyMap.Polygons.Polygons[activeElem.item].Clone();
-                    break;
-                case 4:
-                    elem = MyMap.Buildings.Buildings[activeElem.item].Clone();
                     break;
                 case 360:
                     elem = MyMap.Circles.Circles[activeElem.item].Clone();
@@ -1453,7 +1376,7 @@ namespace NetworkDesign
                     elem = MyMap.MyTexts.MyTexts[activeElem.item].Clone();
                     break;
             }
-            if (activeElem.type == 1 | activeElem.type == 2 | activeElem.type == 3 | activeElem.type == 4 | activeElem.type == 360 | activeElem.type == 6 | activeElem.type == 7 | activeElem.type == 8 | activeElem.type == 9 | activeElem.type == 10)
+            if (activeElem.type == 1 | activeElem.type == 2 | activeElem.type == 3 | activeElem.type == 360 | activeElem.type == 6 | activeElem.type == 7 | activeElem.type == 8 | activeElem.type == 9 | activeElem.type == 10)
             {
                 if (isMoveLog)
                 {
@@ -1604,7 +1527,7 @@ namespace NetworkDesign
                     case 10:
                         MyMap.MyTexts.MyTexts[elem.index] = (MyText)elem.elem;
                         if (MyMap.MyTexts.MyTexts[elem.index].idtexture != -1 && !MTTextures.Contains((uint)MyMap.MyTexts.MyTexts[elem.index].idtexture))
-                            MyMap.MyTexts.MyTexts[elem.index].GenNewTexture();
+                            MyMap.MyTexts.MyTexts[elem.index].MapLoadGenTextures();
                         break;
                     case 11:
                         if (backbtn)
@@ -1633,16 +1556,7 @@ namespace NetworkDesign
             switch (elem.type)
             {
                 case 6:
-                    bool isNotNull = false;
-                    for (int i = 0; i < MyMap.Buildings.Buildings[buildid].Entrances.Enterances.Circles.Count; i++)
-                    {
-                        if (i == elem.index)
-                            isNotNull = true;
-                    }
-                    if (isNotNull)
-                        MyMap.Buildings.Buildings[buildid].InputWires.InputWires.Circles[elem.index] = (Circle)elem.elem;
-                    else
-                        MyMap.Buildings.Buildings[buildid].InputWires.InputWires.Circles.Insert(elem.index, (Circle)elem.elem);
+                    MyMap.Buildings.Buildings[buildid].InputWires.InputWires.Circles[elem.index] = (Circle)elem.elem;
                     // Доделать движение проводов
                     if (_elem.transform == -2)
                     {
@@ -1654,60 +1568,8 @@ namespace NetworkDesign
                     }
                     break;
                 case 7:
-                    isNotNull = false;
-                    for (int i = 0; i < MyMap.Buildings.Buildings[buildid].Entrances.Enterances.Circles.Count; i++)
-                    {
-                        if (i == elem.index)
-                            isNotNull = true;
-                    }
-                    if (isNotNull)
-                        MyMap.Buildings.Buildings[buildid].Entrances.Enterances.Circles[elem.index] = (Circle)elem.elem;
-                    else
-                        MyMap.Buildings.Buildings[buildid].Entrances.Enterances.Circles.Insert(elem.index, (Circle)elem.elem);
+                    MyMap.Buildings.Buildings[buildid].Entrances.Enterances.Circles[elem.index] = (Circle)elem.elem;
                     break;
-            }
-        }
-        private void PharseElem(Element _elem, Element elem, bool backbtn, Parametrs temp)
-        {
-            if (backbtn)
-            {
-                switch (_elem.transform)
-                {
-                    case -1:
-                        parametrs.Remove(elem.index);
-                        MyMap.NetworkElements.UpdateOptions(elem.index);
-                        break;
-                    case -2:
-                        parametrs.Edit(elem.index, _elem.elem.ToString());
-                        MyMap.NetworkElements.UpdateOptions(elem.index, "");
-                        break;
-                    case -3:
-                        parametrs.Add(_elem.elem.ToString());
-                        break;
-                    case -4:
-                        MyMap.NetworkElements.NetworkElements[elem.index].Options = (NetworkSettings)_elem.elem;
-                        break;
-                }
-            }
-            else
-            {
-                switch (_elem.transform)
-                {
-                    case -1:
-                        parametrs.Add(_elem.elem.ToString());
-                        break;
-                    case -2:
-                        parametrs.Edit(elem.index, _elem.elem.ToString());
-                        MyMap.NetworkElements.UpdateOptions(elem.index, "");
-                        break;
-                    case -3:
-                        parametrs.Remove(elem.index);
-                        MyMap.NetworkElements.UpdateOptions(elem.index);
-                        break;
-                    case -4:
-                        MyMap.NetworkElements.NetworkElements[elem.index].Options = (NetworkSettings)_elem.elem;
-                        break;
-                }
             }
         }
         /// <summary>
@@ -1806,7 +1668,7 @@ namespace NetworkDesign
                     {
                         MTTextures = new List<uint>();
                         for (int i = 0; i < TempMap.MyTexts.MyTexts.Count; i++)
-                            TempMap.MyTexts.MyTexts[i].GenNewTexture();
+                            TempMap.MyTexts.MyTexts[i].MapLoadGenTextures();
                         _OpenTextures();
                         Parametrs._Open();
                         ID_TEXT temp = new ID_TEXT();
@@ -1953,11 +1815,10 @@ namespace NetworkDesign
             {
                 XmlSerializer formatter = new XmlSerializer(typeof(Map));
                 Map TempMap = new Map();
-                /*foreach (var b in MyMap.Buildings.Buildings)
+                foreach (var b in MyMap.Buildings.Buildings)
                 {
-                    TempMap.Buildings.Add(new Building(b.Clone()));
-                }*/
-                TempMap.Buildings = MyMap.Buildings;
+                    TempMap.Buildings.Add(new Building(b));
+                }
                 TempMap.Circles = MyMap.Circles;
                 TempMap.Lines = MyMap.Lines;
                 TempMap.Polygons = MyMap.Polygons;
@@ -2236,10 +2097,8 @@ namespace NetworkDesign
         private void BackBtn_Click(object sender, EventArgs e)
         {
             Element _elem = MyMap.log.DeleteLastBack(out Element elem, out int buildid);
-            if (_elem.type != 7 & _elem.type != 6 & _elem.type != 13)
+            if (_elem.type != 7 & _elem.type != 6)
                 PharseElem(_elem, elem, true);
-            else if (_elem.type == 13)
-                PharseElem(_elem, elem, true, parametrs);
             else
                 PharseElem(_elem, elem, buildid);
             CheckButtons(false);
@@ -2254,10 +2113,8 @@ namespace NetworkDesign
         private void ForwardBrn_Click(object sender, EventArgs e)
         {
             Element _elem = MyMap.log.DeleteLastForward(out Element elem, out int buildid);
-            if (_elem.type != 7 & _elem.type != 6 & _elem.type != 13)
+            if (_elem.type != 7 & _elem.type != 6)
                 PharseElem(_elem, elem, false);
-            else if (_elem.type == 13)
-                PharseElem(_elem, elem, false, parametrs);
             else
                 PharseElem(_elem, elem, buildid);
             CheckButtons(false);
@@ -2384,7 +2241,6 @@ namespace NetworkDesign
         /// <param name="e"></param>
         private void ButtonReturnToMain_Click(object sender, EventArgs e)
         {
-            MyMap.ResizeRenderingArea();
             drawLevel.Level = -1;
             drawLevel.Floor = -1;
             ReturnToMainBtn.Enabled = false;
@@ -2481,10 +2337,7 @@ namespace NetworkDesign
         private unsafe void trackBar1_Scroll(object sender, EventArgs e)
         {
             zoom = (double)trackBar1.Value / 10d;
-            if (drawLevel.Level == -1)
-                MyMap.ResizeRenderingArea();
-            else
-                MyMap.ResizeRenderingArea(drawLevel.Level);
+            MyMap.ResizeRenderingArea();
         }
         /// <summary>
         /// Событие закрытия формы

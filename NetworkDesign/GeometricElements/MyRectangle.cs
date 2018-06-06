@@ -225,9 +225,7 @@ namespace NetworkDesign
                     res += (int)((double)p.Y * MainForm.zoom) - y;
                 }
                 res = Math.Abs(res);
-                int maxx, minx;
-                int maxy, miny;
-                CalcMaxMin(out maxx, out minx, out maxy, out miny);
+                CalcMaxMin(out int maxx, out int minx, out int maxy, out int miny);
                 if (x <= maxx & x >= minx & y <= maxy & y >= miny)
                 {
                     return res;

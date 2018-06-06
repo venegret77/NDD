@@ -18,7 +18,16 @@ namespace NetworkDesign
 
         public void Add(LogMessage logMessage)
         {
-            if (logMessage._elem.transform == -2)
+            if (logMessage._elem.type == 13 & logMessage._elem.transform == -4)
+            {
+                LogMessage lastelem = Back.Last();
+                if (lastelem._elem.transform == -4 & lastelem._elem.type == logMessage._elem.type & lastelem._elem.index == logMessage._elem.index)
+                {
+                    logMessage._elem = (Element)lastelem._elem.Clone();
+                    Back.RemoveAt(Back.Count - 1);
+                }
+            }
+            else if (logMessage._elem.transform == -2 & logMessage._elem.type != 4 & logMessage._elem.type != 13)
             {
                 LogMessage lastelem = Back.Last();
                 if (lastelem._elem.transform == -2 & lastelem._elem.type == logMessage._elem.type & lastelem._elem.index == logMessage._elem.index)
@@ -29,6 +38,18 @@ namespace NetworkDesign
             }
             Back.Add(logMessage);
         }
+
+        /*public void CheckIWandEnt(int id, Building build)
+        {
+            foreach (var elem in Back)
+            {
+                if (elem.buildid == id)
+                {
+                    int id1 = elem.elem.index;
+                    int id2 = elem._elem.index;
+                }
+            }
+        }*/
 
         public Element DeleteLastBack(out Element el)
         {

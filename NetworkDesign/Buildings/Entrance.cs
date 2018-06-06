@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace NetworkDesign
 {
-    public class Entrances
+    public class Entrances: ICloneable
     {
         public GroupOfCircle Enterances = new GroupOfCircle();
         private int rad = 5;
@@ -135,7 +135,7 @@ namespace NetworkDesign
                     p2 = i + 1;
                 }
             }
-            _d = CalcPointToLine(x, y, pol.Points[pol.Points.Count - 1], pol.Points[1]);
+            _d = CalcPointToLine(x, y, pol.Points[pol.Points.Count - 1], pol.Points[0]);
             if (_d < d)
             {
                 d = _d;
@@ -222,6 +222,16 @@ namespace NetworkDesign
         public void DrawTemp()
         {
             Enterances.DrawTempEnt();
+        }
+
+        public object Clone()
+        {
+            return new Entrances
+            {
+                angle = this.angle,
+                step = this.step,
+                Enterances = (GroupOfCircle)this.Enterances.Clone()
+            };
         }
     }
 }

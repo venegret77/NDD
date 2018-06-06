@@ -18,7 +18,7 @@ namespace NetworkDesign
     public class Map
     {
         //Базовые параметры
-        public MapSettings mapSetting;
+        public SizeRenderingArea mapSetting;
         //private SimpleOpenGlControl AnT;
         public int RB = 1; //Какой инструмент выбран //1-линия //2-прямоугольник
         //Для линий
@@ -58,7 +58,7 @@ namespace NetworkDesign
         /// Конструктор класса Map
         /// </summary>
         /// <param name="_MapSetting">Настройки карты</param>
-        public Map(MapSettings _MapSetting)
+        public Map(SizeRenderingArea _MapSetting)
         {
             MainForm.AnT.Height = _MapSetting.Height;
             MainForm.AnT.Width = _MapSetting.Width;
@@ -213,6 +213,28 @@ namespace NetworkDesign
             Gl.glLoadIdentity();
         }
 
+        public void ResizeRenderingArea(int buildid)
+        {
+            int Height = (int)((double)Buildings.Buildings[buildid].sizeRenderingArea.Height * MainForm.zoom);
+            int Width = (int)((double)Buildings.Buildings[buildid].sizeRenderingArea.Width * MainForm.zoom);
+            int Left = (int)((double)Buildings.Buildings[buildid].sizeRenderingArea.Left * MainForm.zoom);
+            int Right = (int)((double)Buildings.Buildings[buildid].sizeRenderingArea.Right * MainForm.zoom);
+            int Top = (int)((double)Buildings.Buildings[buildid].sizeRenderingArea.Top * MainForm.zoom);
+            int Bottom = (int)((double)Buildings.Buildings[buildid].sizeRenderingArea.Bottom * MainForm.zoom);
+            MainForm.AnT.Height = Height;
+            MainForm.AnT.Width = Width;
+            Gl.glViewport(0, 0, Width, Height);
+            // активация проекционной матрицы 
+            Gl.glMatrixMode(Gl.GL_PROJECTION);
+            // очистка матрицы 
+            Gl.glLoadIdentity();
+            // установка перспективы 
+            Glu.gluOrtho2D(Left, Right, Bottom, Top);
+            // установка объектно-видовой матрицы 
+            Gl.glMatrixMode(Gl.GL_MODELVIEW);
+            Gl.glLoadIdentity();
+        }
+
         public void MoveElem(int x, int y)
         {
             if (!isMove & MainForm.activeElem.item != -1)
@@ -248,6 +270,9 @@ namespace NetworkDesign
                     case 8:
                         NetworkElements.NetworkElements[id].MoveElem(x, y, id, NetworkWires);
                         NetworkElements.NetworkElements[id].CalcCenterPoint();
+                        break;
+                    case 10:
+                        MyTexts.MyTexts[id].MoveElem(x, y);
                         break;
                     case 360:
                         Circles.Circles[id].MoveElem(x, y);
@@ -336,7 +361,7 @@ namespace NetworkDesign
         /// Функция для Создания новой карты с новыми параметрами
         /// </summary>
         /// <param name="_mapSettings">Параметры карты</param>
-        public void SetNewSettings(MapSettings _mapSettings)
+        public void SetNewSettings(SizeRenderingArea _mapSettings)
         {
             Map TempMap = new Map
             {
@@ -679,7 +704,10 @@ namespace NetworkDesign
         /// <returns></returns>
         public int RecalcMouseY(int y)
         {
-            return (int)((double)mapSetting.Height / 2d * MainForm.zoom) - y;
+            if (MainForm.drawLevel.Level == -1)
+                return (int)((double)mapSetting.Height / 2d * MainForm.zoom) - y;
+            else
+                return (int)((double)Buildings.Buildings[MainForm.drawLevel.Level].sizeRenderingArea.Height / 2d * MainForm.zoom) - y;
         }
         /// <summary>
         /// Пересчет координаты X из оконных координат в координаты OpenGL
@@ -688,7 +716,10 @@ namespace NetworkDesign
         /// <returns></returns>
         public int RecalcMouseX(int x)
         {
-            return x - (int)((double)mapSetting.Width / 2d * MainForm.zoom);
+            if (MainForm.drawLevel.Level == -1)
+                return x - (int)((double)mapSetting.Width / 2d * MainForm.zoom);
+            else
+                return x - (int)((double)Buildings.Buildings[MainForm.drawLevel.Level].sizeRenderingArea.Width / 2d * MainForm.zoom);
         }
 
         public IDandIW ChechNE(int x, int y)
@@ -726,8 +757,19 @@ namespace NetworkDesign
                     return new IDandIW(IW, true, build);
                 }
             }
-            //Доделать для элементов внутри зданий
             return new IDandIW(-1, false, -1);
+        }
+
+        internal bool SearchText(int x, int y, out int id)
+        {
+            int MT = MyTexts.Search(x, y, MainForm.drawLevel);
+            if (MT != -1)
+            {
+                id = MT;
+                return true;
+            }
+            id = -1;
+            return false;
         }
 
         internal bool SearchNE(int x, int y)
@@ -735,10 +777,17 @@ namespace NetworkDesign
             int NE = NetworkElements.Search(x, y, MainForm.drawLevel);
             if (NE != -1)
             {
+                Element elem = new Element(13, NE, NetworkElements.NetworkElements[NE].Options.Clone(), -4);
                 NESettings nes = new NESettings(NetworkElements.NetworkElements[NE].Options, NetworkElements, ref NetworkElements.NetworkElements[NE].notes);
                 nes.ShowDialog();
+                foreach (var lm in nes.log.Back)
+                {
+                    log.Add(lm);
+                }
                 NetworkElements = nes.NetworkElements;
                 NetworkElements.NetworkElements[NE].Options = nes.Options;
+                Element _elem = new Element(13, NE, NetworkElements.NetworkElements[NE].Options.Clone(), -4);
+                log.Add(new LogMessage("Изменил параметры устройства", elem, _elem));
                 return true;
             }
             return false;

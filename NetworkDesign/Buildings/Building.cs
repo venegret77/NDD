@@ -9,7 +9,7 @@ using Tao.OpenGl;
 
 namespace NetworkDesign
 {
-    public class Building
+    public class Building: ICloneable
     {
         public string Name;
         public int Floors; //0 - подвал если есть, последний - чердак
@@ -18,11 +18,14 @@ namespace NetworkDesign
         public int type = 2; //2 - прямоугольник, 3 - многоугольник, 360 - круг
         public bool open = false;
         public bool delete = true;
+        public double pk = 1d;
+        public int width = 1000;
         //
         public double koef = 1;
         public double alfa = 0;
         public Point MP = new Point();
-        public int Ox, Oy, _Ox, _Oy;
+        public int Ox, Oy;
+        public SizeRenderingArea sizeRenderingArea = new SizeRenderingArea();
         //
         public Polygon MainPolygon = new Polygon();
         public Polygon _MainPolygon = new Polygon();
@@ -46,42 +49,11 @@ namespace NetworkDesign
 
         bool isMoveEnt = false;
         int id = -1;
-        private bool isMoveIW;
+        public bool isMoveIW;
 
         public Building()
         {
             delete = true;
-        }
-
-        /// <summary>
-        /// Конструктор для копирования при создании шаблона
-        /// </summary>
-        /// <param name="_build"></param>
-        public Building(Building _build)
-        {
-            alfa = _build.alfa;
-            basement = _build.basement;
-            delete = _build.delete;
-            Entrances = _build.Entrances;
-            Floors = _build.Floors;
-            floors_name = _build.floors_name;
-            koef = _build.koef;
-            LocalDL = _build.LocalDL;
-            LocalPolygon = _build.LocalPolygon;
-            LocalRectangle = _build.LocalRectangle;
-            loft = _build.loft;
-            MainMapDL = _build.MainMapDL;
-            MainPolygon = _build.MainPolygon;
-            MainRectangle = _build.MainRectangle;
-            MP = _build.MP;
-            Name = _build.Name;
-            type = _build.type;
-            Ox = _build.Ox;
-            Oy = _build.Oy;
-            _Ox = _build._Ox;
-            _Oy = _build._Oy;
-            open = _build.open;
-            InputWires = new InputWire();
         }
 
         internal void DrawTemp()
@@ -90,8 +62,9 @@ namespace NetworkDesign
             InputWires.DrawTemp();
         }
 
-        public Building(string _Name, bool _loft, bool _basement, int floors_count, Polygon _pol, int index)
+        public Building(string _Name, bool _loft, bool _basement, int floors_count, Polygon _pol, int index, int width)
         {
+            this.width = width;
             Name = _Name;
             loft = _loft;
             basement = _basement;
@@ -121,8 +94,9 @@ namespace NetworkDesign
             UpgrateFloors();
         }
 
-        public Building(string _Name, bool _loft, bool _basement, int floors_count, MyRectangle _rect, int index)
+        public Building(string _Name, bool _loft, bool _basement, int floors_count, MyRectangle _rect, int index, int width)
         {
+            this.width = width;
             Name = _Name;
             loft = _loft;
             basement = _basement;
@@ -146,8 +120,9 @@ namespace NetworkDesign
             UpgrateFloors();
         }
 
-        public Building(string _Name, bool _loft, bool _basement, int floors_count, Circle _circle, int index)
+        public Building(string _Name, bool _loft, bool _basement, int floors_count, Circle _circle, int index, int width)
         {
+            this.width = width;
             Name = _Name;
             loft = _loft;
             basement = _basement;
@@ -167,26 +142,8 @@ namespace NetworkDesign
             LocalDL.Level = index;
             LocalDL.Floor = 0;
             MainCircle.DL = MainMapDL;
-            RecalcCircle();
+            GenLocalCircle();
             UpgrateFloors();
-        }
-
-        private void RecalcCircle()
-        {
-            koef = 0;
-            _MainCircle = LocalCircle;
-            LocalCircle = new Circle
-            {
-                delete = false,
-                radius = MainCircle.radius,
-                DL = LocalDL
-            };
-            if (MainForm.AnT.Height >= MainForm.AnT.Width)
-                koef = ((MainForm.AnT.Height / 2) - 150d * MainForm.zoom) / MainCircle.radius;
-            else
-                koef = ((MainForm.AnT.Width / 2) - 150d * MainForm.zoom) / MainCircle.radius;
-            LocalCircle.radius = (int)(LocalCircle.radius * koef);
-            LocalCircle.MainCenterPoint = new Point(0, 0);
         }
 
         bool isInBuild = false;
@@ -608,15 +565,9 @@ namespace NetworkDesign
             _MainRectangle.Points.Add(RotatePoint(-alfa, MainRectangle.Points[0], MainRectangle.Points[3]));
             MP = MainRectangle.Points[0];
             LocalRectangle.CalcMaxMin(out int maxx, out int minx, out int maxy, out int miny);
-            int difx = maxx - minx;
-            int dify = maxy - miny;
-            koef = (double)(MainForm.AnT.Height - 100d * MainForm.zoom) / (double)dify;
-            if (((double)(MainForm.AnT.Width - 100d * MainForm.zoom) / (double)difx) < koef)
-                koef = (double)(MainForm.AnT.Width - 100d * MainForm.zoom) / (double)difx;
-            Ox = (LocalRectangle.Points[0].X + LocalRectangle.Points[1].X + LocalRectangle.Points[2].X + LocalRectangle.Points[3].X) / 4;
-            Oy = (LocalRectangle.Points[0].Y + LocalRectangle.Points[1].Y + LocalRectangle.Points[2].Y + LocalRectangle.Points[3].Y) / 4;
-            _Ox = (MainForm.AnT.Width) / 2;
-            _Oy = (MainForm.AnT.Height) / 2;
+            CalcRederingArea(maxx, minx, maxy, miny, width);
+            //Ox = (LocalRectangle.Points[0].X + LocalRectangle.Points[1].X + LocalRectangle.Points[2].X + LocalRectangle.Points[3].X) / 4;
+            //Oy = (LocalRectangle.Points[0].Y + LocalRectangle.Points[1].Y + LocalRectangle.Points[2].Y + LocalRectangle.Points[3].Y) / 4;
             for (int i = 0; i < 4; i++)
             {
                 double x = LocalRectangle.Points[i].X - Ox;
@@ -679,20 +630,16 @@ namespace NetworkDesign
             }
             MP = LocalPolygon.Points[p1];
             LocalPolygon.CalcMaxMin(out int maxx, out int minx, out int maxy, out int miny);
-            int difx = maxx - minx;
-            int dify = maxy - miny;
-            koef = (double)(MainForm.AnT.Height - 150d * MainForm.zoom) / (double)dify;
-            if (((double)(MainForm.AnT.Width - 150d * MainForm.zoom) / (double)difx) < koef)
-                koef = (double)(MainForm.AnT.Width - 150d * MainForm.zoom) / (double)difx;
-            _Ox = (MainForm.AnT.Width) / 2;
-            _Oy = (MainForm.AnT.Height) / 2;
-            for (int i = 0; i < LocalPolygon.Points.Count; i++)
+            CalcRederingArea(maxx, minx, maxy, miny, width);
+            /*for (int i = 0; i < LocalPolygon.Points.Count; i++)
             {
                 Ox += LocalPolygon.Points[i].X;
                 Oy += LocalPolygon.Points[i].Y;
             }
             Ox /= LocalPolygon.Points.Count;
-            Oy /= LocalPolygon.Points.Count;
+            Oy /= LocalPolygon.Points.Count;*/
+            //Ox = (maxx + minx) / 2;
+            //Oy = (maxy + miny) / 2;
             for (int i = 0; i < LocalPolygon.Points.Count; i++)
             {
                 int x = LocalPolygon.Points[i].X - Ox;
@@ -702,6 +649,42 @@ namespace NetworkDesign
                 LocalPolygon.Points[i] = new Point(x, y);
             }
             LocalPolygon.DL = LocalDL;
+        }
+        /// <summary>
+        /// Генерация круга, отображаемого внутри здания
+        /// </summary>
+        private void GenLocalCircle()
+        {
+            koef = 0;
+            _MainCircle = LocalCircle;
+            LocalCircle = new Circle
+            {
+                delete = false,
+                radius = MainCircle.radius,
+                DL = LocalDL
+            };
+            CalcRederingArea(width);
+            koef = ((sizeRenderingArea.Width / 2) - 50d * MainForm.zoom) / MainCircle.radius;
+            LocalCircle.radius = (int)(LocalCircle.radius * koef);
+            LocalCircle.MainCenterPoint = new Point(0, 0);
+        }
+
+        public void CalcRederingArea(int maxx, int minx, int maxy, int miny, int width)
+        {
+            int _height = maxy - miny;
+            int _width = maxx - minx;
+            pk = (double)_width / (double)_height;
+            sizeRenderingArea = new SizeRenderingArea(Name, (int)((double)width / pk), width);
+            int difx = maxx - minx;
+            koef = (double)(sizeRenderingArea.Width - 50d * MainForm.zoom) / (double)difx;
+            Ox = (maxx + minx) / 2;
+            Oy = (maxy + miny) / 2;
+        }
+
+        public void CalcRederingArea(int width)
+        {
+            pk = 1;
+            sizeRenderingArea = new SizeRenderingArea(Name, width, width);
         }
 
         /// <summary>
@@ -750,6 +733,49 @@ namespace NetworkDesign
                 if (MainForm.filtres.IW)
                     InputWires.Draw();
             }
+        }
+
+        public object Clone()
+        {
+            List<string> _floors_name = new List<string>();
+            foreach (var fn in floors_name)
+                _floors_name.Add(fn);
+            return new Building
+            {
+                alfa = this.alfa,
+                basement = this.basement,
+                delete = false,
+                Entrances = (Entrances)this.Entrances.Clone(),
+                InputWires = (InputWire)this.InputWires.Clone(),
+                Floors = this.Floors,
+                id = this.id,
+                isInBuild = this.isInBuild,
+                isMoveEnt = this.isMoveEnt,
+                isMoveIW = this.isMoveIW,
+                koef = this.koef,
+                LocalDL = this.LocalDL,
+                LocalCircle = (Circle)this.LocalCircle.Clone(),
+                LocalPolygon = (Polygon)this.LocalPolygon.Clone(),
+                LocalRectangle = (MyRectangle)this.LocalRectangle.Clone(),
+                MainCircle = (Circle)this.MainCircle.Clone(),
+                MainPolygon = (Polygon)this.MainPolygon.Clone(),
+                MainRectangle = (MyRectangle)this.MainRectangle.Clone(),
+                loft = this.loft,
+                MainMapDL = this.MainMapDL,
+                MP = new Point(this.MP.X, this.MP.Y),
+                Name = this.Name,
+                open = this.open,
+                Ox = this.Ox,
+                Oy = this.Oy,
+                type = this.type,
+                _MainCircle = (Circle)this._MainCircle.Clone(),
+                _MainPolygon = (Polygon)this._MainPolygon.Clone(),
+                _MainRectangle = (MyRectangle)this._MainRectangle.Clone(),
+                floors_name = _floors_name,
+                pk = this.pk,
+                width = this.width,
+                sizeRenderingArea = this.sizeRenderingArea
+            };
         }
     }
 }

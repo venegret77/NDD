@@ -23,6 +23,7 @@ namespace NetworkDesign.NetworkElements
         string _Name = "";
         Int64 kr = 1000000;
         public Notes notes;
+        public Log log = new Log();
 
         public NESettings()
         {
@@ -118,13 +119,6 @@ namespace NetworkDesign.NetworkElements
             label5.Text = "Свободных портов: " + ports;
         }
 
-        private void toolStripButton1_Click(object sender, EventArgs e)
-        {
-            add = true;
-            textBox1.Enabled = true;
-            textBox1.Focus();
-        }
-
         private void textBox1_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
@@ -132,31 +126,11 @@ namespace NetworkDesign.NetworkElements
                 string text = textBox1.Text;
                 if (add)
                 {
-                    bool copy = false;
-                    foreach (var param in MainForm.parametrs.Params)
-                    {
-                        if (param == text)
-                            copy = true;
-                    }
-                    if (!copy)
-                    {
-                        MainForm.parametrs.Add(text);
-                        listBox2.Items.Add(text);
-                        listBox1.Items.Add("");
-                        add = false;
-                    }
-                    else
-                    {
-                        MessageBox.Show("Такой параметр уже добавлен");
-                        add = false;
-                    }
+                    AddParam();
                 }
                 else if (edit)
                 {
-                    MainForm.parametrs.Edit(id, text);
-                    listBox2.Items[id] = text;
-                    edit = false;
-                    NetworkElements.UpdateOptions(id, "");
+                    EditParam();
                 }
                 else
                 {
@@ -170,8 +144,8 @@ namespace NetworkDesign.NetworkElements
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            toolStripButton2.Enabled = false;
-            toolStripButton3.Enabled = false;
+            button6.Enabled = false;
+            button7.Enabled = false;
             textBox1.Clear();
             if (listBox1.SelectedIndex == -1)
             {
@@ -181,8 +155,8 @@ namespace NetworkDesign.NetworkElements
             {
                 if (listBox1.SelectedIndex >= requiredparameters)
                 {
-                    toolStripButton2.Enabled = true;
-                    toolStripButton3.Enabled = true;
+                    button6.Enabled = true;
+                    button7.Enabled = true;
                 }
                 listBox2.SelectedIndex = listBox1.SelectedIndex;
                 id = listBox2.SelectedIndex;
@@ -192,48 +166,17 @@ namespace NetworkDesign.NetworkElements
             }
         }
 
-        private void toolStripButton2_Click(object sender, EventArgs e)
-        {
-            edit = true;
-            id = listBox2.SelectedIndex;
-            textBox1.Text = listBox2.Items[id].ToString();
-            textBox1.Enabled = true;
-            textBox1.Focus();
-        }
-
-        private void toolStripButton3_Click(object sender, EventArgs e)
-        {
-            if (MessageBox.Show("", "Удалить?", MessageBoxButtons.YesNo) == DialogResult.Yes)
-            {
-                if (Check())
-                {
-                    textBox1.Clear();
-                    MainForm.parametrs.Remove(id);
-                    //operations.Add(new RenameDelete(true, id));
-                    NetworkElements.UpdateOptions(id);
-                    listBox1.Items.RemoveAt(id);
-                    listBox2.Items.RemoveAt(id);
-                    listBox1.SelectedIndex = -1;
-                    listBox2.SelectedIndex = -1;
-                }
-                else
-                {
-                    MessageBox.Show("Невозможно удалить параметр, т.к. он используется в других устройствах");
-                }
-            }
-        }
-
         /// <summary>
         /// Проверка на то, используется ли данный параметр в других устройствах
         /// </summary>
         /// <returns>true - параметр не найден среди устройств; false - параметр найден среди устройств</returns>
-        private bool Check()
+        private bool Check(int id, string name)
         {
             foreach (var ne in NetworkElements.NetworkElements)
             {
                 foreach (var param in ne.Options.Options)
                 {
-                    if (param.ID == id & param.Name == _Name & !param.isEmpty())
+                    if (param.ID == id & param.Name == name & !param.isEmpty())
                         return false;
                 }
             }
@@ -292,8 +235,8 @@ namespace NetworkDesign.NetworkElements
 
         private void listBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
-            toolStripButton2.Enabled = false;
-            toolStripButton3.Enabled = false;
+            button6.Enabled = false;
+            button7.Enabled = false;
             textBox1.Clear();
             if (listBox2.SelectedIndex == -1)
             {
@@ -303,8 +246,8 @@ namespace NetworkDesign.NetworkElements
             {
                 if (listBox2.SelectedIndex >= requiredparameters)
                 {
-                    toolStripButton2.Enabled = true;
-                    toolStripButton3.Enabled = true;
+                    button6.Enabled = true;
+                    button7.Enabled = true;
                 }
                 listBox1.SelectedIndex = listBox2.SelectedIndex;
                 id = listBox2.SelectedIndex;
@@ -407,6 +350,99 @@ namespace NetworkDesign.NetworkElements
             {
                 listBox3.Items.RemoveAt(listBox3.SelectedIndex);
             }
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            if (add)
+            {
+                AddParam();
+            }
+            else
+            {
+                add = true;
+                textBox1.Enabled = true;
+                textBox1.Focus();
+            }
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            if (edit)
+            {
+                EditParam();
+            }
+            else
+            {
+                edit = true;
+                id = listBox2.SelectedIndex;
+                textBox1.Text = listBox2.Items[id].ToString();
+                textBox1.Enabled = true;
+                textBox1.Focus();
+            }
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("", "Удалить?", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                if (Check(id, listBox2.SelectedItem.ToString()))
+                {
+                    textBox1.Clear();
+                    Element elem = new Element(13, id, MainForm.parametrs.Params[id], -3);
+                    Element _elem = new Element(13, id, "", -3);
+                    log.Add(new LogMessage("Удалил параметр", elem, _elem));
+                    MainForm.parametrs.Remove(id);
+                    //operations.Add(new RenameDelete(true, id));
+                    NetworkElements.UpdateOptions(id);
+                    listBox1.Items.RemoveAt(id);
+                    listBox2.Items.RemoveAt(id);
+                    listBox1.SelectedIndex = -1;
+                    listBox2.SelectedIndex = -1;
+                }
+                else
+                {
+                    MessageBox.Show("Невозможно удалить параметр, т.к. он используется в других устройствах");
+                }
+            }
+        }
+
+        private void AddParam()
+        {
+            bool copy = false;
+            foreach (var param in MainForm.parametrs.Params)
+            {
+                if (param == textBox1.Text)
+                    copy = true;
+            }
+            if (!copy)
+            {
+                MainForm.parametrs.Add(textBox1.Text);
+                int lastindex = MainForm.parametrs.Params.Count - 1;
+                Element elem = new Element(13, lastindex, "", -1);
+                Element _elem = new Element(13, lastindex, MainForm.parametrs.Params[lastindex], -1);
+                log.Add(new LogMessage("Добавил параметр", elem, _elem));
+                listBox2.Items.Add(textBox1.Text);
+                listBox1.Items.Add("");
+                add = false;
+            }
+            else
+            {
+                MessageBox.Show("Такой параметр уже добавлен");
+                add = false;
+            }
+        }
+
+        private void EditParam()
+        {
+            Element elem = new Element(13, id, MainForm.parametrs.Params[id], -2);
+            MainForm.parametrs.Edit(id, textBox1.Text);
+            Element _elem = new Element(13, id, MainForm.parametrs.Params[id], -2);
+            log.Add(new LogMessage("Изменил параметр", elem, _elem));
+            listBox2.Items[id] = textBox1.Text;
+            edit = false;
+            NetworkElements.UpdateOptions(id, "");
+            int lastindex = MainForm.parametrs.Params.Count;
         }
     }
 }

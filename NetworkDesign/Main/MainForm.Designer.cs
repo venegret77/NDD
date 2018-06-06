@@ -90,9 +90,9 @@
             this.редактированиеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.pingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.FloorUP = new System.Windows.Forms.Button();
             this.FloorDown = new System.Windows.Forms.Button();
-            this.panel1 = new System.Windows.Forms.Panel();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.toolStrip1.SuspendLayout();
@@ -704,38 +704,6 @@
             this.pingToolStripMenuItem.Text = "Ping";
             this.pingToolStripMenuItem.Click += new System.EventHandler(this.pingToolStripMenuItem_Click);
             // 
-            // FloorUP
-            // 
-            this.FloorUP.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.FloorUP.BackColor = System.Drawing.Color.Transparent;
-            this.FloorUP.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("FloorUP.BackgroundImage")));
-            this.FloorUP.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.FloorUP.FlatAppearance.BorderSize = 0;
-            this.FloorUP.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.FloorUP.Location = new System.Drawing.Point(942, 234);
-            this.FloorUP.Name = "FloorUP";
-            this.FloorUP.Size = new System.Drawing.Size(50, 50);
-            this.FloorUP.TabIndex = 0;
-            this.FloorUP.UseVisualStyleBackColor = false;
-            this.FloorUP.Visible = false;
-            this.FloorUP.Click += new System.EventHandler(this.FloorUP_Click);
-            // 
-            // FloorDown
-            // 
-            this.FloorDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.FloorDown.BackColor = System.Drawing.Color.Transparent;
-            this.FloorDown.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("FloorDown.BackgroundImage")));
-            this.FloorDown.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.FloorDown.FlatAppearance.BorderSize = 0;
-            this.FloorDown.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.FloorDown.Location = new System.Drawing.Point(942, 280);
-            this.FloorDown.Name = "FloorDown";
-            this.FloorDown.Size = new System.Drawing.Size(50, 50);
-            this.FloorDown.TabIndex = 1;
-            this.FloorDown.UseVisualStyleBackColor = false;
-            this.FloorDown.Visible = false;
-            this.FloorDown.Click += new System.EventHandler(this.FloorDown_Click);
-            // 
             // panel1
             // 
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -749,6 +717,38 @@
             this.panel1.Size = new System.Drawing.Size(995, 532);
             this.panel1.TabIndex = 2;
             this.panel1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.panel1_Scroll_1);
+            // 
+            // FloorUP
+            // 
+            this.FloorUP.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.FloorUP.BackColor = System.Drawing.Color.Transparent;
+            this.FloorUP.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("FloorUP.BackgroundImage")));
+            this.FloorUP.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.FloorUP.FlatAppearance.BorderSize = 0;
+            this.FloorUP.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.FloorUP.Location = new System.Drawing.Point(919, 184);
+            this.FloorUP.Name = "FloorUP";
+            this.FloorUP.Size = new System.Drawing.Size(50, 50);
+            this.FloorUP.TabIndex = 0;
+            this.FloorUP.UseVisualStyleBackColor = false;
+            this.FloorUP.Visible = false;
+            this.FloorUP.Click += new System.EventHandler(this.FloorUP_Click);
+            // 
+            // FloorDown
+            // 
+            this.FloorDown.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.FloorDown.BackColor = System.Drawing.Color.Transparent;
+            this.FloorDown.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("FloorDown.BackgroundImage")));
+            this.FloorDown.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.FloorDown.FlatAppearance.BorderSize = 0;
+            this.FloorDown.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.FloorDown.Location = new System.Drawing.Point(919, 231);
+            this.FloorDown.Name = "FloorDown";
+            this.FloorDown.Size = new System.Drawing.Size(50, 50);
+            this.FloorDown.TabIndex = 1;
+            this.FloorDown.UseVisualStyleBackColor = false;
+            this.FloorDown.Visible = false;
+            this.FloorDown.Click += new System.EventHandler(this.FloorDown_Click);
             // 
             // MainForm
             // 
@@ -840,9 +840,9 @@
         private System.Windows.Forms.ToolStripButton toolStripButton1;
         private System.Windows.Forms.ToolStripButton toolStripButton2;
         private System.Windows.Forms.ToolStripMenuItem pingToolStripMenuItem;
-        private System.Windows.Forms.Button FloorUP;
-        private System.Windows.Forms.Button FloorDown;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Button FloorDown;
+        private System.Windows.Forms.Button FloorUP;
     }
 }
 

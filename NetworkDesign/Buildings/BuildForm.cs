@@ -17,11 +17,13 @@ namespace NetworkDesign
         public bool basement = false; //Подвал
         public int count = 1;
         public DialogResult dialogResult;
+        public int width = 800;
 
         public BuildForm()
         {
             InitializeComponent();
             StartPosition = FormStartPosition.CenterParent;
+            numericUpDown2.Value = numericUpDown2.Value = 1000;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -54,6 +56,11 @@ namespace NetworkDesign
                 MessageBox.Show("Пожалуйста введите имя здания");
                 e.Cancel = true;
             }
+        }
+
+        private void numericUpDown2_ValueChanged(object sender, EventArgs e)
+        {
+            width = (int)numericUpDown2.Value;
         }
     }
 }
