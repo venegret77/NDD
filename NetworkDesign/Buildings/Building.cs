@@ -19,7 +19,6 @@ namespace NetworkDesign
         public bool open = false;
         public bool delete = true;
         public double pk = 1d;
-        public int width = 1000;
         //
         public double koef = 1;
         public double alfa = 0;
@@ -64,7 +63,7 @@ namespace NetworkDesign
 
         public Building(string _Name, bool _loft, bool _basement, int floors_count, Polygon _pol, int index, int width)
         {
-            this.width = width;
+            sizeRenderingArea = new SizeRenderingArea(Name, (int)((double)width / pk), width);
             Name = _Name;
             loft = _loft;
             basement = _basement;
@@ -96,7 +95,7 @@ namespace NetworkDesign
 
         public Building(string _Name, bool _loft, bool _basement, int floors_count, MyRectangle _rect, int index, int width)
         {
-            this.width = width;
+            sizeRenderingArea = new SizeRenderingArea(Name, (int)((double)width / pk), width);
             Name = _Name;
             loft = _loft;
             basement = _basement;
@@ -122,7 +121,7 @@ namespace NetworkDesign
 
         public Building(string _Name, bool _loft, bool _basement, int floors_count, Circle _circle, int index, int width)
         {
-            this.width = width;
+            sizeRenderingArea = new SizeRenderingArea(Name, (int)((double)width / pk), width);
             Name = _Name;
             loft = _loft;
             basement = _basement;
@@ -536,6 +535,8 @@ namespace NetworkDesign
         /// </summary>
         private void GenLocalRect()
         {
+            LocalRectangle = new MyRectangle();
+            _MainRectangle = new MyRectangle();
             //Считаем угол наклона в зависимости от длин сторон
             double distance = CalcAB(MainRectangle.Points[0], MainRectangle.Points[1]);
             double _distance = CalcAB(MainRectangle.Points[1], MainRectangle.Points[3]);
@@ -565,7 +566,7 @@ namespace NetworkDesign
             _MainRectangle.Points.Add(RotatePoint(-alfa, MainRectangle.Points[0], MainRectangle.Points[3]));
             MP = MainRectangle.Points[0];
             LocalRectangle.CalcMaxMin(out int maxx, out int minx, out int maxy, out int miny);
-            CalcRederingArea(maxx, minx, maxy, miny, width);
+            CalcRederingArea(maxx, minx, maxy, miny);
             //Ox = (LocalRectangle.Points[0].X + LocalRectangle.Points[1].X + LocalRectangle.Points[2].X + LocalRectangle.Points[3].X) / 4;
             //Oy = (LocalRectangle.Points[0].Y + LocalRectangle.Points[1].Y + LocalRectangle.Points[2].Y + LocalRectangle.Points[3].Y) / 4;
             for (int i = 0; i < 4; i++)
@@ -630,7 +631,7 @@ namespace NetworkDesign
             }
             MP = LocalPolygon.Points[p1];
             LocalPolygon.CalcMaxMin(out int maxx, out int minx, out int maxy, out int miny);
-            CalcRederingArea(maxx, minx, maxy, miny, width);
+            CalcRederingArea(maxx, minx, maxy, miny);
             /*for (int i = 0; i < LocalPolygon.Points.Count; i++)
             {
                 Ox += LocalPolygon.Points[i].X;
@@ -663,28 +664,22 @@ namespace NetworkDesign
                 radius = MainCircle.radius,
                 DL = LocalDL
             };
-            CalcRederingArea(width);
-            koef = ((sizeRenderingArea.Width / 2) - 50d * MainForm.zoom) / MainCircle.radius;
+            pk = 1;
+            koef = ((sizeRenderingArea.Width / 2) - (50d * MainForm.zoom)) / MainCircle.radius;
             LocalCircle.radius = (int)(LocalCircle.radius * koef);
             LocalCircle.MainCenterPoint = new Point(0, 0);
         }
 
-        public void CalcRederingArea(int maxx, int minx, int maxy, int miny, int width)
+        public void CalcRederingArea(int maxx, int minx, int maxy, int miny)
         {
             int _height = maxy - miny;
             int _width = maxx - minx;
             pk = (double)_width / (double)_height;
-            sizeRenderingArea = new SizeRenderingArea(Name, (int)((double)width / pk), width);
+            sizeRenderingArea = new SizeRenderingArea(Name, (int)((double)sizeRenderingArea.Width / pk), sizeRenderingArea.Width);
             int difx = maxx - minx;
-            koef = (double)(sizeRenderingArea.Width - 50d * MainForm.zoom) / (double)difx;
+            koef = (double)(sizeRenderingArea.Width - (50d * MainForm.zoom)) / (double)difx;
             Ox = (maxx + minx) / 2;
             Oy = (maxy + miny) / 2;
-        }
-
-        public void CalcRederingArea(int width)
-        {
-            pk = 1;
-            sizeRenderingArea = new SizeRenderingArea(Name, width, width);
         }
 
         /// <summary>
@@ -773,9 +768,33 @@ namespace NetworkDesign
                 _MainRectangle = (MyRectangle)this._MainRectangle.Clone(),
                 floors_name = _floors_name,
                 pk = this.pk,
-                width = this.width,
                 sizeRenderingArea = this.sizeRenderingArea
             };
+        }
+
+        internal void RefreshLocal()
+        {
+            if (type == 3)
+            {
+                GenLocalPolygon();
+            }
+            else if (type == 2)
+            {
+                GenLocalRect();
+            }
+            else if (type == 360)
+            {
+                GenLocalCircle();
+            }
+            RecalcLocalPoints();
+        }
+
+        internal void RecalcLocalPoints()
+        {
+            foreach (var iw in InputWires.InputWires.Circles)
+                iw.LocalCenterPoint = CalcLocalPoint(iw.MainCenterPoint);
+            foreach (var ent in Entrances.Enterances.Circles)
+                ent.LocalCenterPoint = CalcLocalPoint(ent.MainCenterPoint);
         }
     }
 }

@@ -151,7 +151,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Main\Action.cs" />
+    <Compile Include="Main\StartForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Main\StartForm.Designer.cs">
+      <DependentUpon>StartForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NotUsed\Action.cs" />
     <Compile Include="Main\ActiveElem.cs" />
     <Compile Include="GeometricElements\Circle.cs" />
     <Compile Include="GeometricElements\GeometricFigure.cs" />
@@ -325,9 +331,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="NotUsed\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="Resources\cursor.png" />
   </ItemGroup>

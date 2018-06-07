@@ -18,7 +18,7 @@ namespace NetworkDesign
     public class Map
     {
         //Базовые параметры
-        public SizeRenderingArea mapSetting;
+        public SizeRenderingArea sizeRenderingArea;
         //private SimpleOpenGlControl AnT;
         public int RB = 1; //Какой инструмент выбран //1-линия //2-прямоугольник
         //Для линий
@@ -90,7 +90,7 @@ namespace NetworkDesign
             Gl.glBlendFunc(Gl.GL_SRC_ALPHA, Gl.GL_ONE_MINUS_SRC_ALPHA);
             // начальные настройки OpenGL 
             //Gl.glEnable( Gl.GL_DEPTH_TEST);
-            mapSetting = _MapSetting;
+            sizeRenderingArea = _MapSetting;
             RenderTimer.Interval = 15;
             RenderTimer.Tick += RenderTimer_Tick;
             RenderTimer.Start();
@@ -160,11 +160,215 @@ namespace NetworkDesign
             MainForm.AnT.Invalidate();
         }
 
+        internal void СlipRenderingArea(DrawLevel dl)
+        {
+            int minx = 0;
+            int maxx = 0;
+            int miny = 0;
+            int maxy = 0;
+            List<int> Xs = new List<int>();
+            List<int> Ys = new List<int>();
+            #region Ищем все точки
+            foreach (var line in Lines.Lines)
+            {
+                if (line.DL == dl)
+                {
+                    foreach (var p in line.Points)
+                    {
+                        Xs.Add(p.X);
+                        Ys.Add(p.Y);
+                    }
+                }
+            }
+            foreach (var rect in Rectangles.Rectangles)
+            {
+                if (rect.DL == dl)
+                {
+                    foreach (var p in rect.Points)
+                    {
+                        Xs.Add(p.X);
+                        Ys.Add(p.Y);
+                    }
+                }
+            }
+            foreach (var pol in Polygons.Polygons)
+            {
+                if (pol.DL == dl)
+                {
+                    foreach (var p in pol.Points)
+                    {
+                        Xs.Add(p.X);
+                        Ys.Add(p.Y);
+                    }
+                }
+            }
+            foreach (var nw in NetworkWires.NetworkWires)
+            {
+                if (nw.DL == dl)
+                {
+                    foreach (var p in nw.Points)
+                    {
+                        Xs.Add(p.X);
+                        Ys.Add(p.Y);
+                    }
+                }
+            }
+            foreach (var cir in Circles.Circles)
+            {
+                if (cir.DL == dl | cir.MainDL == dl)
+                {
+                    Xs.Add(cir.MainCenterPoint.X + cir.radius);
+                    Ys.Add(cir.MainCenterPoint.Y + cir.radius);
+                    Xs.Add(cir.MainCenterPoint.X + cir.radius);
+                    Ys.Add(cir.MainCenterPoint.Y - cir.radius);
+                    Xs.Add(cir.MainCenterPoint.X - cir.radius);
+                    Ys.Add(cir.MainCenterPoint.Y + cir.radius);
+                    Xs.Add(cir.MainCenterPoint.X - cir.radius);
+                    Ys.Add(cir.MainCenterPoint.Y - cir.radius);
+                }
+            }
+            foreach (var build in Buildings.Buildings)
+            {
+                if (build.MainMapDL == dl)
+                {
+                    if (build.type == 2)
+                    {
+                        var rect = build.MainRectangle;
+                        foreach (var p in rect.Points)
+                        {
+                            Xs.Add(p.X);
+                            Ys.Add(p.Y);
+                        }
+                    }
+                    else if (build.type == 3)
+                    {
+                        var pol = build.MainPolygon;
+                        foreach (var p in pol.Points)
+                        {
+                            Xs.Add(p.X);
+                            Ys.Add(p.Y);
+                        }
+                    }
+                    else if (build.type == 360)
+                    {
+                        var cir = build.MainCircle;
+                        Xs.Add(cir.MainCenterPoint.X + cir.radius);
+                        Ys.Add(cir.MainCenterPoint.Y + cir.radius);
+                        Xs.Add(cir.MainCenterPoint.X + cir.radius);
+                        Ys.Add(cir.MainCenterPoint.Y - cir.radius);
+                        Xs.Add(cir.MainCenterPoint.X - cir.radius);
+                        Ys.Add(cir.MainCenterPoint.Y + cir.radius);
+                        Xs.Add(cir.MainCenterPoint.X - cir.radius);
+                        Ys.Add(cir.MainCenterPoint.Y - cir.radius);
+                    }
+                }
+            }
+            foreach (var mt in MyTexts.MyTexts)
+            {
+                if (mt.DL == dl)
+                {
+                    Xs.Add(mt.location.X);
+                    Ys.Add(mt.location.Y);
+                    Xs.Add(mt.location.X + mt.size.Width);
+                    Ys.Add(mt.location.Y - mt.size.Height);
+                }
+            }
+            foreach (var ne in NetworkElements.NetworkElements)
+            {
+                if (ne.DL == dl)
+                {
+                    Xs.Add(ne.texture.location.X);
+                    Ys.Add(ne.texture.location.Y);
+                    Xs.Add(ne.texture.location.X + (int)ne.texture.width);
+                    Ys.Add(ne.texture.location.Y + (int)ne.texture.width);
+                }
+            }
+#endregion
+            foreach (var x in Xs)
+            {
+                if (x < minx)
+                    minx = x;
+                else if (x > maxx)
+                    maxx = x;
+            }
+            foreach (var y in Ys)
+            {
+                if (y < miny)
+                    miny = y;
+                else if (y > maxy)
+                    maxy = y;
+            }
+            minx -= 100;
+            maxx += 100;
+            miny -= 100;
+            maxy += 100;
+            if (dl.Level == -1)
+            {
+                Element elem = new Element(14, dl.Level, sizeRenderingArea, -2);
+                CalcHandW(out int height, out int width, minx, maxx, miny, maxy);
+                sizeRenderingArea = new SizeRenderingArea(sizeRenderingArea.Name, height, width);
+                ResizeRenderingArea();
+                Element _elem = new Element(14, dl.Level, sizeRenderingArea, -2);
+                log.Add(new LogMessage("Изменил размеры области отрисовки", elem, _elem));
+            }
+            else
+            {
+                Element elem = new Element(14, dl.Level, Buildings.Buildings[dl.Level].Clone(), -2);
+                CalcHandW(out int height, out int width, minx, maxx, miny, maxy);
+                double pk = Buildings.Buildings[dl.Level].pk;
+                if (height * pk > width)
+                    width = (int)((double)height * pk);
+                else
+                    height = (int)((double)width / pk);
+                Buildings.Buildings[dl.Level].sizeRenderingArea = new SizeRenderingArea(Buildings.Buildings[dl.Level].sizeRenderingArea.Name, height, width);
+                ResizeRenderingArea(dl.Level);
+                Buildings.Buildings[dl.Level].RefreshLocal();
+                Element _elem = new Element(14, dl.Level, Buildings.Buildings[dl.Level].Clone(), -2);
+                log.Add(new LogMessage("Изменил размеры области отрисовки", elem, _elem));
+            }
+        }
+
+        private void CalcHandW(out int height, out int width, int minx, int maxx, int miny, int maxy)
+        {
+            if (minx < 0 & maxx > 0)
+            {
+                if (-minx > maxx)
+                    maxx = -minx;
+                else
+                    minx = -maxx;
+            }
+            else if (minx < 0 & maxx < 0)
+            {
+                maxx = -minx;
+            }
+            else if (minx > 0 & maxx > 0)
+            {
+                minx = -maxx;
+            }
+            if (miny < 0 & maxy > 0)
+            {
+                if (-miny > maxy)
+                    maxy = -miny;
+                else
+                    miny = -maxy;
+            }
+            else if (miny < 0 & maxy < 0)
+            {
+                maxy = -miny;
+            }
+            else if (miny > 0 & maxy > 0)
+            {
+                miny = -maxy;
+            }
+            height = maxy - miny;
+            width = maxx - minx;
+        }
+
         public void ExportListNE(string path)
         {
             using (StreamWriter sw = new StreamWriter(path, false, Encoding.Default))
             {
-                sw.WriteLine("Список элементов для карты сети " + mapSetting.Name);
+                sw.WriteLine("Список элементов для карты сети " + sizeRenderingArea.Name);
                 for (int i = 0; i < Buildings.Buildings.Count; i++)
                 {
                     sw.WriteLine("Здание " + Buildings.Buildings[i].Name + ":");
@@ -193,12 +397,12 @@ namespace NetworkDesign
 
         public void ResizeRenderingArea()
         {
-            int Height = (int)((double)mapSetting.Height * MainForm.zoom);
-            int Width = (int)((double)mapSetting.Width * MainForm.zoom);
-            int Left = (int)((double)mapSetting.Left * MainForm.zoom);
-            int Right = (int)((double)mapSetting.Right * MainForm.zoom);
-            int Top = (int)((double)mapSetting.Top * MainForm.zoom);
-            int Bottom = (int)((double)mapSetting.Bottom * MainForm.zoom);
+            int Height = (int)((double)sizeRenderingArea.Height * MainForm.zoom);
+            int Width = (int)((double)sizeRenderingArea.Width * MainForm.zoom);
+            int Left = (int)((double)sizeRenderingArea.Left * MainForm.zoom);
+            int Right = (int)((double)sizeRenderingArea.Right * MainForm.zoom);
+            int Top = (int)((double)sizeRenderingArea.Top * MainForm.zoom);
+            int Bottom = (int)((double)sizeRenderingArea.Bottom * MainForm.zoom);
             MainForm.AnT.Height = Height;
             MainForm.AnT.Width = Width;
             Gl.glViewport(0, 0, Width, Height);
@@ -339,9 +543,9 @@ namespace NetworkDesign
         public void MapLoad(Map TempMap)
         {
             RB = 0;
-            mapSetting = TempMap.mapSetting;
-            MainForm.AnT.Height = mapSetting.Height;
-            MainForm.AnT.Width = mapSetting.Width;
+            sizeRenderingArea = TempMap.sizeRenderingArea;
+            MainForm.AnT.Height = sizeRenderingArea.Height;
+            MainForm.AnT.Width = sizeRenderingArea.Width;
             RB = TempMap.RB;
             Rectangles = TempMap.Rectangles;
             Lines = TempMap.Lines;
@@ -365,7 +569,7 @@ namespace NetworkDesign
         {
             Map TempMap = new Map
             {
-                mapSetting = _mapSettings
+                sizeRenderingArea = _mapSettings
             };
             MainForm.AnT.Height = _mapSettings.Height;
             MainForm.AnT.Width = _mapSettings.Width;
@@ -705,7 +909,7 @@ namespace NetworkDesign
         public int RecalcMouseY(int y)
         {
             if (MainForm.drawLevel.Level == -1)
-                return (int)((double)mapSetting.Height / 2d * MainForm.zoom) - y;
+                return (int)((double)sizeRenderingArea.Height / 2d * MainForm.zoom) - y;
             else
                 return (int)((double)Buildings.Buildings[MainForm.drawLevel.Level].sizeRenderingArea.Height / 2d * MainForm.zoom) - y;
         }
@@ -717,7 +921,7 @@ namespace NetworkDesign
         public int RecalcMouseX(int x)
         {
             if (MainForm.drawLevel.Level == -1)
-                return x - (int)((double)mapSetting.Width / 2d * MainForm.zoom);
+                return x - (int)((double)sizeRenderingArea.Width / 2d * MainForm.zoom);
             else
                 return x - (int)((double)Buildings.Buildings[MainForm.drawLevel.Level].sizeRenderingArea.Width / 2d * MainForm.zoom);
         }

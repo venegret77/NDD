@@ -344,7 +344,7 @@ namespace NetworkDesign
             radius = (int)((Math.Abs(MainCenterPoint.X - x) + Math.Abs(MainCenterPoint.Y - y)));
         }
 
-        public override void CalcMaxMin(out int maxx, out int minx, out int maxy, out int miny)
+        public override void CalcMaxMinWidthZoom(out int maxx, out int minx, out int maxy, out int miny)
         {
             throw new NotImplementedException();
         }

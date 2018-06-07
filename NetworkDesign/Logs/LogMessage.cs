@@ -34,6 +34,8 @@ namespace NetworkDesign
 
         public LogMessage(string _Text, Element elem_, Element _elem_, int _buildid)
         {
+            username = MainForm.user.DisplayName;
+            userid = MainForm.user.GetHashCode();
             dateTime = DateTime.Now;
             Text = _Text;
             elem = elem_;

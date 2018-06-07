@@ -20,7 +20,11 @@ namespace NetworkDesign
 {
     public partial class MainForm : Form
     {
+        #region Инициализация
         #region Объявление переменных
+        private bool isResizeMap = false;
+        Element elem = new Element();
+        Element _elem = new Element();
         public static UserPrincipal user;
         public static bool edit;
         SizeRenderingArea DefaultSettings = new SizeRenderingArea("DefaultMap", 1000, 1000);
@@ -153,6 +157,7 @@ namespace NetworkDesign
             FloorUP.FlatAppearance.BorderSize = 0;
             FloorUP.FlatStyle = FlatStyle.Flat;
         }
+        #endregion
         #region Обработка кликов мыши для различных инструментов
         private void MouseLines(int x, int y)
         {
@@ -349,7 +354,7 @@ namespace NetworkDesign
             textid = id;
             focusbox.Focus();
             Point location = GenZoomPoint(MyMap.MyTexts.MyTexts[textid].location);
-            Point _location = new Point(location.X + (int)((double)MyMap.mapSetting.Width * zoom / 2d), (int)((double)MyMap.mapSetting.Height * zoom / 2d) - location.Y);
+            Point _location = new Point(location.X + (int)((double)MyMap.sizeRenderingArea.Width * zoom / 2d), (int)((double)MyMap.sizeRenderingArea.Height * zoom / 2d) - location.Y);
             float fontsize = MyMap.MyTexts.MyTexts[textid].fontsize;
             Size size = new Size((int)((double)MyMap.MyTexts.MyTexts[textid].size.Width * zoom), (int)((double)MyMap.MyTexts.MyTexts[textid].size.Height * zoom));
             string text = MyMap.MyTexts.MyTexts[textid].text;
@@ -457,9 +462,10 @@ namespace NetworkDesign
             }
         }
 
-        
+
 
         #endregion
+        #region Работа с мышью на области отрисовки
         /// <summary>
         /// Событие нажатия мыши по области отрисовки
         /// </summary>
@@ -471,6 +477,25 @@ namespace NetworkDesign
                 panel1.AutoScrollPosition = new Point(-asp.X, -asp.Y);
             int y = MyMap.RecalcMouseY(e.Y);
             int x = MyMap.RecalcMouseX(e.X);
+            if (e.Button == MouseButtons.Left)
+            {
+                if (drawLevel.Level == -1)
+                {
+                    if (ChechEdges(x, y))
+                    {
+                        elem = new Element(14, drawLevel.Level, MyMap.sizeRenderingArea, -2);
+                        isResizeMap = true;
+                    }
+                }
+                else
+                {
+                    if (ChechEdges(x, y, drawLevel.Level))
+                    {
+                        elem = new Element(14, drawLevel.Level, MyMap.Buildings.Buildings[drawLevel.Level].Clone(), -2);
+                        isResizeMap = true;
+                    }
+                }
+            }
             if (MyMap.RB >= nebutnscount & MyMap.RB != 360)
             {
                 if (e.Button == MouseButtons.Left)
@@ -686,10 +711,24 @@ namespace NetworkDesign
         /// <param name="e"></param>
         private void AnT_MouseUp(object sender, MouseEventArgs e)
         {
+
             panel1.AutoScrollPosition = new Point(-asp.X, -asp.Y);
             int difx = asp.X - panel1.AutoScrollPosition.X;
             int dify = asp.Y - panel1.AutoScrollPosition.Y;
             panel1.AutoScrollPosition = new Point(-difx, -dify);
+            if (isResizeMap)
+            {
+                if (drawLevel.Level == -1)
+                    _elem = new Element(14, drawLevel.Level, MyMap.sizeRenderingArea, -2);
+                else
+                {
+                    MyMap.Buildings.Buildings[drawLevel.Level].RefreshLocal();
+                    _elem = new Element(14, drawLevel.Level, MyMap.Buildings.Buildings[drawLevel.Level].Clone(), -2);
+                }
+                MyMap.log.Add(new LogMessage("Изменил размеры области отрисовки", elem, _elem));
+                isResizeMap = false;
+                CheckButtons(true);
+            }
             if (e.Button == MouseButtons.Left)
             {
                 switch (MyMap.RB)
@@ -725,7 +764,32 @@ namespace NetworkDesign
             int x = MyMap.RecalcMouseX(e.X);
             if (e.Button == MouseButtons.Left)
             {
-                ChechEdges(x, y);
+                if (isResizeMap)
+                {
+                    if (drawLevel.Level == -1)
+                        ChechEdges(x, y);
+                    else
+                        ChechEdges(x, y, drawLevel.Level);
+                }
+                else
+                {
+                    if (drawLevel.Level == -1)
+                    {
+                        if (ChechEdges(x, y))
+                        {
+                            elem = new Element(14, drawLevel.Level, MyMap.sizeRenderingArea, -2);
+                            isResizeMap = true;
+                        }
+                    }
+                    else
+                    {
+                        if (ChechEdges(x, y, drawLevel.Level))
+                        {
+                            elem = new Element(14, drawLevel.Level, MyMap.Buildings.Buildings[drawLevel.Level].Clone(), -2);
+                            isResizeMap = true;
+                        }
+                    }
+                }
             }
             if (MyMap.RB >= nebutnscount & MyMap.RB != 360)
             {
@@ -851,6 +915,7 @@ namespace NetworkDesign
                 }
             }
         }
+        #endregion
         #region Для работы с зумом
         static public Point GenZoomPoint(Point p)
         {
@@ -898,27 +963,27 @@ namespace NetworkDesign
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
-        private void ChechEdges(int x, int y)
+        private bool ChechEdges(int x, int y)
         {
             int dif = 0;
             int n = (int)(10d * zoom);
             bool refresh = false;
-            double Left = (double)MyMap.mapSetting.Left * zoom;
-            double Right = (double)MyMap.mapSetting.Right * zoom;
-            double Top = (double)MyMap.mapSetting.Top * zoom;
-            double Bottom = (double)MyMap.mapSetting.Bottom * zoom;
+            double Left = (double)MyMap.sizeRenderingArea.Left * zoom;
+            double Right = (double)MyMap.sizeRenderingArea.Right * zoom;
+            double Top = (double)MyMap.sizeRenderingArea.Top * zoom;
+            double Bottom = (double)MyMap.sizeRenderingArea.Bottom * zoom;
             if (x < Left + n)
             {
                 dif = (int)(x - n - Left);
-                MyMap.mapSetting = new SizeRenderingArea(MyMap.mapSetting.Name, MyMap.mapSetting.Left + dif,
-                    MyMap.mapSetting.Right - dif, MyMap.mapSetting.Top, MyMap.mapSetting.Bottom);
+                MyMap.sizeRenderingArea = new SizeRenderingArea(MyMap.sizeRenderingArea.Name, MyMap.sizeRenderingArea.Left + dif,
+                    MyMap.sizeRenderingArea.Right - dif, MyMap.sizeRenderingArea.Top, MyMap.sizeRenderingArea.Bottom);
                 refresh = true;
             }
             if (x > Right - n)
             {
                 dif = (int)(x + n - Right);
-                MyMap.mapSetting = new SizeRenderingArea(MyMap.mapSetting.Name, MyMap.mapSetting.Left - dif,
-                    MyMap.mapSetting.Right + dif, MyMap.mapSetting.Top, MyMap.mapSetting.Bottom);
+                MyMap.sizeRenderingArea = new SizeRenderingArea(MyMap.sizeRenderingArea.Name, MyMap.sizeRenderingArea.Left - dif,
+                    MyMap.sizeRenderingArea.Right + dif, MyMap.sizeRenderingArea.Top, MyMap.sizeRenderingArea.Bottom);
                 refresh = true;
             }
             if (y > Top - n)
@@ -926,8 +991,8 @@ namespace NetworkDesign
                 dif = (int)(y + n - Top);
                 //Top = y + n;
                 //Bottom = -Top;
-                MyMap.mapSetting = new SizeRenderingArea(MyMap.mapSetting.Name, MyMap.mapSetting.Left,
-                    MyMap.mapSetting.Right, MyMap.mapSetting.Top + dif, MyMap.mapSetting.Bottom - dif);
+                MyMap.sizeRenderingArea = new SizeRenderingArea(MyMap.sizeRenderingArea.Name, MyMap.sizeRenderingArea.Left,
+                    MyMap.sizeRenderingArea.Right, MyMap.sizeRenderingArea.Top + dif, MyMap.sizeRenderingArea.Bottom - dif);
                 refresh = true;
             }
             if (y < Bottom + n)
@@ -935,15 +1000,64 @@ namespace NetworkDesign
                 dif = (int)(y - n - Bottom);
                 //Bottom = y - n;
                 //Top = -Bottom;
-                MyMap.mapSetting = new SizeRenderingArea(MyMap.mapSetting.Name, MyMap.mapSetting.Left,
-                    MyMap.mapSetting.Right, MyMap.mapSetting.Top - dif, MyMap.mapSetting.Bottom + dif);
+                MyMap.sizeRenderingArea = new SizeRenderingArea(MyMap.sizeRenderingArea.Name, MyMap.sizeRenderingArea.Left,
+                    MyMap.sizeRenderingArea.Right, MyMap.sizeRenderingArea.Top - dif, MyMap.sizeRenderingArea.Bottom + dif);
                 refresh = true;
             }
             if (refresh)
             {
                 MyMap.ResizeRenderingArea();
                 refresh = false;
+                return true;
             }
+            return false;
+        }
+        private bool ChechEdges(int x, int y, int id)
+        {
+            int dif = 0;
+            double pk = MyMap.Buildings.Buildings[id].pk;
+            //Считать все края с учетом коэффициента, пересчитывать локальную фигуру и локальные входы и входы проводов.
+            int n = (int)(10d * zoom);
+            bool refresh = false;
+            double Left = (double)MyMap.Buildings.Buildings[id].sizeRenderingArea.Left * zoom;
+            double Right = (double)MyMap.Buildings.Buildings[id].sizeRenderingArea.Right * zoom;
+            double Top = (double)MyMap.Buildings.Buildings[id].sizeRenderingArea.Top * zoom;
+            double Bottom = (double)MyMap.Buildings.Buildings[id].sizeRenderingArea.Bottom * zoom;
+            if (x < Left + n)
+            {
+                dif = (int)(x - n - Left);
+                MyMap.Buildings.Buildings[id].sizeRenderingArea = new SizeRenderingArea(MyMap.Buildings.Buildings[id].sizeRenderingArea.Name, MyMap.Buildings.Buildings[id].sizeRenderingArea.Left + dif,
+                     MyMap.Buildings.Buildings[id].sizeRenderingArea.Right - dif, MyMap.Buildings.Buildings[id].sizeRenderingArea.Top - (int)((double)dif / pk), MyMap.Buildings.Buildings[id].sizeRenderingArea.Bottom + (int)((double)dif / pk));
+                refresh = true;
+            }
+            if (x > Right - n)
+            {
+                dif = (int)(x + n - Right);
+                MyMap.Buildings.Buildings[id].sizeRenderingArea = new SizeRenderingArea(MyMap.Buildings.Buildings[id].sizeRenderingArea.Name, MyMap.Buildings.Buildings[id].sizeRenderingArea.Left - dif,
+                     MyMap.Buildings.Buildings[id].sizeRenderingArea.Right + dif, MyMap.Buildings.Buildings[id].sizeRenderingArea.Top + (int)((double)dif / pk), MyMap.Buildings.Buildings[id].sizeRenderingArea.Bottom - (int)((double)dif / pk));
+                refresh = true;
+            }
+            if (y > Top - n)
+            {
+                dif = (int)(y + n - Top);
+                MyMap.Buildings.Buildings[id].sizeRenderingArea = new SizeRenderingArea(MyMap.Buildings.Buildings[id].sizeRenderingArea.Name, MyMap.Buildings.Buildings[id].sizeRenderingArea.Left - (int)((double)dif * pk),
+                     MyMap.Buildings.Buildings[id].sizeRenderingArea.Right + (int)((double)dif * pk), MyMap.Buildings.Buildings[id].sizeRenderingArea.Top + dif, MyMap.Buildings.Buildings[id].sizeRenderingArea.Bottom - dif);
+                refresh = true;
+            }
+            if (y < Bottom + n)
+            {
+                dif = (int)(y - n - Bottom);
+                MyMap.Buildings.Buildings[id].sizeRenderingArea = new SizeRenderingArea(MyMap.Buildings.Buildings[id].sizeRenderingArea.Name, MyMap.Buildings.Buildings[id].sizeRenderingArea.Left + (int)((double)dif * pk),
+                     MyMap.Buildings.Buildings[id].sizeRenderingArea.Right - (int)((double)dif * pk), MyMap.Buildings.Buildings[id].sizeRenderingArea.Top - dif, MyMap.Buildings.Buildings[id].sizeRenderingArea.Bottom + dif);
+                refresh = true;
+            }
+            if (refresh)
+            {
+                MyMap.ResizeRenderingArea(id);
+                refresh = false;
+                return true;
+            }
+            return false;
         }
         /// <summary>
         /// Авторизация
@@ -1618,6 +1732,23 @@ namespace NetworkDesign
                         else
                             AddTextureFromLog(elem.index, (string)_elem.elem);
                         break;
+                    case 14:
+                        if (_elem.index == -1)
+                        {
+                            MyMap.sizeRenderingArea = (SizeRenderingArea)_elem.elem;
+                            MyMap.ResizeRenderingArea();
+                        }
+                        else
+                        {
+                            MyMap.Buildings.Buildings[_elem.index] = (Building)_elem.elem;
+                            MyMap.Buildings.Buildings[_elem.index].RefreshLocal();
+                            MyMap.ResizeRenderingArea(_elem.index);
+                        }
+                        if (drawLevel.Level == -1)
+                            MyMap.ResizeRenderingArea();
+                        else
+                            MyMap.ResizeRenderingArea(drawLevel.Level);
+                        break;
                 }
             }
         }
@@ -1634,7 +1765,7 @@ namespace NetworkDesign
             {
                 case 6:
                     bool isNotNull = false;
-                    for (int i = 0; i < MyMap.Buildings.Buildings[buildid].Entrances.Enterances.Circles.Count; i++)
+                    for (int i = 0; i < MyMap.Buildings.Buildings[buildid].InputWires.InputWires.Circles.Count; i++)
                     {
                         if (i == elem.index)
                             isNotNull = true;
@@ -1962,7 +2093,7 @@ namespace NetworkDesign
                 TempMap.Lines = MyMap.Lines;
                 TempMap.Polygons = MyMap.Polygons;
                 TempMap.Rectangles = MyMap.Rectangles;
-                TempMap.mapSetting = MyMap.mapSetting;
+                TempMap.sizeRenderingArea = MyMap.sizeRenderingArea;
                 string filename;
                 if (saveFileDialog1.FileName.Contains(fileExtension))
                 {
@@ -1989,6 +2120,30 @@ namespace NetworkDesign
         static object Conv(object elem) => elem;
         #endregion
         #region События
+        /// <summary>
+        /// Событие нажатия кнопки экспорт карты в изображение
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void экспортВИзображенеToolStripMenuItem_Click(object sender, EventArgs e) => ImageExport();
+        /// <summary>
+        /// Событие нажатия кнопки экспорт списка элементов сети
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void экспортСпискаЭлементовСетиToolStripMenuItem_Click(object sender, EventArgs e) => ExportListNE();
+        /// <summary>
+        /// Событие нажатия кнопки экспорт здания
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void экспортЗданияToolStripMenuItem_Click(object sender, EventArgs e) => SaveBuild(".build", "Building File");
+        /// <summary>
+        /// Событие нажатия кнопки испорта здания
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void импортЗданияToolStripMenuItem_Click(object sender, EventArgs e) => OpenBuild(".build", "Building File");
         private void toolStripComboBox1_Click(object sender, EventArgs e)
         {
 
@@ -2192,11 +2347,11 @@ namespace NetworkDesign
         /// <param name="e"></param>
         private void CreateMapClick(object sender, EventArgs e)
         {
-            MapControl mapControl = new MapControl(MyMap.mapSetting);
+            MapControl mapControl = new MapControl(MyMap.sizeRenderingArea);
             mapControl.ShowDialog();
             MyMap.SetNewSettings(mapControl.mapSettings);
             //MyMap = new Map(mapControl.mapSettings);
-            Text = MyMap.mapSetting.Name;
+            Text = MyMap.sizeRenderingArea.Name;
         }
         /// <summary>
         /// Событие нажатия кнопки сохранения карты
@@ -2216,18 +2371,6 @@ namespace NetworkDesign
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void SaveTemplateMapClick(object sender, EventArgs e) => SaveTemplateMap(".ndm", "Network Design Map File");
-        /// <summary>
-        /// Событие нажатия кнопки экспорт здания
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ExporBuildClick(object sender, EventArgs e) => SaveBuild(".build", "Building File");
-        /// <summary>
-        /// Событие нажатия кнопки испорта здания
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ImpotrBuildClick(object sender, EventArgs e) => OpenBuild(".build", "Building File");
         /// <summary>
         /// Собитые нажатия кнопки назад
         /// </summary>
@@ -2696,8 +2839,8 @@ namespace NetworkDesign
         {
 
         }
-        //Экспорт
-        private void toolStripButton1_Click_1(object sender, EventArgs e)
+
+        private void ImageExport()
         {
             FolderBrowserDialog fbd = new FolderBrowserDialog();
             if (fbd.ShowDialog() == DialogResult.OK)
@@ -2745,6 +2888,11 @@ namespace NetworkDesign
         }
 
         private void toolStripButton2_Click(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void ExportListNE()
         {
             SaveFileDialog saveFileDialog1 = new SaveFileDialog
             {
@@ -2798,16 +2946,18 @@ namespace NetworkDesign
         private bool isReady = true;
         private bool isPing = false;
 
+        private void toolStripButton1_Click_1(object sender, EventArgs e) => MyMap.СlipRenderingArea(drawLevel);
+
         /*private void panel1_Scroll_1(object sender, ScrollEventArgs e)
-        {
-            if (e.NewValue != 0)
-            {
-                if (e.ScrollOrientation == ScrollOrientation.HorizontalScroll)
-                    asp = new Point(-panel1.AutoScrollPosition.X - e.NewValue, -panel1.AutoScrollPosition.Y);
-                else
-                    asp = new Point(-panel1.AutoScrollPosition.X, -panel1.AutoScrollPosition.Y - e.NewValue);
-            }
-        }*/
+{
+   if (e.NewValue != 0)
+   {
+       if (e.ScrollOrientation == ScrollOrientation.HorizontalScroll)
+           asp = new Point(-panel1.AutoScrollPosition.X - e.NewValue, -panel1.AutoScrollPosition.Y);
+       else
+           asp = new Point(-panel1.AutoScrollPosition.X, -panel1.AutoScrollPosition.Y - e.NewValue);
+   }
+}*/
 
         /// <summary>
         /// Генерация текстуры

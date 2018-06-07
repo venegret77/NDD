@@ -80,7 +80,7 @@ namespace NetworkDesign
         /// <param name="minx">Возвращаемый параметр X минимальное</param>
         /// <param name="maxy">Возвращаемый параметр Y максимальное</param>
         /// <param name="miny">Возвращаемый параметр Y минимальное</param>
-        public virtual void CalcMaxMin(out int maxx, out int minx, out int maxy, out int miny)
+        public virtual void CalcMaxMinWidthZoom(out int maxx, out int minx, out int maxy, out int miny)
         {
             maxx = (int)((double)Points[0].X * MainForm.zoom);
             minx = (int)((double)Points[0].X * MainForm.zoom);
@@ -96,6 +96,24 @@ namespace NetworkDesign
                     maxy = (int)((double)point.Y * MainForm.zoom);
                 if ((int)((double)point.Y * MainForm.zoom) < miny)
                     miny = (int)((double)point.Y * MainForm.zoom);
+            }
+        }
+        public virtual void CalcMaxMin(out int maxx, out int minx, out int maxy, out int miny)
+        {
+            maxx = (int)((double)Points[0].X);
+            minx = (int)((double)Points[0].X);
+            maxy = (int)((double)Points[0].Y);
+            miny = (int)((double)Points[0].Y);
+            foreach (var point in Points)
+            {
+                if ((int)((double)point.X) > maxx)
+                    maxx = (int)((double)point.X);
+                if ((int)((double)point.X) < minx)
+                    minx = (int)((double)point.X);
+                if ((int)((double)point.Y) > maxy)
+                    maxy = (int)((double)point.Y);
+                if ((int)((double)point.Y) < miny)
+                    miny = (int)((double)point.Y);
             }
         }
         /// <summary>

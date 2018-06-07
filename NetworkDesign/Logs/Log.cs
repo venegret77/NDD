@@ -20,20 +20,26 @@ namespace NetworkDesign
         {
             if (logMessage._elem.type == 13 & logMessage._elem.transform == -4)
             {
-                LogMessage lastelem = Back.Last();
-                if (lastelem._elem.transform == -4 & lastelem._elem.type == logMessage._elem.type & lastelem._elem.index == logMessage._elem.index)
+                if (Back.Count != 0)
                 {
-                    logMessage._elem = (Element)lastelem._elem.Clone();
-                    Back.RemoveAt(Back.Count - 1);
+                    LogMessage lastelem = Back.Last();
+                    if (lastelem._elem.transform == -4 & lastelem._elem.type == logMessage._elem.type & lastelem._elem.index == logMessage._elem.index)
+                    {
+                        logMessage._elem = (Element)lastelem._elem.Clone();
+                        Back.RemoveAt(Back.Count - 1);
+                    }
                 }
             }
             else if (logMessage._elem.transform == -2 & logMessage._elem.type != 4 & logMessage._elem.type != 13)
             {
-                LogMessage lastelem = Back.Last();
-                if (lastelem._elem.transform == -2 & lastelem._elem.type == logMessage._elem.type & lastelem._elem.index == logMessage._elem.index)
+                if (Back.Count != 0)
                 {
-                    logMessage._elem = (Element)lastelem._elem.Clone();
-                    Back.RemoveAt(Back.Count - 1);
+                    LogMessage lastelem = Back.Last();
+                    if (lastelem._elem.transform == -2 & lastelem._elem.type == logMessage._elem.type & lastelem._elem.index == logMessage._elem.index)
+                    {
+                        logMessage._elem = (Element)lastelem._elem.Clone();
+                        Back.RemoveAt(Back.Count - 1);
+                    }
                 }
             }
             Back.Add(logMessage);

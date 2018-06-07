@@ -43,10 +43,12 @@
             this.SaveBtn = new System.Windows.Forms.ToolStripButton();
             this.OpenBtn = new System.Windows.Forms.ToolStripButton();
             this.SaveTemplateBtn = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
-            this.ExporBuildBtn = new System.Windows.Forms.ToolStripButton();
-            this.ImportBuildBtn = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton3 = new System.Windows.Forms.ToolStripSplitButton();
+            this.экспортВИзображенеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.экспортСпискаЭлементовСетиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
+            this.экспортЗданияToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.импортЗданияToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.BackBtn = new System.Windows.Forms.ToolStripButton();
             this.ForwardBrn = new System.Windows.Forms.ToolStripButton();
@@ -91,8 +93,9 @@
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.pingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.FloorUP = new System.Windows.Forms.Button();
             this.FloorDown = new System.Windows.Forms.Button();
+            this.FloorUP = new System.Windows.Forms.Button();
+            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.toolStrip1.SuspendLayout();
@@ -204,14 +207,12 @@
             this.SaveBtn,
             this.OpenBtn,
             this.SaveTemplateBtn,
-            this.toolStripButton1,
-            this.toolStripButton2,
-            this.ExporBuildBtn,
-            this.ImportBuildBtn,
+            this.toolStripButton3,
             this.toolStripSeparator4,
             this.BackBtn,
             this.ForwardBrn,
             this.toolStripSeparator,
+            this.toolStripButton1,
             this.FiltersBtn,
             this.SearchBrn,
             this.CopyBtn,
@@ -287,45 +288,56 @@
             this.SaveTemplateBtn.Text = "Сохранить шаблон карты";
             this.SaveTemplateBtn.Click += new System.EventHandler(this.SaveTemplateMapClick);
             // 
-            // toolStripButton1
+            // toolStripButton3
             // 
-            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
-            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton1.Text = "Экспортировать в изображение";
-            this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click_1);
+            this.toolStripButton3.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton3.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.экспортВИзображенеToolStripMenuItem,
+            this.экспортСпискаЭлементовСетиToolStripMenuItem,
+            this.toolStripSeparator9,
+            this.экспортЗданияToolStripMenuItem,
+            this.импортЗданияToolStripMenuItem});
+            this.toolStripButton3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton3.Image")));
+            this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton3.Name = "toolStripButton3";
+            this.toolStripButton3.Size = new System.Drawing.Size(32, 22);
+            this.toolStripButton3.Text = "Экспорт/импорт";
             // 
-            // toolStripButton2
+            // экспортВИзображенеToolStripMenuItem
             // 
-            this.toolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
-            this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton2.Name = "toolStripButton2";
-            this.toolStripButton2.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton2.Text = "Экспорт в список элементов";
-            this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click);
+            this.экспортВИзображенеToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("экспортВИзображенеToolStripMenuItem.Image")));
+            this.экспортВИзображенеToolStripMenuItem.Name = "экспортВИзображенеToolStripMenuItem";
+            this.экспортВИзображенеToolStripMenuItem.Size = new System.Drawing.Size(249, 22);
+            this.экспортВИзображенеToolStripMenuItem.Text = "Экспорт в изображене";
+            this.экспортВИзображенеToolStripMenuItem.Click += new System.EventHandler(this.экспортВИзображенеToolStripMenuItem_Click);
             // 
-            // ExporBuildBtn
+            // экспортСпискаЭлементовСетиToolStripMenuItem
             // 
-            this.ExporBuildBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.ExporBuildBtn.Image = ((System.Drawing.Image)(resources.GetObject("ExporBuildBtn.Image")));
-            this.ExporBuildBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.ExporBuildBtn.Name = "ExporBuildBtn";
-            this.ExporBuildBtn.Size = new System.Drawing.Size(23, 22);
-            this.ExporBuildBtn.Text = "Экспорт здания";
-            this.ExporBuildBtn.Click += new System.EventHandler(this.ExporBuildClick);
+            this.экспортСпискаЭлементовСетиToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("экспортСпискаЭлементовСетиToolStripMenuItem.Image")));
+            this.экспортСпискаЭлементовСетиToolStripMenuItem.Name = "экспортСпискаЭлементовСетиToolStripMenuItem";
+            this.экспортСпискаЭлементовСетиToolStripMenuItem.Size = new System.Drawing.Size(249, 22);
+            this.экспортСпискаЭлементовСетиToolStripMenuItem.Text = "Экспорт списка элементов сети";
+            this.экспортСпискаЭлементовСетиToolStripMenuItem.Click += new System.EventHandler(this.экспортСпискаЭлементовСетиToolStripMenuItem_Click);
             // 
-            // ImportBuildBtn
+            // toolStripSeparator9
             // 
-            this.ImportBuildBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.ImportBuildBtn.Image = ((System.Drawing.Image)(resources.GetObject("ImportBuildBtn.Image")));
-            this.ImportBuildBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.ImportBuildBtn.Name = "ImportBuildBtn";
-            this.ImportBuildBtn.Size = new System.Drawing.Size(23, 22);
-            this.ImportBuildBtn.Text = "Импорт здания";
-            this.ImportBuildBtn.Click += new System.EventHandler(this.ImpotrBuildClick);
+            this.toolStripSeparator9.Name = "toolStripSeparator9";
+            this.toolStripSeparator9.Size = new System.Drawing.Size(246, 6);
+            // 
+            // экспортЗданияToolStripMenuItem
+            // 
+            this.экспортЗданияToolStripMenuItem.Name = "экспортЗданияToolStripMenuItem";
+            this.экспортЗданияToolStripMenuItem.Size = new System.Drawing.Size(249, 22);
+            this.экспортЗданияToolStripMenuItem.Text = "Экспорт здания";
+            this.экспортЗданияToolStripMenuItem.Click += new System.EventHandler(this.экспортЗданияToolStripMenuItem_Click);
+            // 
+            // импортЗданияToolStripMenuItem
+            // 
+            this.импортЗданияToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("импортЗданияToolStripMenuItem.Image")));
+            this.импортЗданияToolStripMenuItem.Name = "импортЗданияToolStripMenuItem";
+            this.импортЗданияToolStripMenuItem.Size = new System.Drawing.Size(249, 22);
+            this.импортЗданияToolStripMenuItem.Text = "Импорт здания";
+            this.импортЗданияToolStripMenuItem.Click += new System.EventHandler(this.импортЗданияToolStripMenuItem_Click);
             // 
             // toolStripSeparator4
             // 
@@ -718,6 +730,22 @@
             this.panel1.TabIndex = 2;
             this.panel1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.panel1_Scroll_1);
             // 
+            // FloorDown
+            // 
+            this.FloorDown.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.FloorDown.BackColor = System.Drawing.Color.Transparent;
+            this.FloorDown.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("FloorDown.BackgroundImage")));
+            this.FloorDown.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.FloorDown.FlatAppearance.BorderSize = 0;
+            this.FloorDown.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.FloorDown.Location = new System.Drawing.Point(919, 231);
+            this.FloorDown.Name = "FloorDown";
+            this.FloorDown.Size = new System.Drawing.Size(50, 50);
+            this.FloorDown.TabIndex = 1;
+            this.FloorDown.UseVisualStyleBackColor = false;
+            this.FloorDown.Visible = false;
+            this.FloorDown.Click += new System.EventHandler(this.FloorDown_Click);
+            // 
             // FloorUP
             // 
             this.FloorUP.Anchor = System.Windows.Forms.AnchorStyles.Right;
@@ -734,21 +762,15 @@
             this.FloorUP.Visible = false;
             this.FloorUP.Click += new System.EventHandler(this.FloorUP_Click);
             // 
-            // FloorDown
+            // toolStripButton1
             // 
-            this.FloorDown.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.FloorDown.BackColor = System.Drawing.Color.Transparent;
-            this.FloorDown.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("FloorDown.BackgroundImage")));
-            this.FloorDown.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.FloorDown.FlatAppearance.BorderSize = 0;
-            this.FloorDown.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.FloorDown.Location = new System.Drawing.Point(919, 231);
-            this.FloorDown.Name = "FloorDown";
-            this.FloorDown.Size = new System.Drawing.Size(50, 50);
-            this.FloorDown.TabIndex = 1;
-            this.FloorDown.UseVisualStyleBackColor = false;
-            this.FloorDown.Visible = false;
-            this.FloorDown.Click += new System.EventHandler(this.FloorDown_Click);
+            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
+            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton1.Name = "toolStripButton1";
+            this.toolStripButton1.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButton1.Text = "Обрезать";
+            this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click_1);
             // 
             // MainForm
             // 
@@ -819,10 +841,8 @@
         private System.Windows.Forms.ToolStripButton CircleBtn;
         private System.Windows.Forms.ToolStripButton EntranceBtn;
         private System.Windows.Forms.ToolStripButton IWBtn;
-        private System.Windows.Forms.ToolStripButton ExporBuildBtn;
         private System.Windows.Forms.ToolStripButton SaveTemplateBtn;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ToolStripButton ImportBuildBtn;
         private System.Windows.Forms.ToolStripButton SearchBrn;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ToolStripButton NWBtn;
@@ -837,12 +857,17 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
         private System.Windows.Forms.ToolStripButton NEBtn;
         private System.Windows.Forms.ToolStripButton CopyBtn;
-        private System.Windows.Forms.ToolStripButton toolStripButton1;
-        private System.Windows.Forms.ToolStripButton toolStripButton2;
         private System.Windows.Forms.ToolStripMenuItem pingToolStripMenuItem;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button FloorDown;
         private System.Windows.Forms.Button FloorUP;
+        private System.Windows.Forms.ToolStripSplitButton toolStripButton3;
+        private System.Windows.Forms.ToolStripMenuItem экспортВИзображенеToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem экспортСпискаЭлементовСетиToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
+        private System.Windows.Forms.ToolStripMenuItem экспортЗданияToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem импортЗданияToolStripMenuItem;
+        private System.Windows.Forms.ToolStripButton toolStripButton1;
     }
 }
 
