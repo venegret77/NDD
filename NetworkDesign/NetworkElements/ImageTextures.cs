@@ -26,7 +26,6 @@ namespace NetworkDesign.NetworkElements
         {
             StartPosition = FormStartPosition.CenterScreen;
             InitializeComponent();
-            openFileDialog1.Filter = "Image files (*.png) | *.png";
             this.NetworkElements = NetworkElements;
             GetImages();
         }
@@ -40,8 +39,10 @@ namespace NetworkDesign.NetworkElements
             listView1.SmallImageList = images.SmallImageList;
             for (int i = 0; i < images.Items.Count; i++)
             {
-                ListViewItem item = new ListViewItem();
-                item.Text = "";
+                int gid = MainForm.ImagesURL.Textures[i].ID;
+                ListViewItem item = new ListViewItem(listView1.Groups[gid]);
+                item.Text = MainForm.ImagesURL.Textures[i].name;
+                item.ToolTipText = MainForm.ImagesURL.Textures[i].description;
                 item.ImageIndex = i;
                 listView1.Items.Add(item);
             }
@@ -99,52 +100,32 @@ namespace NetworkDesign.NetworkElements
 
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
+            AddTextureForm addTextureForm = new AddTextureForm();
             try
             {
-                if (openFileDialog1.ShowDialog() == DialogResult.OK)
+                addTextureForm.ShowDialog();
+                if (addTextureForm.dr == DialogResult.OK)
                 {
-                    bool delete = false;
-                    string _item = "";
-                    foreach (var item in MainForm.DeleteImages)
+                    if (!File.Exists(Application.StartupPath + @"\Textures\" + addTextureForm.openFileDialog1.SafeFileName))
                     {
-                        if (item == openFileDialog1.SafeFileName)
+                        File.Copy(addTextureForm.openFileDialog1.FileName, Application.StartupPath + @"\Textures\" + addTextureForm.openFileDialog1.SafeFileName, true);
+                        Image image = Image.FromFile(Application.StartupPath + @"\Textures\" + addTextureForm.openFileDialog1.SafeFileName);
+                        Bitmap bitmap = new Bitmap(image);
+                        if (image.Height != 1024 | image.Width != 1024)
                         {
-                            delete = true;
-                            _item = item;
-                            break;
+                            bitmap.Dispose();
+                            bitmap = new Bitmap(image, 1024, 1024);
+                            image.Dispose();
+                            bitmap.Save(Application.StartupPath + @"\Textures\" + addTextureForm.openFileDialog1.SafeFileName);
+                            bitmap.Dispose();
                         }
                     }
-                    if (File.Exists(Application.StartupPath + @"\Textures\" + openFileDialog1.SafeFileName) & MainForm.ImagesURL.IndexOf(openFileDialog1.SafeFileName) >= 0 & !delete)
-                    {
-                        MessageBox.Show("Невозможно загрузить файл, т.к. он уже загружен");
-                    }
-                    else
-                    {
-                        if (!File.Exists(Application.StartupPath + @"\Textures\" + openFileDialog1.SafeFileName))
-                        {
-                            File.Copy(openFileDialog1.FileName, Application.StartupPath + @"\Textures\" + openFileDialog1.SafeFileName, true);
-                            Image image = Image.FromFile(Application.StartupPath + @"\Textures\" + openFileDialog1.SafeFileName);
-                            Bitmap bitmap = new Bitmap(image);
-                            if (image.Height != 1024 | image.Width != 1024)
-                            {
-                                bitmap.Dispose();
-                                bitmap = new Bitmap(image, 1024, 1024);
-                                image.Dispose();
-                                bitmap.Save(Application.StartupPath + @"\Textures\" + openFileDialog1.SafeFileName);
-                                bitmap.Dispose();
-                                //image = Image.FromFile(Application.StartupPath + @"\Textures\" + openFileDialog1.SafeFileName);
-                            }
-                        }
-                        MainForm.ImagesURL.Add(openFileDialog1.SafeFileName);
-                        //MainForm.isLoad = false;
-                        //GetImages();
-                        //Возможно доделать не генерировать каждый раз новые текстуры
-                        if (delete)
-                            MainForm.DeleteImages.Remove(_item);
-                        action = 0;
-                        imageindex = MainForm.ImagesURL.Count - 1;
-                        Close();
-                    }
+                    MainForm.ImagesURL.Add(addTextureForm.texture);
+                    if (addTextureForm.delete)
+                        MainForm.DeleteImages.Textures.Remove(addTextureForm._item);
+                    action = 0;
+                    imageindex = MainForm.ImagesURL.Count - 1;
+                    Close();
                 }
             }
             catch

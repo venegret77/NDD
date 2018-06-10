@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -21,7 +22,12 @@ namespace NetworkDesign.NetworkElements
         /// <summary>
         /// Наименование устройства
         /// </summary>
-        public string Name = "Новое устройство";
+        public string Name = "";
+        /// <summary>
+        /// Сетевое имя устройства
+        /// </summary>
+        public string HostName = "";
+        public List<string> IPs = new List<string>();
         /// <summary>
         /// Общее количество сетевых портов
         /// </summary>
@@ -30,6 +36,7 @@ namespace NetworkDesign.NetworkElements
         /// Количество занятых сетевых портов
         /// </summary>
         public int BusyPorts = 0;
+        //public IPHostEntry AddressList = null;
         /// <summary>
         /// Пропускная способность
         /// </summary>
@@ -40,9 +47,10 @@ namespace NetworkDesign.NetworkElements
         {
         }
 
-        public NetworkSettings(string name, int totalPorts)
+        public NetworkSettings(string Name, string HostName, int totalPorts)
         {
-            Name = name;
+            this.Name = Name;
+            this.HostName = HostName;
             TotalPorts = totalPorts;
         }
 
@@ -66,7 +74,7 @@ namespace NetworkDesign.NetworkElements
         public override string ToString()
         {
             string settings = "";
-            settings = "Устройство " + Name + ":" + Environment.NewLine;
+            settings = "Устройство " + HostName + ":" + Environment.NewLine;
             settings += "Пропускная способность: ";
             long kr = 0;
             if (Throughput >= 1000 & Throughput < 1000000)
@@ -105,16 +113,22 @@ namespace NetworkDesign.NetworkElements
 
         public object Clone()
         {
+            List<string> _IPs = new List<string>();
+            foreach (var ip in IPs)
+                _IPs.Add(ip);
             List<NetworkParametr> options = new List<NetworkParametr>();
             foreach (var p in Options)
                 options.Add(new NetworkParametr(p.ID, p.Name, p.Value));
             return new NetworkSettings
             {
                 BusyPorts = this.BusyPorts,
-                Name = this.Name,
+                HostName = this.HostName,
                 Throughput = this.Throughput,
                 TotalPorts = this.TotalPorts,
-                Options = options
+                Options = options,
+                Name = this.Name,
+                isPing = this.isPing,
+                IPs = _IPs
             };
         }
     }
@@ -283,7 +297,7 @@ namespace NetworkDesign.NetworkElements
             }
             return new Parametrs
             {
-                Params = _params
+                Params = _params,
             };
         }
     }

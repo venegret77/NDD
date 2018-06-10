@@ -20,7 +20,7 @@ namespace NetworkDesign
         //Базовые параметры
         public SizeRenderingArea sizeRenderingArea;
         //private SimpleOpenGlControl AnT;
-        public int RB = 1; //Какой инструмент выбран //1-линия //2-прямоугольник
+        public int Instrument = 1;
         //Для линий
         public GroupOfLines Lines = new GroupOfLines(); //Группа линий
         //Для многоугольников
@@ -461,7 +461,7 @@ namespace NetworkDesign
                         Polygons.Polygons[id].CalcCenterPoint();
                         break;
                     case 4:
-                        Buildings.Buildings[id].MoveElem(x, y);
+                        Buildings.Buildings[id].MoveElem(x, y, NetworkWires, id);
                         Buildings.Buildings[id].CalcCenterPoint();
                         break;
                     case 6:
@@ -504,7 +504,7 @@ namespace NetworkDesign
         {
             DefaultTempElems(true);
             MainForm.AnT.Cursor = Cursors.Cross;
-            RB = instrument;
+            Instrument = instrument;
             if (instrument == 3)
             {
                 EditRects.edit_mode = true;
@@ -542,11 +542,11 @@ namespace NetworkDesign
         /// <param name="TempMap">Карта из файла / Пустая карта</param>
         public void MapLoad(Map TempMap)
         {
-            RB = 0;
+            Instrument = 0;
             sizeRenderingArea = TempMap.sizeRenderingArea;
             MainForm.AnT.Height = sizeRenderingArea.Height;
             MainForm.AnT.Width = sizeRenderingArea.Width;
-            RB = TempMap.RB;
+            Instrument = TempMap.Instrument;
             Rectangles = TempMap.Rectangles;
             Lines = TempMap.Lines;
             EditRects = TempMap.EditRects;
@@ -557,7 +557,7 @@ namespace NetworkDesign
             NetworkWires = TempMap.NetworkWires;
             MyTexts = TempMap.MyTexts;
             log = TempMap.log;
-            SetInstrument(RB);
+            SetInstrument(Instrument);
             ResizeRenderingArea();
         }
 
@@ -612,24 +612,8 @@ namespace NetworkDesign
                 _EditRects.AddRange(NetworkWires.GenEditRects());
             if (MainForm.filtres.NE)
                 _EditRects.AddRange(NetworkElements.GenEditRects());
-            /*EditRects.Add(_EditRects[0]);
-            for (int i = 1; i < _EditRects.Count; i++)
-            {
-                for (int j = 0; j < EditRects.Count; j++)
-                {
-                    if (EditRects[j].coords == _EditRects[i].coords)
-                    {
-                        EditRects[j].elems.Add(_EditRects[i].elems[0]);
-                        _EditRects.RemoveAt(i);
-                        i--;
-                        break;
-                    }
-                    else
-                    {
-                        EditRects.Add(_EditRects[i]);
-                    }
-                }
-            }*/
+            if (MainForm.filtres.Build)
+                _EditRects.AddRange(Buildings.GenEditRects());
             return _EditRects;
         }
 
@@ -766,20 +750,6 @@ namespace NetworkDesign
                 distcircle = Int32.MaxValue;
             if (distbuild < distrect & distbuild < distbline & distbuild < distcircle)
             {
-                /*int entrance = Buildings.Buildings[build].Entrances.CalcNearestEnterise(x, y, dl);
-                if (entrance != -1)
-                {
-                    buildindex = build;
-                    type = 7;
-                    return entrance;
-                }
-                int IW = Buildings.Buildings[build].InputWires.CalcNearestIW(x, y, dl);
-                if (IW != -1)
-                {
-                    buildindex = build;
-                    type = 6;
-                    return IW;
-                }*/
                 type = 4;
                 return build;
             }
@@ -842,8 +812,11 @@ namespace NetworkDesign
                     case 2:
                         Rectangles.Choose(id);
                         break;
-                    case 5:
+                    case 3:
                         Polygons.Choose(id);
+                        break;
+                    case 4:
+                        Buildings.Choose(id);
                         break;
                     case 360:
                         Circles.Choose(id);
@@ -885,8 +858,11 @@ namespace NetworkDesign
                         case 2:
                             Rectangles.Rectangles[id].SetPoint(x, y, point);
                             break;
-                        case 5:
+                        case 3:
                             Polygons.Polygons[id].SetPoint(x, y, point);
+                            break;
+                        case 4:
+                            Buildings.Buildings[id].SetPoint(x, y, point, NetworkWires, id);
                             break;
                         case 360:
                             Circles.Circles[id].SetPoint(x, y, point);
@@ -981,7 +957,7 @@ namespace NetworkDesign
             int NE = NetworkElements.Search(x, y, MainForm.drawLevel);
             if (NE != -1)
             {
-                Element elem = new Element(13, NE, NetworkElements.NetworkElements[NE].Options.Clone(), -4);
+                Element elem = new Element(13, NE, NetworkElements.NetworkElements[NE].Clone(), -4);
                 NESettings nes = new NESettings(NetworkElements.NetworkElements[NE].Options, NetworkElements, ref NetworkElements.NetworkElements[NE].notes);
                 nes.ShowDialog();
                 foreach (var lm in nes.log.Back)
@@ -990,7 +966,8 @@ namespace NetworkDesign
                 }
                 NetworkElements = nes.NetworkElements;
                 NetworkElements.NetworkElements[NE].Options = nes.Options;
-                Element _elem = new Element(13, NE, NetworkElements.NetworkElements[NE].Options.Clone(), -4);
+                NetworkElements.NetworkElements[NE].GenText();
+                Element _elem = new Element(13, NE, NetworkElements.NetworkElements[NE].Clone(), -4);
                 log.Add(new LogMessage("Изменил параметры устройства", elem, _elem));
                 return true;
             }

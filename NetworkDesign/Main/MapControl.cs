@@ -19,7 +19,7 @@ namespace NetworkDesign
         {
             InitializeComponent();
             mapSettings = _mapSettings;
-            StartPosition = FormStartPosition.CenterParent;
+            
         }
 
         private void MapControl_Load(object sender, EventArgs e)
@@ -29,7 +29,6 @@ namespace NetworkDesign
 
         private void button1_Click(object sender, EventArgs e)
         {
-            mapSettings = new SizeRenderingArea(richTextBox1.Text, (int)numericUpDown1.Value, (int)numericUpDown2.Value);
             Close();
         }
 

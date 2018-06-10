@@ -86,11 +86,18 @@ namespace NetworkDesign.NetworkElements
                     numericUpDown1.Value = (decimal)Options.Throughput;
             }
             RefreshLable();
-            textBox2.Text = Options.Name;
-            if (isEmpty(textBox2.Text))
-                textBox2.Text = "Новое устройство";
+            textBox4.Text = Options.Name;
+            textBox2.Text = Options.HostName;
+            if (isEmpty(textBox4.Text))
+                textBox4.Text = "Новое устройство";
             numericUpDown2.Value = Options.TotalPorts;
             numericUpDown2.Minimum = Options.BusyPorts;
+            foreach (var ip in Options.IPs)
+                comboBox1.Items.Add(ip.ToString());
+            if (Options.isPing)
+                radioButton1.Checked = true;
+            if (comboBox1.Items.Count >= 1)
+                comboBox1.SelectedIndex = 0;
             RefreshPorts();
             for (int i = 0; i < MainForm.parametrs.Params.Count; i++)
             {
@@ -206,7 +213,13 @@ namespace NetworkDesign.NetworkElements
         private void SaveParams()
         {
             Options.Options.Clear();
-            Options.Name = textBox2.Text;
+            Options.Name = textBox4.Text;
+            Options.HostName = textBox2.Text;
+            Options.IPs.Clear();
+            foreach (var ip in comboBox1.Items)
+                Options.IPs.Add(ip.ToString());
+            if (radioButton1.Checked)
+                Options.isPing = true;
             Options.TotalPorts = (int)numericUpDown2.Value;
             if (kr != 0)
                 Options.Throughput = (Int64)(numericUpDown1.Value * kr);
@@ -286,19 +299,72 @@ namespace NetworkDesign.NetworkElements
         {
             try
             {
-                Ping ping = new Ping();
-                var result = ping.Send(textBox2.Text);
-                if (result.Status == IPStatus.Success)
+                if (textBox2.Text != "")
                 {
+                    IPHostEntry ips = Dns.GetHostByName(textBox2.Text);
+                    comboBox1.Items.Clear();
+                    foreach (var ip in ips.AddressList)
+                    {
+                        comboBox1.Items.Add(ip.ToString());
+                    }
+                    if (comboBox1.Items.Count >= 1)
+                        comboBox1.SelectedIndex = 0;
                     Options.isPing = true;
                     radioButton1.Checked = true;
-                    listBox1.Items[0] = result.Address.ToString();
+                }
+                else
+                {
+                    GetName();
                 }
             }
             catch
             {
-                Options.isPing = false;
-                radioButton1.Checked = false;
+                GetName();
+            }
+        }
+
+        private void GetName()
+        {
+            if (comboBox1.Items.Count != 0)
+            {
+                if (_GetName())
+                {
+                    Options.isPing = true;
+                    radioButton1.Checked = true;
+                }
+                else
+                {
+                    Options.isPing = false;
+                    radioButton1.Checked = false;
+                }
+            }
+        }
+
+        int ip = 0;
+
+        private bool _GetName()
+        {
+            try
+            {
+                IPHostEntry ips = Dns.GetHostByAddress(comboBox1.Items[ip].ToString());
+                textBox2.Text = ips.HostName;
+                comboBox1.Items.Clear();
+                foreach (var ip in ips.AddressList)
+                    comboBox1.Items.Add(ip.ToString());
+                if (comboBox1.Items.Count >= 1)
+                    comboBox1.SelectedIndex = 0;
+                ip = 0;
+                return true;
+            }
+            catch
+            {
+                if (ip != comboBox1.Items.Count - 1)
+                {
+                    ip++;
+                    GetName();
+                }
+                ip = 0;
+                return false;
             }
         }
 
@@ -443,6 +509,36 @@ namespace NetworkDesign.NetworkElements
             edit = false;
             NetworkElements.UpdateOptions(id, "");
             int lastindex = MainForm.parametrs.Params.Count;
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            textBox2.Text = Dns.GetHostName();
+            listBox1.Items[0] = Dns.GetHostEntry(textBox2.Text).AddressList[0].MapToIPv4().ToString();
+        }
+
+        private void label6_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox4_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void comboBox1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter & comboBox1.Text != "")
+            {
+                foreach (var item in comboBox1.Items)
+                    if (comboBox1.Text == item.ToString())
+                        e.Handled = true;
+                if (!e.Handled)
+                    comboBox1.Items.Add(comboBox1.Text);
+                e.Handled = true;
+                comboBox1.Text = "";
+            }
         }
     }
 }

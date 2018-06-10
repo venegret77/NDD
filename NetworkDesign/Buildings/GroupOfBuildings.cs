@@ -1,5 +1,7 @@
-﻿using System;
+﻿using NetworkDesign.NetworkElements;
+using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +22,19 @@ namespace NetworkDesign
             foreach(var b in Buildings)
             {
                 b.Entrances.Enterances.TempDefault();
+            }
+        }
+
+        public void CheckIW(int build, GroupOfNW networkWires)
+        {
+            int i = 0;
+            foreach (var iw in Buildings[build].InputWires.InputWires.Circles)
+            {
+                Point point = iw.MainCenterPoint;
+                Point _point = iw.LocalCenterPoint;
+                networkWires.CheckNW(point.X, point.Y, i, true, build, iw.MainDL);
+                networkWires.CheckNW(_point.X, _point.Y, i, true, build, iw.LocalDL);
+                i++;
             }
         }
 
@@ -107,7 +122,27 @@ namespace NetworkDesign
 
         public override List<EditRect> GenEditRects()
         {
-            throw new NotImplementedException();
+            List<EditRect> _EditRects = new List<EditRect>();
+            for (int i = 0; i < Buildings.Count; i++)
+            {
+                if (Buildings[i].MainMapDL == MainForm.drawLevel & !Buildings[i].delete)
+                {
+                    if (Buildings[i].type == 3)
+                    {
+                        _EditRects.Add(new EditRect(Buildings[i].MainPolygon.Points[0], 4, i, 3));
+                    }
+                    else if (Buildings[i].type == 2)
+                    {
+                        _EditRects.Add(new EditRect(Buildings[i].MainRectangle.Points[0], 4, i, 2));
+                    }
+                    /*else if (Buildings[i].type == 360)
+                    {
+                        Point p = new Point(Buildings[i].MainCircle.MainCenterPoint.X + Buildings[i].MainCircle.radius, Buildings[i].MainCircle.MainCenterPoint.Y);
+                        _EditRects.Add(new EditRect(p, 3, i, 360));
+                    }*/
+                }
+            }
+            return _EditRects;
         }
     }
 }

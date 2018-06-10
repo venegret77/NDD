@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NetworkDesign.NetworkElements;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -276,11 +277,17 @@ namespace NetworkDesign
             InputWires.DrawTempIW();
         }
 
-        public void MoveElem(int difx, int dify)
+        public void MoveElem(int difx, int dify, GroupOfNW networkWires, int build)
         {
+            int i = 0;
             foreach (var cir in InputWires.Circles)
             {
                 cir.MainCenterPoint = new Point(cir.MainCenterPoint.X + difx, cir.MainCenterPoint.Y + dify);
+                Point point = cir.MainCenterPoint;
+                Point _point = cir.LocalCenterPoint;
+                networkWires.CheckNW(point.X, point.Y, i, true, build, cir.MainDL);
+                networkWires.CheckNW(_point.X, _point.Y, i, true, build, cir.LocalDL);
+                i++;
             }
         }
 

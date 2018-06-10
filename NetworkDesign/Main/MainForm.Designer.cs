@@ -53,6 +53,7 @@
             this.BackBtn = new System.Windows.Forms.ToolStripButton();
             this.ForwardBrn = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.FiltersBtn = new System.Windows.Forms.ToolStripButton();
             this.SearchBrn = new System.Windows.Forms.ToolStripButton();
             this.CopyBtn = new System.Windows.Forms.ToolStripButton();
@@ -93,14 +94,10 @@
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.pingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.FloorDown = new System.Windows.Forms.Button();
-            this.FloorUP = new System.Windows.Forms.Button();
-            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.toolStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
-            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // BottomToolStripPanel
@@ -370,6 +367,16 @@
             // 
             this.toolStripSeparator.Name = "toolStripSeparator";
             this.toolStripSeparator.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolStripButton1
+            // 
+            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
+            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton1.Name = "toolStripButton1";
+            this.toolStripButton1.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButton1.Text = "Обрезать";
+            this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click_1);
             // 
             // FiltersBtn
             // 
@@ -722,55 +729,12 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.AutoScroll = true;
-            this.panel1.Controls.Add(this.FloorDown);
-            this.panel1.Controls.Add(this.FloorUP);
             this.panel1.Location = new System.Drawing.Point(0, 52);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(995, 532);
             this.panel1.TabIndex = 2;
             this.panel1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.panel1_Scroll_1);
-            // 
-            // FloorDown
-            // 
-            this.FloorDown.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.FloorDown.BackColor = System.Drawing.Color.Transparent;
-            this.FloorDown.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("FloorDown.BackgroundImage")));
-            this.FloorDown.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.FloorDown.FlatAppearance.BorderSize = 0;
-            this.FloorDown.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.FloorDown.Location = new System.Drawing.Point(919, 231);
-            this.FloorDown.Name = "FloorDown";
-            this.FloorDown.Size = new System.Drawing.Size(50, 50);
-            this.FloorDown.TabIndex = 1;
-            this.FloorDown.UseVisualStyleBackColor = false;
-            this.FloorDown.Visible = false;
-            this.FloorDown.Click += new System.EventHandler(this.FloorDown_Click);
-            // 
-            // FloorUP
-            // 
-            this.FloorUP.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.FloorUP.BackColor = System.Drawing.Color.Transparent;
-            this.FloorUP.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("FloorUP.BackgroundImage")));
-            this.FloorUP.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.FloorUP.FlatAppearance.BorderSize = 0;
-            this.FloorUP.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.FloorUP.Location = new System.Drawing.Point(919, 184);
-            this.FloorUP.Name = "FloorUP";
-            this.FloorUP.Size = new System.Drawing.Size(50, 50);
-            this.FloorUP.TabIndex = 0;
-            this.FloorUP.UseVisualStyleBackColor = false;
-            this.FloorUP.Visible = false;
-            this.FloorUP.Click += new System.EventHandler(this.FloorUP_Click);
-            // 
-            // toolStripButton1
-            // 
-            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
-            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton1.Text = "Обрезать";
-            this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click_1);
+            this.panel1.LocationChanged += new System.EventHandler(this.panel1_LocationChanged);
             // 
             // MainForm
             // 
@@ -793,7 +757,6 @@
             this.toolStrip1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -859,8 +822,6 @@
         private System.Windows.Forms.ToolStripButton CopyBtn;
         private System.Windows.Forms.ToolStripMenuItem pingToolStripMenuItem;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Button FloorDown;
-        private System.Windows.Forms.Button FloorUP;
         private System.Windows.Forms.ToolStripSplitButton toolStripButton3;
         private System.Windows.Forms.ToolStripMenuItem экспортВИзображенеToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem экспортСпискаЭлементовСетиToolStripMenuItem;

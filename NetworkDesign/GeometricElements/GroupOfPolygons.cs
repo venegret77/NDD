@@ -109,7 +109,7 @@ namespace NetworkDesign
                 {
                     for (int j = 0; j < Polygons[i].Points.Count; j++)
                     {
-                        _EditRects.Add(new EditRect(Polygons[i].Points[j], 5, i, j));
+                        _EditRects.Add(new EditRect(Polygons[i].Points[j], 3, i, j));
                     }
                 }
             }

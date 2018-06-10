@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NetworkDesign.Buildings;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -51,6 +52,16 @@ namespace NetworkDesign
 
         private void BuildForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            int max = (int)((float)textBox1.Width / textBox1.Font.Size);
+            var lines = TEMP.WrapText(textBox1.Text, max);
+            name = "";
+            for (int i = 0; i < lines.Count(); i++)
+            {
+                if (i != lines.Count() - 1)
+                    name += lines[i] + Environment.NewLine;
+                else
+                    name += lines[i];
+            }
             if (name == "" | name == " ")
             {
                 MessageBox.Show("Пожалуйста введите имя здания");

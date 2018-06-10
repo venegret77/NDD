@@ -30,7 +30,7 @@ namespace NetworkDesign
         /// <param name="_coords">Координаты точки</param>
         /// <param name="_type">Тип элемента</param>
         /// <param name="_point">Точка</param>
-        /// <param name="_id">Количество элементов</param>
+        /// <param name="_id">ID</param>
         public EditRect(Point _coords, int _type, int _id, int _point)
         {
             coords = _coords;

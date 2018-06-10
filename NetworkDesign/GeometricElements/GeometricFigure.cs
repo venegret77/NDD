@@ -133,6 +133,24 @@ namespace NetworkDesign
             CenterPointX = x / (double)count;
             CenterPointY = y / (double)count;
         }
+
+        public double _CenterPointX;
+        public double _CenterPointY;
+
+        public virtual void CalcCenterPointWOZ()
+        {
+            double x = 0;
+            double y = 0;
+            int count = 0;
+            foreach (var p in Points)
+            {
+                x += (double)p.X;
+                y += (double)p.Y;
+                count++;
+            }
+            _CenterPointX = x / (double)count;
+            _CenterPointY = y / (double)count;
+        }
         /// <summary>
         /// Отрисовка
         /// </summary>
@@ -149,6 +167,13 @@ namespace NetworkDesign
         {
             int difx = x - (int)CenterPointX;
             int dify = y - (int)CenterPointY;
+            for (int i = 0; i < Points.Count; i++)
+            {
+                Points[i] = new Point(Points[i].X + difx, Points[i].Y + dify);
+            }
+        }
+        public virtual void _MoveElem(int difx, int dify)
+        {
             for (int i = 0; i < Points.Count; i++)
             {
                 Points[i] = new Point(Points[i].X + difx, Points[i].Y + dify);
