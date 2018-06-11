@@ -32,7 +32,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -41,7 +41,8 @@
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
     <LangVersion>7.3</LangVersion>
     <Prefer32Bit>true</Prefer32Bit>
-    <DocumentationFile>bin\Debug\NetworkDesign.xml</DocumentationFile>
+    <DocumentationFile>
+    </DocumentationFile>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -160,9 +161,6 @@
       <DependentUpon>BuildSettingsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Buildings\TEMP.cs" />
-    <Compile Include="NotUsed\ScrollablePanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Main\StartForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -176,7 +174,6 @@
       <DependentUpon>AddTextureForm.cs</DependentUpon>
     </Compile>
     <Compile Include="NetworkElements\ListOfTextures.cs" />
-    <Compile Include="NotUsed\Action.cs" />
     <Compile Include="Main\ActiveElem.cs" />
     <Compile Include="GeometricElements\Circle.cs" />
     <Compile Include="GeometricElements\GeometricFigure.cs" />
@@ -246,12 +243,6 @@
     <Compile Include="GeometricElements\GroupOfLines.cs" />
     <Compile Include="GeometricElements\GroupOfRectangles.cs" />
     <Compile Include="Logs\Log.cs" />
-    <Compile Include="NotUsed\MapControl.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="NotUsed\MapControl.Designer.cs">
-      <DependentUpon>MapControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="GeometricElements\Line.cs" />
     <Compile Include="Logs\LogMessage.cs" />
     <Compile Include="Main\MainForm.cs">
@@ -306,9 +297,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Main\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="NotUsed\MapControl.resx">
-      <DependentUpon>MapControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Main\StartForm.resx">
       <DependentUpon>StartForm.cs</DependentUpon>
