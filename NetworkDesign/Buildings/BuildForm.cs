@@ -73,5 +73,10 @@ namespace NetworkDesign
         {
             width = (int)numericUpDown2.Value;
         }
+
+        private void button2_Click_1(object sender, EventArgs e)
+        {
+            dialogResult = DialogResult.No;
+        }
     }
 }

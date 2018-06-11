@@ -34,8 +34,6 @@
             this.RightToolStripPanel = new System.Windows.Forms.ToolStripPanel();
             this.LeftToolStripPanel = new System.Windows.Forms.ToolStripPanel();
             this.ContentPanel = new System.Windows.Forms.ToolStripContentPanel();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.label1 = new System.Windows.Forms.Label();
             this.InfoLable = new System.Windows.Forms.Label();
             this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -94,7 +92,7 @@
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.pingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.panel2.SuspendLayout();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.toolStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -136,57 +134,27 @@
             // 
             this.ContentPanel.Size = new System.Drawing.Size(646, 476);
             // 
-            // panel2
-            // 
-            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.panel2.BackColor = System.Drawing.Color.Transparent;
-            this.panel2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.panel2.Controls.Add(this.label1);
-            this.panel2.Controls.Add(this.InfoLable);
-            this.panel2.Location = new System.Drawing.Point(0, 633);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(995, 35);
-            this.panel2.TabIndex = 7;
-            // 
-            // label1
-            // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label1.Location = new System.Drawing.Point(573, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(0, 24);
-            this.label1.TabIndex = 7;
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.label1.Visible = false;
-            // 
             // InfoLable
             // 
-            this.InfoLable.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.InfoLable.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.InfoLable.AutoSize = true;
             this.InfoLable.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.InfoLable.Location = new System.Drawing.Point(120, 5);
+            this.InfoLable.Location = new System.Drawing.Point(12, 556);
             this.InfoLable.Name = "InfoLable";
-            this.InfoLable.Size = new System.Drawing.Size(237, 24);
+            this.InfoLable.Size = new System.Drawing.Size(387, 24);
             this.InfoLable.TabIndex = 6;
-            this.InfoLable.Text = "Нет активных элементов";
+            this.InfoLable.Text = "Для начала работы выберите инструмент";
             this.InfoLable.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // trackBar1
             // 
             this.trackBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.trackBar1.Location = new System.Drawing.Point(0, 590);
+            this.trackBar1.Location = new System.Drawing.Point(405, 548);
             this.trackBar1.Maximum = 50;
             this.trackBar1.Minimum = 5;
             this.trackBar1.Name = "trackBar1";
-            this.trackBar1.Size = new System.Drawing.Size(995, 45);
+            this.trackBar1.Size = new System.Drawing.Size(384, 45);
             this.trackBar1.TabIndex = 2;
             this.trackBar1.Value = 10;
             this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_Scroll);
@@ -282,7 +250,7 @@
             this.SaveTemplateBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.SaveTemplateBtn.Name = "SaveTemplateBtn";
             this.SaveTemplateBtn.Size = new System.Drawing.Size(23, 22);
-            this.SaveTemplateBtn.Text = "Сохранить шаблон карты";
+            this.SaveTemplateBtn.Text = "Сохранить карту как шаблон";
             this.SaveTemplateBtn.Click += new System.EventHandler(this.SaveTemplateMapClick);
             // 
             // toolStripButton3
@@ -652,46 +620,46 @@
             // создатьToolStripMenuItem
             // 
             this.создатьToolStripMenuItem.Name = "создатьToolStripMenuItem";
-            this.создатьToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+            this.создатьToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
             this.создатьToolStripMenuItem.Text = "Создать...";
             this.создатьToolStripMenuItem.Click += new System.EventHandler(this.создатьToolStripMenuItem_Click);
             // 
             // открытьToolStripMenuItem
             // 
             this.открытьToolStripMenuItem.Name = "открытьToolStripMenuItem";
-            this.открытьToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+            this.открытьToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
             this.открытьToolStripMenuItem.Text = "Открыть...";
             this.открытьToolStripMenuItem.Click += new System.EventHandler(this.открытьToolStripMenuItem_Click);
             // 
             // сохранитьToolStripMenuItem
             // 
             this.сохранитьToolStripMenuItem.Name = "сохранитьToolStripMenuItem";
-            this.сохранитьToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+            this.сохранитьToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
             this.сохранитьToolStripMenuItem.Text = "Сохранить...";
             this.сохранитьToolStripMenuItem.Click += new System.EventHandler(this.сохранитьToolStripMenuItem_Click);
             // 
             // сохранитьКакToolStripMenuItem
             // 
             this.сохранитьКакToolStripMenuItem.Name = "сохранитьКакToolStripMenuItem";
-            this.сохранитьКакToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
-            this.сохранитьКакToolStripMenuItem.Text = "Сохранить как...";
+            this.сохранитьКакToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
+            this.сохранитьКакToolStripMenuItem.Text = "Сохранить как шаблон";
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(169, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(213, 6);
             // 
             // параметрыToolStripMenuItem
             // 
             this.параметрыToolStripMenuItem.Name = "параметрыToolStripMenuItem";
-            this.параметрыToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
-            this.параметрыToolStripMenuItem.Text = "Параметры...";
+            this.параметрыToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
+            this.параметрыToolStripMenuItem.Text = "Параметры программы...";
             this.параметрыToolStripMenuItem.Click += new System.EventHandler(this.ParamsMapClick);
             // 
             // посмотретьЛогToolStripMenuItem
             // 
             this.посмотретьЛогToolStripMenuItem.Name = "посмотретьЛогToolStripMenuItem";
-            this.посмотретьЛогToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+            this.посмотретьЛогToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
             this.посмотретьЛогToolStripMenuItem.Text = "Посмотреть лог...";
             this.посмотретьЛогToolStripMenuItem.Click += new System.EventHandler(this.ShowLogClick);
             // 
@@ -725,24 +693,36 @@
             // 
             // panel1
             // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.AutoScroll = true;
             this.panel1.Location = new System.Drawing.Point(0, 52);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(995, 532);
+            this.panel1.Size = new System.Drawing.Size(995, 495);
             this.panel1.TabIndex = 2;
             this.panel1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.panel1_Scroll_1);
-            this.panel1.LocationChanged += new System.EventHandler(this.panel1_LocationChanged);
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(795, 553);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(188, 32);
+            this.comboBox1.TabIndex = 7;
+            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(995, 667);
+            this.ClientSize = new System.Drawing.Size(995, 593);
+            this.Controls.Add(this.InfoLable);
+            this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.trackBar1);
-            this.Controls.Add(this.panel2);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.panel1);
@@ -750,8 +730,6 @@
             this.Name = "MainForm";
             this.Text = "Form1";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
@@ -800,12 +778,10 @@
         private System.Windows.Forms.ToolStripButton ReturnToMainBtn;
         private System.Windows.Forms.ToolStripButton DeleteBtn;
         private System.Windows.Forms.Label InfoLable;
-        private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.ToolStripButton CircleBtn;
         private System.Windows.Forms.ToolStripButton EntranceBtn;
         private System.Windows.Forms.ToolStripButton IWBtn;
         private System.Windows.Forms.ToolStripButton SaveTemplateBtn;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ToolStripButton SearchBrn;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ToolStripButton NWBtn;
@@ -829,6 +805,7 @@
         private System.Windows.Forms.ToolStripMenuItem экспортЗданияToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem импортЗданияToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton toolStripButton1;
+        private System.Windows.Forms.ComboBox comboBox1;
     }
 }
 

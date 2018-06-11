@@ -1,4 +1,5 @@
-﻿using NetworkDesign.NetworkElements;
+﻿using NetworkDesign.Buildings;
+using NetworkDesign.NetworkElements;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -536,6 +537,107 @@ namespace NetworkDesign
             NetworkElements.TempDefault();
         }
 
+        internal bool CheckEmptyBuild(int id)
+        {
+            foreach (var iw in Buildings.Buildings[id].InputWires.InputWires.Circles)
+            {
+                if (iw.DL.Level == id & !iw.delete)
+                    return false;
+            }
+            foreach (var ent in Buildings.Buildings[id].Entrances.Enterances.Circles)
+            {
+                if (ent.DL.Level == id & !ent.delete)
+                    return false;
+            }
+            foreach (var line in Lines.Lines)
+            {
+                if (line.DL.Level == id & !line.delete)
+                    return false;
+            }
+            foreach (var rect in Rectangles.Rectangles)
+            {
+                if (rect.DL.Level == id & !rect.delete)
+                    return false;
+            }
+            foreach (var pol in Polygons.Polygons)
+            {
+                if (pol.DL.Level == id & !pol.delete)
+                    return false;
+            }
+            foreach (var circ in Circles.Circles)
+            {
+                if (circ.DL.Level == id & !circ.delete)
+                    return false;
+            }
+            foreach (var text in MyTexts.MyTexts)
+            {
+                if (text.DL.Level == id & !text.delete)
+                    return false;
+            }
+            foreach (var ne in NetworkElements.NetworkElements)
+            {
+                if (ne.DL.Level == id & !ne.delete)
+                    return false;
+            }
+            foreach (var nw in NetworkWires.NetworkWires)
+            {
+                if (nw.DL.Level == id & !nw.delete)
+                    return false;
+            }
+            return true;
+        }
+
+        internal bool CheckEmptyBuild(int id, int floor)
+        {
+            foreach (var iw in Buildings.Buildings[id].InputWires.InputWires.Circles)
+            {
+                if ((iw.LocalDL.Floor == floor | iw.MainDL.Floor == floor) & !iw.delete)
+                    return false;
+            }
+            foreach (var ent in Buildings.Buildings[id].Entrances.Enterances.Circles)
+            {
+                if (ent.LocalDL.Floor == floor & !ent.delete)
+                    return false;
+            }
+            foreach (var line in Lines.Lines)
+            {
+                if (line.DL.Level == id & !line.delete & line.DL.Floor == floor)
+                    return false;
+            }
+            foreach (var rect in Rectangles.Rectangles)
+            {
+                if (rect.DL.Level == id & !rect.delete & rect.DL.Floor == floor)
+                    return false;
+            }
+            foreach (var pol in Polygons.Polygons)
+            {
+                if (pol.DL.Level == id & !pol.delete & pol.DL.Floor == floor)
+                    return false;
+            }
+            foreach (var circ in Circles.Circles)
+            {
+                if (circ.DL.Level == id & !circ.delete & circ.DL.Floor == floor)
+                    return false;
+            }
+            foreach (var text in MyTexts.MyTexts)
+            {
+                if (text.DL.Level == id & !text.delete & text.DL.Floor == floor)
+                    return false;
+            }
+            foreach (var ne in NetworkElements.NetworkElements)
+            {
+                if (ne.DL.Level == id & !ne.delete & ne.DL.Floor == floor)
+                    return false;
+            }
+            foreach (var nw in NetworkWires.NetworkWires)
+            {
+                if (nw.DL.Level == id & !nw.delete & nw.DL.Floor == floor)
+                    return false;
+            }
+            return true;
+            return true;
+        }
+
         /// <summary>
         /// Функция для загрузки карты
         /// </summary>
@@ -770,6 +872,186 @@ namespace NetworkDesign
             }
             type = -1;
             return -1;
+        }
+
+        internal void SearchBuild(int x, int y)
+        {
+            int build = Buildings.Search(x, y, out double distbuild, new DrawLevel(-1, -1));
+            if (build != -1)
+            {
+                List<bool> floorsempty = new List<bool>();
+                for (int j = 0; j < Buildings.Buildings[build].Floors; j++)
+                    floorsempty.Add(CheckEmptyBuild(build, j));
+                BuildSettingsForm buildsettings = new BuildSettingsForm(Buildings.Buildings[build], floorsempty);
+                buildsettings.ShowDialog();
+                if (buildsettings.dialogResult == DialogResult.Yes)
+                {
+                    int newfloors = buildsettings.floors.Count - 2 - Buildings.Buildings[build].floors_count;
+                    List<int> Deleted = new List<int>();
+                    List<int> Added = new List<int>();
+                    bool basement = Buildings.Buildings[build].basement;
+                    bool loft = Buildings.Buildings[build].loft;
+                    List<bool> BuildFloors = new List<bool>();
+                    if (basement)
+                        BuildFloors.Add(true);
+                    else
+                        BuildFloors.Add(false);
+                    for (int i = 0; i < Buildings.Buildings[build].floors_count; i++)
+                        BuildFloors.Add(true);
+                    for (int i = 0; i < newfloors; i++)
+                        BuildFloors.Add(false);
+                    if (loft)
+                        BuildFloors.Add(true);
+                    else
+                        BuildFloors.Add(false);
+                    for (int i = 0; i < BuildFloors.Count; i++)
+                    {
+                        if (buildsettings.floors[i] & !BuildFloors[i])
+                            Added.Add(i);
+                        else if (!buildsettings.floors[i] & BuildFloors[i])
+                            Deleted.Add(i);
+                    }
+                    Deleted.Reverse();
+                    List<int> _Added = new List<int>();
+                    foreach (var add in Added)
+                        _Added.Add(add);
+                    List<int> _Deleted = new List<int>();
+                    foreach (var del in Deleted)
+                        _Deleted.Add(del);
+                    Element elem = new Element(15, build, new BUILDLIST((Building)Buildings.Buildings[build].Clone(), _Added, _Deleted), -2);
+                    MoveElementsInBuild(build, Added, Deleted, buildsettings.floors[0]);
+                    int floorscount = 0;
+                    for (int i = 1; i < buildsettings.floors.Count - 1; i++)
+                        if (buildsettings.floors[i])
+                            floorscount++;
+                    Buildings.Buildings[build].basement = buildsettings.floors[0];
+                    Buildings.Buildings[build].loft = buildsettings.floors.Last();
+                    Buildings.Buildings[build].floors_count = floorscount;
+                    Buildings.Buildings[build].RefreshFloors();
+                    Buildings.Buildings[build].Name = buildsettings.BuildName;
+                    Buildings.Buildings[build].GenText();
+                    Element _elem = new Element(15, build, new BUILDLIST((Building)Buildings.Buildings[build].Clone(), _Deleted, _Added), -2);
+                    log.Add(new LogMessage("Изменил параметры здания", elem, _elem));
+                }
+            }
+        }
+
+        public void MoveElementsInBuild(int build, List<int> Added, List<int> Deleted, bool basement)
+        {
+            bool b = false;
+            bool _b = false;
+            if (Added.Contains(0))
+            {
+                UpdateFloorsIndex(build, -1, +1);
+                b = true;
+                _b = true;
+            }
+            else if (Deleted.Contains(0))
+            {
+                UpdateFloorsIndex(build, 0, -1);
+                for (int i = 0; i < Added.Count; i++)
+                    Added[i]--;
+                for (int i = 0; i < Deleted.Count; i++)
+                    Deleted[i]--;
+                b = true;
+            }
+            else if (!basement)
+            {
+                for (int i = 0; i < Added.Count; i++)
+                    Added[i]--;
+                for (int i = 0; i < Deleted.Count; i++)
+                    Deleted[i]--;
+            }
+            foreach (var del in Deleted)
+            {
+                if (b)
+                {
+                    if (del != -1)
+                    {
+                        UpdateFloorsIndex(build, del, -1);
+                        for (int i = 0; i < Added.Count; i++)
+                            if (Added[i] >= del)
+                                Added[i]--;
+                    }
+                }
+                else
+                {
+                    UpdateFloorsIndex(build, del, -1);
+                    for (int i = 0; i < Added.Count; i++)
+                        if (Added[i] >= del)
+                            Added[i]--;
+                }
+            }
+            foreach (var add in Added)
+            {
+                if (b)
+                {
+                    if (_b)
+                    {
+                        if (add != 0)
+                            UpdateFloorsIndex(build, add - 1, +1);
+                    }
+                    else
+                    {
+                        UpdateFloorsIndex(build, add - 1, +1);
+                    }
+                }
+                else
+                {
+                    UpdateFloorsIndex(build, add - 1, +1);
+                }
+            }
+        }
+
+        internal void UpdateFloorsIndex(int id, int floor, int dif)
+        {
+            foreach (var iw in Buildings.Buildings[id].InputWires.InputWires.Circles)
+            {
+                if (iw.LocalDL.Floor > floor)
+                    iw.LocalDL.Floor += dif;
+                if (iw.MainDL.Floor > floor)
+                    iw.MainDL.Floor += dif;
+            }
+            foreach (var ent in Buildings.Buildings[id].Entrances.Enterances.Circles)
+            {
+                if (ent.LocalDL.Floor > floor)
+                    ent.LocalDL.Floor += dif;
+            }
+            foreach (var line in Lines.Lines)
+            {
+                if (line.DL.Level == id & line.DL.Floor > floor)
+                    line.DL.Floor += dif;
+            }
+            foreach (var rect in Rectangles.Rectangles)
+            {
+                if (rect.DL.Level == id & rect.DL.Floor > floor)
+                    rect.DL.Floor += dif;
+            }
+            foreach (var pol in Polygons.Polygons)
+            {
+                if (pol.DL.Level == id & pol.DL.Floor > floor)
+                    pol.DL.Floor += dif;
+            }
+            foreach (var circ in Circles.Circles)
+            {
+                if (circ.DL.Level == id & circ.DL.Floor > floor)
+                    circ.DL.Floor += dif;
+            }
+            foreach (var text in MyTexts.MyTexts)
+            {
+                if (text.DL.Level == id & text.DL.Floor > floor)
+                    text.DL.Floor += dif;
+            }
+            foreach (var ne in NetworkElements.NetworkElements)
+            {
+                if (ne.DL.Level == id & ne.DL.Floor > floor)
+                    ne.DL.Floor += dif;
+            }
+            foreach (var nw in NetworkWires.NetworkWires)
+            {
+                if (nw.DL.Level == id & nw.DL.Floor > floor)
+                    nw.DL.Floor += dif;
+            }
         }
 
         /// <summary>

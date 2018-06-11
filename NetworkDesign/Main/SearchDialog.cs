@@ -71,9 +71,18 @@ namespace NetworkDesign
                     }
                     if (GONE.NetworkElements[i].Options.HostName.ToLower().Contains(text))
                     {
-                        listBox1.Items.Add("Сетевой элемент '/" + GONE.NetworkElements[i].Options.HostName + "'");
+                        listBox1.Items.Add("Сетевой элемент '/" + GONE.NetworkElements[i].Options.Name + "'");
                         items.Add(i);
                         type.Add(2);
+                    }
+                    foreach (var ip in GONE.NetworkElements[i].Options.IPs)
+                    {
+                        if (ip.ToLower().Contains(text))
+                        {
+                            listBox1.Items.Add("Сетевой элемент '/" + GONE.NetworkElements[i].Options.Name + "'");
+                            items.Add(i);
+                            type.Add(2);
+                        }
                     }
                 }
                 for (int i = 0; i < GOMT.MyTexts.Count; i++)

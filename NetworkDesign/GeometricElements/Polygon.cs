@@ -39,7 +39,7 @@ namespace NetworkDesign
         public void AddPoint()
         {
             Points.Add(TempPoint);
-            ClearTempPoint();
+            TempPoint = new Point(Points.Last().X, Points.Last().Y);
         }
 
         public void ClearTempPoint()

@@ -52,7 +52,10 @@ namespace NetworkDesign.Main
             }
             else
             {
-
+                foreach (var of in Application.OpenForms)
+                {
+                    
+                }
             }
         }
 

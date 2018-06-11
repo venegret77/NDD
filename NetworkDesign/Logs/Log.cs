@@ -30,7 +30,7 @@ namespace NetworkDesign
                     }
                 }
             }
-            else if (logMessage._elem.transform == -2 & logMessage._elem.type != 4 & logMessage._elem.type != 13)
+            else if (logMessage._elem.transform == -2 & logMessage._elem.type != 4 & logMessage._elem.type != 13 & logMessage._elem.type != 15)
             {
                 if (Back.Count != 0)
                 {

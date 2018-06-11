@@ -18,4 +18,18 @@ namespace NetworkDesign.Buildings
                         .ToArray();
         }
     }
+
+    public struct BUILDLIST
+    {
+        public Building building;
+        public List<int> Added;
+        public List<int> Deteled;
+
+        public BUILDLIST(Building building, List<int> added, List<int> deteled)
+        {
+            this.building = building;
+            Added = added;
+            Deteled = deteled;
+        }
+    }
 }

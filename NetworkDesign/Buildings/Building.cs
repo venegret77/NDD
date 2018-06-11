@@ -18,6 +18,7 @@ namespace NetworkDesign
         public int Floors; //0 - подвал если есть, последний - чердак
         public bool loft = false; //Чердак
         public bool basement = false; //Подвал
+        public int floors_count = 0;
         public int type = 2; //2 - прямоугольник, 3 - многоугольник, 360 - круг
         public bool open = false;
         public bool delete = true;
@@ -76,30 +77,16 @@ namespace NetworkDesign
             Name = _Name;
             loft = _loft;
             basement = _basement;
-            if (basement & loft)
-                Floors = floors_count + 2;
-            else if (basement)
-                Floors = floors_count + 1;
-            else if (loft)
-                Floors = floors_count + 1;
-            else
-                Floors = floors_count;
+            this.floors_count = floors_count;
+            RefreshFloors();
+            MainPolygon = _pol;
             type = 3;
             delete = false;
             MainMapDL.Level = -1;
             MainMapDL.Floor = -1;
             LocalDL.Level = index;
             LocalDL.Floor = 0;
-            Point[] temp = new Point[_pol.Points.Count];
-            _pol.Points.CopyTo(temp);
-            MainPolygon = new Polygon
-            {
-                Points = temp.ToList(),
-                delete = false,
-                DL = MainMapDL
-            };
             GenLocalPolygon();
-            UpgrateFloors();
             GenText();
         }
 
@@ -109,14 +96,8 @@ namespace NetworkDesign
             Name = _Name;
             loft = _loft;
             basement = _basement;
-            if (basement & loft)
-                Floors = floors_count + 2;
-            else if (basement)
-                Floors = floors_count + 1;
-            else if (loft)
-                Floors = floors_count + 1;
-            else
-                Floors = floors_count;
+            this.floors_count = floors_count;
+            RefreshFloors();
             MainRectangle = _rect;
             type = 2;
             delete = false;
@@ -126,7 +107,6 @@ namespace NetworkDesign
             LocalDL.Floor = 0;
             MainRectangle.DL = MainMapDL;
             GenLocalRect();
-            UpgrateFloors();
             GenText();
         }
 
@@ -136,14 +116,8 @@ namespace NetworkDesign
             Name = _Name;
             loft = _loft;
             basement = _basement;
-            if (basement & loft)
-                Floors = floors_count + 2;
-            else if (basement)
-                Floors = floors_count + 1;
-            else if (loft)
-                Floors = floors_count + 1;
-            else
-                Floors = floors_count;
+            this.floors_count = floors_count;
+            RefreshFloors();
             MainCircle = _circle;
             type = 360;
             delete = false;
@@ -153,8 +127,20 @@ namespace NetworkDesign
             LocalDL.Floor = 0;
             MainCircle.DL = MainMapDL;
             GenLocalCircle();
-            UpgrateFloors();
             GenText();
+        }
+
+        internal void RefreshFloors()
+        {
+            if (basement & loft)
+                Floors = floors_count + 2;
+            else if (basement)
+                Floors = floors_count + 1;
+            else if (loft)
+                Floors = floors_count + 1;
+            else
+                Floors = floors_count;
+            UpgrateFloors();
         }
 
         public void GenText()
@@ -257,6 +243,7 @@ namespace NetworkDesign
 
         private void UpgrateFloors()
         {
+            floors_name.Clear();
             if (basement & loft)
             {
                 floors_name.Add("Подвал");
@@ -847,7 +834,8 @@ namespace NetworkDesign
                 TempRectangle = (MyRectangle)this.TempRectangle.Clone(),
                 TempPolygon = (Polygon)this.TempPolygon.Clone(),
                 TempEntrances = (Entrances)this.TempEntrances.Clone(),
-                TempInputWires = (InputWire)this.TempInputWires.Clone()
+                TempInputWires = (InputWire)this.TempInputWires.Clone(),
+                floors_count = this.floors_count
             };
         }
 

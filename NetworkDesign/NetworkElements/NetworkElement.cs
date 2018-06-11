@@ -274,7 +274,7 @@ namespace NetworkDesign
                 CenterPointX = this.CenterPointX,
                 CenterPointY = this.CenterPointY,
                 type = this.type,
-                MT = this.MT,
+                MT = (MyText)this.MT.Clone(),
                 delete = this.delete
             };
         }

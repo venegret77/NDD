@@ -15,7 +15,7 @@ namespace NetworkDesign.NetworkElements
     public partial class NESettings : Form
     {
         public GroupOfNE NetworkElements;
-        const int requiredparameters = 2;
+        const int requiredparameters = 0;
         public NetworkSettings Options;
         bool add = false;
         bool edit = false;

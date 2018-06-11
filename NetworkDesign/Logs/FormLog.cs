@@ -12,8 +12,9 @@ namespace NetworkDesign
 {
     public partial class FormLog : Form
     {
-        public FormLog(List<LogMessage> log)
+        public FormLog(Log log)
         {
+            StartPosition = FormStartPosition.CenterParent;
             InitializeComponent();
 
             var column1 = new DataGridViewColumn();
@@ -43,16 +44,29 @@ namespace NetworkDesign
 
             dataGridView1.AllowUserToAddRows = false; //запрешаем пользователю самому добавлять строки
 
-            foreach (var mess in log)
+            foreach (var mess in log.Back)
             {
                 dataGridView1.Rows.Add(mess.username,mess.dateTime,mess.Text);
             }
-            StartPosition = FormStartPosition.CenterParent;
+            dataGridView1.Rows.Add("=======", "Отмененные действий", "=======");
+            foreach (var mess in log.Forward)
+            {
+                dataGridView1.Rows.Add(mess.username, mess.dateTime, mess.Text);
+            }
+            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
         }
 
         private void FormLog_Load(object sender, EventArgs e)
         {
 
+        }
+
+        public int RowIndex = -1;
+
+        private void dataGridView1_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            RowIndex = e.RowIndex;
+            Close();
         }
     }
 }

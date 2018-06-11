@@ -41,6 +41,8 @@
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
     <LangVersion>7.3</LangVersion>
     <Prefer32Bit>true</Prefer32Bit>
+    <DocumentationFile>bin\Debug\NetworkDesign.xml</DocumentationFile>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -151,8 +153,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Buildings\BuildSettingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Buildings\BuildSettingsForm.Designer.cs">
+      <DependentUpon>BuildSettingsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Buildings\TEMP.cs" />
-    <Compile Include="Main\ScrollablePanel.cs">
+    <Compile Include="NotUsed\ScrollablePanel.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Main\StartForm.cs">
@@ -225,7 +233,7 @@
     <Compile Include="Main\DrawLevel.cs" />
     <Compile Include="Edits\EditRect.cs" />
     <Compile Include="Logs\Element.cs" />
-    <Compile Include="Main\ElemOfEdit.cs" />
+    <Compile Include="Edits\ElemOfEdit.cs" />
     <Compile Include="Logs\FormLog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -238,10 +246,10 @@
     <Compile Include="GeometricElements\GroupOfLines.cs" />
     <Compile Include="GeometricElements\GroupOfRectangles.cs" />
     <Compile Include="Logs\Log.cs" />
-    <Compile Include="Main\MapControl.cs">
+    <Compile Include="NotUsed\MapControl.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Main\MapControl.Designer.cs">
+    <Compile Include="NotUsed\MapControl.Designer.cs">
       <DependentUpon>MapControl.cs</DependentUpon>
     </Compile>
     <Compile Include="GeometricElements\Line.cs" />
@@ -281,6 +289,9 @@
     <EmbeddedResource Include="Buildings\BuildForm.resx">
       <DependentUpon>BuildForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Buildings\BuildSettingsForm.resx">
+      <DependentUpon>BuildSettingsForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Main\ColorDialogForm.resx">
       <DependentUpon>ColorDialogForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -296,7 +307,7 @@
     <EmbeddedResource Include="Main\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Main\MapControl.resx">
+    <EmbeddedResource Include="NotUsed\MapControl.resx">
       <DependentUpon>MapControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Main\StartForm.resx">
