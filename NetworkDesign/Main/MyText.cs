@@ -398,7 +398,7 @@ namespace NetworkDesign.Main
                 if (x <= xmax & x >= xmin & y <= ymax & y >= ymin)
                     return (double)(xmin + xmax + ymin + ymax) / 4d;
             }
-                return -1;
+            return -1;
         }
 
         /// <summary>
@@ -459,7 +459,7 @@ namespace NetworkDesign.Main
                 text = this.text,
                 idtexturefromlist = this.idtexturefromlist,
                 idtexture = this.idtexture,
-                fontsize = this.fontsize,
+                fontsize = this.fontsize                
             };
         }
     }

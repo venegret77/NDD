@@ -32,7 +32,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -161,6 +161,24 @@
       <DependentUpon>BuildSettingsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Buildings\TEMP.cs" />
+    <Compile Include="Buildings\BuildExportImport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Buildings\BuildExportImport.Designer.cs">
+      <DependentUpon>BuildExportImport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Main\CleateMapForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Main\CleateMapForm.Designer.cs">
+      <DependentUpon>CleateMapForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Main\MapExportForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Main\MapExportForm.Designer.cs">
+      <DependentUpon>MapExportForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Main\StartForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -277,11 +295,17 @@
     <Compile Include="Main\SearchDialog.Designer.cs">
       <DependentUpon>SearchDialog.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Buildings\BuildExportImport.resx">
+      <DependentUpon>BuildExportImport.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Buildings\BuildForm.resx">
       <DependentUpon>BuildForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Buildings\BuildSettingsForm.resx">
       <DependentUpon>BuildSettingsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Main\CleateMapForm.resx">
+      <DependentUpon>CleateMapForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Main\ColorDialogForm.resx">
       <DependentUpon>ColorDialogForm.cs</DependentUpon>
@@ -297,6 +321,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Main\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Main\MapExportForm.resx">
+      <DependentUpon>MapExportForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Main\StartForm.resx">
       <DependentUpon>StartForm.cs</DependentUpon>
@@ -322,6 +349,8 @@
       <DependentUpon>SearchDialog.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="ClassDiagram1.cd" />
+    <None Include="ClassDiagram2.cd" />
+    <None Include="ClassDiagram3.cd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

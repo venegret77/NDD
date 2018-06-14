@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -124,6 +125,28 @@ namespace NetworkDesign
             colorDialog1.ShowDialog();
             button2.BackColor = colorDialog1.Color;
             MainForm.colorSettings.NWmax = colorDialog1.Color;
+        }
+
+        private void button3_Click_1(object sender, EventArgs e)
+        {
+
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                if (File.Exists(Application.StartupPath + @"\Textures\" + openFileDialog1.SafeFileName))
+                {
+                    MainForm.colorSettings.backgroundurl = Application.StartupPath + @"\Textures\" + openFileDialog1.SafeFileName;
+                    MainForm.GenTex(Application.StartupPath + MainForm.colorSettings.backgroundurl);
+                    //MessageBox.Show("Невозможно загрузить файл, т.к. он уже загружен");
+                }
+                else
+                {
+                    File.Copy(openFileDialog1.FileName, Application.StartupPath + @"\Textures\" + openFileDialog1.SafeFileName);
+                    MainForm.colorSettings.backgroundurl = Application.StartupPath + @"\Textures\" + openFileDialog1.SafeFileName;
+                    MainForm.GenTex(Application.StartupPath + MainForm.colorSettings.backgroundurl);
+                    pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
+                    pictureBox1.Image = Image.FromFile(openFileDialog1.FileName);
+                }
+            }
         }
     }
 }

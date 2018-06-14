@@ -196,7 +196,7 @@ namespace NetworkDesign
         {
             double cat1 = Point2.Y - Point1.Y; //Противолежащий
             double cat2 = Point2.X - Point1.X; //Прилежащий
-            double alfa = Math.Atan2(cat1 , cat2);
+            double alfa = Math.Atan(cat1 / cat2);
             return alfa;
         }
 
@@ -360,7 +360,7 @@ namespace NetworkDesign
                 Points = points,
                 CenterPointX = this.CenterPointX,
                 CenterPointY = this.CenterPointY,
-                delete = false
+                delete = this.delete
             };
         }
     }

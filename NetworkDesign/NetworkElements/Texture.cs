@@ -35,10 +35,12 @@ namespace NetworkDesign.NetworkElements
         /// Идентификатор изображения
         /// </summary>
         public int idimage = -1;
+        public string url = "";
         float R, G, B, A;
 
-        public Texture(bool vect, float width, Point location, int idimage)
+        public Texture(bool vect, float width, Point location, int idimage, string url)
         {
+            this.url = url;
             this.vect = vect;
             this.width = width;
             this.location = location;
@@ -175,8 +177,8 @@ namespace NetworkDesign.NetworkElements
             Gl.glVertex2d(_x, _y);
             for (int angle = 0; angle <= 360; angle += 1)
             {
-                double x = 5 * Math.Cos(angle * Math.PI / 180);
-                double y = 5 * Math.Sin(angle * Math.PI / 180);
+                double x = width / 10f * Math.Cos(angle * Math.PI / 180);
+                double y = width / 10f * Math.Sin(angle * Math.PI / 180);
                 Gl.glVertex2d(x + _x, y + _y);
             }
             Gl.glEnd();

@@ -15,12 +15,15 @@ namespace NetworkDesign.Main
 {
     public partial class StartForm : Form
     {
-        public static bool isMainFormStart = false;
+        SizeRenderingArea DefaultSettings = new SizeRenderingArea("DefaultMap", 1000, 1000);
+        MainForm mf;
 
         public StartForm()
         {
             InitializeComponent();
             StartPosition = FormStartPosition.CenterScreen;
+            if (Directory.Exists(Application.StartupPath + @"\###tempdirectory._temp###\"))
+                Directory.Delete(Application.StartupPath + @"\###tempdirectory._temp###\", true);
             try
             {
                 MainForm.user = MainForm.Autorisation(out MainForm.edit);
@@ -38,33 +41,58 @@ namespace NetworkDesign.Main
                 label4.Text = "DefaultUser (пользоваель)";
                 tabControl1.Enabled = true;
             }
+            //if (!MainForm.isInitMap)
+                //mf = new MainForm(DefaultSettings);
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (!isMainFormStart)
+            SizeRenderingArea mapSettings = new SizeRenderingArea(richTextBox1.Text, (int)numericUpDown1.Value, (int)numericUpDown2.Value);
+            //MainForm.MyMap.MapLoad(new Map(mapSettings));
+            if (!MainForm.isInitMap)
             {
-                SizeRenderingArea mapSettings = new SizeRenderingArea(richTextBox1.Text, (int)numericUpDown1.Value, (int)numericUpDown2.Value);
-                MainForm mainForm = new MainForm(mapSettings);
-                mainForm.Show();
-                isMainFormStart = true;
-                Hide();
+                mf = new MainForm(mapSettings);
+                mf.Show();
+                MainForm.isInitMap = true;
             }
             else
             {
-                foreach (var of in Application.OpenForms)
-                {
-                    
-                }
+                MainForm.MyMap.MapLoad(mapSettings);
+                mf.Show();
             }
+            Hide();
         }
 
         private void StartForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            if (!isMainFormStart)
+            if (!MainForm.isInitMap)
                 Application.Exit();
             else
                 Hide();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if (!MainForm.isInitMap)
+            {
+                mf = new MainForm(DefaultSettings);
+                MainForm.isInitMap = true;
+            }
+            try
+            {
+                if (MainForm.OpenMap(".ndm", "Network Design Map File"))
+                {
+                    mf.Show();
+                    mf.CheckButtons(true);
+                    mf.Text = MainForm.MyMap.sizeRenderingArea.Name;
+                    Hide();
+                }
+                //mf.Close();
+            }
+            catch
+            {
+                //mf.Close();
+            }
         }
     }
 }

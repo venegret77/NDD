@@ -108,7 +108,7 @@ namespace NetworkDesign.NetworkElements
             {
                 foreach (var item in Options.Options)
                 {
-                    if (/*item.ID == i & */item.Name == listBox2.Items[i].ToString())
+                    if (item.Name == listBox2.Items[i].ToString())
                     {
                         listBox1.Items[i] = item.Value;
                     }

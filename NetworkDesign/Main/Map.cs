@@ -63,7 +63,7 @@ namespace NetworkDesign
         {
             MainForm.AnT.Height = _MapSetting.Height;
             MainForm.AnT.Width = _MapSetting.Width;
-            if (!MainForm.isInit)
+            if (!MainForm.isInitMap)
             {
                 // инициализация библиотеки glut 
                 Glut.glutInit();
@@ -71,7 +71,7 @@ namespace NetworkDesign
             // инициализация режима экрана 
             Glut.glutInitDisplayMode(Glut.GLUT_RGB | Glut.GLUT_DOUBLE);
             // инициализация библиотеки openIL 
-            Il.ilInit();    
+            Il.ilInit();
             Il.ilEnable(Il.IL_ORIGIN_SET);
             // установка цвета очистки экрана (RGBA) 
             Gl.glClearColor(255, 255, 255, 1);
@@ -95,7 +95,7 @@ namespace NetworkDesign
             RenderTimer.Interval = 15;
             RenderTimer.Tick += RenderTimer_Tick;
             RenderTimer.Start();
-            MainForm.isInit = true;
+            //MainForm.isInit = true;
         }
 
         public void RenderTimer_Tick(object sender, EventArgs e) => Drawing();
@@ -105,6 +105,7 @@ namespace NetworkDesign
             Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);
             Gl.glLoadIdentity();
             Gl.glClearColor(1, 1, 1, 1);
+            DrawBackground();
             DrawTemp();
             Gl.glPushMatrix();
             Gl.glScaled(MainForm.zoom, MainForm.zoom, MainForm.zoom);
@@ -132,6 +133,32 @@ namespace NetworkDesign
             MainForm.AnT.Invalidate();
         }
 
+        private void DrawBackground()
+        {
+            if (MainForm.colorSettings.backgroundurl != "")
+            {
+                Gl.glColor4f(1, 1, 1, 1);
+                Gl.glEnable(Gl.GL_TEXTURE_2D);
+                // включаем режим текстурирования, указывая идентификатор mGlTextureObject 
+                Gl.glBindTexture(Gl.GL_TEXTURE_2D, MainForm.colorSettings.idtexture);
+                // отрисовываем полигон 
+                Gl.glBegin(Gl.GL_QUADS);
+                // указываем поочередно вершины и текстурные координаты 
+                Gl.glVertex2d(sizeRenderingArea.Left, sizeRenderingArea.Bottom);
+                Gl.glTexCoord2f(0, 1);
+                Gl.glVertex2d(sizeRenderingArea.Left, sizeRenderingArea.Top);
+                Gl.glTexCoord2f(1, 1);
+                Gl.glVertex2d(sizeRenderingArea.Right, sizeRenderingArea.Top);
+                Gl.glTexCoord2f(1, 0);
+                Gl.glVertex2d(sizeRenderingArea.Right, sizeRenderingArea.Bottom);
+                Gl.glTexCoord2f(0, 0);
+                // завершаем отрисовку 
+                Gl.glEnd();
+                // отключаем режим текстурирования 
+                Gl.glDisable(Gl.GL_TEXTURE_2D);
+            }
+        }
+
         public void DrawTemp()
         {
             NetworkWires.DrawTemp();
@@ -141,24 +168,6 @@ namespace NetworkDesign
             Rectangles.DrawTemp();
             Circles.DrawTemp();
             NetworkElements.DrawTemp();
-        }
-
-        public void DrawingWOF()
-        {
-            Gl.glClear(Gl.GL_CLEAR | Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);
-            Gl.glLoadIdentity();
-            Gl.glClearColor(1, 1, 1, 1);
-            Gl.glPushMatrix();
-            NetworkWires.Draw();
-            Buildings.Draw();
-            Polygons.Draw();
-            Lines.Draw();
-            Rectangles.Draw();
-            Circles.Draw();
-            NetworkElements.Draw();
-            MyTexts.Draw();
-            Gl.glFinish();
-            MainForm.AnT.Invalidate();
         }
 
         internal void СlipRenderingArea(DrawLevel dl)
@@ -365,22 +374,31 @@ namespace NetworkDesign
             width = maxx - minx;
         }
 
-        public void ExportListNE(string path)
+        public void ExportListNE(string path, List<bool> build)
         {
             using (StreamWriter sw = new StreamWriter(path, false, Encoding.Default))
             {
                 sw.WriteLine("Список элементов для карты сети " + sizeRenderingArea.Name);
-                for (int i = 0; i < Buildings.Buildings.Count; i++)
+                List<Building> buildings = new List<Building>();
+                foreach (var b in Buildings.Buildings)
+                    if (!b.delete)
+                        buildings.Add(b);
+                for (int i = 0; i < buildings.Count; i++)
                 {
-                    sw.WriteLine("Здание " + Buildings.Buildings[i].Name + ":");
-                    for (int n = 0; n < Buildings.Buildings[i].floors_name.Count; n++)
+                    if (build[i])
                     {
-                        sw.WriteLine(Buildings.Buildings[i].floors_name[n] + ":");
-                        for (int j = 0; j < NetworkElements.NetworkElements.Count; j++)
+                        string buildname = "Здание " + Buildings.Buildings[i].Name + ":";
+                        buildname = buildname.Replace("\r\n", "");
+                        sw.WriteLine(buildname);
+                        for (int n = 0; n < Buildings.Buildings[i].floors_name.Count; n++)
                         {
-                            if (NetworkElements.NetworkElements[j].DL.Level == i & NetworkElements.NetworkElements[j].DL.Floor == n)
+                            sw.WriteLine(Buildings.Buildings[i].floors_name[n] + ":");
+                            for (int j = 0; j < NetworkElements.NetworkElements.Count; j++)
                             {
-                                sw.WriteLine(NetworkElements.NetworkElements[j].Options.ToString());
+                                if (NetworkElements.NetworkElements[j].DL.Level == i & NetworkElements.NetworkElements[j].DL.Floor == n)
+                                {
+                                    sw.WriteLine(NetworkElements.NetworkElements[j].Options.ToString());
+                                }
                             }
                         }
                     }
@@ -646,6 +664,7 @@ namespace NetworkDesign
         {
             Instrument = 0;
             sizeRenderingArea = TempMap.sizeRenderingArea;
+            //MainForm.AnT.Refresh();
             MainForm.AnT.Height = sizeRenderingArea.Height;
             MainForm.AnT.Width = sizeRenderingArea.Width;
             Instrument = TempMap.Instrument;
@@ -659,6 +678,27 @@ namespace NetworkDesign
             NetworkWires = TempMap.NetworkWires;
             MyTexts = TempMap.MyTexts;
             log = TempMap.log;
+            SetInstrument(Instrument);
+            ResizeRenderingArea();
+        }
+
+        internal void MapLoad(SizeRenderingArea mapSettings)
+        {
+            Instrument = 0;
+            sizeRenderingArea = mapSettings;
+            MainForm.AnT.Height = sizeRenderingArea.Height;
+            MainForm.AnT.Width = sizeRenderingArea.Width;
+            Instrument = 0;
+            Rectangles = new GroupOfRectangles();
+            Lines = new GroupOfLines();
+            EditRects = new GroupOfEditRects();
+            Buildings = new GroupOfBuildings();
+            Circles = new GroupOfCircle();
+            Polygons = new GroupOfPolygons();
+            NetworkElements = new GroupOfNE();
+            NetworkWires = new GroupOfNW();
+            MyTexts = new GroupOfMT();
+            log = new Log();
             SetInstrument(Instrument);
             ResizeRenderingArea();
         }
