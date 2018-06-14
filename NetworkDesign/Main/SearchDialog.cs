@@ -16,15 +16,17 @@ namespace NetworkDesign
         GroupOfMT GOMT;
         GroupOfBuildings GOB;
         GroupOfNE GONE;
+        GroupOfNW GONW;
         public int _type = -1;
         public int _item = -1;
 
-        public SearchDialog(GroupOfMT GOMT, GroupOfBuildings GOB, GroupOfNE GONE)
+        public SearchDialog(GroupOfMT GOMT, GroupOfBuildings GOB, GroupOfNE GONE, GroupOfNW GONW)
         {
             InitializeComponent();
             this.GOMT = GOMT;
             this.GOB = GOB;
             this.GONE = GONE;
+            this.GONW = GONW;
             FormClosed += SearchDialog_FormClosed;
         }
 
@@ -84,6 +86,15 @@ namespace NetworkDesign
                             type.Add(2);
                         }
                     }
+                    foreach (var note in GONE.NetworkElements[i].notes.notes)
+                    {
+                        if (note.note.ToLower().Contains(text))
+                        {
+                            listBox1.Items.Add("Заметка '/" + note + "'");
+                            items.Add(i);
+                            type.Add(2);
+                        }
+                    }
                 }
                 for (int i = 0; i < GOMT.MyTexts.Count; i++)
                 {
@@ -92,6 +103,18 @@ namespace NetworkDesign
                         listBox1.Items.Add("Надпись '" + GOMT.MyTexts[i].text + "'");
                         items.Add(i);
                         type.Add(3);
+                    }
+                }
+                for (int i = 0; i < GONW.NetworkWires.Count; i++)
+                {
+                    foreach (var note in GONW.NetworkWires[i].notes.notes)
+                    {
+                        if (note.note.ToLower().Contains(text))
+                        {
+                            listBox1.Items.Add("Заметка '/" + note.note + "'");
+                            items.Add(i);
+                            type.Add(4);
+                        }
                     }
                 }
             }

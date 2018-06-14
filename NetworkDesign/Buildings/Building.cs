@@ -864,7 +864,7 @@ namespace NetworkDesign
                 ent.LocalCenterPoint = CalcLocalPoint(ent.MainCenterPoint);
         }
 
-        internal unsafe void SetPoint(int x, int y, int type, GroupOfNW networkWires, int build)
+        internal void SetPoint(int x, int y, int type, GroupOfNW networkWires, int build)
         {
             Point cp = new Point();
             Point _cp = new Point();

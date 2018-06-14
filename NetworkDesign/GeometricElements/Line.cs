@@ -146,7 +146,7 @@ namespace NetworkDesign
                 Points = points,
                 CenterPointX = this.CenterPointX,
                 CenterPointY = this.CenterPointY,
-                delete = false
+                delete = this.delete
             };
         }
     }

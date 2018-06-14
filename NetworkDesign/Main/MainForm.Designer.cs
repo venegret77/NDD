@@ -43,9 +43,7 @@
             this.SaveTemplateBtn = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton3 = new System.Windows.Forms.ToolStripSplitButton();
             this.экспортВИзображенеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.экспортСпискаЭлементовСетиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
-            this.экспортЗданияToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.импортЗданияToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.BackBtn = new System.Windows.Forms.ToolStripButton();
@@ -258,51 +256,35 @@
             this.toolStripButton3.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.toolStripButton3.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.экспортВИзображенеToolStripMenuItem,
-            this.экспортСпискаЭлементовСетиToolStripMenuItem,
             this.toolStripSeparator9,
-            this.экспортЗданияToolStripMenuItem,
             this.импортЗданияToolStripMenuItem});
             this.toolStripButton3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton3.Image")));
             this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton3.Name = "toolStripButton3";
             this.toolStripButton3.Size = new System.Drawing.Size(32, 22);
             this.toolStripButton3.Text = "Экспорт/импорт";
+            this.toolStripButton3.ButtonClick += new System.EventHandler(this.toolStripButton3_ButtonClick);
             // 
             // экспортВИзображенеToolStripMenuItem
             // 
             this.экспортВИзображенеToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("экспортВИзображенеToolStripMenuItem.Image")));
             this.экспортВИзображенеToolStripMenuItem.Name = "экспортВИзображенеToolStripMenuItem";
-            this.экспортВИзображенеToolStripMenuItem.Size = new System.Drawing.Size(249, 22);
-            this.экспортВИзображенеToolStripMenuItem.Text = "Экспорт в изображене";
-            this.экспортВИзображенеToolStripMenuItem.Click += new System.EventHandler(this.экспортВИзображенеToolStripMenuItem_Click);
-            // 
-            // экспортСпискаЭлементовСетиToolStripMenuItem
-            // 
-            this.экспортСпискаЭлементовСетиToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("экспортСпискаЭлементовСетиToolStripMenuItem.Image")));
-            this.экспортСпискаЭлементовСетиToolStripMenuItem.Name = "экспортСпискаЭлементовСетиToolStripMenuItem";
-            this.экспортСпискаЭлементовСетиToolStripMenuItem.Size = new System.Drawing.Size(249, 22);
-            this.экспортСпискаЭлементовСетиToolStripMenuItem.Text = "Экспорт списка элементов сети";
-            this.экспортСпискаЭлементовСетиToolStripMenuItem.Click += new System.EventHandler(this.экспортСпискаЭлементовСетиToolStripMenuItem_Click);
+            this.экспортВИзображенеToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.экспортВИзображенеToolStripMenuItem.Text = "Экспорт ";
+            this.экспортВИзображенеToolStripMenuItem.Click += new System.EventHandler(this.ExportMapClick);
             // 
             // toolStripSeparator9
             // 
             this.toolStripSeparator9.Name = "toolStripSeparator9";
-            this.toolStripSeparator9.Size = new System.Drawing.Size(246, 6);
-            // 
-            // экспортЗданияToolStripMenuItem
-            // 
-            this.экспортЗданияToolStripMenuItem.Name = "экспортЗданияToolStripMenuItem";
-            this.экспортЗданияToolStripMenuItem.Size = new System.Drawing.Size(249, 22);
-            this.экспортЗданияToolStripMenuItem.Text = "Экспорт здания";
-            this.экспортЗданияToolStripMenuItem.Click += new System.EventHandler(this.экспортЗданияToolStripMenuItem_Click);
+            this.toolStripSeparator9.Size = new System.Drawing.Size(209, 6);
             // 
             // импортЗданияToolStripMenuItem
             // 
             this.импортЗданияToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("импортЗданияToolStripMenuItem.Image")));
             this.импортЗданияToolStripMenuItem.Name = "импортЗданияToolStripMenuItem";
-            this.импортЗданияToolStripMenuItem.Size = new System.Drawing.Size(249, 22);
-            this.импортЗданияToolStripMenuItem.Text = "Импорт здания";
-            this.импортЗданияToolStripMenuItem.Click += new System.EventHandler(this.импортЗданияToolStripMenuItem_Click);
+            this.импортЗданияToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.импортЗданияToolStripMenuItem.Text = "Экспорт / импорт здания";
+            this.импортЗданияToolStripMenuItem.Click += new System.EventHandler(this.ExportImportBuildClick);
             // 
             // toolStripSeparator4
             // 
@@ -363,7 +345,7 @@
             this.SearchBrn.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.SearchBrn.Name = "SearchBrn";
             this.SearchBrn.Size = new System.Drawing.Size(23, 22);
-            this.SearchBrn.Text = "toolStripButton9";
+            this.SearchBrn.Text = "Поиск";
             this.SearchBrn.Click += new System.EventHandler(this.SearchClick);
             // 
             // CopyBtn
@@ -800,9 +782,7 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.ToolStripSplitButton toolStripButton3;
         private System.Windows.Forms.ToolStripMenuItem экспортВИзображенеToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem экспортСпискаЭлементовСетиToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
-        private System.Windows.Forms.ToolStripMenuItem экспортЗданияToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem импортЗданияToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton toolStripButton1;
         private System.Windows.Forms.ComboBox comboBox1;

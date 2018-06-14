@@ -74,7 +74,7 @@ namespace NetworkDesign.NetworkElements
         public override string ToString()
         {
             string settings = "";
-            settings = "Устройство " + HostName + ":" + Environment.NewLine;
+            settings = "Устройство " + Name + " (сетевое имя: " + HostName + "):" + Environment.NewLine;
             settings += "Пропускная способность: ";
             long kr = 0;
             if (Throughput >= 1000 & Throughput < 1000000)
@@ -299,6 +299,40 @@ namespace NetworkDesign.NetworkElements
             {
                 Params = _params,
             };
+        }
+
+        internal static void _OpenFromBuild(ref GroupOfNE NE)
+        {
+            XmlSerializer formatter = new XmlSerializer(typeof(Parametrs));
+            using (FileStream fs = new FileStream(Application.StartupPath + @"\###tempdirectory._temp###\NetworkSettings", FileMode.Open))
+            {
+                Parametrs _parametrs = (Parametrs)formatter.Deserialize(fs);
+                for (int i = 0; i < NE.NetworkElements.Count; i++)
+                {
+                    for (int opt = 0; opt < NE.NetworkElements[i].Options.Options.Count; opt++)
+                    {
+                        bool isLoadParam = false;
+                        for (int j = 0; j < MainForm.parametrs.Params.Count; j++)
+                        {
+                            if (NE.NetworkElements[i].Options.Options[opt].Name == MainForm.parametrs.Params[j])
+                            {
+                                NE.NetworkElements[i].Options.Options[opt].ID = j;
+                                isLoadParam = true;
+                                break;
+                            }
+                        }
+                        if (!isLoadParam)
+                        {
+                            MainForm.parametrs.Add(NE.NetworkElements[i].Options.Options[opt].Name);
+                            NE.NetworkElements[i].Options.Options[opt].ID = MainForm.parametrs.Params.Count - 1;
+                            int lastindex = MainForm.parametrs.Params.Count - 1;
+                            Element elem = new Element(13, lastindex, "", -1);
+                            Element _elem = new Element(13, lastindex, MainForm.parametrs.Params[lastindex], -1);
+                            MainForm.MyMap.log.Add(new LogMessage("Добавил параметр", elem, _elem));
+                        }
+                    }
+                }
+            }
         }
     }
 }
