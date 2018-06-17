@@ -50,6 +50,10 @@ namespace NetworkDesign
         public static float font = 14;
         public static double zoom = 1;
         public static bool isInitMap = false;
+        static public double wkoef = 1;
+        static public double hkoef = 1;
+        static public int imgwidth = 100;
+        static public int imgheight = 100;
 
         static public bool isInit = false;
 
@@ -118,6 +122,11 @@ namespace NetworkDesign
             trackBar1.Parent = this;
             trackBar1.BringToFront();
             colorSettings = ColorSettings.Open();
+            /*if (colorSettings.backgroundurl != "")
+            {
+                var img = Image.FromFile(Application.StartupPath + @"\Textures\" + colorSettings.backgroundurl);
+                panel1.BackgroundImage = img;
+            }*/
             parametrs = Parametrs.Open();
             ImagesURL = OpenTextures();
             LoadImages();
@@ -226,7 +235,7 @@ namespace NetworkDesign
                 if (IT.action == 0)
                 {
                     MyMap.NetworkElements.step = true;
-                    MyMap.NetworkElements.TempNetworkElement = new NetworkElement(new Texture(false, 50, new Point(x, y), IT.imageindex, ImagesURL.Textures[IT.imageindex].URL), drawLevel);
+                    MyMap.NetworkElements.TempNetworkElement = new NetworkElement(new Texture(50, new Point(x, y), IT.imageindex, ImagesURL.Textures[IT.imageindex].URL), drawLevel);
                 }
             }
             else
@@ -451,7 +460,7 @@ namespace NetworkDesign
                 if (IT.imageindex > -1)
                 {*/
                     MyMap.NetworkElements.step = true;
-                    MyMap.NetworkElements.TempNetworkElement = new NetworkElement(new Texture(false, 50, new Point(x, y), MyMap.Instrument - nebutnscount, ImagesURL.Textures[MyMap.Instrument - nebutnscount].URL), drawLevel);
+                    MyMap.NetworkElements.TempNetworkElement = new NetworkElement(new Texture(50, new Point(x, y), MyMap.Instrument - nebutnscount, ImagesURL.Textures[MyMap.Instrument - nebutnscount].URL), drawLevel);
                 //}
             }
             else
@@ -1378,18 +1387,15 @@ namespace NetworkDesign
                     CheckButtons(true);
                     break;
                 case 4:
-                    if (MyMap.CheckEmptyBuild(activeElem.item))
+                    if (MessageBox.Show("Вы уверены что хотите удалить здание? Все элементы, находящиеся внутри здания будут удалены", "Удаление здания", MessageBoxButtons.OKCancel) == DialogResult.OK)
                     {
+                        MyMap.RemoveBuildElements(activeElem.item);
                         elem = new Element(4, activeElem.item, new Building(), -1);
                         _elem = new Element(4, activeElem.item, MyMap.Buildings.Buildings[activeElem.item], -1);
                         MyMap.log.Add(new LogMessage("Удалил здание", elem, _elem));
                         InfoLable.Text = "Удалил здание";
                         MyMap.Buildings.Remove(activeElem.item);
                         CheckButtons(true);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Невозможно удалить здание");
                     }
                     break;
                 case 6:
@@ -1466,7 +1472,7 @@ namespace NetworkDesign
                     MyMap.Circles.Remove(activeElem.item);
                     break;
             }
-            Unfocus("Удалил элемент");
+            Unfocus("");
         }
 
         private bool CheckIW()
@@ -1963,7 +1969,7 @@ namespace NetworkDesign
                 {
                     filename = saveFileDialog1.FileName + fileExtension;
                 }
-                MyMap.UserID = user.GetHashCode();
+                MyMap.UserLogin = user.SamAccountName;
                 if (Directory.Exists(Application.StartupPath + @"\###tempdirectory._temp###\"))
                     Directory.Delete(Application.StartupPath + @"\###tempdirectory._temp###\", true);
                 Directory.CreateDirectory(Application.StartupPath + @"\###tempdirectory._temp###\");
@@ -2012,7 +2018,7 @@ namespace NetworkDesign
                     using (FileStream fs = new FileStream(Application.StartupPath + @"\###tempdirectory._temp###\mapfile.map", FileMode.OpenOrCreate))
                     {
                         Map TempMap = (Map)formatter.Deserialize(fs);
-                        if (TempMap.UserID == user.GetHashCode() | edit)
+                        if (TempMap.UserLogin == user.SamAccountName | edit)
                         {
                             for (int i = 0; i < TempMap.MyTexts.MyTexts.Count; i++)
                                 TempMap.MyTexts.MyTexts[i].GenNewTexture();
@@ -2079,7 +2085,7 @@ namespace NetworkDesign
                 TempMap.NetworkElements.AddGroupElems(MyMap.NetworkElements.GetInBuild(buildid));
                 TempMap.NetworkWires.AddGroupElems(MyMap.NetworkWires.GetInBuild(buildid));
                 TempMap.MyTexts.AddGroupElems(MyMap.MyTexts.GetInBuild(buildid));
-                TempMap.UserID = user.GetHashCode();
+                TempMap.UserLogin = user.SamAccountName;
                 if (Directory.Exists(Application.StartupPath + @"\###tempdirectory._temp###\"))
                     Directory.Delete(Application.StartupPath + @"\###tempdirectory._temp###\", true);
                 Directory.CreateDirectory(Application.StartupPath + @"\###tempdirectory._temp###\");
@@ -2126,74 +2132,93 @@ namespace NetworkDesign
                 using (FileStream fs = new FileStream(Application.StartupPath + @"\###tempdirectory._temp###\mapfile.map", FileMode.OpenOrCreate))
                 {
                     Map OpenMap = (Map)formatter.Deserialize(fs);
-                    if (OpenMap.UserID == user.GetHashCode() | edit)
+                    if (OpenMap.UserLogin == user.SamAccountName | edit)
                     {
                         _OpenTexturesFromBuild(ref OpenMap.NetworkElements);
                         Parametrs._OpenFromBuild(ref OpenMap.NetworkElements);
                         //генерация текстур
                         OpenMap.Buildings.Buildings[0].GenText();
                         //Загрузка и добавление в лог
+                        int newdll = MyMap.Buildings.Buildings.Count;
+                        OpenMap.Buildings.Buildings[0].LocalDL.Level = newdll;
+                        foreach (var iw in OpenMap.Buildings.Buildings[0].InputWires.InputWires.Circles)
+                        {
+                            iw.LocalDL.Level = newdll;
+                            if (iw.MainDL.Level != -1)
+                                iw.MainDL.Level = newdll;
+                        }
+                        foreach (var ent in OpenMap.Buildings.Buildings[0].Entrances.Enterances.Circles)
+                        {
+                            ent.LocalDL.Level = newdll;
+                        }
                         MyMap.Buildings.Add(OpenMap.Buildings.Buildings[0].Clone());
                         int lastindex = MyMap.Buildings.Buildings.Count - 1;
-                        Element elem = new Element(4, activeElem.item, new Building(), -1);
-                        Element _elem = new Element(4, lastindex, MyMap.Buildings.Buildings[lastindex].Clone(), -1);
+                        Element _elem = new Element(4, lastindex, new Building(), -1);
+                        Element elem = new Element(4, lastindex, MyMap.Buildings.Buildings[lastindex].Clone(), -1);
                         MyMap.log.Add(new LogMessage("Импортировал здание", elem, _elem));
                         foreach (var item in OpenMap.Lines.Lines)
                         {
+                            item.DL.Level = newdll;
                             MyMap.Lines.Add(item.Clone());
                             lastindex = MyMap.Lines.Lines.Count - 1;
-                            elem = new Element(1, activeElem.item, new Line(), -1);
-                            _elem = new Element(1, lastindex, MyMap.Lines.Lines[lastindex].Clone(), -1);
+                            _elem = new Element(1, lastindex, new Line(), -1);
+                            elem = new Element(1, lastindex, MyMap.Lines.Lines[lastindex].Clone(), -1);
                             MyMap.log.Add(new LogMessage("Импортировал линию внутри здания", elem, _elem));
                         }
                         foreach (var item in OpenMap.Rectangles.Rectangles)
                         {
+                            item.DL.Level = newdll;
                             MyMap.Rectangles.Add(item.Clone());
                             lastindex = MyMap.Rectangles.Rectangles.Count - 1;
-                            elem = new Element(2, activeElem.item, new MyRectangle(), -1);
-                            _elem = new Element(2, lastindex, MyMap.Rectangles.Rectangles[lastindex].Clone(), -1);
+                            _elem = new Element(2, lastindex, new MyRectangle(), -1);
+                            elem = new Element(2, lastindex, MyMap.Rectangles.Rectangles[lastindex].Clone(), -1);
                             MyMap.log.Add(new LogMessage("Импортировал прямоугольник внутри здания", elem, _elem));
                         }
                         foreach (var item in OpenMap.Polygons.Polygons)
                         {
+                            item.DL.Level = newdll;
                             MyMap.Polygons.Add(item.Clone());
                             lastindex = MyMap.Polygons.Polygons.Count - 1;
-                            elem = new Element(3, activeElem.item, new Polygon(), -1);
-                            _elem = new Element(3, lastindex, MyMap.Polygons.Polygons[lastindex].Clone(), -1);
+                            _elem = new Element(3, lastindex, new Polygon(), -1);
+                            elem = new Element(3, lastindex, MyMap.Polygons.Polygons[lastindex].Clone(), -1);
                             MyMap.log.Add(new LogMessage("Импортировал многоугольник внутри здания", elem, _elem));
                         }
                         foreach (var item in OpenMap.Circles.Circles)
                         {
+                            item.DL.Level = newdll;
                             MyMap.Circles.Add(item.Clone());
                             lastindex = MyMap.Circles.Circles.Count - 1;
-                            elem = new Element(360, activeElem.item, new Circle(), -1);
-                            _elem = new Element(360, lastindex, MyMap.Circles.Circles[lastindex].Clone(), -1);
+                            _elem = new Element(360, lastindex, new Circle(), -1);
+                            elem = new Element(360, lastindex, MyMap.Circles.Circles[lastindex].Clone(), -1);
                             MyMap.log.Add(new LogMessage("Импортировал круг внутри здания", elem, _elem));
                         }
                         foreach (var item in OpenMap.MyTexts.MyTexts)
                         {
+                            item.DL.Level = newdll;
                             item.GenNewTexture();
                             MyMap.MyTexts.Add(item.Clone());
                             lastindex = MyMap.MyTexts.MyTexts.Count - 1;
-                            elem = new Element(10, activeElem.item, new MyText(), -1);
-                            _elem = new Element(10, lastindex, MyMap.MyTexts.MyTexts[lastindex].Clone(), -1);
+                            _elem = new Element(10, lastindex, new MyText(), -1);
+                            elem = new Element(10, lastindex, MyMap.MyTexts.MyTexts[lastindex].Clone(), -1);
                             MyMap.log.Add(new LogMessage("Импортировал надпись внутри здания", elem, _elem));
                         }
                         foreach (var item in OpenMap.NetworkElements.NetworkElements)
                         {
+                            item.DL.Level = newdll;
                             item.GenText();
                             MyMap.NetworkElements.Add(item.Clone());
                             lastindex = MyMap.NetworkElements.NetworkElements.Count - 1;
-                            elem = new Element(8, activeElem.item, new NetworkElement(), -1);
-                            _elem = new Element(8, lastindex, MyMap.NetworkElements.NetworkElements[lastindex].Clone(), -1);
+                            _elem = new Element(8, lastindex, new NetworkElement(), -1);
+                            elem = new Element(8, lastindex, MyMap.NetworkElements.NetworkElements[lastindex].Clone(), -1);
                             MyMap.log.Add(new LogMessage("Импортировал сетевой элемент внутри здания", elem, _elem));
                         }
                         foreach (var item in OpenMap.NetworkWires.NetworkWires)
                         {
+                            item.DL.Level = newdll;
                             MyMap.NetworkWires.Add(item.Clone());
                             lastindex = MyMap.NetworkWires.NetworkWires.Count - 1;
-                            elem = new Element(9, activeElem.item, new NetworkWire(), -1);
-                            _elem = new Element(9, lastindex, MyMap.NetworkWires.NetworkWires[lastindex].Clone(), -1);
+                            _elem = new Element(9, lastindex, new NetworkWire(), -1);
+                            elem = new Element(9, lastindex, MyMap.NetworkWires.NetworkWires[lastindex].Clone(), -1);
                             MyMap.log.Add(new LogMessage("Импортировал провод внутри здания", elem, _elem));
                         }
                     }
@@ -2785,6 +2810,8 @@ namespace NetworkDesign
                 MyMap.ResizeRenderingArea();
             else
                 MyMap.ResizeRenderingArea(drawLevel.Level);
+            hkoef = (double)MyMap.sizeRenderingArea.Height / (double)imgheight;
+            wkoef = (double)MyMap.sizeRenderingArea.Width / (double)imgwidth;
         }
         /// <summary>
         /// Событие закрытия формы
@@ -2989,6 +3016,9 @@ namespace NetworkDesign
         private void CopyBtn_Click(object sender, EventArgs e)
         {
             int i = activeElem.item;
+            int lastindex;
+            Element _elem;
+            Element elem;
             switch (activeElem.type)
             {
                 case 1:
@@ -2996,35 +3026,59 @@ namespace NetworkDesign
                     var line = MyMap.Lines.Lines.Last();
                     for (int j = 0; j < line.Points.Count; j++)
                         line.Points[j] = new Point(line.Points[j].X + 50, line.Points[j].Y - 50);
+                    lastindex = MyMap.Lines.Lines.Count - 1;
+                    _elem = new Element(1, lastindex, new Line(), -1);
+                    elem = new Element(1, lastindex, MyMap.Lines.Lines[lastindex].Clone(), -1);
+                    MyMap.log.Add(new LogMessage("Скопировал линию", elem, _elem));
                     break;
                 case 2:
                     MyMap.Rectangles.Add(MyMap.Rectangles.Rectangles[i].Clone());
                     var rect = MyMap.Rectangles.Rectangles.Last();
                     for (int j = 0; j < rect.Points.Count; j++)
                         rect.Points[j] = new Point(rect.Points[j].X + 100, rect.Points[j].Y - 100);
+                    lastindex = MyMap.Rectangles.Rectangles.Count - 1;
+                    _elem = new Element(2, lastindex, new MyRectangle(), -1);
+                    elem = new Element(2, lastindex, MyMap.Rectangles.Rectangles[lastindex].Clone(), -1);
+                    MyMap.log.Add(new LogMessage("Скопировал прямоугольник", elem, _elem));
                     break;
                 case 3:
                     MyMap.Polygons.Add(MyMap.Polygons.Polygons[i].Clone());
                     var poly = MyMap.Polygons.Polygons.Last();
                     for (int j = 0; j < poly.Points.Count; j++)
                         poly.Points[j] = new Point(poly.Points[j].X + 100, poly.Points[j].Y - 100);
+                    lastindex = MyMap.Polygons.Polygons.Count - 1;
+                    _elem = new Element(3, lastindex, new Polygon(), -1);
+                    elem = new Element(3, lastindex, MyMap.Polygons.Polygons[lastindex].Clone(), -1);
+                    MyMap.log.Add(new LogMessage("Скопировал многоугольник", elem, _elem));
                     break;
                 case 360:
                     MyMap.Circles.Add(MyMap.Circles.Circles[i].Clone());
                     var circ = MyMap.Circles.Circles.Last();
                     circ.MainCenterPoint = new Point(circ.MainCenterPoint.X + circ.radius, circ.MainCenterPoint.Y - circ.radius);
+                    lastindex = MyMap.Circles.Circles.Count - 1;
+                    _elem = new Element(360, lastindex, new Circle(), -1);
+                    elem = new Element(360, lastindex, MyMap.Circles.Circles[lastindex].Clone(), -1);
+                    MyMap.log.Add(new LogMessage("Скопировал круг", elem, _elem));
                     break;
                 case 8:
                     MyMap.NetworkElements.Add(MyMap.NetworkElements.NetworkElements[i].Clone());
                     var ne = MyMap.NetworkElements.NetworkElements.Last();
                     ne.texture.location = new Point(ne.texture.location.X + (int)ne.texture.width, ne.texture.location.Y - (int)ne.texture.width);
                     ne.GenText();
+                    lastindex = MyMap.NetworkElements.NetworkElements.Count - 1;
+                    _elem = new Element(8, lastindex, new NetworkElement(), -1);
+                    elem = new Element(8, lastindex, MyMap.NetworkElements.NetworkElements[lastindex].Clone(), -1);
+                    MyMap.log.Add(new LogMessage("Скопировал сетевой элемент", elem, _elem));
                     break;
                 case 10:
                     MyMap.MyTexts.Add(MyMap.MyTexts.MyTexts[i].Clone());
                     var mt = MyMap.MyTexts.MyTexts.Last();
                     mt.location = new Point(mt.location.X + mt.size.Width, mt.location.Y - mt.size.Width);
                     mt.GenNewTexture();
+                    lastindex = MyMap.MyTexts.MyTexts.Count - 1;
+                    _elem = new Element(10, lastindex, new MyText(), -1);
+                    elem = new Element(10, lastindex, MyMap.MyTexts.MyTexts[lastindex].Clone(), -1);
+                    MyMap.log.Add(new LogMessage("Скопировал текст", elem, _elem));
                     break;
             }
         }

@@ -66,8 +66,10 @@
             this.listView1.Location = new System.Drawing.Point(0, 28);
             this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
+            this.listView1.ShowItemToolTips = true;
             this.listView1.Size = new System.Drawing.Size(625, 363);
             this.listView1.TabIndex = 0;
+            this.listView1.TileSize = new System.Drawing.Size(100, 100);
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
             // 

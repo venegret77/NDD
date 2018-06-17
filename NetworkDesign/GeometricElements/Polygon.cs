@@ -8,13 +8,24 @@ using Tao.OpenGl;
 
 namespace NetworkDesign
 {
+    /// <summary>
+    /// Многоугольник
+    /// </summary>
     public class Polygon: GeometricFigure
     {
+        /// <summary>
+        /// Конструктор
+        /// </summary>
         public Polygon()
         {
             delete = true;
         }
-
+        /// <summary>
+        /// Конструктор
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// <param name="_drawLevel">Уровень отображения</param>
         public Polygon(int x, int y, DrawLevel _drawLevel)
         {
             TempPoint.X = x;
@@ -24,7 +35,11 @@ namespace NetworkDesign
             DL = _drawLevel;
             delete = false;
         }
-
+        /// <summary>
+        /// Установка временной точки 
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
         public void SetTempPoint(int x, int y)
         {
             TempPoint.X = x;
@@ -35,13 +50,17 @@ namespace NetworkDesign
         {
             Points[i] = new Point(x, y);
         }
-
+        /// <summary>
+        /// Добавление точки
+        /// </summary>
         public void AddPoint()
         {
             Points.Add(TempPoint);
             TempPoint = new Point(Points.Last().X, Points.Last().Y);
         }
-
+        /// <summary>
+        /// Удаление временной точки
+        /// </summary>
         public void ClearTempPoint()
         {
             TempPoint = new Point();
@@ -151,7 +170,10 @@ namespace NetworkDesign
                 Gl.glPopMatrix();
             }
         }
-
+        /// <summary>
+        /// Отрисовка здания с заданным коэффициентом
+        /// </summary>
+        /// <param name="koef">Коэффициент</param>
         internal void DrawB(double koef)
         {
             if (!delete)
@@ -171,14 +193,18 @@ namespace NetworkDesign
                 //Gl.glPopMatrix();
             }
         }
-
+        /// <summary>
+        /// Добавление новой точки
+        /// </summary>
         internal void AddNewPoint()
         {
             int x = (Points.Last().X + Points[0].X) / 2;
             int y = (Points.Last().Y + Points[0].Y) / 2;
             Points.Add(new Point(x, y));
         }
-
+        /// <summary>
+        /// Удаление последней точки
+        /// </summary>
         internal void RemovePoint()
         {
             if (Points.Count > 3)

@@ -8,10 +8,18 @@ using System.Threading.Tasks;
 
 namespace NetworkDesign
 {
+    /// <summary>
+    /// Группа зданий
+    /// </summary>
     public class GroupOfBuildings: GroupOfElements
     {
+        /// <summary>
+        /// Список зданий
+        /// </summary>
         public List<Building> Buildings = new List<Building>();
-
+        /// <summary>
+        /// Конструктор
+        /// </summary>
         public GroupOfBuildings()
         {
 
@@ -24,7 +32,11 @@ namespace NetworkDesign
                 b.Entrances.Enterances.TempDefault();
             }
         }
-
+        /// <summary>
+        /// Проверка входа провода
+        /// </summary>
+        /// <param name="build">Идентификатор зданий</param>
+        /// <param name="networkWires">Группа проводов</param>
         public void CheckIW(int build, GroupOfNW networkWires)
         {
             int i = 0;

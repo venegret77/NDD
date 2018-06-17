@@ -8,13 +8,24 @@ using Tao.OpenGl;
 
 namespace NetworkDesign
 {
+    /// <summary>
+    /// Линия
+    /// </summary>
     public class Line : GeometricFigure
     {
+        /// <summary>
+        /// Конструктор
+        /// </summary>
         public Line()
         {
             delete = true;
         }
-
+        /// <summary>
+        /// Конструктор
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// <param name="_drawLevel">Уровень отображения</param>
         public Line(int x, int y, DrawLevel _drawLevel)
         {
             Points.Add(new Point(x, y));

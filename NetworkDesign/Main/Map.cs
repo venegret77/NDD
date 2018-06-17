@@ -1,4 +1,5 @@
 ﻿using NetworkDesign.Buildings;
+using NetworkDesign.Main;
 using NetworkDesign.NetworkElements;
 using System;
 using System.Collections.Generic;
@@ -16,49 +17,84 @@ using Tao.Platform.Windows;
 
 namespace NetworkDesign
 {
+    /// <summary>
+    /// Карта сети
+    /// </summary>
     public class Map
     {
-        //Базовые параметры
+        /// <summary>
+        /// Параметры карты сети
+        /// </summary>
         public SizeRenderingArea sizeRenderingArea;
-        //private SimpleOpenGlControl AnT;
+        /// <summary>
+        /// Инструмент
+        /// </summary>
         public int Instrument = 1;
-        //Для линий
-        public GroupOfLines Lines = new GroupOfLines(); //Группа линий
-        //Для многоугольников
+        /// <summary>
+        /// Группа линий
+        /// </summary>
+        public GroupOfLines Lines = new GroupOfLines();
+        /// <summary>
+        /// Группа многоугольников
+        /// </summary>
         public GroupOfPolygons Polygons = new GroupOfPolygons();
-        //Для прямоугольников
-        public GroupOfRectangles Rectangles = new GroupOfRectangles(); //Группа прямоугольников
-        //Для кругов
+        /// <summary>
+        /// Группа прямоугольников
+        /// </summary>
+        public GroupOfRectangles Rectangles = new GroupOfRectangles(); 
+        /// <summary>
+        /// Группа кругов
+        /// </summary>
         public GroupOfCircle Circles = new GroupOfCircle();
-        //Для элементов сети
+        /// <summary>
+        /// Группа сетевых элементов
+        /// </summary>
         public GroupOfNE NetworkElements = new GroupOfNE();
+        /// <summary>
+        /// Группа проводов
+        /// </summary>
         public GroupOfNW NetworkWires = new GroupOfNW();
+        /// <summary>
+        /// Группа надписей
+        /// </summary>
         public GroupOfMT MyTexts = new GroupOfMT();
-        //Редактирование
+        /// <summary>
+        /// Группа прямоугольников для редактирования
+        /// </summary>
         public GroupOfEditRects EditRects = new GroupOfEditRects();
-        //Лог
+        /// <summary>
+        /// Лог действий
+        /// </summary>
         public Log log = new Log();
-        //Здания
+        /// <summary>
+        /// Группа здани
+        /// </summary>
         public GroupOfBuildings Buildings = new GroupOfBuildings();
-
-        public int UserID;
-        //Другое
+        /// <summary>
+        /// Логин текущего пользователя
+        /// </summary>
+        public string UserLogin;
+        /// <summary>
+        /// Таймер для отрисовки
+        /// </summary>
         [XmlIgnore()]
         public Timer RenderTimer = new Timer();
         /// <summary>
         /// Переменная, показывающая, перемещается ли в данный момент элемент или нет
         /// </summary>
         public bool isMove = false;
-
+        /// <summary>
+        /// Пустой конструктор класса Map
+        /// </summary>
         public Map()
         {
 
         }
 
         /// <summary>
-        /// Конструктор класса Map
+        /// Конструктор класса Map с параметрама
         /// </summary>
-        /// <param name="_MapSetting">Настройки карты</param>
+        /// <param name="_MapSetting">Параметры карты сети</param>
         public Map(SizeRenderingArea _MapSetting)
         {
             MainForm.AnT.Height = _MapSetting.Height;
@@ -74,7 +110,7 @@ namespace NetworkDesign
             Il.ilInit();
             Il.ilEnable(Il.IL_ORIGIN_SET);
             // установка цвета очистки экрана (RGBA) 
-            Gl.glClearColor(255, 255, 255, 1);
+            Gl.glClearColor(1, 1, 1, 1);
             // установка порта вывода 
             Gl.glViewport(0, 0, MainForm.AnT.Width, MainForm.AnT.Height);
             // активация проекционной матрицы 
@@ -97,15 +133,20 @@ namespace NetworkDesign
             RenderTimer.Start();
             //MainForm.isInit = true;
         }
-
+        /// <summary>
+        /// Событие тика таймера отрисовки
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void RenderTimer_Tick(object sender, EventArgs e) => Drawing();
-
+        /// <summary>
+        /// Отрисовка
+        /// </summary>
         public void Drawing()
         {
             Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);
             Gl.glLoadIdentity();
             Gl.glClearColor(1, 1, 1, 1);
-            DrawBackground();
             DrawTemp();
             Gl.glPushMatrix();
             Gl.glScaled(MainForm.zoom, MainForm.zoom, MainForm.zoom);
@@ -132,25 +173,27 @@ namespace NetworkDesign
             Gl.glPopMatrix();
             MainForm.AnT.Invalidate();
         }
-
+        /// <summary>
+        /// Отрисовка фона / подложки
+        /// </summary>
         private void DrawBackground()
         {
             if (MainForm.colorSettings.backgroundurl != "")
             {
-                Gl.glColor4f(1, 1, 1, 1);
                 Gl.glEnable(Gl.GL_TEXTURE_2D);
                 // включаем режим текстурирования, указывая идентификатор mGlTextureObject 
                 Gl.glBindTexture(Gl.GL_TEXTURE_2D, MainForm.colorSettings.idtexture);
                 // отрисовываем полигон 
                 Gl.glBegin(Gl.GL_QUADS);
+                Gl.glColor4f(0, 0, 0, 1);
                 // указываем поочередно вершины и текстурные координаты 
-                Gl.glVertex2d(sizeRenderingArea.Left, sizeRenderingArea.Bottom);
-                Gl.glTexCoord2f(0, 1);
-                Gl.glVertex2d(sizeRenderingArea.Left, sizeRenderingArea.Top);
-                Gl.glTexCoord2f(1, 1);
-                Gl.glVertex2d(sizeRenderingArea.Right, sizeRenderingArea.Top);
-                Gl.glTexCoord2f(1, 0);
-                Gl.glVertex2d(sizeRenderingArea.Right, sizeRenderingArea.Bottom);
+                Gl.glVertex2d((double)sizeRenderingArea.Left * MainForm.zoom, (double)sizeRenderingArea.Bottom * MainForm.zoom);
+                Gl.glTexCoord2f(0, (float)MainForm.hkoef);
+                Gl.glVertex2d((double)sizeRenderingArea.Left * MainForm.zoom, (double)sizeRenderingArea.Top * MainForm.zoom);
+                Gl.glTexCoord2f((float)MainForm.wkoef, (float)MainForm.hkoef);
+                Gl.glVertex2d((double)sizeRenderingArea.Right * MainForm.zoom, (double)sizeRenderingArea.Top * MainForm.zoom);
+                Gl.glTexCoord2f((float)MainForm.wkoef, 0);
+                Gl.glVertex2d((double)sizeRenderingArea.Right * MainForm.zoom, (double)sizeRenderingArea.Bottom * MainForm.zoom);
                 Gl.glTexCoord2f(0, 0);
                 // завершаем отрисовку 
                 Gl.glEnd();
@@ -158,7 +201,9 @@ namespace NetworkDesign
                 Gl.glDisable(Gl.GL_TEXTURE_2D);
             }
         }
-
+        /// <summary>
+        /// Отрисовка временных элементов
+        /// </summary>
         public void DrawTemp()
         {
             NetworkWires.DrawTemp();
@@ -169,7 +214,10 @@ namespace NetworkDesign
             Circles.DrawTemp();
             NetworkElements.DrawTemp();
         }
-
+        /// <summary>
+        /// Уменьшение области отрисовки по размерам элементов для текущего вида
+        /// </summary>
+        /// <param name="dl">Текущи уровень отображения</param>
         internal void СlipRenderingArea(DrawLevel dl)
         {
             int minx = 0;
@@ -337,7 +385,15 @@ namespace NetworkDesign
                 log.Add(new LogMessage("Изменил размеры области отрисовки", elem, _elem));
             }
         }
-
+        /// <summary>
+        /// Расчет ширины и высоты области отрисовки
+        /// </summary>
+        /// <param name="height">Возвращаемый параметр: высота</param>
+        /// <param name="width">Возвращаемый параметр: ширина</param>
+        /// <param name="minx">Минимум по X</param>
+        /// <param name="maxx">Максимум по Х</param>
+        /// <param name="miny">Минимум по У</param>
+        /// <param name="maxy">Максимум по У</param>
         private void CalcHandW(out int height, out int width, int minx, int maxx, int miny, int maxy)
         {
             if (minx < 0 & maxx > 0)
@@ -373,7 +429,11 @@ namespace NetworkDesign
             height = maxy - miny;
             width = maxx - minx;
         }
-
+        /// <summary>
+        /// Экспорт списка элементов
+        /// </summary>
+        /// <param name="path">Путь сохранения файла</param>
+        /// <param name="build">Список выбранных для экспорта зданий</param>
         public void ExportListNE(string path, List<bool> build)
         {
             using (StreamWriter sw = new StreamWriter(path, false, Encoding.Default))
@@ -413,7 +473,9 @@ namespace NetworkDesign
                 }
             }
         }
-
+        /// <summary>
+        /// Изменение размеров элемента, отвечающего за отрисовку, а также проекции
+        /// </summary>
         public void ResizeRenderingArea()
         {
             int Height = (int)((double)sizeRenderingArea.Height * MainForm.zoom);
@@ -435,7 +497,10 @@ namespace NetworkDesign
             Gl.glMatrixMode(Gl.GL_MODELVIEW);
             Gl.glLoadIdentity();
         }
-
+        /// <summary>
+        /// Изменение размеров элемента, отвечающего за отрисовку, а также проекции для нужного здания
+        /// </summary>
+        /// <param name="buildid"></param>
         public void ResizeRenderingArea(int buildid)
         {
             int Height = (int)((double)Buildings.Buildings[buildid].sizeRenderingArea.Height * MainForm.zoom);
@@ -457,7 +522,11 @@ namespace NetworkDesign
             Gl.glMatrixMode(Gl.GL_MODELVIEW);
             Gl.glLoadIdentity();
         }
-
+        /// <summary>
+        /// Перемещение элемента на заданные координаты
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
         public void MoveElem(int x, int y)
         {
             if (!isMove & MainForm.activeElem.item != -1)
@@ -554,57 +623,108 @@ namespace NetworkDesign
             NetworkWires.TempDefault();
             NetworkElements.TempDefault();
         }
-
-        internal bool CheckEmptyBuild(int id)
+        /// <summary>
+        /// Удаление элементов внутри здания
+        /// </summary>
+        /// <param name="id">Идентификатор здания</param>
+        internal void RemoveBuildElements(int id)
         {
-            foreach (var iw in Buildings.Buildings[id].InputWires.InputWires.Circles)
+            Element elem, _elem;
+            int i = 0;
+            for (i = 0; i < Lines.Lines.Count; i++)
             {
-                if (iw.DL.Level == id & !iw.delete)
-                    return false;
-            }
-            foreach (var ent in Buildings.Buildings[id].Entrances.Enterances.Circles)
-            {
-                if (ent.DL.Level == id & !ent.delete)
-                    return false;
-            }
-            foreach (var line in Lines.Lines)
-            {
+                var line = Lines.Lines[i];
                 if (line.DL.Level == id & !line.delete)
-                    return false;
+                {
+                    elem = new Element(1, i, new Line(), -1);
+                    _elem = new Element(1, i, line.Clone(), -1);
+                    log.Add(new LogMessage("Удалил линию", elem, _elem));
+                    Lines.Remove(i);
+                }
             }
-            foreach (var rect in Rectangles.Rectangles)
+            for (i = 0; i < Rectangles.Rectangles.Count; i++)
             {
+                var rect = Rectangles.Rectangles[i];
                 if (rect.DL.Level == id & !rect.delete)
-                    return false;
+                {
+                    elem = new Element(2, i, new MyRectangle(), -1);
+                    _elem = new Element(2, i, rect.Clone(), -1);
+                    log.Add(new LogMessage("Удалил прямоугольник", elem, _elem));
+                    Rectangles.Remove(i);
+                }
             }
-            foreach (var pol in Polygons.Polygons)
+            for (i = 0; i < Polygons.Polygons.Count; i++)
             {
+                var pol = Polygons.Polygons[i];
                 if (pol.DL.Level == id & !pol.delete)
-                    return false;
+                {
+                    elem = new Element(3, i, new Polygon(), -1);
+                    _elem = new Element(3, i, pol.Clone(), -1);
+                    log.Add(new LogMessage("Удалил многоугольник", elem, _elem));
+                    Polygons.Remove(i);
+                }
             }
-            foreach (var circ in Circles.Circles)
+            for (i = 0; i < Circles.Circles.Count; i++)
             {
+                var circ = Circles.Circles[i];
                 if (circ.DL.Level == id & !circ.delete)
-                    return false;
+                {
+                    elem = new Element(360, i, new Circle(), -1);
+                    _elem = new Element(360, i, circ.Clone(), -1);
+                    log.Add(new LogMessage("Удалил круг", elem, _elem));
+                    Circles.Remove(i);
+                }
             }
-            foreach (var text in MyTexts.MyTexts)
+            for (i = 0; i < MyTexts.MyTexts.Count; i++)
             {
+                var text = MyTexts.MyTexts[i];
                 if (text.DL.Level == id & !text.delete)
-                    return false;
+                {
+                    elem = new Element(10, i, new MyText(), -1);
+                    _elem = new Element(10, i, text.Clone(), -1);
+                    log.Add(new LogMessage("Удалил надпись", elem, _elem));
+                    MyTexts.Remove(i);
+                }
             }
-            foreach (var ne in NetworkElements.NetworkElements)
+            for (i = 0; i < NetworkWires.NetworkWires.Count; i++)
             {
-                if (ne.DL.Level == id & !ne.delete)
-                    return false;
-            }
-            foreach (var nw in NetworkWires.NetworkWires)
-            {
+                var nw = NetworkWires.NetworkWires[i];
                 if (nw.DL.Level == id & !nw.delete)
-                    return false;
+                {
+                    elem = new Element(9, i, new NetworkWire(), -1);
+                    _elem = new Element(9, i, nw.Clone(), -1);
+                    log.Add(new LogMessage("Удалил провод", elem, _elem));
+                    NetworkWires.Remove(i);
+                    var ne1 = nw.idiw1;
+                    var ne2 = nw.idiw2;
+                    if (!ne1.IW)
+                    {
+                        NetworkElements.NetworkElements[ne1.ID].Options.BusyPorts--;
+                    }
+                    if (!ne2.IW)
+                    {
+                        NetworkElements.NetworkElements[ne2.ID].Options.BusyPorts--;
+                    }
+                }
             }
-            return true;
+            for (i = 0; i < NetworkElements.NetworkElements.Count; i++)
+            {
+                var ne = NetworkElements.NetworkElements[i];
+                if (ne.DL.Level == id & !ne.delete)
+                {
+                    elem = new Element(8, i, new NetworkElement(), -1);
+                    _elem = new Element(8, i, ne.Clone(), -1);
+                    log.Add(new LogMessage("Удалил сетевой элемент", elem, _elem));
+                    NetworkElements.Remove(i);
+                }
+            }
         }
-
+        /// <summary>
+        /// Проверка конкретного этажа в здании на наличие элементов
+        /// </summary>
+        /// <param name="id">Идентификатор здания</param>
+        /// <param name="floor">Номер этажа</param>
+        /// <returns></returns>
         internal bool CheckEmptyBuild(int id, int floor)
         {
             foreach (var iw in Buildings.Buildings[id].InputWires.InputWires.Circles)
@@ -659,7 +779,7 @@ namespace NetworkDesign
         /// <summary>
         /// Функция для загрузки карты
         /// </summary>
-        /// <param name="TempMap">Карта из файла / Пустая карта</param>
+        /// <param name="TempMap">Любая карта сети</param>
         public void MapLoad(Map TempMap)
         {
             Instrument = 0;
@@ -681,7 +801,10 @@ namespace NetworkDesign
             SetInstrument(Instrument);
             ResizeRenderingArea();
         }
-
+        /// <summary>
+        /// Загрузка карты сети с заданными настройками
+        /// </summary>
+        /// <param name="mapSettings"></param>
         internal void MapLoad(SizeRenderingArea mapSettings)
         {
             Instrument = 0;
@@ -737,7 +860,10 @@ namespace NetworkDesign
             EditRects = new GroupOfEditRects();
             EditRects.EditRects.AddRange(_RefreshEditRect());
         }
-
+        /// <summary>
+        /// Генерация прямоугольников редактирования
+        /// </summary>
+        /// <returns>Возвращает список прямоугольников редактирования</returns>
         public List<EditRect> _RefreshEditRect()
         {
             List<EditRect> _EditRects = new List<EditRect>();
@@ -913,7 +1039,11 @@ namespace NetworkDesign
             type = -1;
             return -1;
         }
-
+        /// <summary>
+        /// Изменение параметров здания, по которому был произведен клик мыши
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
         internal void SearchBuild(int x, int y)
         {
             int build = Buildings.Search(x, y, out double distbuild, new DrawLevel(-1, -1));
@@ -975,7 +1105,13 @@ namespace NetworkDesign
                 }
             }
         }
-
+        /// <summary>
+        /// Перемещение элементов между этажами при удалении или добавлении этажей в здании
+        /// </summary>
+        /// <param name="build">Идентификатор здания</param>
+        /// <param name="Added">Список добавленных этажей</param>
+        /// <param name="Deleted">Список удаленных этажей</param>
+        /// <param name="basement">Наличие подвала в здании</param>
         public void MoveElementsInBuild(int build, List<int> Added, List<int> Deleted, bool basement)
         {
             bool b = false;
@@ -1042,7 +1178,12 @@ namespace NetworkDesign
                 }
             }
         }
-
+        /// <summary>
+        /// Обновление уровня отображения для элементов внутри здания
+        /// </summary>
+        /// <param name="id">Идентификатор здания</param>
+        /// <param name="floor">Этаж</param>
+        /// <param name="dif">В какую сторону обновлять</param>
         internal void UpdateFloorsIndex(int id, int floor, int dif)
         {
             foreach (var iw in Buildings.Buildings[id].InputWires.InputWires.Circles)
@@ -1108,7 +1249,13 @@ namespace NetworkDesign
             NetworkElements.Choose(-1);
             NetworkWires.Choose(-1);
         }
-
+        /// <summary>
+        /// Поиск элемента для редактирования
+        /// </summary>
+        /// <param name="x">Координата мыши Х</param>
+        /// <param name="y">Координата мыши У</param>
+        /// <param name="type">Возвращаемый параметр: тип</param>
+        /// <returns></returns>
         public bool SearchEditElem(int x, int y, out int type)
         {
             EditRects.editRect = -1;
@@ -1223,7 +1370,12 @@ namespace NetworkDesign
             else
                 return x - (int)((double)Buildings.Buildings[MainForm.drawLevel.Level].sizeRenderingArea.Width / 2d * MainForm.zoom);
         }
-
+        /// <summary>
+        /// Проверка, в какой элемент попадают координаты мыши, вход провода или сетвой элемент
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Кордината У</param>
+        /// <returns>Возвращает элемент, куда попал клик мыши</returns>
         public IDandIW ChechNE(int x, int y)
         {
             if (MainForm.drawLevel.Level == -1)
@@ -1261,7 +1413,13 @@ namespace NetworkDesign
             }
             return new IDandIW(-1, false, -1);
         }
-
+        /// <summary>
+        /// Поиск текста для редактирования
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// <param name="id">Возвращаемый параметр: идентификатор</param>
+        /// <returns></returns>
         internal bool SearchText(int x, int y, out int id)
         {
             int MT = MyTexts.Search(x, y, MainForm.drawLevel);
@@ -1273,7 +1431,12 @@ namespace NetworkDesign
             id = -1;
             return false;
         }
-
+        /// <summary>
+        /// Поиск сетевого элемента для редактирования параметров
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// <returns></returns>
         internal bool SearchNE(int x, int y)
         {
             int NE = NetworkElements.Search(x, y, MainForm.drawLevel);
@@ -1295,7 +1458,12 @@ namespace NetworkDesign
             }
             return false;
         }
-
+        /// <summary>
+        /// Поиск провода для изменения параметров
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// <returns></returns>
         internal bool SearchNW(int x, int y)
         {
             int NW = NetworkWires.Search(x, y, MainForm.drawLevel);

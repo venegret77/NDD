@@ -7,11 +7,23 @@ using System.Threading.Tasks;
 
 namespace NetworkDesign
 {
+    /// <summary>
+    /// Группа кругов
+    /// </summary>
     public class GroupOfCircle: GroupOfElements , ICloneable
     {
+        /// <summary>
+        /// Список кругов
+        /// </summary>
         public List<Circle> Circles = new List<Circle>();
+        /// <summary>
+        /// Временный круг
+        /// </summary>
         public Circle TempCircle = new Circle();
 
+        /// <summary>
+        /// Конструктор
+        /// </summary>
         public GroupOfCircle()
         {
 
@@ -73,7 +85,13 @@ namespace NetworkDesign
             }
             return index;
         }
-
+        /// <summary>
+        /// Поиск входа в здание
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// <param name="dl">Уровень отображения</param>
+        /// <returns>Возвращает идентификатор ближайшего входа в здание</returns>
         public int SearchEnt(int x, int y, DrawLevel dl)
         {
             int index = -1;
@@ -119,7 +137,13 @@ namespace NetworkDesign
             }
             return index;
         }
-
+        /// <summary>
+        /// Поиск входа провода в здание
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// <param name="dl">Уровень отображения</param>
+        /// <returns>Возвращает идентификатор ближайшего входа провода в здание</returns>
         public int SearchIW(int x, int y, DrawLevel dl)
         {
             int index = -1;
@@ -170,7 +194,9 @@ namespace NetworkDesign
                 circle.Draw();
             }
         }
-
+        /// <summary>
+        /// Отрисовка входов в здание
+        /// </summary>
         public void DrawEnt()
         {
             foreach (var circle in Circles)
@@ -178,7 +204,9 @@ namespace NetworkDesign
                 circle.DrawEnt();
             }
         }
-
+        /// <summary>
+        /// Отрисовка входов проводов в здание
+        /// </summary>
         public void DrawIW()
         {
             foreach (var circle in Circles)
@@ -186,12 +214,16 @@ namespace NetworkDesign
                 circle.DrawIW();
             }
         }
-
+        /// <summary>
+        /// Отрисовка временного входа в здание
+        /// </summary>
         public void DrawTempEnt()
         {
             TempCircle.DrawTempEnt();
         }
-
+        /// <summary>
+        /// Отрисовка временного входа провода в здание
+        /// </summary>
         public void DrawTempIW()
         {
             TempCircle.DrawTempIW();
@@ -230,7 +262,10 @@ namespace NetworkDesign
         {
             TempCircle.DrawTemp();
         }
-
+        /// <summary>
+        /// Копирование элемента
+        /// </summary>
+        /// <returns>Возвращает копию элемента</returns>
         public object Clone()
         {
             List<Circle> circles = new List<Circle>();

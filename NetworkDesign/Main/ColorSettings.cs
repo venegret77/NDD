@@ -10,6 +10,9 @@ using System.Xml.Serialization;
 
 namespace NetworkDesign
 {
+    /// <summary>
+    /// Настройки цветов элементов
+    /// </summary>
     public class ColorSettings
     {
         [XmlIgnore()]
@@ -107,7 +110,10 @@ namespace NetworkDesign
             get { return NWmin.ToArgb(); }
             set { NWmin = Color.FromArgb(value); }
         }
-
+        /// <summary>
+        /// Конструктор
+        /// </summary>
+        /// <param name="todefault">Сделать цвета по умолчанию</param>
         public ColorSettings(string todefault)
         {
             LinesColor = Color.Black;
@@ -124,11 +130,16 @@ namespace NetworkDesign
             InputWireRadius = 5;
             LineWidth = 1;
         }
-
+        /// <summary>
+        /// Конструктор
+        /// </summary>
         public ColorSettings()
         {
         }
-
+        /// <summary>
+        /// Соханение настроек в файл
+        /// </summary>
+        /// <param name="_cs">Настройки цветов элементов</param>
         static public void Save(ColorSettings _cs)
         {
             XmlSerializer formatter = new XmlSerializer(typeof(ColorSettings));
@@ -137,7 +148,10 @@ namespace NetworkDesign
                 formatter.Serialize(fs, _cs);
             }
         }
-
+        /// <summary>
+        /// Загрузка настроек из файла
+        /// </summary>
+        /// <returns>Возвращает настройки цветов элементов</returns>
         static public ColorSettings Open()
         {
             if (!Directory.Exists(Application.StartupPath + @"\Configurations"))

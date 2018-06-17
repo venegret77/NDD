@@ -6,13 +6,31 @@ using System.Threading.Tasks;
 
 namespace NetworkDesign
 {
+    /// <summary>
+    /// Группа элементов редактирования
+    /// </summary>
     public class GroupOfEditRects: GroupOfElements
     {
+        /// <summary>
+        /// Список прямоугольников редактирования
+        /// </summary>
         public List<EditRect> EditRects = new List<EditRect>();
+        /// <summary>
+        /// Включен ли режим редактирования
+        /// </summary>
         public bool edit_mode = true;
+        /// <summary>
+        /// Текущий элемент редактирования
+        /// </summary>
         public int editRect = -1;
+        /// <summary>
+        /// Перемещяется ли элемент
+        /// </summary>
         public bool edit_active = false;
 
+        /// <summary>
+        /// Конструктор
+        /// </summary>
         public GroupOfEditRects()
         {
 
@@ -38,6 +56,12 @@ namespace NetworkDesign
             }
         }
 
+        /// <summary>
+        /// Поиск
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// <returns></returns>
         public int Search(int x, int y)
         {
             x = (int)((double)x / MainForm.zoom);

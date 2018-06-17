@@ -134,17 +134,13 @@ namespace NetworkDesign
             {
                 if (File.Exists(Application.StartupPath + @"\Textures\" + openFileDialog1.SafeFileName))
                 {
-                    MainForm.colorSettings.backgroundurl = Application.StartupPath + @"\Textures\" + openFileDialog1.SafeFileName;
-                    MainForm.GenTex(Application.StartupPath + MainForm.colorSettings.backgroundurl);
-                    //MessageBox.Show("Невозможно загрузить файл, т.к. он уже загружен");
+                    
                 }
                 else
                 {
                     File.Copy(openFileDialog1.FileName, Application.StartupPath + @"\Textures\" + openFileDialog1.SafeFileName);
-                    MainForm.colorSettings.backgroundurl = Application.StartupPath + @"\Textures\" + openFileDialog1.SafeFileName;
-                    MainForm.GenTex(Application.StartupPath + MainForm.colorSettings.backgroundurl);
-                    pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
-                    pictureBox1.Image = Image.FromFile(openFileDialog1.FileName);
+                    MainForm.colorSettings.backgroundurl = openFileDialog1.SafeFileName;
+                    
                 }
             }
         }

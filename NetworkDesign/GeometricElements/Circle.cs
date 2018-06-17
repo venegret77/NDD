@@ -8,21 +8,52 @@ using Tao.OpenGl;
 
 namespace NetworkDesign
 {
+    /// <summary>
+    /// Круг
+    /// </summary>
     public class Circle: GeometricFigure
     {
+        /// <summary>
+        /// Основная точка
+        /// </summary>
         public Point MainCenterPoint;
+        /// <summary>
+        /// Локальная точка
+        /// </summary>
         public Point LocalCenterPoint;
+        /// <summary>
+        /// Радиус
+        /// </summary>
         public int radius;
+        /// <summary>
+        /// Основной уровень отображения
+        /// </summary>
         public DrawLevel MainDL;
+        /// <summary>
+        /// Локальный уровень отображения
+        /// </summary>
         public DrawLevel LocalDL;
+        /// <summary>
+        /// Коэффициент
+        /// </summary>
         public double koef;
+        /// <summary>
+        /// Показывает, где расположена, сбоку или нет
+        /// </summary>
         public bool side;
-
+        /// <summary>
+        /// Конструктор
+        /// </summary>
         public Circle()
         {
             delete = true;
         }
-
+        /// <summary>
+        /// Конструктор
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// <param name="_DL">Уровень отображения</param>
         public Circle(int x, int y, DrawLevel _DL)
         {
             MainCenterPoint = new Point(x, y);
@@ -30,7 +61,13 @@ namespace NetworkDesign
             MainDL = _DL;
             delete = false;
         }
-
+        /// <summary>
+        /// Конструктор
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// <param name="_radius">Радиус</param>
+        /// <param name="_DL">Уровень отображения</param>
         public Circle(int x, int y, int _radius, DrawLevel _DL)
         {
             MainCenterPoint = new Point(x, y);
@@ -38,7 +75,13 @@ namespace NetworkDesign
             MainDL = _DL;
             delete = false;
         }
-
+        /// <summary>
+        /// Конструктор
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// <param name="_MDL">Основной уровень отображения</param>
+        /// <param name="_LDL">Локальный уровень отображения</param>
         public Circle(int x, int y, DrawLevel _MDL, DrawLevel _LDL)
         {
             MainCenterPoint = new Point(x, y);
@@ -47,7 +90,14 @@ namespace NetworkDesign
             LocalDL = _LDL;
             delete = false;
         }
-
+        /// <summary>
+        /// Конструктор
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// /// <param name="_radius">Радиус</param>
+        /// <param name="_MDL">Основной уровень отображения</param>
+        /// <param name="_LDL">Локальный уровень отображения</param>
         public Circle(int x, int y, int _radius, DrawLevel _MDL, DrawLevel _LDL)
         {
             MainCenterPoint = new Point(x, y);
@@ -56,7 +106,15 @@ namespace NetworkDesign
             LocalDL = _LDL;
             delete = false;
         }
-
+        /// <summary>
+        /// Конструктор
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// /// <param name="_radius">Радиус</param>
+        /// <param name="_MDL">Основной уровень отображения</param>
+        /// <param name="_LDL">Локальный уровень отображения</param>
+        /// <param name="side">Показывает, сбоку или нет находится точка</param>
         public Circle(int x, int y, int _radius, DrawLevel _MDL, DrawLevel _LDL, bool side)
         {
             MainCenterPoint = new Point(x, y);
@@ -74,7 +132,12 @@ namespace NetworkDesign
             else
                 return -1;
         }
-
+        /// <summary>
+        /// Поиск входа в здание
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// <returns>Возвращает расстояние до точки</returns>
         public double SearchEnt(int x, int y)
         {
             if (Math.Pow((x - (double)MainCenterPoint.X * MainForm.zoom), 2) + Math.Pow((y - (double)MainCenterPoint.Y * MainForm.zoom), 2) <= Math.Pow((double)MainForm.colorSettings.EntranceRadius * MainForm.zoom, 2))
@@ -82,7 +145,12 @@ namespace NetworkDesign
             else
                 return -1;
         }
-
+        /// <summary>
+        /// Поиск входа провода в здание
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// <returns>Возвращает расстояние до точки</returns>
         public double SearchIW(int x, int y)
         {
             if (Math.Pow((x - (double)MainCenterPoint.X * MainForm.zoom), 2) + Math.Pow((y - (double)MainCenterPoint.Y * MainForm.zoom), 2) <= Math.Pow((double)MainForm.colorSettings.InputWireRadius * MainForm.zoom, 2))
@@ -90,7 +158,12 @@ namespace NetworkDesign
             else
                 return -1;
         }
-
+        /// <summary>
+        /// Поиск входа внутри здания
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// <returns>Возвращает расстояние до точки</returns>
         internal double SearchEntInBuild(int x, int y)
         {
             if (Math.Pow((x - (double)LocalCenterPoint.X * MainForm.zoom), 2) + Math.Pow((y - (double)LocalCenterPoint.Y * MainForm.zoom), 2) <= Math.Pow((double)MainForm.colorSettings.EntranceRadius * MainForm.zoom, 2))
@@ -98,7 +171,13 @@ namespace NetworkDesign
             else
                 return -1;
         }
-
+        /// <summary>
+        /// Поиск входа провода внутри здания
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// <param name="dl">Уровень отображения</param>
+        /// <returns>Возвращает расстояние до точки</returns>
         public double SearchIWInBuild(int x, int y, DrawLevel dl)
         {
             if (dl == LocalDL)
@@ -113,7 +192,11 @@ namespace NetworkDesign
             }
             return -1;
         }
-
+        /// <summary>
+        /// Установить радиус
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
         public void SetRadius(int x, int y)
         {
             radius = (int)Math.Sqrt(Math.Pow((x - MainCenterPoint.X), 2) + Math.Pow((y - MainCenterPoint.Y), 2));
@@ -164,7 +247,9 @@ namespace NetworkDesign
                 }
             }
         }
-
+        /// <summary>
+        /// Отрисовка для входа в здание
+        /// </summary>
         public void DrawEnt()
         {
             if (!delete)
@@ -250,7 +335,9 @@ namespace NetworkDesign
                 }
             }
         }
-
+        /// <summary>
+        /// Отрисовка для входа провода в здание
+        /// </summary>
         public void DrawIW()
         {
             if (!delete)
@@ -421,7 +508,9 @@ namespace NetworkDesign
                 Gl.glPopMatrix();
             }
         }
-
+        /// <summary>
+        /// Отрисовка временного входа в здание
+        /// </summary>
         internal void DrawTempEnt()
         {
             if (!delete)
@@ -447,7 +536,9 @@ namespace NetworkDesign
                 Gl.glPopMatrix();
             }
         }
-
+        /// <summary>
+        /// Отрисовка временного входа провода в здание
+        /// </summary>
         internal void DrawTempIW()
         {
             if (!delete)
@@ -494,7 +585,9 @@ namespace NetworkDesign
                 delete = false
             };
         }
-
+        /// <summary>
+        /// Отрисовка для здания с заданным коэффициентом
+        /// </summary>
         internal void DrawB(double koef)
         {
             if (!delete)

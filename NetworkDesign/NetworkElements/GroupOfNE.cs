@@ -7,20 +7,37 @@ using System.Threading.Tasks;
 
 namespace NetworkDesign.NetworkElements
 {
+    /// <summary>
+    /// Группа сетевых элементов
+    /// </summary>
     public class GroupOfNE : GroupOfElements
     {
+        /// <summary>
+        /// Список сетевых элементов
+        /// </summary>
         public List<NetworkElement> NetworkElements = new List<NetworkElement>();
+        /// <summary>
+        /// Временный сетевой элемент
+        /// </summary>
         public NetworkElement TempNetworkElement = new NetworkElement();
-
+        /// <summary>
+        /// Конструктор
+        /// </summary>
         public GroupOfNE()
         {
         }
-
+        /// <summary>
+        /// Конструктор
+        /// </summary>
+        /// <param name="ne">Группа сетевых элементов</param>
         public GroupOfNE(GroupOfNE ne)
         {
             NetworkElements = ne.NetworkElements;
         }
-
+        /// <summary>
+        /// Обновление параметров при удалении
+        /// </summary>
+        /// <param name="id">Идентификатор</param>
         public void UpdateOptions(int id)
         {
             for (int i = 0; i < NetworkElements.Count; i++)
@@ -32,7 +49,11 @@ namespace NetworkDesign.NetworkElements
                 }
             }
         }
-
+        /// <summary>
+        /// Обновление параметров и их идентификаторов
+        /// </summary>
+        /// <param name="id">Идентификатор</param>
+        /// <param name="name">Параметр</param>
         public void UpdateOptions(int id, string name)
         {
             for (int i = 0; i < NetworkElements.Count; i++)

@@ -7,24 +7,50 @@ using System.Threading.Tasks;
 
 namespace NetworkDesign
 {
+    /// <summary>
+    /// Входы в здание
+    /// </summary>
     public class Entrances: ICloneable
     {
+        /// <summary>
+        /// Группа кругов для входов
+        /// </summary>
         public GroupOfCircle Enterances = new GroupOfCircle();
+        /// <summary>
+        /// Радиус
+        /// </summary>
         private int rad = 5;
+        /// <summary>
+        /// Показывает текущий шаг
+        /// </summary>
         public bool step = false;
+        /// <summary>
+        /// Угол поворота
+        /// </summary>
         public double angle = 0;
         
+        /// <summary>
+        /// Конструктор
+        /// </summary>
         public Entrances()
         {
 
         }
 
+        /// <summary>
+        /// Добавление
+        /// </summary>
         public void Add()
         {
             Enterances.Add(Enterances.TempCircle);
             Enterances.TempCircle = new Circle();
         }
 
+        /// <summary>
+        /// Перемещение
+        /// </summary>
+        /// <param name="difx">Разница по Х</param>
+        /// <param name="dify">Разница по У</param>
         public void MoveElem(int difx, int dify)
         {
             foreach (var cir in Enterances.Circles)
@@ -33,22 +59,49 @@ namespace NetworkDesign
             }
         }
 
+        /// <summary>
+        /// Добавление временной точки
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// <param name="MDL">Гланвый уровень отображения</param>
+        /// <param name="LDL">Локальный уровень отображения</param>
         public void AddTemp(int x, int y, DrawLevel MDL, DrawLevel LDL)
         {
             Enterances.TempCircle = new Circle(x, y, rad, MDL, LDL);
         }
-
+        /// <summary>
+        /// Поиск ближайшего входа
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// <param name="dl">Уровень отображения</param>
+        /// <returns></returns>
         public int CalcNearestEnterise(int x, int y, DrawLevel dl)
         {
             return Enterances.SearchEnt(x, y, dl);
         }
-
+        /// <summary>
+        /// Расчет точки на линии
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// <param name="point1">Точка 1</param>
+        /// <param name="point2">Точка 2</param>
+        /// <returns>Возвращает расстояние до линии</returns>
         private double CalcPointToLine(int x, int y, Point point1, Point point2)
         {
             return Math.Abs(((point2.Y - point1.Y) * x - (point2.X - point1.X) * y + point2.X * point1.Y - point2.Y * point1.X)
                 / (Math.Sqrt(Math.Pow((point2.Y - point1.Y), 2) + Math.Pow((point2.X - point1.X), 2))));
         }
-
+        /// <summary>
+        /// Расчет ближайшей точки
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// <param name="p1">Точка 1</param>
+        /// <param name="p2">Точка 2</param>
+        /// <returns>Возвращает ближайшую точку</returns>
         public Point CalcNearestPoint(int x, int y, Point p1, Point p2)
         {
             double a = p1.Y - p2.Y;
@@ -150,8 +203,7 @@ namespace NetworkDesign
         {
             throw new NotImplementedException();
         }
-
-        //Баг//Пофиксить//Доделать
+        
         /// <summary>
         /// Поиск ближайшей точки на круге при перемещении входа в здание или входа провода
         /// </summary>
@@ -166,7 +218,12 @@ namespace NetworkDesign
                 angle += 180;
             Enterances.TempCircle.MainCenterPoint = new Point((int)(cir.radius * Math.Cos(angle * Math.PI / 180) + cir.MainCenterPoint.X), (int)(cir.radius * Math.Sin(angle * Math.PI / 180) + cir.MainCenterPoint.Y));
         }
-
+        /// <summary>
+        /// Расчет угла поворота
+        /// </summary>
+        /// <param name="Point1">Точка 1</param>
+        /// <param name="Point2">Точка 2</param>
+        /// <returns>Возвращает угол поворота</returns>
         private double CalcAlfa(Point Point1, Point Point2)
         {
             double cat1 = Point2.Y - Point1.Y; //Противолежащий
@@ -174,7 +231,14 @@ namespace NetworkDesign
             double alfa = Math.Atan(cat1 / cat2);
             return alfa;
         }
-
+        /// <summary>
+        /// Проверка на то, попадает точка в интервал или нет
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// <param name="p1">Точка 1</param>
+        /// <param name="p2">Точка 2</param>
+        /// <returns>Возвращает попадание точки в интервал</returns>
         private bool CheckInterval(int x, int y, Point p1, Point p2)
         {
             int minx, miny, maxx, maxy;
@@ -213,17 +277,24 @@ namespace NetworkDesign
             else
                 return false;
         }
-
+        /// <summary>
+        /// Отрисовка
+        /// </summary>
         public void Draw()
         {
             Enterances.DrawEnt();
         }
-
+        /// <summary>
+        /// Отрисовка временного элемента
+        /// </summary>
         public void DrawTemp()
         {
             Enterances.DrawTempEnt();
         }
-
+        /// <summary>
+        /// Копирование элемента
+        /// </summary>
+        /// <returns>Возвращает копию элемента</returns>
         public object Clone()
         {
             return new Entrances

@@ -41,19 +41,20 @@ namespace NetworkDesign.NetworkElements
         /// Пропускная способность
         /// </summary>
         public Int64 Throughput = 100000000;
+        /// <summary>
+        /// Показывает, включено или нет устройство
+        /// </summary>
         public bool isPing = false;
-
+        /// <summary>
+        /// Конструктор
+        /// </summary>
         public NetworkSettings()
         {
         }
-
-        public NetworkSettings(string Name, string HostName, int totalPorts)
-        {
-            this.Name = Name;
-            this.HostName = HostName;
-            TotalPorts = totalPorts;
-        }
-
+        /// <summary>
+        /// Обновление идентификаторов
+        /// </summary>
+        /// <param name="id">Идентификатор</param>
         internal void RefreshID(int id)
         {
             for (int i = 0; i < Options.Count; i++)
@@ -62,7 +63,10 @@ namespace NetworkDesign.NetworkElements
                     Options[i].SetNewID();
             }
         }
-
+        /// <summary>
+        /// Проверка доступности портов
+        /// </summary>
+        /// <returns>Возвращает значение, есть ли свободный порт или нет</returns>
         public bool CheckPorts()
         {
             if (TotalPorts - BusyPorts > 0)
@@ -110,7 +114,10 @@ namespace NetworkDesign.NetworkElements
             }
             return settings;
         }
-
+        /// <summary>
+        /// Копирование элемента
+        /// </summary>
+        /// <returns>Возвращает копию элемента</returns>
         public object Clone()
         {
             List<string> _IPs = new List<string>();
@@ -134,7 +141,7 @@ namespace NetworkDesign.NetworkElements
     }
 
     /// <summary>
-    /// Наменование параметра и значение
+    /// Наменование параметра, идентификатор и значение
     /// </summary>
     public class NetworkParametr
     {
@@ -150,24 +157,36 @@ namespace NetworkDesign.NetworkElements
         /// Значение
         /// </summary>
         public string Value;
-
+        /// <summary>
+        /// Конструктор
+        /// </summary>
+        /// <param name="iD">Идентификатор</param>
+        /// <param name="name">Наименование</param>
+        /// <param name="value">Значение</param>
         public NetworkParametr(int iD, string name, string value)
         {
             ID = iD;
             Name = name;
             Value = value;
         }
-
+        /// <summary>
+        /// Конструктор
+        /// </summary>
         public NetworkParametr()
         {
         }
-
+        /// <summary>
+        /// Установить новый идентификатор
+        /// </summary>
         public void SetNewID()
         {
             ID--;
             Name = MainForm.parametrs.Params[ID];
         }
-
+        /// <summary>
+        /// Проверка пустое значение или нет
+        /// </summary>
+        /// <returns>Возвращает, пустое значение или нет</returns>
         public bool isEmpty()
         {
             if (Value == "" || Value == " ")
@@ -176,40 +195,55 @@ namespace NetworkDesign.NetworkElements
                 return false;
         }
 
-        internal void SetNewName(int id, string name)
-        {
-            Name = MainForm.parametrs.Params[id];
-        }
-
         public override string ToString()
         {
             return Name + ": " + Value;
         }
     }
-
+    /// <summary>
+    /// Общий набор параметров для сетевых элементов
+    /// </summary>
     public class Parametrs : ICloneable
     {
+        /// <summary>
+        /// Список параметров в виде строк
+        /// </summary>
         public List<string> Params = new List<string>();
-
+        /// <summary>
+        /// Конструктор
+        /// </summary>
         public Parametrs()
         {
         }
-
+        /// <summary>
+        /// Добавление
+        /// </summary>
+        /// <param name="_name">Наименование</param>
         public void Add(string _name)
         {
             Params.Add(_name);
         }
-
+        /// <summary>
+        /// Удаление
+        /// </summary>
+        /// <param name="id">Идентификатор</param>
         public void Remove(int id)
         {
             Params.RemoveAt(id);
         }
-
+        /// <summary>
+        /// Изменение
+        /// </summary>
+        /// <param name="id">Идентификатор</param>
+        /// <param name="_name">Новое наименование</param>
         public void Edit(int id, string _name)
         {
             Params[id] = _name;
         }
-
+        /// <summary>
+        /// Сохранение списка параметров
+        /// </summary>
+        /// <param name="_params">Список параметров</param>
         static public void Save(Parametrs _params)
         {
             if (_params.Params.Count <= 0)
@@ -220,12 +254,15 @@ namespace NetworkDesign.NetworkElements
                 formatter.Serialize(fs, _params);
             }
         }
-
+        /// <summary>
+        /// Загрузить параметры
+        /// </summary>
+        /// <returns>Возвращает список параментров</returns>
         static public Parametrs Open()
         {
             Parametrs parametrs = new Parametrs();
-            parametrs.Add("IP");
-            parametrs.Add("MAC");
+            //parametrs.Add("IP");
+            //parametrs.Add("MAC");
             if (!Directory.Exists(Application.StartupPath + @"\Configurations"))
             {
                 Directory.CreateDirectory(Application.StartupPath + @"\Configurations");
@@ -243,7 +280,9 @@ namespace NetworkDesign.NetworkElements
                 return (Parametrs)formatter.Deserialize(fs);
             }
         }
-
+        /// <summary>
+        /// Загрузка параметров при загрузке карты сети
+        /// </summary>
         static public void _Open()
         {
             Parametrs parametrs = new Parametrs();
@@ -287,7 +326,10 @@ namespace NetworkDesign.NetworkElements
                 }
             }
         }
-
+        /// <summary>
+        /// Копирование элемента
+        /// </summary>
+        /// <returns>Возвращает копию элемента</returns>
         public object Clone()
         {
             List<string> _params = new List<string>();
@@ -300,7 +342,10 @@ namespace NetworkDesign.NetworkElements
                 Params = _params,
             };
         }
-
+        /// <summary>
+        /// Загрузка параметров при импорте здания
+        /// </summary>
+        /// <param name="NE">Группа сетевых элементов</param>
         internal static void _OpenFromBuild(ref GroupOfNE NE)
         {
             XmlSerializer formatter = new XmlSerializer(typeof(Parametrs));

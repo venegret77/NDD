@@ -9,19 +9,41 @@ using Tao.OpenGl;
 
 namespace NetworkDesign
 {
+    /// <summary>
+    /// Прямоугольник
+    /// </summary>
     public class MyRectangle : GeometricFigure
     {
+        /// <summary>
+        /// Промежуточная точка
+        /// </summary>
         public Point Point13;
+        /// <summary>
+        /// Промежуточная точка
+        /// </summary>
         public Point Point12;
+        /// <summary>
+        /// Промежуточная точка
+        /// </summary>
         public Point Point24;
+        /// <summary>
+        /// Промежуточная точка
+        /// </summary>
         public Point Point34;
         private int _widthrotate;
-
+        /// <summary>
+        /// Конструктор
+        /// </summary>
         public MyRectangle()
         {
             delete = true;
         }
-
+        /// <summary>
+        /// Конструктор
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// <param name="_drawLevel">Уровень отображения</param>
         public MyRectangle(int x, int y, DrawLevel _drawLevel)
         {
             Points.Add(new Point(x, y));
@@ -31,31 +53,41 @@ namespace NetworkDesign
             DL = _drawLevel;
             delete = false;
         }
-
+        /// <summary>
+        /// Расчет временной точки
+        /// </summary>
         public void Calc13()
         {
             Point13.X = (Points[0].X + Points[2].X) / 2;
             Point13.Y = (Points[0].Y + Points[2].Y) / 2;
         }
-
+        /// <summary>
+        /// Расчет временной точки
+        /// </summary>
         public void Calc12()
         {
             Point12.X = (Points[0].X + Points[1].X) / 2;
             Point12.Y = (Points[0].Y + Points[1].Y) / 2;
         }
-
+        /// <summary>
+        /// Расчет временной точки
+        /// </summary>
         public void Calc24()
         {
             Point24.X = (Points[1].X + Points[3].X) / 2;
             Point24.Y = (Points[1].Y + Points[3].Y) / 2;
         }
-
+        /// <summary>
+        /// Расчет временной точки
+        /// </summary>
         public void Calc34()
         {
             Point34.X = (Points[2].X + Points[3].X) / 2;
             Point34.Y = (Points[2].Y + Points[3].Y) / 2;
         }
-
+        /// <summary>
+        /// Расчет временных точек
+        /// </summary>
         public void CalcTempPoints()
         {
             CalcCenterPoint();
@@ -63,24 +95,6 @@ namespace NetworkDesign
             Calc13();
             Calc24();
             Calc34();
-        }
-
-        private Point NearestPoints(int x, int y, Point p1, Point p2)
-        {
-            double a = p1.Y - p2.Y;
-            double b = p2.X - p1.X;
-            double c = p1.Y * (p1.X - p2.X) + p1.X * (p2.Y - p1.Y);
-            int _x = (int)((b * (b * x - a * y) - a * c) / (Math.Pow(a, 2) + Math.Pow(b, 2)));
-            int _y = (int)((a * (-b * x + a * y) - b * c) / (Math.Pow(a, 2) + Math.Pow(b, 2)));
-            return new Point(_x, _y);
-        }
-
-        private int CalcY(int x, Point p1, Point p2)
-        {
-            double a = p1.Y - p2.Y;
-            double b = p2.X - p1.X;
-            double c = p1.Y * (p1.X - p2.X) + p1.X * (p2.Y - p1.Y);
-            return (int)((-x * a - c) / b);
         }
 
         public override void SetPoint(int x, int y, int i)
@@ -191,7 +205,12 @@ namespace NetworkDesign
                     break;
             }
         }
-
+        /// <summary>
+        /// Расчет угла поворота
+        /// </summary>
+        /// <param name="Point1">Точка 1</param>
+        /// <param name="Point2">Точка 2</param>
+        /// <returns>Возвращает угол поворота</returns>
         public double CalcAlfa(Point Point1, Point Point2)
         {
             double cat1 = Point2.Y - Point1.Y; //Противолежащий
@@ -199,7 +218,13 @@ namespace NetworkDesign
             double alfa = Math.Atan(cat1 / cat2);
             return alfa;
         }
-
+        /// <summary>
+        /// Поворот точки на заданный угол
+        /// </summary>
+        /// <param name="alfa">Угол поворота</param>
+        /// <param name="PointMain">Точка 1</param>
+        /// <param name="PointTemp">Точка 2</param>
+        /// <returns>Возвращает повернутую точку на заданный угол</returns>
         private Point RotatePoint(double alfa, Point PointMain, Point PointTemp)
         {
             Point Temp = new Point();
@@ -207,7 +232,14 @@ namespace NetworkDesign
             Temp.Y = (int)((PointTemp.X - PointMain.X) * Math.Sin(alfa) + (PointTemp.Y - PointMain.Y) * Math.Cos(alfa) + PointMain.Y);
             return Temp;
         }
-
+        /// <summary>
+        /// Расчет расстояния от отрезка то точки
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// <param name="point1">Точка 1</param>
+        /// <param name="point2">Точка 2</param>
+        /// <returns>Возвращает расстояние от точки до заданного отрезка</returns>
         public double CalcWidth(int x, int y, Point point1, Point point2)
         {
             return ((point2.Y - point1.Y) * x - (point2.X - point1.X) * y + point2.X * point1.Y - point2.Y * point1.X)
@@ -323,7 +355,10 @@ namespace NetworkDesign
                 //Gl.glPopMatrix();
             }
         }
-
+        /// <summary>
+        /// Отрисовка здания с заданым коэффициентом
+        /// </summary>
+        /// <param name="koef">Коэффициент</param>
         internal void DrawB(double koef)
         {
             if (!delete)

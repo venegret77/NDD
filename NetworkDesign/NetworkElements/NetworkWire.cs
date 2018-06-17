@@ -8,12 +8,29 @@ using Tao.OpenGl;
 
 namespace NetworkDesign.NetworkElements
 {
+    /// <summary>
+    /// Структура для хранения к чему прикреплен провод
+    /// </summary>
     public struct IDandIW
     {
+        /// <summary>
+        /// Идентификатор элемента
+        /// </summary>
         public int ID;
+        /// <summary>
+        /// Показывает, вход провода или сетевой элемент
+        /// </summary>
         public bool IW;
+        /// <summary>
+        /// Идентификатор здания
+        /// </summary>
         public int Build;
-
+        /// <summary>
+        /// Конструктор
+        /// </summary>
+        /// <param name="iD">Идентификатор элемента</param>
+        /// <param name="iW">Показывает, вход провода или сетевой элемент</param>
+        /// <param name="build">Идентификатор здания</param>
         public IDandIW(int iD, bool iW, int build)
         {
             ID = iD;
@@ -37,7 +54,9 @@ namespace NetworkDesign.NetworkElements
                 return true;
         }
     }
-
+    /// <summary>
+    /// Сетевой провод
+    /// </summary>
     public class NetworkWire : GeometricFigure
     {
         /// <summary>
@@ -48,10 +67,21 @@ namespace NetworkDesign.NetworkElements
         /// Заметки
         /// </summary>
         public Notes notes = new Notes();
-
+        /// <summary>
+        /// Закрепленный элемент 1
+        /// </summary>
         public IDandIW idiw1 = new IDandIW(-1, false, -1);
+        /// <summary>
+        /// Закрепленный элемент 2
+        /// </summary>
         public IDandIW idiw2 = new IDandIW(-1, false, -1);
-
+        /// <summary>
+        /// Конструктор
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// <param name="_drawLevel">Уровень отображения</param>
+        /// <param name="_idiw1">Закрепленный элемент 1</param>
         public NetworkWire(int x, int y, DrawLevel _drawLevel, IDandIW _idiw1)
         {
             TempPoint.X = x;
@@ -62,12 +92,16 @@ namespace NetworkDesign.NetworkElements
             DL = _drawLevel;
             delete = false;
         }
-
+        /// <summary>
+        /// Конструктор
+        /// </summary>
         public NetworkWire()
         {
             delete = true;
         }
-
+        /// <summary>
+        /// Добавление точки
+        /// </summary>
         public void AddPoint()
         {
             Points.Add(TempPoint);
@@ -77,18 +111,29 @@ namespace NetworkDesign.NetworkElements
             }*/
             //ClearTempPoint();
         }
-
+        /// <summary>
+        /// Очистка временной точки
+        /// </summary>
         public void ClearTempPoint()
         {
             TempPoint = new Point();
         }
-
+        /// <summary>
+        /// Движение временной точки
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
         public void SetTempPoint(int x, int y)
         {
             TempPoint.X = x;
             TempPoint.Y = y;
         }
-
+        /// <summary>
+        /// Движение точки
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// <param name="i">Идентификатор точки</param>
         public override void SetPoint(int x, int y, int i)
         {
             Points[i] = new Point(x, y);
@@ -199,14 +244,18 @@ namespace NetworkDesign.NetworkElements
         {
             throw new NotImplementedException();
         }
-
+        /// <summary>
+        /// Добавление точки
+        /// </summary>
         internal void AddNewPoint()
         {
             int x = (Points.Last().X + Points[Points.Count - 2].X) / 2;
             int y = (Points.Last().Y + Points[Points.Count - 2].Y) / 2;
             Points.Insert(Points.Count - 1, new Point(x, y));
         }
-
+        /// <summary>
+        /// Удаление точки
+        /// </summary>
         internal void RemovePoint()
         {
             if (Points.Count > 2)

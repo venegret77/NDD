@@ -6,11 +6,22 @@ using System.Threading.Tasks;
 
 namespace NetworkDesign
 {
+    /// <summary>
+    /// Группа многоугольников
+    /// </summary>
     public class GroupOfPolygons: GroupOfElements
     {
+        /// <summary>
+        /// Список многоугольников
+        /// </summary>
         public List<Polygon> Polygons = new List<Polygon>();
-        public Polygon TempPolygon = new Polygon(); //Текущий многоугольник
-
+        /// <summary>
+        /// Временный многоугольник
+        /// </summary>
+        public Polygon TempPolygon = new Polygon();
+        /// <summary>
+        /// Конструктор
+        /// </summary>
         public GroupOfPolygons()
         {
 

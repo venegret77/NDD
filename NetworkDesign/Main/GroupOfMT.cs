@@ -7,11 +7,19 @@ using System.Threading.Tasks;
 
 namespace NetworkDesign.NetworkElements
 {
+    /// <summary>
+    /// Группа надписей
+    /// </summary>
     public class GroupOfMT : GroupOfElements
     {
+        /// <summary>
+        /// Список надписей
+        /// </summary>
         public List<MyText> MyTexts = new List<MyText>();
-        //public MyText TempMyText = new MyText();
 
+        /// <summary>
+        /// Конструктор
+        /// </summary>
         public GroupOfMT()
         {
         }
@@ -41,9 +49,7 @@ namespace NetworkDesign.NetworkElements
             foreach (var elem in MyTexts)
             {
                 elem.Draw();
-                //elem.DrawTB();
             }
-            //TempMyText.Draw();
         }
 
         public override void DrawTemp()
@@ -72,21 +78,6 @@ namespace NetworkDesign.NetworkElements
         public override void Remove(int i)
         {
             MyTexts[i] = new MyText();
-        }
-
-        public DrawLevel Search(string text)
-        {
-            foreach (var elem in MyTexts)
-            {
-                if (elem.text == text)
-                    return elem.DL;
-            }
-            foreach (var elem in MyTexts)
-            {
-                if (elem.text.IndexOf(text) != -1)
-                    return elem.DL;
-            }
-            return new DrawLevel(-2, -2);
         }
 
         public override int Search(int x, int y, DrawLevel dl)
@@ -118,7 +109,6 @@ namespace NetworkDesign.NetworkElements
 
         public override void TempDefault()
         {
-            //TempMyText = new MyText();
             step = false;
             active = false;
         }

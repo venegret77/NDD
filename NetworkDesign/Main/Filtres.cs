@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace NetworkDesign.Main
 {
+    /// <summary>
+    /// Фильтры
+    /// </summary>
     public struct Filtres
     {
         public bool Line;

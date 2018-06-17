@@ -43,30 +43,51 @@ namespace NetworkDesign
         /// Удалено или нет
         /// </summary>
         public bool delete = true;
+        /// <summary>
+        /// Х центральной точки
+        /// </summary>
         private double CenterPointX;
+        /// <summary>
+        /// У центральной точки
+        /// </summary>
         private double CenterPointY;
+        /// <summary>
+        /// Тип сетевого элемена
+        /// </summary>
         public int type;
-
+        /// <summary>
+        /// Текст
+        /// </summary>
         public MyText MT = new MyText();
-
+        /// <summary>
+        /// Конструктор
+        /// </summary>
         public NetworkElement()
         {
             delete = true;
         }
-
+        /// <summary>
+        /// Отрисовка временного элемента
+        /// </summary>
         internal void DrawTemp()
         {
             if (!delete)
                 texture.DrawTemp();
         }
-
+        /// <summary>
+        /// Конструктор
+        /// </summary>
+        /// <param name="texture">Текстура</param>
+        /// <param name="dL">Уровень отображения</param>
         public NetworkElement(Texture texture, DrawLevel dL)
         {
             delete = false;
             this.texture = texture;
             DL = dL;
         }
-
+        /// <summary>
+        /// Генерация текстуры
+        /// </summary>
         public void GenText()
         {
             string text = Options.Name + Environment.NewLine;
@@ -177,7 +198,10 @@ namespace NetworkDesign
                 }
             }
         }
-
+        /// <summary>
+        /// Получение имени устройства по IP
+        /// </summary>
+        /// <param name="count">Счетчик</param>
         private void GetName(int count)
         {
             if (!delete & DL == MainForm.drawLevel)
@@ -249,7 +273,13 @@ namespace NetworkDesign
             CenterPointX = x / (double)count;
             CenterPointY = y / (double)count;
         }
-
+        /// <summary>
+        /// Редактирование элемента
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// <param name="id">Идентификатор</param>
+        /// <param name="networkWires">Группа проводов</param>
         internal void SetPoint(int x, int y, int id, GroupOfNW networkWires)
         {
             texture.width = (int)((Math.Abs(texture.location.X - x) + Math.Abs(texture.location.Y - y)));
@@ -262,7 +292,10 @@ namespace NetworkDesign
             MT.__MoveElem(CP.X - (size.Width / 2), CP.Y + (size.Height / 2));
             MT.size = size;
         }
-
+        /// <summary>
+        /// Копирование элемента
+        /// </summary>
+        /// <returns>Возвращает копию элемента</returns>
         public object Clone()
         {
             return new NetworkElement

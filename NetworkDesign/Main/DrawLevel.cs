@@ -6,12 +6,24 @@ using System.Threading.Tasks;
 
 namespace NetworkDesign
 {
+    /// <summary>
+    /// Уровень отображения
+    /// </summary>
     public struct DrawLevel
     {
-        //-1 - основной вид, 0 - * - здание
-        public int Level; //Уровень
-        public int Floor; //Этаж
-
+        /// <summary>
+        /// Уровень (Здание)
+        /// </summary>
+        public int Level;
+        /// <summary>
+        /// Этаж
+        /// </summary>
+        public int Floor;
+        /// <summary>
+        /// Конструктор
+        /// </summary>
+        /// <param name="_Level">Уровнь (Здание)</param>
+        /// <param name="_Floor">Этаж</param>
         public DrawLevel(int _Level, int _Floor)
         {
             Level = _Level;

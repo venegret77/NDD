@@ -12,65 +12,187 @@ using Tao.OpenGl;
 
 namespace NetworkDesign
 {
+    /// <summary>
+    /// Здание
+    /// </summary>
     public class Building : ICloneable
     {
+        /// <summary>
+        /// Имя
+        /// </summary>
         public string Name;
-        public int Floors; //0 - подвал если есть, последний - чердак
-        public bool loft = false; //Чердак
-        public bool basement = false; //Подвал
+        /// <summary>
+        /// Количество этажей с учетов чердака и подвала
+        /// </summary>
+        public int Floors;
+        /// <summary>
+        /// Наличие чердака
+        /// </summary>
+        public bool loft = false;
+        /// <summary>
+        /// Налачие подвала
+        /// </summary>
+        public bool basement = false;
+        /// <summary>
+        /// Количество этажей без учета чердака и подвала
+        /// </summary>
         public int floors_count = 0;
-        public int type = 2; //2 - прямоугольник, 3 - многоугольник, 360 - круг
+        /// <summary>
+        /// Тип:
+        /// 2 - прямоугольник;
+        /// 3 - многоугольник;
+        /// 360 - круг;
+        /// </summary>
+        public int type = 2;
+        /// <summary>
+        /// Открыто здание или нет
+        /// </summary>
         public bool open = false;
+        /// <summary>
+        /// Удалено или нет
+        /// </summary>
         public bool delete = true;
+        /// <summary>
+        /// Коэффициент отношения сторон (ширина деленная на высоту)
+        /// </summary>
         public double pk = 1d;
-        //
+        /// <summary>
+        /// Коэффициент при расчете локальных значений
+        /// </summary>
         public double koef = 1;
+        /// <summary>
+        /// Угол поворота при расчете локальных значений
+        /// </summary>
         public double alfa = 0;
+        /// <summary>
+        /// Точка поворота
+        /// </summary>
         public Point MP = new Point();
+        /// <summary>
+        /// На сколько смещено относительно центра
+        /// </summary>
         public int Ox, Oy;
+        /// <summary>
+        /// Параметры области отрисовки
+        /// </summary>
         public SizeRenderingArea sizeRenderingArea = new SizeRenderingArea();
         //
+        /// <summary>
+        /// Временный многоугольник
+        /// </summary>
         public Polygon TempPolygon = new Polygon();
+        /// <summary>
+        /// Многоугольник отображаемый на главном виде
+        /// </summary>
         public Polygon MainPolygon = new Polygon();
+        /// <summary>
+        /// Многоугольник без поворота
+        /// </summary>
         public Polygon _MainPolygon = new Polygon();
+        /// <summary>
+        /// Многоугольник для внутреннего вида
+        /// </summary>
         public Polygon LocalPolygon = new Polygon();
         //
+        /// <summary>
+        /// Временный прямоугольник
+        /// </summary>
         public MyRectangle TempRectangle = new MyRectangle();
+        /// <summary>
+        /// Прямоугольник отображаемый на главном виде
+        /// </summary>
         public MyRectangle MainRectangle = new MyRectangle();
+        /// <summary>
+        /// Прямоугольник без поворота
+        /// </summary>
         public MyRectangle _MainRectangle = new MyRectangle();
+        /// <summary>
+        /// Прямоугольник для внутреннего вида
+        /// </summary>
         public MyRectangle LocalRectangle = new MyRectangle();
         //
+        /// <summary>
+        /// Круг, отображаемый на главном виде
+        /// </summary>
         public Circle MainCircle = new Circle();
+        /// <summary>
+        /// Временный круг
+        /// </summary>
         public Circle _MainCircle = new Circle();
+        /// <summary>
+        /// Круг для внуреннего вида
+        /// </summary>
         public Circle LocalCircle = new Circle();
         //
+        /// <summary>
+        /// Основной уровень отображения
+        /// </summary>
         public DrawLevel MainMapDL = new DrawLevel();
+        /// <summary>
+        /// Локальный (внутренний) уровень отображения
+        /// </summary>
         public DrawLevel LocalDL = new DrawLevel();
+        /// <summary>
+        /// Список наименований этажей
+        /// </summary>
         public List<string> floors_name = new List<string>();
-        //
+        /// <summary>
+        /// Временный вход
+        /// </summary>
         public Entrances TempEntrances = new Entrances();
+        /// <summary>
+        /// Входы 
+        /// </summary>
         public Entrances Entrances = new Entrances();
-        //
+        /// <summary>
+        /// Временный вход провода
+        /// </summary>
         public InputWire TempInputWires = new InputWire();
+        /// <summary>
+        /// Входы проводов в здание
+        /// </summary>
         public InputWire InputWires = new InputWire();
-
+        /// <summary>
+        /// Текст
+        /// </summary>
         public MyText MT = new MyText();
-
+        /// <summary>
+        /// Показывает, перемещается ли вход
+        /// </summary>
         bool isMoveEnt = false;
+        /// <summary>
+        /// Идентификатор
+        /// </summary>
         int id = -1;
+        /// <summary>
+        /// Показывает, перемещается ли вход провода
+        /// </summary>
         public bool isMoveIW;
-
+        /// <summary>
+        /// Конструктор
+        /// </summary>
         public Building()
         {
             delete = true;
         }
-
+        /// <summary>
+        /// Отрисовка временных элементов
+        /// </summary>
         internal void DrawTemp()
         {
             Entrances.DrawTemp();
             InputWires.DrawTemp();
         }
-
+        /// <summary>
+        /// Конструктор для многоугольника
+        /// </summary>
+        /// <param name="_Name">Имя</param>
+        /// <param name="_loft">Чердак</param>
+        /// <param name="_basement">Подвал</param>
+        /// <param name="floors_count">Количество этажей</param>
+        /// <param name="_pol">Многоугольник</param>
+        /// <param name="index">Идентификатор</param>
+        /// <param name="width">Ширина</param>
         public Building(string _Name, bool _loft, bool _basement, int floors_count, Polygon _pol, int index, int width)
         {
             sizeRenderingArea = new SizeRenderingArea(Name, (int)((double)width / pk), width);
@@ -89,7 +211,16 @@ namespace NetworkDesign
             GenLocalPolygon();
             GenText();
         }
-
+        /// <summary>
+        /// Конструктор для прямоугольников
+        /// </summary>
+        /// <param name="_Name">Имя</param>
+        /// <param name="_loft">Чердак</param>
+        /// <param name="_basement">Подвал</param>
+        /// <param name="floors_count">Количество этажей</param>
+        /// <param name="_rect">Прямоугольник</param>
+        /// <param name="index">Идентификатор</param>
+        /// <param name="width">Ширина</param>
         public Building(string _Name, bool _loft, bool _basement, int floors_count, MyRectangle _rect, int index, int width)
         {
             sizeRenderingArea = new SizeRenderingArea(Name, (int)((double)width / pk), width);
@@ -109,7 +240,16 @@ namespace NetworkDesign
             GenLocalRect();
             GenText();
         }
-
+        /// <summary>
+        /// Конструктор для кругов
+        /// </summary>
+        /// <param name="_Name">Имя</param>
+        /// <param name="_loft">Чердак</param>
+        /// <param name="_basement">Подвал</param>
+        /// <param name="floors_count">Количество этажей</param>
+        /// <param name="_circle">Круг</param>
+        /// <param name="index">Идентификатор</param>
+        /// <param name="width">Ширина</param>
         public Building(string _Name, bool _loft, bool _basement, int floors_count, Circle _circle, int index, int width)
         {
             sizeRenderingArea = new SizeRenderingArea(Name, (int)((double)width / pk), width);
@@ -129,7 +269,9 @@ namespace NetworkDesign
             GenLocalCircle();
             GenText();
         }
-
+        /// <summary>
+        /// Обновление этажей
+        /// </summary>
         internal void RefreshFloors()
         {
             if (basement & loft)
@@ -142,7 +284,9 @@ namespace NetworkDesign
                 Floors = floors_count;
             UpgrateFloors();
         }
-
+        /// <summary>
+        /// Генерация текстуры для надписи
+        /// </summary>
         public void GenText()
         {
             int height = 0;
@@ -170,9 +314,13 @@ namespace NetworkDesign
             Size size = new Size(width / 2, height / 2);
             MT = new MyText(MainMapDL, CP, size, Name);
         }
-
+        /// <summary>
+        /// Если внутри здания
+        /// </summary>
         bool isInBuild = false;
-
+        /// <summary>
+        /// Добавить временный вход провода
+        /// </summary>
         public void AddTempIW()
         {
             if (isMoveIW & id != -1 & !isInBuild)
@@ -195,7 +343,14 @@ namespace NetworkDesign
                 InputWires.InputWires.TempDefault();
             }
         }
-
+        /// <summary>
+        /// Перемещение входа провода
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// <param name="id">Идентификатор элемента</param>
+        /// <param name="build">Идентификатор здания</param>
+        /// <param name="networkWires">Список проводов</param>
         internal void MoveIW(int x, int y, int id, int build, GroupOfNW networkWires)
         {
             var iw = InputWires.InputWires.Circles[id];
@@ -240,7 +395,9 @@ namespace NetworkDesign
                 networkWires.CheckNW(_point.X, _point.Y, id, true, MainForm.drawLevel.Level, InputWires.InputWires.TempCircle.LocalDL);
             }
         }
-
+        /// <summary>
+        /// Обновление наименований этажей
+        /// </summary>
         private void UpgrateFloors()
         {
             floors_name.Clear();
@@ -277,7 +434,9 @@ namespace NetworkDesign
                 }
             }
         }
-
+        /// <summary>
+        /// Расчет центральной точки для перемещения
+        /// </summary>
         public void CalcCenterPoint()
         {
             if (type == 2)
@@ -293,7 +452,13 @@ namespace NetworkDesign
             else if (type == 360)
                 MainCircle.CalcCenterPoint();
         }
-
+        /// <summary>
+        /// Перемещение
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// <param name="networkWires">Группа проводов</param>
+        /// <param name="build">Идентификатор здания</param>
         public void MoveElem(int x, int y, GroupOfNW networkWires, int build)
         {
             int difx = 0;
@@ -322,7 +487,12 @@ namespace NetworkDesign
             InputWires.MoveElem(difx, dify, networkWires, build);
             MT._MoveElem(difx, dify);
         }
-
+        /// <summary>
+        /// Расчет центральной точки
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// <returns></returns>
         public double CalcPointInBuild(int x, int y)
         {
             if (!delete)
@@ -336,7 +506,10 @@ namespace NetworkDesign
             }
             return -1;
         }
-
+        /// <summary>
+        /// Установить активным элементом
+        /// </summary>
+        /// <param name="b"></param>
         public void SetActive(bool b)
         {
             if (type == 2)
@@ -380,7 +553,7 @@ namespace NetworkDesign
         }
 
         /// <summary>
-        /// Расчет точки внутри здания //доделать точный расчет
+        /// Расчет точки внутри здания
         /// </summary>
         /// <param name="MainP">Точка на главном виде</param>
         /// <returns>Возвращает нужную точку</returns>
@@ -464,7 +637,13 @@ namespace NetworkDesign
             Entrances.Enterances.Circles[id].delete = true;
             MoveEntrance(x, y);
         }
-
+        /// <summary>
+        /// Добавление входа провода внутри здания
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// <param name="dl">Уровень отображения</param>
+        /// <returns></returns>
         public bool AddIWInBuild(int x, int y, DrawLevel dl)
         {
             if (!InputWires.step)
@@ -515,7 +694,11 @@ namespace NetworkDesign
                 return true;
             }
         }
-
+        /// <summary>
+        /// Перемещение входа провода
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
         public void MoveIW(int x, int y)
         {
             if (InputWires.InputWires.TempCircle.side)
@@ -537,7 +720,11 @@ namespace NetworkDesign
                     InputWires.CheckIW(x, y, MainCircle);
             }
         }
-
+        /// <summary>
+        /// Перемещение входа провода внутри здания
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
         public void MoveIWInBuild(int x, int y)
         {
             if (type == 2)
@@ -716,7 +903,13 @@ namespace NetworkDesign
             LocalCircle.radius = (int)(LocalCircle.radius * koef);
             LocalCircle.MainCenterPoint = new Point(0, 0);
         }
-
+        /// <summary>
+        /// Расчет области отрисовки
+        /// </summary>
+        /// <param name="maxx"></param>
+        /// <param name="minx"></param>
+        /// <param name="maxy"></param>
+        /// <param name="miny"></param>
         public void CalcRederingArea(int maxx, int minx, int maxy, int miny)
         {
             int _height = maxy - miny;
@@ -725,12 +918,6 @@ namespace NetworkDesign
             sizeRenderingArea = new SizeRenderingArea(Name, (int)((double)sizeRenderingArea.Width / pk), sizeRenderingArea.Width);
             int difx = maxx - minx;
             koef = (double)(sizeRenderingArea.Width - (50d * MainForm.zoom)) / (double)difx;
-            Ox = (maxx + minx) / 2;
-            Oy = (maxy + miny) / 2;
-        }
-
-        public void CalcChlen(int maxx, int minx, int maxy, int miny)
-        {
             Ox = (maxx + minx) / 2;
             Oy = (maxy + miny) / 2;
         }
@@ -745,12 +932,19 @@ namespace NetworkDesign
             if (isMoveIW)
                 AddTempIW();
         }
-
+        /// <summary>
+        /// Расчет длины линии
+        /// </summary>
+        /// <param name="Point1">Точка 1</param>
+        /// <param name="Point2">Точка 2</param>
+        /// <returns>Возвращает длину линии</returns>
         private double CalcAB(Point Point1, Point Point2)
         {
             return Math.Sqrt((Math.Pow((Point2.X - Point1.X), 2) + Math.Pow((Point2.Y - Point1.Y), 2)));
         }
-
+        /// <summary>
+        /// Отрисовка
+        /// </summary>
         public void Draw()
         {
             if (!delete)
@@ -789,6 +983,10 @@ namespace NetworkDesign
             }
         }
 
+        /// <summary>
+        /// Копирование элемента
+        /// </summary>
+        /// <returns>Возвращает копию элемента</returns>
         public object Clone()
         {
             List<string> _floors_name = new List<string>();
@@ -839,6 +1037,9 @@ namespace NetworkDesign
             };
         }
 
+        /// <summary>
+        /// Пересчет локальных значений
+        /// </summary>
         internal void RefreshLocal()
         {
             if (type == 3)
@@ -856,6 +1057,9 @@ namespace NetworkDesign
             RecalcLocalPoints();
         }
 
+        /// <summary>
+        /// Пересчет локальных значений для входов и входов проводов
+        /// </summary>
         internal void RecalcLocalPoints()
         {
             foreach (var iw in InputWires.InputWires.Circles)
@@ -864,6 +1068,14 @@ namespace NetworkDesign
                 ent.LocalCenterPoint = CalcLocalPoint(ent.MainCenterPoint);
         }
 
+        /// <summary>
+        /// Поворот здания
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// <param name="type">Тип здания</param>
+        /// <param name="networkWires">Группа сетевых элементов</param>
+        /// <param name="build">Идентификатор здания</param>
         internal void SetPoint(int x, int y, int type, GroupOfNW networkWires, int build)
         {
             Point cp = new Point();
@@ -874,7 +1086,6 @@ namespace NetworkDesign
             switch (type)
             {
                 case 2:
-                    //хуй знает как но работает
                     cp = new Point((int)MainRectangle._CenterPointX, (int)MainRectangle._CenterPointY);
                     _cp = new Point((int)MainRectangle._CenterPointX, (int)MainRectangle._CenterPointY);
                     angle = CalcAlfa(_cp, new Point(x, y)) * 57.2958d;
@@ -909,7 +1120,9 @@ namespace NetworkDesign
             }
             InputWires.MoveElem(0, 0, networkWires, build);
         }
-
+        /// <summary>
+        /// Завершение перемещения или поворота здания
+        /// </summary>
         internal void EndMove()
         {
             if (type == 2)

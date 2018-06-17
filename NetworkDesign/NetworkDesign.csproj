@@ -41,8 +41,7 @@
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
     <LangVersion>7.3</LangVersion>
     <Prefer32Bit>true</Prefer32Bit>
-    <DocumentationFile>
-    </DocumentationFile>
+    <DocumentationFile>bin\Debug\NetworkDesign.xml</DocumentationFile>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -349,8 +348,7 @@
       <DependentUpon>SearchDialog.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="ClassDiagram1.cd" />
-    <None Include="ClassDiagram2.cd" />
-    <None Include="ClassDiagram3.cd" />
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

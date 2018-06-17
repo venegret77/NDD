@@ -14,6 +14,9 @@ using Tao.OpenGl;
 
 namespace NetworkDesign.Main
 {
+    /// <summary>
+    /// Надпись
+    /// </summary>
     public class MyText : ICloneable
     {
         /// <summary>
@@ -28,18 +31,43 @@ namespace NetworkDesign.Main
         /// Переменная, показывающая удален элемент или нет
         /// </summary>
         public bool delete = false;
+        /// <summary>
+        /// Расположение
+        /// </summary>
         public Point location;
+        /// <summary>
+        /// Размер
+        /// </summary>
         public Size size;
+        /// <summary>
+        /// Идентификатор текстуры в списке
+        /// </summary>
         public int idtexturefromlist = -1;
+        /// <summary>
+        /// Идентификатор текстуры
+        /// </summary>
         public int idtexture = -1;
+        /// <summary>
+        /// Текст
+        /// </summary>
         public string text = "";
+        /// <summary>
+        /// Размер шрифта по умолчанию
+        /// </summary>
         public float fontsize = 40;
-
+        /// <summary>
+        /// Конструктор
+        /// </summary>
         public MyText()
         {
             delete = true;
         }
-
+        /// <summary>
+        /// Конструктор
+        /// </summary>
+        /// <param name="dL">Уровень отображения</param>
+        /// <param name="location">Расположение</param>
+        /// <param name="textBox">Текст бокс</param>
         public MyText(DrawLevel dL, Point location, TextBox textBox)
         {
             delete = false;
@@ -48,7 +76,13 @@ namespace NetworkDesign.Main
             this.text = textBox.Text;
             InitText(textBox);
         }
-
+        /// <summary>
+        /// Конструктор
+        /// </summary>
+        /// <param name="dL">Уровень отображения</param>
+        /// <param name="location">Расположение</param>
+        /// <param name="size">Размер</param>
+        /// <param name="text">Текст</param>
         public MyText(DrawLevel dL, Point location, Size size, string text)
         {
             delete = false;
@@ -58,7 +92,14 @@ namespace NetworkDesign.Main
             this.size = size;
             GenTextureFromBuild();
         }
-
+        /// <summary>
+        /// Конструктор
+        /// </summary>
+        /// <param name="dL">Уровень отображения</param>
+        /// <param name="location">Расположение</param>
+        /// <param name="size">Размер</param>
+        /// <param name="text">Текст</param>
+        /// <param name="fontsize">Размер шрифта</param>
         public MyText(DrawLevel dL, Point location, Size size, string text, float fontsize)
         {
             delete = false;
@@ -69,7 +110,10 @@ namespace NetworkDesign.Main
             this.size = size;
             GenTextureFromNE();
         }
-
+        /// <summary>
+        /// Генерация текстуры из текстбокса
+        /// </summary>
+        /// <param name="textBox">Текстбокс</param>
         public void InitText(TextBox textBox)
         {
             fontsize = (float)(textBox.Font.Size / (float)MainForm.zoom);
@@ -127,7 +171,9 @@ namespace NetworkDesign.Main
             if (File.Exists(url))
                 File.Delete(url);
         }
-
+        /// <summary>
+        /// Генерация текстуры для сетевого элемента
+        /// </summary>
         public void GenTextureFromNE()
         {
             Size _size = new Size();
@@ -188,7 +234,9 @@ namespace NetworkDesign.Main
             if (File.Exists(url))
                 File.Delete(url);
         }
-
+        /// <summary>
+        /// Генерация текстуры для здания
+        /// </summary>
         public void GenTextureFromBuild()
         {
             Size _size = new Size();
@@ -263,7 +311,9 @@ namespace NetworkDesign.Main
             if (File.Exists(url))
                 File.Delete(url);
         }
-
+        /// <summary>
+        /// Обновление текстуры
+        /// </summary>
         public void GenNewTexture()
         {
             Font font = new Font(FontFamily.GenericSansSerif, fontsize);
@@ -319,11 +369,11 @@ namespace NetworkDesign.Main
             if (File.Exists(url))
                 File.Delete(url);
         }
-
-        private void Chechfont()
-        {
-        }
-
+        /// <summary>
+        /// Расчет нового размера
+        /// </summary>
+        /// <param name="size">Размер</param>
+        /// <returns>Возвращает новый размер</returns>
         private Size RecalcSize(Size size)
         {
             Size result = new Size();
@@ -432,22 +482,37 @@ namespace NetworkDesign.Main
                 //Gl.glPopMatrix();
             }
         }
-
+        /// <summary>
+        /// Перемещение элемента
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
         internal void MoveElem(int x, int y)
         {
             location = MainForm._GenZoomPoint(new Point(x - (int)((double) size.Width / 2d * MainForm.zoom), y + (int)((double)size.Height / 2d * MainForm.zoom)));
         }
-
+        /// <summary>
+        /// Перемещение элемента
+        /// </summary>
+        /// <param name="difx">Разница  по Х</param>
+        /// <param name="dify">Разница по У</param>
         internal void _MoveElem(int difx, int dify)
         {
             location = new Point(location.X + difx, location.Y + dify);
         }
-
+        /// <summary>
+        /// Перемещение элемента без учета зума
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
         internal void __MoveElem(int x, int y)
         {
             location = new Point(x, y);
         }
-
+        /// <summary>
+        /// Копирвоание элемента
+        /// </summary>
+        /// <returns>Возвращает копию элемента</returns>
         public object Clone()
         {
             return new MyText

@@ -8,19 +8,42 @@ using System.Threading.Tasks;
 
 namespace NetworkDesign
 {
+    /// <summary>
+    /// Входы проводов в здание
+    /// </summary>
     public class InputWire: ICloneable
     {
+        /// <summary>
+        /// Группа кругов для входов проводов в здание
+        /// </summary>
         public GroupOfCircle InputWires = new GroupOfCircle();
+        /// <summary>
+        /// Радиус
+        /// </summary>
         private int rad = 5;
+        /// <summary>
+        /// Показывает текущий шаг
+        /// </summary>
         public bool step = false;
+        /// <summary>
+        /// Показывает, сбоку или сверху входит провод
+        /// </summary>
         public bool side = false;
+        /// <summary>
+        /// Угол поворота
+        /// </summary>
         public double angle = 0;
 
+        /// <summary>
+        /// Конструктор
+        /// </summary>
         public InputWire()
         {
 
         }
-
+        /// <summary>
+        /// Добавление
+        /// </summary>
         public void Add()
         {
             InputWires.Add(InputWires.TempCircle);
@@ -48,65 +71,123 @@ namespace NetworkDesign
         {
             InputWires.TempCircle = new Circle(x, y, rad, MDL, LDL, side);
         }
-
+        /// <summary>
+        /// Установить временную точку
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
         public void SetTempPoint(int x, int y)
         {
             InputWires.TempCircle.MainCenterPoint = new Point(x, y);
         }
-
+        /// <summary>
+        /// Установить временную точку внутри здания
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
         public void SetTempPointInBuild(int x, int y)
         {
             InputWires.TempCircle.MainCenterPoint = new Point(x, y);
             InputWires.TempCircle.LocalCenterPoint = new Point(x, y);
         }
-
+        /// <summary>
+        /// Проверка на вхождение точки в границы
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// <param name="mainRectangle">Прямоугольник</param>
         public void CheckIW(int x, int y, MyRectangle mainRectangle)
         {
             if (mainRectangle.Search(x, y) != -1)
                 SetTempPoint(x, y);
         }
-
+        /// <summary>
+        /// Проверка на вхождение точки в границы
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// <param name="mainPolygon">Многоугольник</param>
         public void CheckIW(int x, int y, Polygon mainPolygon)
         {
             if (mainPolygon.Search(x, y) != -1)
                 SetTempPoint(x, y);
         }
-
+        /// <summary>
+        /// Проверка на вхождение точки в границы
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// <param name="cir">Круг</param>
         public void CheckIW(int x, int y, Circle cir)
         {
             if (cir.Search(x, y) != -1)
                 SetTempPoint(x, y);
         }
-
+        /// <summary>
+        /// Проверка на вхождение точки в границы внутри здания
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// <param name="mainRectangle">Прямоугольник</param>
         public void CheckIWInBuild(int x, int y, MyRectangle mainRectangle)
         {
             if (mainRectangle.Search(x, y) != -1)
                 SetTempPointInBuild(x, y);
         }
-
+        /// <summary>
+        /// Проверка на вхождение точки в границы внутри здания
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// <param name="mainPolygon">Многоугольник</param>
         public void CheckIWInBuild(int x, int y, Polygon mainPolygon)
         {
             if (mainPolygon.Search(x, y) != -1)
                 SetTempPointInBuild(x, y);
         }
-
+        /// <summary>
+        /// Проверка на вхождение точки в границы внутри здания
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// <param name="cir">Круг</param>
         public void CheckIWInBuild(int x, int y, Circle cir)
         {
             if (cir.Search(x, y) != -1)
                 SetTempPointInBuild(x, y);
         }
-
+        /// <summary>
+        /// Поиск ближайшего входа провода в здание
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// <param name="dl">Уровень отображения</param>
+        /// <returns></returns>
         public int CalcNearestIW(int x, int y, DrawLevel dl)
         {
             return InputWires.SearchIW(x, y, dl);
         }
-
+        /// <summary>
+        /// Расчет точки на линии
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// <param name="point1">Точка 1</param>
+        /// <param name="point2">Точка 2</param>
+        /// <returns>Возвращает расстояние до линии</returns>
         private double CalcPointToLine(int x, int y, Point point1, Point point2)
         {
             return Math.Abs(((point2.Y - point1.Y) * x - (point2.X - point1.X) * y + point2.X * point1.Y - point2.Y * point1.X)
                 / (Math.Sqrt(Math.Pow((point2.Y - point1.Y), 2) + Math.Pow((point2.X - point1.X), 2))));
         }
-
+        /// <summary>
+        /// Расчет ближайшей точки
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// <param name="p1">Точка 1</param>
+        /// <param name="p2">Точка 2</param>
+        /// <returns>Возвращает ближайшую точку</returns>
         public Point CalcNearestPoint(int x, int y, Point p1, Point p2)
         {
             double a = p1.Y - p2.Y;
@@ -203,8 +284,7 @@ namespace NetworkDesign
             if (CheckInterval(x, y, pol.Points[p1], pol.Points[p2]))
                 InputWires.TempCircle.MainCenterPoint = CalcNearestPoint(x, y, pol.Points[p1], pol.Points[p2]);
         }
-
-        //Баг//Пофиксить//Доделать
+        
         /// <summary>
         /// Поиск ближайшей точки на круге при перемещении входа в здание или входа провода
         /// </summary>
@@ -219,7 +299,12 @@ namespace NetworkDesign
                 angle += 180;
             InputWires.TempCircle.MainCenterPoint = new Point((int)(cir.radius * Math.Cos(angle * Math.PI / 180) + cir.MainCenterPoint.X), (int)(cir.radius * Math.Sin(angle * Math.PI / 180) + cir.MainCenterPoint.Y));
         }
-
+        /// <summary>
+        /// Расчет угла поворота
+        /// </summary>
+        /// <param name="Point1">Точка 1</param>
+        /// <param name="Point2">Точка 2</param>
+        /// <returns>Возвращает угол поворота</returns>
         private double CalcAlfa(Point Point1, Point Point2)
         {
             double cat1 = Point2.Y - Point1.Y; //Противолежащий
@@ -227,7 +312,14 @@ namespace NetworkDesign
             double alfa = Math.Atan(cat1 / cat2);
             return alfa;
         }
-
+        /// <summary>
+        /// Проверка на то, попадает точка в интервал или нет
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// <param name="p1">Точка 1</param>
+        /// <param name="p2">Точка 2</param>
+        /// <returns>Возвращает попадание точки в интервал</returns>
         private bool CheckInterval(int x, int y, Point p1, Point p2)
         {
             int minx, miny, maxx, maxy;
@@ -266,17 +358,27 @@ namespace NetworkDesign
             else
                 return false;
         }
-
+        /// <summary>
+        /// Отрисовка
+        /// </summary>
         public void Draw()
         {
             InputWires.DrawIW();
         }
-
+        /// <summary>
+        /// Отрисовка временного элемента
+        /// </summary>
         public void DrawTemp()
         {
             InputWires.DrawTempIW();
         }
-
+        /// <summary>
+        /// Перемещение элемента
+        /// </summary>
+        /// <param name="difx">Разница по Х</param>
+        /// <param name="dify">Разница по У</param>
+        /// <param name="networkWires">Группа проводов</param>
+        /// <param name="build">Идентификатор здания</param>
         public void MoveElem(int difx, int dify, GroupOfNW networkWires, int build)
         {
             int i = 0;
@@ -290,7 +392,10 @@ namespace NetworkDesign
                 i++;
             }
         }
-
+        /// <summary>
+        /// Копирование элемента
+        /// </summary>
+        /// <returns>Возвращает копию элемента</returns>
         public object Clone()
         {
             return new InputWire

@@ -7,11 +7,22 @@ using Tao.OpenGl;
 
 namespace NetworkDesign
 {
+    /// <summary>
+    /// Группа прямоугольников
+    /// </summary>
     public class GroupOfRectangles : GroupOfElements
     {
+        /// <summary>
+        /// Список многоугольников
+        /// </summary>
         public List<MyRectangle> Rectangles = new List<MyRectangle>();
-        public MyRectangle TempRectangle = new MyRectangle(); //Текущий прямоугольник
-
+        /// <summary>
+        /// Временный многоугольник
+        /// </summary>
+        public MyRectangle TempRectangle = new MyRectangle();
+        /// <summary>
+        /// Конструктор
+        /// </summary>
         public GroupOfRectangles()
         {
 

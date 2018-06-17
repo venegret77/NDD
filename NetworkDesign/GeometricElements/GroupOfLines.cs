@@ -7,11 +7,22 @@ using System.Threading.Tasks;
 
 namespace NetworkDesign
 {
+    /// <summary>
+    /// Группа линий
+    /// </summary>
     public class GroupOfLines: GroupOfElements
     {
+        /// <summary>
+        /// Список линий
+        /// </summary>
         public List<Line> Lines = new List<Line>();
-        public Line TempLine = new Line(); //Текущая линия
-
+        /// <summary>
+        /// Временная линия
+        /// </summary>
+        public Line TempLine = new Line(); 
+        /// <summary>
+        /// Конструктор
+        /// </summary>
         public GroupOfLines()
         {
 

@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace NetworkDesign
 {
+    /// <summary>
+    /// Группа элементов
+    /// </summary>
     public abstract class GroupOfElements
     {
         /// <summary>
@@ -66,6 +69,10 @@ namespace NetworkDesign
         /// <returns>Возвращает индекс элемента</returns>
         public abstract int Search(int x, int y,out double dist, DrawLevel dl);
 
+        /// <summary>
+        /// Добавление списка элементов
+        /// </summary>
+        /// <param name="elems"></param>
         public void AddGroupElems(List<object> elems)
         {
             foreach (var elem in elems)
@@ -74,8 +81,6 @@ namespace NetworkDesign
             }
         }
 
-        //public abstract List<object> ConvertToListObj(); 
-
         /// <summary>
         /// Получение списка объектов внутри здания. Используется при экспорте зданий
         /// </summary>
@@ -83,12 +88,19 @@ namespace NetworkDesign
         /// <returns></returns>
         public abstract List<object> GetInBuild(int build);
 
+        /// <summary>
+        /// Генерация списка прямоугольников редактирования
+        /// </summary>
+        /// <returns></returns>
         public abstract List<EditRect> GenEditRects();
 
         /// <summary>
         /// Отрисовка элементов
         /// </summary>
         public abstract void Draw();
+        /// <summary>
+        /// Отрисовка временных элементов
+        /// </summary>
         public abstract void DrawTemp();
     }
 }

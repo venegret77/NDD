@@ -7,11 +7,22 @@ using System.Threading.Tasks;
 
 namespace NetworkDesign.NetworkElements
 {
+    /// <summary>
+    /// Группа проводов
+    /// </summary>
     public class GroupOfNW : GroupOfElements
     {
+        /// <summary>
+        /// Список проводов
+        /// </summary>
         public List<NetworkWire> NetworkWires = new List<NetworkWire>();
+        /// <summary>
+        /// Временный провод
+        /// </summary>
         public NetworkWire TempNetworkWire = new NetworkWire();
-
+        /// <summary>
+        /// Конструктор
+        /// </summary>
         public GroupOfNW()
         {
         }
@@ -21,18 +32,40 @@ namespace NetworkDesign.NetworkElements
             NetworkWires.Add((NetworkWire)elem);
             NetworkWires.Last().RecalWithZoom();
         }
-
+        /// <summary>
+        /// Движение проводов за точками или сетевыми элементами
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
+        /// <param name="id">Идентификатор</param>
+        /// <param name="IW">Показывает, вход провода или сетевой элемент</param>
+        /// <param name="build">Идентификатор здания</param>
+        /// <param name="dl">Уровень отображения</param>
         public void CheckNW(int x, int y, int id, bool IW, int build, DrawLevel dl)
         {
             foreach (var nw in NetworkWires)
             {
-                if (nw.idiw1.IW == IW & id == nw.idiw1.ID & nw.idiw1.Build == build & nw.DL == dl)
+                if (!IW)
                 {
-                    nw.Points[0] = new Point(x, y);
+                    if (nw.idiw1.IW == IW & id == nw.idiw1.ID & nw.idiw1.Build == build & nw.DL == dl)
+                    {
+                        nw.Points[0] = new Point(x, y);
+                    }
+                    if (nw.idiw2.IW == IW & id == nw.idiw2.ID & nw.idiw2.Build == build & nw.DL == dl)
+                    {
+                        nw.Points[nw.Points.Count - 1] = new Point(x, y);
+                    }
                 }
-                if (nw.idiw2.IW == IW & id == nw.idiw2.ID & nw.idiw2.Build == build & nw.DL == dl)
+                else
                 {
-                    nw.Points[nw.Points.Count - 1] = new Point(x, y);
+                    if (nw.idiw1.IW == IW & id == nw.idiw1.ID & nw.idiw1.Build == build)
+                    {
+                        nw.Points[0] = new Point(x, y);
+                    }
+                    if (nw.idiw2.IW == IW & id == nw.idiw2.ID & nw.idiw2.Build == build)
+                    {
+                        nw.Points[nw.Points.Count - 1] = new Point(x, y);
+                    }
                 }
             }
         }

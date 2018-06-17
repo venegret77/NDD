@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace NetworkDesign
 {
+    /// <summary>
+    /// Абстрактный класс для геометрических фигур
+    /// </summary>
     public abstract class GeometricFigure : ICloneable
     {
         /// <summary>
@@ -37,8 +40,13 @@ namespace NetworkDesign
         /// Угол поворота (для прямоугольников)
         /// </summary>
         protected double alfa = 0;
-
+        /// <summary>
+        /// Х центральной точки
+        /// </summary>
         public double CenterPointX = 0;
+        /// <summary>
+        /// У центральной точки
+        /// </summary>
         public double CenterPointY = 0;
 
         /// <summary>
@@ -71,10 +79,10 @@ namespace NetworkDesign
         /// </summary>
         /// <param name="x">Координата X</param>
         /// <param name="y">Коодината Y</param>
-        /// <returns></returns>
+        /// <returns>Возвращает расстояние до точки</returns>
         public abstract double Search(int x, int y);
         /// <summary>
-        /// Расчет минимума и максимума элемента по X и по Y
+        /// Расчет минимума и максимума элемента по X и по Y с учетом зума
         /// </summary>
         /// <param name="maxx">Возвращаемый параметр X максимальное</param>
         /// <param name="minx">Возвращаемый параметр X минимальное</param>
@@ -98,6 +106,13 @@ namespace NetworkDesign
                     miny = (int)((double)point.Y * MainForm.zoom);
             }
         }
+        /// <summary>
+        /// Расчет минимума и максимума элемента по X и по Y без учета зума
+        /// </summary>
+        /// <param name="maxx">Возвращаемый параметр X максимальное</param>
+        /// <param name="minx">Возвращаемый параметр X минимальное</param>
+        /// <param name="maxy">Возвращаемый параметр Y максимальное</param>
+        /// <param name="miny">Возвращаемый параметр Y минимальное</param>
         public virtual void CalcMaxMin(out int maxx, out int minx, out int maxy, out int miny)
         {
             maxx = (int)((double)Points[0].X);
@@ -117,7 +132,7 @@ namespace NetworkDesign
             }
         }
         /// <summary>
-        /// Расчет центральной точки элемента
+        /// Расчет центральной точки элемента с учетом зума
         /// </summary>
         public virtual void CalcCenterPoint()
         {
@@ -133,10 +148,17 @@ namespace NetworkDesign
             CenterPointX = x / (double)count;
             CenterPointY = y / (double)count;
         }
-
+        /// <summary>
+        /// Х центральной точки без зума
+        /// </summary>
         public double _CenterPointX;
+        /// <summary>
+        /// У центральной точки без зума
+        /// </summary>
         public double _CenterPointY;
-
+        /// <summary>
+        /// Расчет центральной точки элемента без учета зума
+        /// </summary>
         public virtual void CalcCenterPointWOZ()
         {
             double x = 0;
@@ -163,6 +185,11 @@ namespace NetworkDesign
         /// Отрисовка временного элемента без учета зума и цветов
         /// </summary>
         public abstract void DrawTemp();
+        /// <summary>
+        /// Перемещение элемента
+        /// </summary>
+        /// <param name="x">Координата Х</param>
+        /// <param name="y">Координата У</param>
         public virtual void MoveElem(int x, int y)
         {
             int difx = x - (int)CenterPointX;
@@ -172,6 +199,11 @@ namespace NetworkDesign
                 Points[i] = new Point(Points[i].X + difx, Points[i].Y + dify);
             }
         }
+        /// <summary>
+        /// Перемещение элемента
+        /// </summary>
+        /// <param name="difx">Разница по Х</param>
+        /// <param name="dify">Разница по У</param>
         public virtual void _MoveElem(int difx, int dify)
         {
             for (int i = 0; i < Points.Count; i++)
@@ -189,24 +221,10 @@ namespace NetworkDesign
                 Points[i] = new Point((int)(Points[i].X / MainForm.zoom), (int)(Points[i].Y / MainForm.zoom));
             }
         }
-
+        /// <summary>
+        /// Копирование элемента
+        /// </summary>
+        /// <returns>Возвращает копию элемента</returns>
         public abstract object Clone();
-        /*{
-            List<Point> points = new List<Point>();
-            foreach (var p in Points)
-            {
-                points.Add(new Point(p.X, p.Y));
-            }
-            MyRectangle mr = new MyRectangle
-            {
-                alfa = this.alfa,
-                DL = this.DL,
-                Points = points,
-                CenterPointX = this.CenterPointX,
-                CenterPointY = this.CenterPointY,
-                delete = this.delete
-            };
-            return mr;
-        }*/
     }
 }

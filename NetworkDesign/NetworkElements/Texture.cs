@@ -35,19 +35,33 @@ namespace NetworkDesign.NetworkElements
         /// Идентификатор изображения
         /// </summary>
         public int idimage = -1;
+        /// <summary>
+        /// Ссылка на изображение (имя)
+        /// </summary>
         public string url = "";
+        /// <summary>
+        /// Переменные для обозначения цветов
+        /// </summary>
         float R, G, B, A;
-
-        public Texture(bool vect, float width, Point location, int idimage, string url)
+        /// <summary>
+        /// Конструктор
+        /// </summary>
+        /// <param name="width">Ширина</param>
+        /// <param name="location">Расположение</param>
+        /// <param name="idimage">Идентификатор изображения</param>
+        /// <param name="url">Ссылка на изображение</param>
+        public Texture(float width, Point location, int idimage, string url)
         {
             this.url = url;
-            this.vect = vect;
+            this.vect = false;
             this.width = width;
             this.location = location;
             this.idimage = idimage;
             CalcPoints();
         }
-
+        /// <summary>
+        /// Расчет точек отрисовки
+        /// </summary>
         internal void CalcPoints()
         {
             Points.Clear();
@@ -56,7 +70,9 @@ namespace NetworkDesign.NetworkElements
             Points.Add(new Point(location.X + (int)width, location.Y + (int)width));
             Points.Add(new Point(location.X + (int)width, location.Y));
         }
-
+        /// <summary>
+        /// Отрисовка временного элемента
+        /// </summary>
         internal void DrawTemp()
         {
             if (vect)
@@ -69,7 +85,9 @@ namespace NetworkDesign.NetworkElements
         {
             throw new NotImplementedException();
         }
-
+        /// <summary>
+        /// Отрисовка временного элемента
+        /// </summary>
         private void DrawRastrImageTemp()
         {
             Gl.glLineWidth(MainForm.colorSettings.LineWidth);
@@ -103,7 +121,9 @@ namespace NetworkDesign.NetworkElements
             Gl.glDisable(Gl.GL_TEXTURE_2D);
             //Gl.glPopMatrix();
         }
-
+        /// <summary>
+        /// Конструктор
+        /// </summary>
         public Texture()
         {
         }
@@ -191,7 +211,12 @@ namespace NetworkDesign.NetworkElements
         {
 
         }
-
+        /// <summary>
+        /// Отрисовка
+        /// </summary>
+        /// <param name="Throughput">Пропускная способность</param>
+        /// <param name="active">Активность</param>
+        /// <param name="isPing">Доступность</param>
         public void Draw(Int64 Throughput, bool active, bool isPing)
         {
             if (vect)
@@ -199,7 +224,10 @@ namespace NetworkDesign.NetworkElements
             else
                 DrawRastrImage(Throughput, active, isPing);
         }
-
+        /// <summary>
+        /// Копирование элемента
+        /// </summary>
+        /// <returns>Возвращает копию элемента</returns>
         public object Clone()
         {
             return new Texture

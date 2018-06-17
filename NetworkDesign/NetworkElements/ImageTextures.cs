@@ -39,7 +39,7 @@ namespace NetworkDesign.NetworkElements
             listView1.SmallImageList = images.SmallImageList;
             for (int i = 0; i < images.Items.Count; i++)
             {
-                int gid = MainForm.ImagesURL.Textures[i].ID;
+                int gid = MainForm.ImagesURL.Textures[i].Type;
                 ListViewItem item = new ListViewItem(listView1.Groups[gid]);
                 item.Text = MainForm.ImagesURL.Textures[i].name;
                 item.ToolTipText = MainForm.ImagesURL.Textures[i].description;
