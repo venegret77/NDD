@@ -582,7 +582,11 @@ namespace NetworkDesign
                 LocalCenterPoint = new Point(this.LocalCenterPoint.X, LocalCenterPoint.Y),
                 radius = this.radius,
                 side = this.side,
-                delete = false
+                delete = this.delete,
+                CenterPointX = this.CenterPointX,
+                _CenterPointY = this._CenterPointY,
+                CenterPointY = this.CenterPointY,
+                _CenterPointX = this._CenterPointX
             };
         }
         /// <summary>

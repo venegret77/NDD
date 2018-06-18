@@ -80,12 +80,32 @@ namespace NetworkDesign.Main
             }
             try
             {
-                if (MainForm.OpenMap(".ndm", "Network Design Map File"))
+                OpenFileDialog openFileDialog = new OpenFileDialog
                 {
-                    mf.Show();
-                    mf.CheckButtons(true);
-                    mf.Text = MainForm.MyMap.sizeRenderingArea.Name;
-                    Hide();
+                    Filter = "Network Design Map File|*.ndm|Network Design Map File (Template)|*.ndmt"
+                };
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    if (openFileDialog.FileName.Contains(".ndm") & !openFileDialog.FileName.Contains(".ndmt"))
+                    {
+                        if (MainForm.OpenMap(openFileDialog.FileName))
+                        {
+                            mf.Show();
+                            mf.CheckButtons(true);
+                            mf.Text = MainForm.MyMap.sizeRenderingArea.Name;
+                            Hide();
+                        }
+                    }
+                    else if (openFileDialog.FileName.Contains(".ndmt"))
+                    {
+                        if (MainForm.OpenTemplateMap(openFileDialog.FileName))
+                        {
+                            mf.Show();
+                            mf.CheckButtons(true);
+                            mf.Text = MainForm.MyMap.sizeRenderingArea.Name;
+                            Hide();
+                        }
+                    }
                 }
                 //mf.Close();
             }

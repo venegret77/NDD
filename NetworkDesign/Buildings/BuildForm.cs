@@ -34,9 +34,26 @@ namespace NetworkDesign
                 basement = true;
             if (checkBox2.Checked)
                 loft = true;
-            count = (int)numericUpDown1.Value;
-            dialogResult = DialogResult.Yes;
-            Close();
+            int max = (int)((float)textBox1.Width / textBox1.Font.Size);
+            var lines = TEMP.WrapText(textBox1.Text, max);
+            name = "";
+            for (int i = 0; i < lines.Count(); i++)
+            {
+                if (i != lines.Count() - 1)
+                    name += lines[i] + Environment.NewLine;
+                else
+                    name += lines[i];
+            }
+            if (name.Length <= 1)
+            {
+                MessageBox.Show("Пожалуйста введите имя здания");
+            }
+            else
+            {
+                count = (int)numericUpDown1.Value;
+                dialogResult = DialogResult.Yes;
+                Close();
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -52,21 +69,7 @@ namespace NetworkDesign
 
         private void BuildForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            int max = (int)((float)textBox1.Width / textBox1.Font.Size);
-            var lines = TEMP.WrapText(textBox1.Text, max);
-            name = "";
-            for (int i = 0; i < lines.Count(); i++)
-            {
-                if (i != lines.Count() - 1)
-                    name += lines[i] + Environment.NewLine;
-                else
-                    name += lines[i];
-            }
-            if (name == "" | name == " ")
-            {
-                MessageBox.Show("Пожалуйста введите имя здания");
-                e.Cancel = true;
-            }
+            
         }
 
         private void numericUpDown2_ValueChanged(object sender, EventArgs e)
@@ -77,6 +80,7 @@ namespace NetworkDesign
         private void button2_Click_1(object sender, EventArgs e)
         {
             dialogResult = DialogResult.No;
+            Close();
         }
     }
 }

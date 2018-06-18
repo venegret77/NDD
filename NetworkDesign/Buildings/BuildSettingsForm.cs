@@ -16,11 +16,13 @@ namespace NetworkDesign.Buildings
         public DialogResult dialogResult;
         List<bool> emptyfloors = new List<bool>();
         public List<bool> floors = new List<bool>();
+        private Building temp;
 
         public BuildSettingsForm(Building building, List<bool> emptyfloors)
         {
             InitializeComponent();
             StartPosition = FormStartPosition.CenterParent;
+            temp = building;
             this.emptyfloors = emptyfloors;
             BuildName = textBox1.Text = building.Name;
             for (int i = 0; i < building.floors_name.Count; i++)
@@ -65,10 +67,26 @@ namespace NetworkDesign.Buildings
 
         private void button5_Click(object sender, EventArgs e)
         {
-            int pos = checkedListBox1.Items.Count - 1;
-            checkedListBox1.Items.Insert(pos, "Этаж " + pos.ToString());
-            emptyfloors.Insert(pos, true);
-            checkedListBox1.SetItemCheckState(pos, CheckState.Checked);
+            bool b = true;
+            foreach (var iw in temp.InputWires.InputWires.Circles)
+            {
+                if (!iw.side & !iw.delete)
+                {
+                    b = false;
+                    break;
+                }
+            }
+            if (b)
+            {
+                int pos = checkedListBox1.Items.Count - 1;
+                checkedListBox1.Items.Insert(pos, "Этаж " + pos.ToString());
+                emptyfloors.Insert(pos, true);
+                checkedListBox1.SetItemCheckState(pos, CheckState.Checked);
+            }
+            else
+            {
+                MessageBox.Show("Невозможно добавить этаж. Удалите входы проводов на крыше здания");
+            }
         }
     }
 }

@@ -3,7 +3,7 @@
   <Class Name="NetworkDesign.Main.MyText" BaseTypeListCollapsed="true">
     <Position X="8.5" Y="6.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>CAAAAIIABgAAQoAAAIAAAQACAAAAYAAqAAAQIIAgCBE=</HashCode>
+      <HashCode>CAAAAIAABgAAQoAAAIAAAQACAAAAYAAqAAAQIIAgCBE=</HashCode>
       <FileName>Main\MyText.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
@@ -38,14 +38,14 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
-  <Class Name="NetworkDesign.GroupOfBuildings" Collapsed="true">
-    <Position X="17.75" Y="29" Width="1.5" />
+  <Class Name="NetworkDesign.GroupOfBuildings">
+    <Position X="7.75" Y="24.75" Width="1.5" />
     <InheritanceLine Type="NetworkDesign.GroupOfElements" FixedFromPoint="true" FixedToPoint="true">
       <Path>
         <Point X="2.5" Y="29" />
-        <Point X="2.5" Y="28.625" />
-        <Point X="18.5" Y="28.625" />
-        <Point X="18.5" Y="29" />
+        <Point X="2.5" Y="28.608" />
+        <Point X="8.5" Y="28.608" />
+        <Point X="8.5" Y="28.358" />
       </Path>
     </InheritanceLine>
     <TypeIdentifier>
@@ -68,13 +68,13 @@
       <FileName>Edits\EditRect.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="NetworkDesign.GroupOfEditRects" Collapsed="true">
+  <Class Name="NetworkDesign.GroupOfEditRects">
     <Position X="5.75" Y="29" Width="1.5" />
     <InheritanceLine Type="NetworkDesign.GroupOfElements" FixedFromPoint="true" FixedToPoint="true">
       <Path>
         <Point X="2.5" Y="29" />
-        <Point X="2.5" Y="28.625" />
-        <Point X="6.5" Y="28.625" />
+        <Point X="2.5" Y="28.608" />
+        <Point X="6.5" Y="28.608" />
         <Point X="6.5" Y="29" />
       </Path>
     </InheritanceLine>
@@ -106,13 +106,13 @@
     </TypeIdentifier>
     <Lollipop Position="1.007" />
   </Class>
-  <Class Name="NetworkDesign.GroupOfCircle" Collapsed="true">
+  <Class Name="NetworkDesign.GroupOfCircle">
     <Position X="3.75" Y="29" Width="1.5" />
-    <InheritanceLine Type="NetworkDesign.GroupOfElements" FixedToPoint="true">
+    <InheritanceLine Type="NetworkDesign.GroupOfElements" FixedFromPoint="true" FixedToPoint="true">
       <Path>
-        <Point X="2.906" Y="29" />
-        <Point X="2.906" Y="28.625" />
-        <Point X="4.5" Y="28.625" />
+        <Point X="2.5" Y="29" />
+        <Point X="2.5" Y="28.608" />
+        <Point X="4.5" Y="28.608" />
         <Point X="4.5" Y="29" />
       </Path>
     </InheritanceLine>
@@ -122,14 +122,12 @@
     </TypeIdentifier>
     <Lollipop Position="1.041" />
   </Class>
-  <Class Name="NetworkDesign.GroupOfLines" Collapsed="true">
-    <Position X="11.75" Y="29" Width="1.5" />
+  <Class Name="NetworkDesign.GroupOfLines">
+    <Position X="1.75" Y="24.75" Width="1.5" />
     <InheritanceLine Type="NetworkDesign.GroupOfElements" FixedFromPoint="true" FixedToPoint="true">
       <Path>
         <Point X="2.5" Y="29" />
-        <Point X="2.5" Y="28.625" />
-        <Point X="12.5" Y="28.625" />
-        <Point X="12.5" Y="29" />
+        <Point X="2.5" Y="28.358" />
       </Path>
     </InheritanceLine>
     <TypeIdentifier>
@@ -137,14 +135,14 @@
       <FileName>GeometricElements\GroupOfLines.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="NetworkDesign.GroupOfPolygons" Collapsed="true">
-    <Position X="13.75" Y="29" Width="1.5" />
+  <Class Name="NetworkDesign.GroupOfPolygons">
+    <Position X="3.75" Y="24.75" Width="1.5" />
     <InheritanceLine Type="NetworkDesign.GroupOfElements" FixedFromPoint="true" FixedToPoint="true">
       <Path>
         <Point X="2.5" Y="29" />
-        <Point X="2.5" Y="28.625" />
-        <Point X="14.5" Y="28.625" />
-        <Point X="14.5" Y="29" />
+        <Point X="2.5" Y="28.608" />
+        <Point X="4.5" Y="28.608" />
+        <Point X="4.5" Y="28.358" />
       </Path>
     </InheritanceLine>
     <TypeIdentifier>
@@ -152,14 +150,14 @@
       <FileName>GeometricElements\GroupOfPolygons.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="NetworkDesign.GroupOfRectangles" Collapsed="true">
-    <Position X="15.75" Y="29" Width="1.5" />
+  <Class Name="NetworkDesign.GroupOfRectangles">
+    <Position X="5.75" Y="24.75" Width="1.5" />
     <InheritanceLine Type="NetworkDesign.GroupOfElements" FixedFromPoint="true" FixedToPoint="true">
       <Path>
         <Point X="2.5" Y="29" />
-        <Point X="2.5" Y="28.625" />
-        <Point X="16.5" Y="28.625" />
-        <Point X="16.5" Y="29" />
+        <Point X="2.5" Y="28.608" />
+        <Point X="6.5" Y="28.608" />
+        <Point X="6.5" Y="28.358" />
       </Path>
     </InheritanceLine>
     <TypeIdentifier>
@@ -193,7 +191,7 @@
       </Path>
     </InheritanceLine>
     <TypeIdentifier>
-      <HashCode>BAAAAAAAQgAEA4AAAAAABAIAAAAAICAAEAAACAZgABA=</HashCode>
+      <HashCode>BAAAAAAAAgAAA4AAAAAABAIAAAAAICAAEAAACAZgABA=</HashCode>
       <FileName>GeometricElements\MyRectangle.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -222,7 +220,7 @@
   <Class Name="NetworkDesign.LogMessage">
     <Position X="14.5" Y="8.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>QAAAAAAAACAAAAAAAAAAAAEABAABIAAAAAAACAAAAAA=</HashCode>
+      <HashCode>QAAAAAAAAAAAAAAAAAAAAAEABAABIAAQAAAACAAAAAA=</HashCode>
       <FileName>Logs\LogMessage.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -233,7 +231,7 @@
       <FileName>Main\ColorSettings.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="NetworkDesign.GroupOfElements" Collapsed="true">
+  <Class Name="NetworkDesign.GroupOfElements">
     <Position X="1.75" Y="29" Width="1.5" />
     <TypeIdentifier>
       <HashCode>QAIAEAgAAACAAgAAAgAABAAAAAAgAAAAAQAAIAAgAAA=</HashCode>
@@ -243,7 +241,7 @@
   <Class Name="NetworkDesign.Map">
     <Position X="2.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AEAACBBRgAAABEABAGARLEiQCAgEQQCDADAFAcICAJQ=</HashCode>
+      <HashCode>EEAACBBRgAAABEABAGARLECQCAgEQQCDADAFAcICAJQ=</HashCode>
       <FileName>Main\Map.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -262,14 +260,14 @@
       <FileName>Buildings\TEMP.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="NetworkDesign.NetworkElements.GroupOfMT" Collapsed="true">
-    <Position X="19.75" Y="29" Width="1.5" />
+  <Class Name="NetworkDesign.NetworkElements.GroupOfMT">
+    <Position X="9.75" Y="24.75" Width="1.5" />
     <InheritanceLine Type="NetworkDesign.GroupOfElements" FixedFromPoint="true" FixedToPoint="true">
       <Path>
         <Point X="2.5" Y="29" />
-        <Point X="2.5" Y="28.625" />
-        <Point X="20.5" Y="28.625" />
-        <Point X="20.5" Y="29" />
+        <Point X="2.5" Y="28.608" />
+        <Point X="10.5" Y="28.608" />
+        <Point X="10.5" Y="28.165" />
       </Path>
     </InheritanceLine>
     <TypeIdentifier>
@@ -277,13 +275,13 @@
       <FileName>Main\GroupOfMT.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="NetworkDesign.NetworkElements.GroupOfNE" Collapsed="true">
+  <Class Name="NetworkDesign.NetworkElements.GroupOfNE">
     <Position X="9.75" Y="29" Width="1.5" />
     <InheritanceLine Type="NetworkDesign.GroupOfElements" FixedFromPoint="true" FixedToPoint="true">
       <Path>
         <Point X="2.5" Y="29" />
-        <Point X="2.5" Y="28.625" />
-        <Point X="10.5" Y="28.625" />
+        <Point X="2.5" Y="28.608" />
+        <Point X="10.5" Y="28.608" />
         <Point X="10.5" Y="29" />
       </Path>
     </InheritanceLine>
@@ -292,13 +290,13 @@
       <FileName>NetworkElements\GroupOfNE.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="NetworkDesign.NetworkElements.GroupOfNW" Collapsed="true">
+  <Class Name="NetworkDesign.NetworkElements.GroupOfNW">
     <Position X="7.75" Y="29" Width="1.5" />
     <InheritanceLine Type="NetworkDesign.GroupOfElements" FixedFromPoint="true" FixedToPoint="true">
       <Path>
         <Point X="2.5" Y="29" />
-        <Point X="2.5" Y="28.625" />
-        <Point X="8.5" Y="28.625" />
+        <Point X="2.5" Y="28.608" />
+        <Point X="8.5" Y="28.608" />
         <Point X="8.5" Y="29" />
       </Path>
     </InheritanceLine>
@@ -333,7 +331,7 @@
   <Class Name="NetworkDesign.NetworkElements.NetworkParametr">
     <Position X="10.5" Y="5.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AABAAAAAAACAgAAEAAAAAAQAAAAAAAAAAAAgAAAAQAA=</HashCode>
+      <HashCode>AABAAAAAAAAAgAAEAAAAAAQAAAAAAAAAAAAgAAAAQAA=</HashCode>
       <FileName>NetworkElements\NetworkSettings.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -363,7 +361,7 @@
   <Class Name="NetworkDesign.NetworkElements.Note" BaseTypeListCollapsed="true">
     <Position X="12.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AQAAAAAAACAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAABA=</HashCode>
+      <HashCode>AQAAAAAAAAAAAAAEAAAAAAAAAAAAAAAQAAAAAAAAABA=</HashCode>
       <FileName>NetworkElements\Notes.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
@@ -408,7 +406,7 @@
   <Struct Name="NetworkDesign.ActiveElem">
     <Position X="12.5" Y="5.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAIAAAAAQAAAAAAAABAAAAAIAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAQAAAAAAAABAAAAAIAAAAAAAAA=</HashCode>
       <FileName>Main\ActiveElem.cs</FileName>
     </TypeIdentifier>
   </Struct>
@@ -436,7 +434,7 @@
   <Struct Name="NetworkDesign.NetworkElements.URL_ID">
     <Position X="14.5" Y="11.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAgAAAIAAAAAAAACAEAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAIAAAAAAAACAEAAAAAQAAAAAAAAA=</HashCode>
       <FileName>NetworkElements\ListOfTextures.cs</FileName>
     </TypeIdentifier>
   </Struct>

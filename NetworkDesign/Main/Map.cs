@@ -1248,6 +1248,7 @@ namespace NetworkDesign
             Circles.Choose(-1);
             NetworkElements.Choose(-1);
             NetworkWires.Choose(-1);
+            MyTexts.Choose(-1);
         }
         /// <summary>
         /// Поиск элемента для редактирования

@@ -384,11 +384,14 @@ namespace NetworkDesign
             int i = 0;
             foreach (var cir in InputWires.Circles)
             {
-                cir.MainCenterPoint = new Point(cir.MainCenterPoint.X + difx, cir.MainCenterPoint.Y + dify);
-                Point point = cir.MainCenterPoint;
-                Point _point = cir.LocalCenterPoint;
-                networkWires.CheckNW(point.X, point.Y, i, true, build, cir.MainDL);
-                networkWires.CheckNW(_point.X, _point.Y, i, true, build, cir.LocalDL);
+                if (cir.MainDL.Level == -1)
+                {
+                    cir.MainCenterPoint = new Point(cir.MainCenterPoint.X + difx, cir.MainCenterPoint.Y + dify);
+                    Point point = cir.MainCenterPoint;
+                    Point _point = cir.LocalCenterPoint;
+                    networkWires.CheckNW(point.X, point.Y, i, true, build, cir.MainDL);
+                    networkWires.CheckNW(_point.X, _point.Y, i, true, build, cir.LocalDL);
+                }
                 i++;
             }
         }

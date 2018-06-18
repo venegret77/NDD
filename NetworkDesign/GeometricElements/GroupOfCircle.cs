@@ -262,10 +262,7 @@ namespace NetworkDesign
         {
             TempCircle.DrawTemp();
         }
-        /// <summary>
-        /// Копирование элемента
-        /// </summary>
-        /// <returns>Возвращает копию элемента</returns>
+
         public object Clone()
         {
             List<Circle> circles = new List<Circle>();

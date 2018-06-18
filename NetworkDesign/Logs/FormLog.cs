@@ -48,7 +48,7 @@ namespace NetworkDesign
             {
                 dataGridView1.Rows.Add(mess.username,mess.dateTime,mess.Text);
             }
-            dataGridView1.Rows.Add("=======", "Отмененные действий", "=======");
+            dataGridView1.Rows.Add("=======", "Отмененные действия", "=======");
             foreach (var mess in log.Forward)
             {
                 dataGridView1.Rows.Add(mess.username, mess.dateTime, mess.Text);

@@ -49,10 +49,15 @@ namespace NetworkDesign.Main
             Close();
         }
 
+        public bool action = false;
+
         private void button1_Click(object sender, EventArgs e)
         {
             if (MainForm.OpenBuild(".build", "Building File"))
+            {
+                action = true;
                 Close();
+            }
         }
     }
 }

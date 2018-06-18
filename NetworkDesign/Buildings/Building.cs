@@ -338,7 +338,7 @@ namespace NetworkDesign
                 isInBuild = false;
                 InputWires.InputWires.TempCircle.LocalCenterPoint = new Point(InputWires.InputWires.TempCircle.MainCenterPoint.X, InputWires.InputWires.TempCircle.MainCenterPoint.Y);
                 InputWires.InputWires.Circles[id].MainCenterPoint = MainForm._GenZoomPoint(new Point(InputWires.InputWires.TempCircle.MainCenterPoint.X, InputWires.InputWires.TempCircle.MainCenterPoint.Y));
-                InputWires.InputWires.Circles[id].LocalCenterPoint = /*MainForm._GenZoomPoint(*/new Point(InputWires.InputWires.TempCircle.LocalCenterPoint.X, InputWires.InputWires.TempCircle.LocalCenterPoint.Y/*)*/);
+                InputWires.InputWires.Circles[id].LocalCenterPoint = MainForm._GenZoomPoint(new Point(InputWires.InputWires.TempCircle.LocalCenterPoint.X, InputWires.InputWires.TempCircle.LocalCenterPoint.Y));
                 InputWires.InputWires.Circles[id].delete = false;
                 InputWires.InputWires.TempDefault();
             }
@@ -388,9 +388,8 @@ namespace NetworkDesign
                 };
                 InputWires.InputWires.Circles[id].delete = true;
                 MoveIWInBuild(x, y);
-                InputWires.InputWires.TempCircle.LocalCenterPoint = new Point(InputWires.InputWires.TempCircle.MainCenterPoint.X, InputWires.InputWires.TempCircle.MainCenterPoint.Y);
                 Point point = MainForm._GenZoomPoint(InputWires.InputWires.TempCircle.MainCenterPoint);
-                Point _point = InputWires.InputWires.TempCircle.LocalCenterPoint;
+                Point _point = MainForm._GenZoomPoint(InputWires.InputWires.TempCircle.LocalCenterPoint);
                 networkWires.CheckNW(point.X, point.Y, id, true, MainForm.drawLevel.Level, InputWires.InputWires.TempCircle.MainDL);
                 networkWires.CheckNW(_point.X, _point.Y, id, true, MainForm.drawLevel.Level, InputWires.InputWires.TempCircle.LocalDL);
             }
@@ -1116,7 +1115,8 @@ namespace NetworkDesign
             }
             for (int i = 0; i < InputWires.InputWires.Circles.Count; i++)
             {
-                InputWires.InputWires.Circles[i].MainCenterPoint = RotatePoint(difangle, cp, TempInputWires.InputWires.Circles[i].MainCenterPoint);
+                if (InputWires.InputWires.Circles[i].MainDL.Level == -1)
+                    InputWires.InputWires.Circles[i].MainCenterPoint = RotatePoint(difangle, cp, TempInputWires.InputWires.Circles[i].MainCenterPoint);
             }
             InputWires.MoveElem(0, 0, networkWires, build);
         }

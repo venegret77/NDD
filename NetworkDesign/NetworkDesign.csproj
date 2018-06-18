@@ -166,11 +166,11 @@
     <Compile Include="Buildings\BuildExportImport.Designer.cs">
       <DependentUpon>BuildExportImport.cs</DependentUpon>
     </Compile>
-    <Compile Include="Main\CleateMapForm.cs">
+    <Compile Include="Main\CreateMapForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Main\CleateMapForm.Designer.cs">
-      <DependentUpon>CleateMapForm.cs</DependentUpon>
+    <Compile Include="Main\CreateMapForm.Designer.cs">
+      <DependentUpon>CreateMapForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Main\MapExportForm.cs">
       <SubType>Form</SubType>
@@ -303,8 +303,8 @@
     <EmbeddedResource Include="Buildings\BuildSettingsForm.resx">
       <DependentUpon>BuildSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Main\CleateMapForm.resx">
-      <DependentUpon>CleateMapForm.cs</DependentUpon>
+    <EmbeddedResource Include="Main\CreateMapForm.resx">
+      <DependentUpon>CreateMapForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Main\ColorDialogForm.resx">
       <DependentUpon>ColorDialogForm.cs</DependentUpon>
