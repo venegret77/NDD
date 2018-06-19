@@ -42,6 +42,8 @@ namespace NetworkDesign
         public uint idtexture = 0;
         public bool isDrawBackground = false;
         public float TextureWidth = 50;
+        public int TimerInterval = 60000;
+        public float fontsize = 14;
 
         [XmlElement("LinesColor")]
         public int argbl

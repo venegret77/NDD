@@ -58,7 +58,7 @@ namespace NetworkDesign
         static public bool isInit = false;
 
         Stopwatch stopwatch = new Stopwatch();
-        
+
         public static int nebutnscount = 15;
         static public List<NEButton> neButtons = new List<NEButton>();
 
@@ -122,6 +122,7 @@ namespace NetworkDesign
             trackBar1.Parent = this;
             trackBar1.BringToFront();
             colorSettings = ColorSettings.Open();
+            PingDeviceTimer.Interval = colorSettings.TimerInterval;
             if (colorSettings.backgroundurl != "")
             {
                 if (File.Exists(Application.StartupPath + @"\Textures\" + colorSettings.backgroundurl))
@@ -129,6 +130,7 @@ namespace NetworkDesign
                 else
                     colorSettings.backgroundurl = "";
             }
+
             parametrs = Parametrs.Open();
             ImagesURL = OpenTextures();
             LoadImages();
@@ -149,7 +151,7 @@ namespace NetworkDesign
             focusbox.Enabled = true;
             focusbox.Location = new Point(5000, 5000);
             Click += MainForm_Click;
-            //isInitMap = true;
+            линияToolStripMenuItem.Checked = true;
         }
 
         private void AnT_GotFocus(object sender, EventArgs e)
@@ -318,7 +320,8 @@ namespace NetworkDesign
             }
         }
 
-        TextBox textBox;
+        static public TextBox textBox;
+        TextBox _textBox;
         int x, y;
 
         private void MouseText(int x, int y)
@@ -338,7 +341,8 @@ namespace NetworkDesign
                     Enabled = true,
                     Location = new Point(x, y),
                     Text = "",
-                    Multiline = true
+                    Multiline = true,
+                    Font = new Font(Font.FontFamily, colorSettings.fontsize)
                 };
             }
             textBox.Focus();
@@ -363,9 +367,9 @@ namespace NetworkDesign
             Size size = new Size((int)((double)MyMap.MyTexts.MyTexts[textid].size.Width * zoom), (int)((double)MyMap.MyTexts.MyTexts[textid].size.Height * zoom));
             string text = MyMap.MyTexts.MyTexts[textid].text;
             MyMap.MyTexts.MyTexts[textid].delete = true;
-            if (textBox == null || textBox.Text == "")
+            if (_textBox == null || _textBox.Text == "")
             {
-                textBox = new TextBox
+                _textBox = new TextBox
                 {
                     Parent = AnT,
                     BackColor = Color.White,
@@ -379,13 +383,81 @@ namespace NetworkDesign
                     Multiline = true
                 };
             }
-            textBox.Focus();
-            textBox.KeyDown += TextBox_KeyDown;
-            textBox.LostFocus += TextBox_LostFocus;
-            textBox.KeyUp += TextBox_KeyUp;
-            size = TextRenderer.MeasureText(textBox.Text, textBox.Font);
+            _textBox.Focus();
+            _textBox.KeyDown += _TextBox_KeyDown;
+            _textBox.LostFocus += _TextBox_LostFocus;
+            _textBox.KeyUp += _TextBox_KeyUp;
+            size = TextRenderer.MeasureText(_textBox.Text, _textBox.Font);
+            _textBox.Width = size.Width + 2;
+            _textBox.Height = size.Height;
+        }
+
+        private void _TextBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            Size size = TextRenderer.MeasureText(textBox.Text, textBox.Font);
             textBox.Width = size.Width + 2;
             textBox.Height = size.Height;
+        }
+
+        private void _TextBox_LostFocus(object sender, EventArgs e)
+        {
+            if (textBox.Text != "" & textBox.Text != " ")
+            {
+                if (textid == -1)
+                {
+                    MyMap.MyTexts.Add(new MyText(drawLevel, new Point(MyMap.RecalcMouseX(x), MyMap.RecalcMouseY(y)), textBox));
+                    int lastindex = MyMap.MyTexts.MyTexts.Count - 1;
+                    Element elem = new Element(10, lastindex, MyMap.MyTexts.MyTexts[lastindex].Clone(), -1);
+                    Element _elem = new Element(10, lastindex, new MyText(), -1);
+                    MyMap.log.Add(new LogMessage("Добавил надпись", elem, _elem));
+                    InfoLable.Text = "Добавил надпись";
+                }
+                else
+                {
+                    MyMap.MyTexts.MyTexts[textid].fontsize = textBox.Font.Size;
+                    MyMap.MyTexts.MyTexts[textid].text = textBox.Text;
+                    MyMap.MyTexts.MyTexts[textid].delete = false;
+                    MyMap.MyTexts.MyTexts[textid].GenNewTexture();
+                    UpdateTextLogAdd(textid);
+                    textid = -1;
+                }
+                CheckButtons(true);
+            }
+            else
+            {
+                if (textid != -1)
+                    MyMap.MyTexts.MyTexts[textid].delete = false;
+            }
+            textBox.Dispose();
+        }
+
+        //bool isControl = false;
+
+        private void _TextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            /*if (e.KeyCode == Keys.ControlKey)
+            {
+                isControl = true;
+            }*/
+            if (!e.Control & e.KeyCode == Keys.Enter)
+            {
+                focusbox.Focus();
+            }
+            if (e.Control & e.KeyCode == Keys.Up)
+            {
+                textBox.Font = new Font(textBox.Font.FontFamily, textBox.Font.Size + 1);
+            }
+            if (e.Control & e.KeyCode == Keys.Down)
+            {
+                if (colorSettings.fontsize > 1)
+                {
+                    textBox.Font = new Font(textBox.Font.FontFamily, textBox.Font.Size - 1);
+                }
+            }
+            /*if (e.KeyCode != Keys.ControlKey)
+            {
+                isControl = false;
+            }*/
         }
 
         private void TextBox_KeyUp(object sender, KeyEventArgs e)
@@ -442,10 +514,17 @@ namespace NetworkDesign
             if (e.Control & e.KeyCode == Keys.Up)
             {
                 textBox.Font = new Font(textBox.Font.FontFamily, textBox.Font.Size + 1);
+                colorSettings.fontsize++;
+                colorDialog.numericUpDown6.Value = (decimal)colorSettings.fontsize;
             }
             if (e.Control & e.KeyCode == Keys.Down)
             {
-                textBox.Font = new Font(textBox.Font.FontFamily, textBox.Font.Size - 1);
+                if (colorSettings.fontsize > 1)
+                {
+                    textBox.Font = new Font(textBox.Font.FontFamily, textBox.Font.Size - 1);
+                    colorSettings.fontsize--;
+                    colorDialog.numericUpDown6.Value = (decimal)colorSettings.fontsize;
+                }
             }
             /*if (e.KeyCode != Keys.ControlKey)
             {
@@ -1543,6 +1622,13 @@ namespace NetworkDesign
                         DeleteBtn.Enabled = true;
                         break;
                 }
+                if (drawLevel.Level != -1)
+                {
+                    MyMap.ResizeRenderingArea(drawLevel.Level);
+                    ReturnToMainBtn.Enabled = true;
+                    UpgrateFloors();
+                    IWBtn.Enabled = true;
+                }
             }
         }
         #endregion
@@ -2003,8 +2089,7 @@ namespace NetworkDesign
         /// <summary>
         /// Функция для открытия файла карты
         /// </summary>
-        /// <param name="fileExtension">Расширение файла в формате .*</param>
-        /// <param name="descriptionFE">Описание заданного формата для отображения в диалоге</param>
+        /// <param name="path">Путь</param>
         static public bool OpenMap(string path)
         {
             try
@@ -2049,13 +2134,13 @@ namespace NetworkDesign
                     Directory.Delete(Application.StartupPath + @"\###tempdirectory._temp###\", true);
                 return false;
             }
-            return false;
         }
         /// <summary>
         /// Сохранение (экспорт) здания в файл 
         /// </summary>
         /// <param name="fileExtension">Расширение файла в формате .*</param>
         /// <param name="descriptionFE">Описание заданного формата для отображения в диалоге</param>
+        /// <param name="buildid"></param>
         public static void SaveBuild(string fileExtension, string descriptionFE, int buildid)
         {
             SaveFileDialog saveFileDialog1 = new SaveFileDialog
@@ -2509,17 +2594,30 @@ namespace NetworkDesign
 
         private void создатьToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            CreateMapForm createMapForm = new CreateMapForm();
+            createMapForm.ShowDialog();
         }
 
         private void открытьToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "Network Design Map File|*.ndm|Network Design Map File (Template)|*.ndmt"
+            };
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                if (openFileDialog.FileName.Contains(".ndm") & !openFileDialog.FileName.Contains(".ndmt"))
+                    OpenMap(openFileDialog.FileName);
+                else if (openFileDialog.FileName.Contains(".ndmt"))
+                    OpenTemplateMap(openFileDialog.FileName);
+                CheckButtons(true);
+                Text = MyMap.sizeRenderingArea.Name;
+            }
         }
 
         private void сохранитьToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            SaveMap(".ndm", "Network Design Map File");
         }
         /// <summary>
         /// Событие тика таймера
@@ -2539,6 +2637,7 @@ namespace NetworkDesign
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void AnT_Click(object sender, EventArgs e) => focusbox.Focus();
+        ColorDialogForm colorDialog;
         /// <summary>
         /// Событие нажатия кнопки параметры
         /// </summary>
@@ -2546,7 +2645,7 @@ namespace NetworkDesign
         /// <param name="e"></param>
         private void ParamsMapClick(object sender, EventArgs e)
         {
-            ColorDialogForm colorDialog = new ColorDialogForm();
+            colorDialog = new ColorDialogForm();
             colorDialog.Show();
         }
         /// <summary>
@@ -2696,20 +2795,55 @@ namespace NetworkDesign
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CursorClick(object sender, EventArgs e) => MyMap.SetInstrument(0);
+        private void CursorClick(object sender, EventArgs e)
+        {
+            MyMap.SetInstrument(0);
+            редактированиеToolStripMenuItem.Checked = false;
+            курсорToolStripMenuItem.Checked = true;
+            линияToolStripMenuItem.Checked = false;
+            кругToolStripMenuItem.Checked = false;
+            прямоугольникToolStripMenuItem.Checked = false;
+            многоугольникToolStripMenuItem.Checked = false;
+            текстToolStripMenuItem.Checked = false;
+            проводаToolStripMenuItem.Checked = false;
+        }
 
         /// <summary>
         /// Событие нажатия кнопки линия
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void LineClick(object sender, EventArgs e) => MyMap.SetInstrument(1);
+        private void LineClick(object sender, EventArgs e)
+        {
+            MyMap.SetInstrument(1);
+            редактированиеToolStripMenuItem.Checked = false;
+            курсорToolStripMenuItem.Checked = false;
+            линияToolStripMenuItem.Checked = true;
+            кругToolStripMenuItem.Checked = false;
+            прямоугольникToolStripMenuItem.Checked = false;
+            многоугольникToolStripMenuItem.Checked = false;
+            текстToolStripMenuItem.Checked = false;
+            проводаToolStripMenuItem.Checked = false;
+        }
+
         /// <summary>
         /// Событие нажатия кнопки многоугольник
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void PolygonClick(object sender, EventArgs e) => MyMap.SetInstrument(5);
+        private void PolygonClick(object sender, EventArgs e)
+        {
+            MyMap.SetInstrument(5);
+            редактированиеToolStripMenuItem.Checked = false;
+            курсорToolStripMenuItem.Checked = false;
+            линияToolStripMenuItem.Checked = false;
+            кругToolStripMenuItem.Checked = false;
+            прямоугольникToolStripMenuItem.Checked = false;
+            многоугольникToolStripMenuItem.Checked = true;
+            текстToolStripMenuItem.Checked = false;
+            проводаToolStripMenuItem.Checked = false;
+        }
+
         /// <summary>
         /// Событие нажатия кнопки добавить точку у многоугольника
         /// </summary>
@@ -2753,13 +2887,37 @@ namespace NetworkDesign
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void RectangleClick(object sender, EventArgs e) => MyMap.SetInstrument(2);
+        private void RectangleClick(object sender, EventArgs e)
+        {
+            MyMap.SetInstrument(2);
+            редактированиеToolStripMenuItem.Checked = false;
+            курсорToolStripMenuItem.Checked = false;
+            линияToolStripMenuItem.Checked = false;
+            кругToolStripMenuItem.Checked = false;
+            прямоугольникToolStripMenuItem.Checked = true;
+            многоугольникToolStripMenuItem.Checked = false;
+            текстToolStripMenuItem.Checked = false;
+            проводаToolStripMenuItem.Checked = false;
+        }
+
         /// <summary>
         /// Событие нажатия кнопки круг
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ToolStripButton6_Click_1(object sender, EventArgs e) => MyMap.SetInstrument(360);
+        private void ToolStripButton6_Click_1(object sender, EventArgs e)
+        {
+            MyMap.SetInstrument(360);
+            редактированиеToolStripMenuItem.Checked = false;
+            курсорToolStripMenuItem.Checked = false;
+            линияToolStripMenuItem.Checked = false;
+            кругToolStripMenuItem.Checked = true;
+            прямоугольникToolStripMenuItem.Checked = false;
+            многоугольникToolStripMenuItem.Checked = false;
+            текстToolStripMenuItem.Checked = false;
+            проводаToolStripMenuItem.Checked = false;
+        }
+
         /// <summary>
         /// Событие нажатия кнопки фильтры
         /// </summary>
@@ -2780,13 +2938,27 @@ namespace NetworkDesign
         {
             if (MyMap.EditRects.edit_mode)
             {
-                редактированиеToolStripMenuItem.Checked = false;
                 MyMap.SetInstrument(0);
+                редактированиеToolStripMenuItem.Checked = false;
+                курсорToolStripMenuItem.Checked = true;
+                линияToolStripMenuItem.Checked = false;
+                кругToolStripMenuItem.Checked = false;
+                прямоугольникToolStripMenuItem.Checked = false;
+                многоугольникToolStripMenuItem.Checked = false;
+                текстToolStripMenuItem.Checked = false;
+                проводаToolStripMenuItem.Checked = false;
             }
             else
             {
-                редактированиеToolStripMenuItem.Checked = true;
                 MyMap.SetInstrument(3);
+                редактированиеToolStripMenuItem.Checked = true;
+                курсорToolStripMenuItem.Checked = false;
+                линияToolStripMenuItem.Checked = false;
+                кругToolStripMenuItem.Checked = false;
+                прямоугольникToolStripMenuItem.Checked = false;
+                многоугольникToolStripMenuItem.Checked = false;
+                текстToolStripMenuItem.Checked = false;
+                проводаToolStripMenuItem.Checked = false;
                 MyMap.RefreshEditRect();
             }
         }
@@ -2842,13 +3014,37 @@ namespace NetworkDesign
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void TextClick(object sender, EventArgs e) => MyMap.SetInstrument(10);
+        private void TextClick(object sender, EventArgs e)
+        {
+            MyMap.SetInstrument(10);
+            редактированиеToolStripMenuItem.Checked = false;
+            курсорToolStripMenuItem.Checked = false;
+            линияToolStripMenuItem.Checked = false;
+            кругToolStripMenuItem.Checked = false;
+            прямоугольникToolStripMenuItem.Checked = false;
+            многоугольникToolStripMenuItem.Checked = false;
+            текстToolStripMenuItem.Checked = true;
+            проводаToolStripMenuItem.Checked = false;
+        }
+
         /// <summary>
         /// Событие нажатия кнопки провода
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void NWClick(object sender, EventArgs e) => MyMap.SetInstrument(9);
+        private void NWClick(object sender, EventArgs e)
+        {
+            MyMap.SetInstrument(9);
+            редактированиеToolStripMenuItem.Checked = false;
+            курсорToolStripMenuItem.Checked = false;
+            линияToolStripMenuItem.Checked = false;
+            кругToolStripMenuItem.Checked = false;
+            прямоугольникToolStripMenuItem.Checked = false;
+            многоугольникToolStripMenuItem.Checked = false;
+            текстToolStripMenuItem.Checked = false;
+            проводаToolStripMenuItem.Checked = true;
+        }
+
         /// <summary>
         /// Событие нажатия кнопки добавить точку для провода
         /// </summary>
@@ -3361,12 +3557,26 @@ namespace NetworkDesign
         {
             if (MyMap.EditRects.edit_mode)
             {
-                редактированиеToolStripMenuItem.Checked = false;
                 MyMap.SetInstrument(0);
+                редактированиеToolStripMenuItem.Checked = false;
+                курсорToolStripMenuItem.Checked = true;
+                линияToolStripMenuItem.Checked = false;
+                кругToolStripMenuItem.Checked = false;
+                прямоугольникToolStripMenuItem.Checked = false;
+                многоугольникToolStripMenuItem.Checked = false;
+                текстToolStripMenuItem.Checked = false;
+                проводаToolStripMenuItem.Checked = false;
             }
             else
             {
                 редактированиеToolStripMenuItem.Checked = true;
+                курсорToolStripMenuItem.Checked = false;
+                линияToolStripMenuItem.Checked = false;
+                кругToolStripMenuItem.Checked = false;
+                прямоугольникToolStripMenuItem.Checked = false;
+                многоугольникToolStripMenuItem.Checked = false;
+                текстToolStripMenuItem.Checked = false;
+                проводаToolStripMenuItem.Checked = false;
                 MyMap.SetInstrument(3);
                 MyMap.RefreshEditRect();
             }
@@ -3392,36 +3602,106 @@ namespace NetworkDesign
         private void курсорToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MyMap.SetInstrument(0);
+            редактированиеToolStripMenuItem.Checked = false;
+            курсорToolStripMenuItem.Checked = true;
+            линияToolStripMenuItem.Checked = false;
+            кругToolStripMenuItem.Checked = false;
+            прямоугольникToolStripMenuItem.Checked = false;
+            многоугольникToolStripMenuItem.Checked = false;
+            текстToolStripMenuItem.Checked = false;
+            проводаToolStripMenuItem.Checked = false;
         }
 
         private void линияToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MyMap.SetInstrument(1);
+            редактированиеToolStripMenuItem.Checked = false;
+            курсорToolStripMenuItem.Checked = false;
+            линияToolStripMenuItem.Checked = true;
+            кругToolStripMenuItem.Checked = false;
+            прямоугольникToolStripMenuItem.Checked = false;
+            многоугольникToolStripMenuItem.Checked = false;
+            текстToolStripMenuItem.Checked = false;
+            проводаToolStripMenuItem.Checked = false;
         }
 
         private void многоугольникToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MyMap.SetInstrument(5);
+            редактированиеToolStripMenuItem.Checked = false;
+            курсорToolStripMenuItem.Checked = false;
+            линияToolStripMenuItem.Checked = false;
+            кругToolStripMenuItem.Checked = false;
+            прямоугольникToolStripMenuItem.Checked = false;
+            многоугольникToolStripMenuItem.Checked = true;
+            текстToolStripMenuItem.Checked = false;
+            проводаToolStripMenuItem.Checked = false;
         }
 
         private void прямоугольникToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MyMap.SetInstrument(2);
+            редактированиеToolStripMenuItem.Checked = false;
+            курсорToolStripMenuItem.Checked = false;
+            линияToolStripMenuItem.Checked = false;
+            кругToolStripMenuItem.Checked = false;
+            прямоугольникToolStripMenuItem.Checked = true;
+            многоугольникToolStripMenuItem.Checked = false;
+            текстToolStripMenuItem.Checked = false;
+            проводаToolStripMenuItem.Checked = false;
         }
 
         private void кругToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MyMap.SetInstrument(360);
+            редактированиеToolStripMenuItem.Checked = false;
+            курсорToolStripMenuItem.Checked = false;
+            линияToolStripMenuItem.Checked = false;
+            кругToolStripMenuItem.Checked = true;
+            прямоугольникToolStripMenuItem.Checked = false;
+            многоугольникToolStripMenuItem.Checked = false;
+            текстToolStripMenuItem.Checked = false;
+            проводаToolStripMenuItem.Checked = false;
         }
 
         private void текстToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MyMap.SetInstrument(10);
+            редактированиеToolStripMenuItem.Checked = false;
+            курсорToolStripMenuItem.Checked = false;
+            линияToolStripMenuItem.Checked = false;
+            кругToolStripMenuItem.Checked = false;
+            прямоугольникToolStripMenuItem.Checked = false;
+            многоугольникToolStripMenuItem.Checked = false;
+            текстToolStripMenuItem.Checked = true;
+            проводаToolStripMenuItem.Checked = false;
         }
 
-        private void открытьРуководствоПользователяToolStripMenuItem_Click(object sender, EventArgs e)
+        private void экспортКартыToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //if (Application.StartupPath + @"")
+            MyMap.Unfocus(true);
+            Filtres _filtres = filtres;
+            MapExportForm MEF = new MapExportForm(MyMap.Buildings.Buildings);
+            MEF.ShowDialog();
+            filtres = _filtres;
+        }
+
+        private void экспортимпортЗданийToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            BuildExportImport buildExportImport = new BuildExportImport(MyMap.Buildings.Buildings);
+            buildExportImport.ShowDialog();
+            if (buildExportImport.action)
+                CheckButtons(true);
+        }
+
+        private void сохранитьКакToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveTemplateMap(".ndmt", "Network Design Map File (Template)");
+        }
+
+        private void проводаToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
 
         /// <summary>

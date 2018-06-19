@@ -33,6 +33,7 @@ namespace NetworkDesign
             if (MainForm.PingDeviceTimer.Interval < 1000)
                 MainForm.PingDeviceTimer.Interval = 60000;
             numericUpDown5.Value = MainForm.PingDeviceTimer.Interval / 1000;
+            numericUpDown6.Value = (decimal)MainForm.colorSettings.fontsize;
             if (MainForm.colorSettings.backgroundurl != "")
                 pictureBox1.Image = Image.FromFile(Application.StartupPath + @"\Textures\" + MainForm.colorSettings.backgroundurl);
             checkBox1.Checked = MainForm.colorSettings.isDrawBackground;
@@ -167,7 +168,15 @@ namespace NetworkDesign
 
         private void numericUpDown5_ValueChanged(object sender, EventArgs e)
         {
+            MainForm.colorSettings.TimerInterval = (int)(numericUpDown5.Value * 1000);
             MainForm.PingDeviceTimer.Interval = (int)(numericUpDown5.Value * 1000);
+        }
+
+        private void numericUpDown6_ValueChanged(object sender, EventArgs e)
+        {
+            if (MainForm.textBox != null)
+                MainForm.textBox.Font = new Font(MainForm.textBox.Font.FontFamily, (float)numericUpDown6.Value);
+            MainForm.colorSettings.fontsize = (float)numericUpDown6.Value;
         }
     }
 }

@@ -774,7 +774,6 @@ namespace NetworkDesign
                     return false;
             }
             return true;
-            return true;
         }
 
         /// <summary>
