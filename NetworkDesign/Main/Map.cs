@@ -150,6 +150,7 @@ namespace NetworkDesign
             DrawTemp();
             Gl.glPushMatrix();
             Gl.glScaled(MainForm.zoom, MainForm.zoom, MainForm.zoom);
+            DrawBackground();
             if (MainForm.filtres.NW)
                 NetworkWires.Draw();
             if (MainForm.filtres.Build)
@@ -178,7 +179,7 @@ namespace NetworkDesign
         /// </summary>
         private void DrawBackground()
         {
-            if (MainForm.colorSettings.backgroundurl != "")
+            if (MainForm.colorSettings.backgroundurl != "" & MainForm.colorSettings.isDrawBackground)
             {
                 Gl.glEnable(Gl.GL_TEXTURE_2D);
                 // включаем режим текстурирования, указывая идентификатор mGlTextureObject 
@@ -187,13 +188,13 @@ namespace NetworkDesign
                 Gl.glBegin(Gl.GL_QUADS);
                 Gl.glColor4f(0, 0, 0, 1);
                 // указываем поочередно вершины и текстурные координаты 
-                Gl.glVertex2d((double)sizeRenderingArea.Left * MainForm.zoom, (double)sizeRenderingArea.Bottom * MainForm.zoom);
-                Gl.glTexCoord2f(0, (float)MainForm.hkoef);
-                Gl.glVertex2d((double)sizeRenderingArea.Left * MainForm.zoom, (double)sizeRenderingArea.Top * MainForm.zoom);
-                Gl.glTexCoord2f((float)MainForm.wkoef, (float)MainForm.hkoef);
-                Gl.glVertex2d((double)sizeRenderingArea.Right * MainForm.zoom, (double)sizeRenderingArea.Top * MainForm.zoom);
-                Gl.glTexCoord2f((float)MainForm.wkoef, 0);
-                Gl.glVertex2d((double)sizeRenderingArea.Right * MainForm.zoom, (double)sizeRenderingArea.Bottom * MainForm.zoom);
+                Gl.glVertex2d((double)sizeRenderingArea.Left, (double)sizeRenderingArea.Bottom);
+                Gl.glTexCoord2f(0, (float)MainForm.hkoef * (float)MainForm.zoom);
+                Gl.glVertex2d((double)sizeRenderingArea.Left, (double)sizeRenderingArea.Top);
+                Gl.glTexCoord2f((float)MainForm.wkoef * (float)MainForm.zoom, (float)MainForm.hkoef * (float)MainForm.zoom);
+                Gl.glVertex2d((double)sizeRenderingArea.Right, (double)sizeRenderingArea.Top);
+                Gl.glTexCoord2f((float)MainForm.wkoef * (float)MainForm.zoom, 0);
+                Gl.glVertex2d((double)sizeRenderingArea.Right , (double)sizeRenderingArea.Bottom);
                 Gl.glTexCoord2f(0, 0);
                 // завершаем отрисовку 
                 Gl.glEnd();
@@ -1443,18 +1444,17 @@ namespace NetworkDesign
             int NE = NetworkElements.Search(x, y, MainForm.drawLevel);
             if (NE != -1)
             {
+                var ns1 = NetworkElements.NetworkElements[NE].Options.ToString();
                 Element elem = new Element(13, NE, NetworkElements.NetworkElements[NE].Clone(), -4);
                 NESettings nes = new NESettings(NetworkElements.NetworkElements[NE].Options, NetworkElements, ref NetworkElements.NetworkElements[NE].notes);
                 nes.ShowDialog();
-                foreach (var lm in nes.log.Back)
-                {
-                    log.Add(lm);
-                }
                 NetworkElements = nes.NetworkElements;
                 NetworkElements.NetworkElements[NE].Options = nes.Options;
                 NetworkElements.NetworkElements[NE].GenText();
                 Element _elem = new Element(13, NE, NetworkElements.NetworkElements[NE].Clone(), -4);
-                log.Add(new LogMessage("Изменил параметры устройства", elem, _elem));
+                var ns2 = NetworkElements.NetworkElements[NE].Options.ToString();
+                if (ns1 != ns2)
+                    log.Add(new LogMessage("Изменил параметры устройства", elem, _elem));
                 return true;
             }
             return false;

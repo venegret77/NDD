@@ -40,6 +40,8 @@ namespace NetworkDesign
         public int InputWireRadius;
         public string backgroundurl = "";
         public uint idtexture = 0;
+        public bool isDrawBackground = false;
+        public float TextureWidth = 50;
 
         [XmlElement("LinesColor")]
         public int argbl

@@ -48,15 +48,14 @@
             this.listBox3 = new System.Windows.Forms.ListBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.label7 = new System.Windows.Forms.Label();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.textBox4 = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.button5 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.label7 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
             this.tabControl1.SuspendLayout();
@@ -78,7 +77,7 @@
             this.textBox1.Enabled = false;
             this.textBox1.Location = new System.Drawing.Point(2, 284);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(258, 20);
+            this.textBox1.Size = new System.Drawing.Size(286, 20);
             this.textBox1.TabIndex = 3;
             this.textBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox1_KeyDown);
             // 
@@ -261,7 +260,6 @@
             this.tabPage1.Controls.Add(this.comboBox1);
             this.tabPage1.Controls.Add(this.textBox4);
             this.tabPage1.Controls.Add(this.label6);
-            this.tabPage1.Controls.Add(this.button5);
             this.tabPage1.Controls.Add(this.button6);
             this.tabPage1.Controls.Add(this.button7);
             this.tabPage1.Controls.Add(this.radioButton1);
@@ -285,6 +283,24 @@
             this.tabPage1.Text = "Параметры";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(9, 86);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(144, 13);
+            this.label7.TabIndex = 26;
+            this.label7.Text = "Список IP (Internet Protocol)";
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(157, 83);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(181, 21);
+            this.comboBox1.TabIndex = 25;
+            this.comboBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.comboBox1_KeyDown);
+            // 
             // textBox4
             // 
             this.textBox4.Location = new System.Drawing.Point(157, 6);
@@ -302,18 +318,6 @@
             this.label6.TabIndex = 24;
             this.label6.Text = "Сетевое имя устройства";
             this.label6.Click += new System.EventHandler(this.label6_Click);
-            // 
-            // button5
-            // 
-            this.button5.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button5.BackgroundImage")));
-            this.button5.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.button5.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button5.Location = new System.Drawing.Point(266, 282);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(22, 23);
-            this.button5.TabIndex = 22;
-            this.button5.UseVisualStyleBackColor = true;
-            this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
             // button6
             // 
@@ -367,30 +371,13 @@
             this.tabPage2.Text = "Заметки";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
-            // comboBox1
-            // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(157, 83);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(181, 21);
-            this.comboBox1.TabIndex = 25;
-            this.comboBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.comboBox1_KeyDown);
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(9, 86);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(144, 13);
-            this.label7.TabIndex = 26;
-            this.label7.Text = "Список IP (Internet Protocol)";
-            // 
             // NESettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(359, 335);
             this.Controls.Add(this.tabControl1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "NESettings";
             this.Text = "Параметры сетевого устройства";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ElementParams_FormClosed);
@@ -427,12 +414,11 @@
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.RadioButton radioButton1;
-        private System.Windows.Forms.Button button5;
-        private System.Windows.Forms.Button button6;
-        private System.Windows.Forms.Button button7;
         private System.Windows.Forms.TextBox textBox4;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.Button button7;
     }
 }

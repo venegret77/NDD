@@ -24,10 +24,17 @@ namespace NetworkDesign.Main
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Map map = new Map();
-            map.SetNewSettings(new SizeRenderingArea(richTextBox1.Text, (int)numericUpDown2.Value, (int)numericUpDown1.Value));
-            MainForm.MyMap.MapLoad(map);
-            Close();
+            if (richTextBox1.Text != "" & richTextBox1.Text != " ")
+            {
+                Map map = new Map();
+                map.SetNewSettings(new SizeRenderingArea(richTextBox1.Text, (int)numericUpDown2.Value, (int)numericUpDown1.Value));
+                MainForm.MyMap.MapLoad(map);
+                Close();
+            }
+            else
+            {
+                MessageBox.Show("Пожалуйста введите название");
+            }
         }
     }
 }

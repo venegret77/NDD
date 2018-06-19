@@ -22,7 +22,7 @@ namespace NetworkDesign.NetworkElements
         /// <summary>
         /// Наименование устройства
         /// </summary>
-        public string Name = "";
+        public string Name = "Новое устройство";
         /// <summary>
         /// Сетевое имя устройства
         /// </summary>
@@ -108,12 +108,15 @@ namespace NetworkDesign.NetworkElements
                     break;
             }
             settings += Environment.NewLine + "Порты: " + TotalPorts.ToString() + " - общее количество портов; " + BusyPorts.ToString() + " - количество занятых портов" + Environment.NewLine;
+            foreach (var ip in IPs)
+                settings += "IP: " + ip + Environment.NewLine;
             foreach (var opt in Options)
             {
                 settings += opt.ToString() + Environment.NewLine;
             }
             return settings;
         }
+
         /// <summary>
         /// Копирование элемента
         /// </summary>
@@ -200,6 +203,12 @@ namespace NetworkDesign.NetworkElements
             return Name + ": " + Value;
         }
     }
+
+    public class GroupsOfNE
+    {
+
+    }
+
     /// <summary>
     /// Общий набор параметров для сетевых элементов
     /// </summary>

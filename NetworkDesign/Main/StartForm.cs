@@ -47,20 +47,27 @@ namespace NetworkDesign.Main
 
         private void button1_Click(object sender, EventArgs e)
         {
-            SizeRenderingArea mapSettings = new SizeRenderingArea(richTextBox1.Text, (int)numericUpDown1.Value, (int)numericUpDown2.Value);
-            //MainForm.MyMap.MapLoad(new Map(mapSettings));
-            if (!MainForm.isInitMap)
+            if (richTextBox1.Text != "" & richTextBox1.Text != " ")
             {
-                mf = new MainForm(mapSettings);
-                mf.Show();
-                MainForm.isInitMap = true;
+                SizeRenderingArea mapSettings = new SizeRenderingArea(richTextBox1.Text, (int)numericUpDown1.Value, (int)numericUpDown2.Value);
+                //MainForm.MyMap.MapLoad(new Map(mapSettings));
+                if (!MainForm.isInitMap)
+                {
+                    mf = new MainForm(mapSettings);
+                    mf.Show();
+                    MainForm.isInitMap = true;
+                }
+                else
+                {
+                    MainForm.MyMap.MapLoad(mapSettings);
+                    mf.Show();
+                }
+                Hide();
             }
             else
             {
-                MainForm.MyMap.MapLoad(mapSettings);
-                mf.Show();
+                MessageBox.Show("Пожалуйста введите название");
             }
-            Hide();
         }
 
         private void StartForm_FormClosed(object sender, FormClosedEventArgs e)

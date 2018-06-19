@@ -145,6 +145,7 @@
             this.Controls.Add(this.numericUpDown1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "NWSettings";
             this.Text = "Параметры провода";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.NWSettings_FormClosed);

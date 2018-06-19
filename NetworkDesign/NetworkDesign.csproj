@@ -172,6 +172,12 @@
     <Compile Include="Main\CreateMapForm.Designer.cs">
       <DependentUpon>CreateMapForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Main\LegendForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Main\LegendForm.Designer.cs">
+      <DependentUpon>LegendForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Main\MapExportForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -279,6 +285,12 @@
     <Compile Include="NetworkElements\NWSettings.Designer.cs">
       <DependentUpon>NWSettings.cs</DependentUpon>
     </Compile>
+    <Compile Include="NetworkElements\ParametresForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NetworkElements\ParametresForm.Designer.cs">
+      <DependentUpon>ParametresForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="NetworkElements\Texture.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -318,6 +330,9 @@
     <EmbeddedResource Include="Main\FiltersForm.resx">
       <DependentUpon>FiltersForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Main\LegendForm.resx">
+      <DependentUpon>LegendForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Main\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -338,6 +353,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="NetworkElements\NWSettings.resx">
       <DependentUpon>NWSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NetworkElements\ParametresForm.resx">
+      <DependentUpon>ParametresForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

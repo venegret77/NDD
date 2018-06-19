@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FiltersForm));
             this.Line = new System.Windows.Forms.CheckBox();
             this.Rect = new System.Windows.Forms.CheckBox();
             this.Poly = new System.Windows.Forms.CheckBox();
@@ -165,6 +166,7 @@
             this.Controls.Add(this.Poly);
             this.Controls.Add(this.Rect);
             this.Controls.Add(this.Line);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FiltersForm";
             this.Text = "Фильтры";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FiltersForm_FormClosed);

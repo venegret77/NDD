@@ -24,7 +24,7 @@ namespace NetworkDesign.NetworkElements
 
         public ImageTextures(ref GroupOfNE NetworkElements)
         {
-            StartPosition = FormStartPosition.CenterScreen;
+            StartPosition = FormStartPosition.CenterParent;
             InitializeComponent();
             this.NetworkElements = NetworkElements;
             GetImages();
@@ -46,6 +46,7 @@ namespace NetworkDesign.NetworkElements
                 item.ImageIndex = i;
                 listView1.Items.Add(item);
             }
+            listView1.LargeImageList.ImageSize = new Size(100, 100);
             //listView1.Items.AddRange(images.Items);
         }
 
@@ -156,30 +157,9 @@ namespace NetworkDesign.NetworkElements
                     used = true;
             }
             if (used)
-                MessageBox.Show("Невозможно удалить данную текстуру, т.к. она используется другим элементом");
+                MessageBox.Show("Невозможно удалить данную текстуру, т.к. она используется другим элементом или создан ярлык");
             else
             {
-                /*MainForm.DeleteImages.Add(MainForm.ImagesURL[imageindex]);
-                MainForm.ImagesURL.RemoveAt(imageindex);
-                MainForm.isLoad = false;
-                MainForm.LoadImages();
-                GetImages();
-                foreach (var neb in MainForm.neButtons)
-                {
-                    if (neb.id > imageindex)
-                    {
-                        int newid = neb.id - 1;
-                        neb.id = newid;
-                        neb.toolStripButton.Image = MainForm.Images.Images[newid];
-                        neb.textname = MainForm.ImagesURL[newid];
-                    }
-                }
-                foreach (var item in NetworkElements.NetworkElements)
-                {
-                    if (!item.delete)
-                        if (item.texture.idimage > imageindex)
-                        item.texture.idimage--;
-                }*/
                 action = 3;
                 Close();
             }
@@ -194,7 +174,6 @@ namespace NetworkDesign.NetworkElements
         {
             action = 1;
             Close();
-            //MainForm.neButtons.Add(new Main.NEButton(new ToolStripButton(MainForm.Images.Images[imageindex]), imageindex, MainForm.ImagesURL[imageindex]));
         }
 
         /// <summary>
@@ -206,6 +185,12 @@ namespace NetworkDesign.NetworkElements
         {
             action = 2;
             Close();
+        }
+
+        private void toolStripButton3_Click_1(object sender, EventArgs e)
+        {
+            ParametresForm parametresForm = new ParametresForm(ref NetworkElements);
+            parametresForm.ShowDialog();
         }
     }
 }

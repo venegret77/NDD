@@ -122,11 +122,13 @@ namespace NetworkDesign
             trackBar1.Parent = this;
             trackBar1.BringToFront();
             colorSettings = ColorSettings.Open();
-            /*if (colorSettings.backgroundurl != "")
+            if (colorSettings.backgroundurl != "")
             {
-                var img = Image.FromFile(Application.StartupPath + @"\Textures\" + colorSettings.backgroundurl);
-                panel1.BackgroundImage = img;
-            }*/
+                if (File.Exists(Application.StartupPath + @"\Textures\" + colorSettings.backgroundurl))
+                    GenTex(Application.StartupPath + @"\Textures\" + colorSettings.backgroundurl);
+                else
+                    colorSettings.backgroundurl = "";
+            }
             parametrs = Parametrs.Open();
             ImagesURL = OpenTextures();
             LoadImages();
@@ -235,7 +237,7 @@ namespace NetworkDesign
                 if (IT.action == 0)
                 {
                     MyMap.NetworkElements.step = true;
-                    MyMap.NetworkElements.TempNetworkElement = new NetworkElement(new Texture(50, new Point(x, y), IT.imageindex, ImagesURL.Textures[IT.imageindex].URL), drawLevel);
+                    MyMap.NetworkElements.TempNetworkElement = new NetworkElement(new Texture(colorSettings.TextureWidth, new Point(x, y), IT.imageindex, ImagesURL.Textures[IT.imageindex].URL), drawLevel);
                 }
             }
             else
@@ -460,7 +462,7 @@ namespace NetworkDesign
                 if (IT.imageindex > -1)
                 {*/
                     MyMap.NetworkElements.step = true;
-                    MyMap.NetworkElements.TempNetworkElement = new NetworkElement(new Texture(50, new Point(x, y), MyMap.Instrument - nebutnscount, ImagesURL.Textures[MyMap.Instrument - nebutnscount].URL), drawLevel);
+                    MyMap.NetworkElements.TempNetworkElement = new NetworkElement(new Texture(colorSettings.TextureWidth, new Point(x, y), MyMap.Instrument - nebutnscount, ImagesURL.Textures[MyMap.Instrument - nebutnscount].URL), drawLevel);
                 //}
             }
             else
@@ -2369,7 +2371,6 @@ namespace NetworkDesign
 
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
-            MyMap.SetInstrument(9);
             ImageTextures IT = new ImageTextures(ref MyMap.NetworkElements);
             IT.ShowDialog();
             if (IT.action == 0)
@@ -2546,7 +2547,7 @@ namespace NetworkDesign
         private void ParamsMapClick(object sender, EventArgs e)
         {
             ColorDialogForm colorDialog = new ColorDialogForm();
-            colorDialog.ShowDialog();
+            colorDialog.Show();
         }
         /// <summary>
         /// Событие нажатия кнопки посмотреть лог
@@ -2779,10 +2780,12 @@ namespace NetworkDesign
         {
             if (MyMap.EditRects.edit_mode)
             {
+                редактированиеToolStripMenuItem.Checked = false;
                 MyMap.SetInstrument(0);
             }
             else
             {
+                редактированиеToolStripMenuItem.Checked = true;
                 MyMap.SetInstrument(3);
                 MyMap.RefreshEditRect();
             }
@@ -2890,8 +2893,6 @@ namespace NetworkDesign
                 MyMap.ResizeRenderingArea();
             else
                 MyMap.ResizeRenderingArea(drawLevel.Level);
-            hkoef = (double)MyMap.sizeRenderingArea.Height / (double)imgheight;
-            wkoef = (double)MyMap.sizeRenderingArea.Width / (double)imgwidth;
         }
         /// <summary>
         /// Событие закрытия формы
@@ -3247,19 +3248,23 @@ namespace NetworkDesign
             }
         }
 
+        static public System.Windows.Forms.Timer PingDeviceTimer = new System.Windows.Forms.Timer();
+
         private void pingToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            System.Windows.Forms.Timer PingDeviceTimer = new System.Windows.Forms.Timer();
-            PingDeviceTimer.Interval = 1000;
+            PingDeviceTimer = new System.Windows.Forms.Timer();
+            PingDeviceTimer.Interval = 60000;
             PingDeviceTimer.Tick += PingDeviceTimer_Tick;
             if (!isPing)
             {
+                pingToolStripMenuItem.Checked = true;
                 PingDeviceTimer.Start();
                 isPing = true;
             }
             else
             {
                 PingDeviceTimer.Stop();
+                pingToolStripMenuItem.Checked = false;
                 isPing = false;
             }
         }
@@ -3345,6 +3350,80 @@ namespace NetworkDesign
                 return false;
             }
         }
+
+        private void сетевыеЭлементыToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LegendForm legendForm = new LegendForm();
+            legendForm.Show();
+        }
+
+        private void редактированиеToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (MyMap.EditRects.edit_mode)
+            {
+                редактированиеToolStripMenuItem.Checked = false;
+                MyMap.SetInstrument(0);
+            }
+            else
+            {
+                редактированиеToolStripMenuItem.Checked = true;
+                MyMap.SetInstrument(3);
+                MyMap.RefreshEditRect();
+            }
+        }
+
+        private void поискToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Search();
+        }
+
+        private void фильтрыToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FiltersForm ff = new FiltersForm();
+            ff.ShowDialog();
+            RefreshButtons();
+        }
+
+        private void обрезатьОбластьОтрисовкиToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MyMap.СlipRenderingArea(drawLevel);
+        }
+
+        private void курсорToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MyMap.SetInstrument(0);
+        }
+
+        private void линияToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MyMap.SetInstrument(1);
+        }
+
+        private void многоугольникToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MyMap.SetInstrument(5);
+        }
+
+        private void прямоугольникToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MyMap.SetInstrument(2);
+        }
+
+        private void кругToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MyMap.SetInstrument(360);
+        }
+
+        private void текстToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MyMap.SetInstrument(10);
+        }
+
+        private void открытьРуководствоПользователяToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //if (Application.StartupPath + @"")
+        }
+
         /// <summary>
         /// Генерация текстуры
         /// </summary>

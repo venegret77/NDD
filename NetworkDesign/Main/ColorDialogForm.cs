@@ -29,6 +29,13 @@ namespace NetworkDesign
             numericUpDown2.Value = MainForm.colorSettings.EntranceRadius;
             numericUpDown3.Value = MainForm.colorSettings.InputWireRadius;
             numericUpDown1.Value = (decimal)MainForm.colorSettings.LineWidth;
+            numericUpDown4.Value = (decimal)MainForm.colorSettings.TextureWidth;
+            if (MainForm.PingDeviceTimer.Interval < 1000)
+                MainForm.PingDeviceTimer.Interval = 60000;
+            numericUpDown5.Value = MainForm.PingDeviceTimer.Interval / 1000;
+            if (MainForm.colorSettings.backgroundurl != "")
+                pictureBox1.Image = Image.FromFile(Application.StartupPath + @"\Textures\" + MainForm.colorSettings.backgroundurl);
+            checkBox1.Checked = MainForm.colorSettings.isDrawBackground;
             StartPosition = FormStartPosition.CenterParent;
         }
 
@@ -134,15 +141,33 @@ namespace NetworkDesign
             {
                 if (File.Exists(Application.StartupPath + @"\Textures\" + openFileDialog1.SafeFileName))
                 {
-                    
+                    MainForm.colorSettings.backgroundurl = openFileDialog1.SafeFileName;
+                    MainForm.GenTex(Application.StartupPath + @"\Textures\" + MainForm.colorSettings.backgroundurl);
+                    pictureBox1.Image = Image.FromFile(Application.StartupPath + @"\Textures\" + MainForm.colorSettings.backgroundurl);
                 }
                 else
                 {
                     File.Copy(openFileDialog1.FileName, Application.StartupPath + @"\Textures\" + openFileDialog1.SafeFileName);
                     MainForm.colorSettings.backgroundurl = openFileDialog1.SafeFileName;
-                    
+                    MainForm.GenTex(Application.StartupPath + @"\Textures\" + MainForm.colorSettings.backgroundurl);
+                    pictureBox1.Image = Image.FromFile(Application.StartupPath + @"\Textures\" + MainForm.colorSettings.backgroundurl);
                 }
             }
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            MainForm.colorSettings.isDrawBackground = checkBox1.Checked;
+        }
+
+        private void numericUpDown4_ValueChanged(object sender, EventArgs e)
+        {
+            MainForm.colorSettings.TextureWidth = (float)numericUpDown4.Value;
+        }
+
+        private void numericUpDown5_ValueChanged(object sender, EventArgs e)
+        {
+            MainForm.PingDeviceTimer.Interval = (int)(numericUpDown5.Value * 1000);
         }
     }
 }

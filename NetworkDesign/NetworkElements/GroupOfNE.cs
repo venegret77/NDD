@@ -58,10 +58,7 @@ namespace NetworkDesign.NetworkElements
         {
             for (int i = 0; i < NetworkElements.Count; i++)
             {
-                for (int j = 0; j < NetworkElements[i].Options.Options.Count; j++)
-                {
-                    NetworkElements[i].Options.Options[j].Name = MainForm.parametrs.Params[id];
-                }
+                NetworkElements[i].Options.Options[id].Name = MainForm.parametrs.Params[id];
             }
         }
 
