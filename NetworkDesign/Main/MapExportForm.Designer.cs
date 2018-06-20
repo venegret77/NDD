@@ -142,6 +142,7 @@
             this.NW.TabIndex = 19;
             this.NW.Text = "Показывать провода";
             this.NW.UseVisualStyleBackColor = true;
+            this.NW.CheckedChanged += new System.EventHandler(this.NW_CheckedChanged);
             // 
             // NE
             // 
@@ -154,6 +155,7 @@
             this.NE.TabIndex = 18;
             this.NE.Text = "Показывать сетевые эелменты";
             this.NE.UseVisualStyleBackColor = true;
+            this.NE.CheckedChanged += new System.EventHandler(this.NE_CheckedChanged);
             // 
             // _Text
             // 
@@ -166,6 +168,7 @@
             this._Text.TabIndex = 17;
             this._Text.Text = "Показывать надписи";
             this._Text.UseVisualStyleBackColor = true;
+            this._Text.CheckedChanged += new System.EventHandler(this._Text_CheckedChanged);
             // 
             // IW
             // 
@@ -178,6 +181,7 @@
             this.IW.TabIndex = 16;
             this.IW.Text = "Показывать входы проводов в здания";
             this.IW.UseVisualStyleBackColor = true;
+            this.IW.CheckedChanged += new System.EventHandler(this.IW_CheckedChanged);
             // 
             // Ent
             // 
@@ -190,6 +194,7 @@
             this.Ent.TabIndex = 15;
             this.Ent.Text = "Показывать входы в здания";
             this.Ent.UseVisualStyleBackColor = true;
+            this.Ent.CheckedChanged += new System.EventHandler(this.Ent_CheckedChanged);
             // 
             // Build
             // 
@@ -202,6 +207,7 @@
             this.Build.TabIndex = 14;
             this.Build.Text = "Показывать здания";
             this.Build.UseVisualStyleBackColor = true;
+            this.Build.CheckedChanged += new System.EventHandler(this.Build_CheckedChanged);
             // 
             // Circ
             // 
@@ -214,6 +220,7 @@
             this.Circ.TabIndex = 13;
             this.Circ.Text = "Показывать круги";
             this.Circ.UseVisualStyleBackColor = true;
+            this.Circ.CheckedChanged += new System.EventHandler(this.Circ_CheckedChanged);
             // 
             // Poly
             // 
@@ -226,6 +233,7 @@
             this.Poly.TabIndex = 12;
             this.Poly.Text = "Показывать многоугольники";
             this.Poly.UseVisualStyleBackColor = true;
+            this.Poly.CheckedChanged += new System.EventHandler(this.Poly_CheckedChanged);
             // 
             // Rect
             // 
@@ -238,6 +246,7 @@
             this.Rect.TabIndex = 11;
             this.Rect.Text = "Показывать прямоугольники";
             this.Rect.UseVisualStyleBackColor = true;
+            this.Rect.CheckedChanged += new System.EventHandler(this.Rect_CheckedChanged);
             // 
             // Line
             // 
@@ -250,6 +259,7 @@
             this.Line.TabIndex = 10;
             this.Line.Text = "Показывать линии";
             this.Line.UseVisualStyleBackColor = true;
+            this.Line.CheckedChanged += new System.EventHandler(this.Line_CheckedChanged);
             // 
             // MapExportForm
             // 

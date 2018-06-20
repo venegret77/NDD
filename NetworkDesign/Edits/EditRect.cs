@@ -37,7 +37,7 @@ namespace NetworkDesign
         /// <summary>
         /// Размеры
         /// </summary>
-        static public double width = 10;
+        static public double width = 3;
         /// <summary>
         /// Список элементов редактирования
         /// </summary>

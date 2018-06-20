@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace NetworkDesign.Buildings
 {
@@ -25,37 +26,6 @@ namespace NetworkDesign.Buildings
                             ? max - (charCount % max) : 0) + w.Length + 1) / max)
                         .Select(g => string.Join(" ", g.ToArray()))
                         .ToArray();
-        }
-    }
-    /// <summary>
-    /// Структура для хранения добавленных и удаленных этажей в здании
-    /// </summary>
-    public struct BUILDLIST
-    {
-        /// <summary>
-        /// Здание
-        /// </summary>
-        public Building building;
-        /// <summary>
-        /// Список добавленных этажей
-        /// </summary>
-        public List<int> Added;
-        /// <summary>
-        /// Список удаленных этажей
-        /// </summary>
-        public List<int> Deteled;
-
-        /// <summary>
-        /// Конструктор
-        /// </summary>
-        /// <param name="building">Здание</param>
-        /// <param name="added">Список добавленных этажей</param>
-        /// <param name="deteled">Список удаленных этажей</param>
-        public BUILDLIST(Building building, List<int> added, List<int> deteled)
-        {
-            this.building = building;
-            Added = added;
-            Deteled = deteled;
         }
     }
 }

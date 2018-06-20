@@ -58,11 +58,11 @@ namespace NetworkDesign.NetworkElements
                 }
                 else
                 {
-                    if (nw.idiw1.IW == IW & id == nw.idiw1.ID & nw.idiw1.Build == build)
+                    if (nw.idiw1.IW == IW & id == nw.idiw1.ID & nw.idiw1.Build == build & nw.DL == dl)
                     {
                         nw.Points[0] = new Point(x, y);
                     }
-                    if (nw.idiw2.IW == IW & id == nw.idiw2.ID & nw.idiw2.Build == build)
+                    if (nw.idiw2.IW == IW & id == nw.idiw2.ID & nw.idiw2.Build == build & nw.DL == dl)
                     {
                         nw.Points[nw.Points.Count - 1] = new Point(x, y);
                     }

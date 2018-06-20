@@ -122,11 +122,10 @@ namespace NetworkDesign.Main
                         }
                     }
                 }
-                //mf.Close();
             }
             catch
             {
-                //mf.Close();
+
             }
         }
     }

@@ -160,6 +160,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Buildings\Buildlist.cs" />
     <Compile Include="Buildings\BuildSettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>

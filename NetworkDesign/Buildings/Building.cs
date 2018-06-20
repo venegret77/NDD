@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using Tao.OpenGl;
 
 namespace NetworkDesign
@@ -289,30 +290,33 @@ namespace NetworkDesign
         /// </summary>
         public void GenText()
         {
-            int height = 0;
-            int width = 0;
-            Point CP = new Point();
-            switch (type)
+            if (!delete)
             {
-                case 2:
-                    MainRectangle.CalcMaxMin(out int maxx, out int minx, out int maxy, out int miny);
-                    height = maxy - miny;
-                    width = maxx - minx;
-                    CP = new Point((maxx + minx) / 2, (maxy + miny) / 2);
-                    break;
-                case 3:
-                    MainPolygon.CalcMaxMin(out maxx, out minx, out maxy, out miny);
-                    height = maxy - miny;
-                    width = maxx - minx;
-                    CP = new Point((maxx + minx) / 2, (maxy + miny) / 2);
-                    break;
-                case 360:
-                    width = height = MainCircle.radius * 2;
-                    CP = MainCircle.MainCenterPoint;
-                    break;
+                int height = 0;
+                int width = 0;
+                Point CP = new Point();
+                switch (type)
+                {
+                    case 2:
+                        MainRectangle.CalcMaxMin(out int maxx, out int minx, out int maxy, out int miny);
+                        height = maxy - miny;
+                        width = maxx - minx;
+                        CP = new Point((maxx + minx) / 2, (maxy + miny) / 2);
+                        break;
+                    case 3:
+                        MainPolygon.CalcMaxMin(out maxx, out minx, out maxy, out miny);
+                        height = maxy - miny;
+                        width = maxx - minx;
+                        CP = new Point((maxx + minx) / 2, (maxy + miny) / 2);
+                        break;
+                    case 360:
+                        width = height = MainCircle.radius * 2;
+                        CP = MainCircle.MainCenterPoint;
+                        break;
+                }
+                Size size = new Size(width / 2, height / 2);
+                MT = new MyText(MainMapDL, CP, size, Name);
             }
-            Size size = new Size(width / 2, height / 2);
-            MT = new MyText(MainMapDL, CP, size, Name);
         }
         /// <summary>
         /// Если внутри здания
@@ -458,7 +462,7 @@ namespace NetworkDesign
         /// <param name="y">Координата У</param>
         /// <param name="networkWires">Группа проводов</param>
         /// <param name="build">Идентификатор здания</param>
-        public void MoveElem(int x, int y, GroupOfNW networkWires, int build)
+        public void MoveElem(int x, int y, ref GroupOfNW networkWires, int build)
         {
             int difx = 0;
             int dify = 0;
@@ -483,7 +487,7 @@ namespace NetworkDesign
                 MainCircle.MoveElem(x, y);
             }
             Entrances.MoveElem(difx, dify);
-            InputWires.MoveElem(difx, dify, networkWires, build);
+            InputWires.MoveElem(difx, dify, ref networkWires, build);
             MT._MoveElem(difx, dify);
         }
         /// <summary>
@@ -1075,7 +1079,7 @@ namespace NetworkDesign
         /// <param name="type">Тип здания</param>
         /// <param name="networkWires">Группа сетевых элементов</param>
         /// <param name="build">Идентификатор здания</param>
-        internal void SetPoint(int x, int y, int type, GroupOfNW networkWires, int build)
+        internal void SetPoint(int x, int y, int type, ref GroupOfNW networkWires, int build)
         {
             Point cp = new Point();
             Point _cp = new Point();
@@ -1118,7 +1122,7 @@ namespace NetworkDesign
                 if (InputWires.InputWires.Circles[i].MainDL.Level == -1)
                     InputWires.InputWires.Circles[i].MainCenterPoint = RotatePoint(difangle, cp, TempInputWires.InputWires.Circles[i].MainCenterPoint);
             }
-            InputWires.MoveElem(0, 0, networkWires, build);
+            InputWires.MoveElem(0, 0, ref networkWires, build);
         }
         /// <summary>
         /// Завершение перемещения или поворота здания

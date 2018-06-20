@@ -550,7 +550,7 @@ namespace NetworkDesign
                         Polygons.Polygons[id].CalcCenterPoint();
                         break;
                     case 4:
-                        Buildings.Buildings[id].MoveElem(x, y, NetworkWires, id);
+                        Buildings.Buildings[id].MoveElem(x, y, ref NetworkWires, id);
                         Buildings.Buildings[id].CalcCenterPoint();
                         break;
                     case 6:
@@ -1088,7 +1088,7 @@ namespace NetworkDesign
                     List<int> _Deleted = new List<int>();
                     foreach (var del in Deleted)
                         _Deleted.Add(del);
-                    Element elem = new Element(15, build, new BUILDLIST((Building)Buildings.Buildings[build].Clone(), _Added, _Deleted), -2);
+                    Element elem = new Element(15, build, new Buildlist((Building)Buildings.Buildings[build].Clone(), _Added, _Deleted), -2);
                     MoveElementsInBuild(build, Added, Deleted, buildsettings.floors[0]);
                     int floorscount = 0;
                     for (int i = 1; i < buildsettings.floors.Count - 1; i++)
@@ -1100,7 +1100,7 @@ namespace NetworkDesign
                     Buildings.Buildings[build].RefreshFloors();
                     Buildings.Buildings[build].Name = buildsettings.BuildName;
                     Buildings.Buildings[build].GenText();
-                    Element _elem = new Element(15, build, new BUILDLIST((Building)Buildings.Buildings[build].Clone(), _Deleted, _Added), -2);
+                    Element _elem = new Element(15, build, new Buildlist((Building)Buildings.Buildings[build].Clone(), _Deleted, _Added), -2);
                     log.Add(new LogMessage("Изменил параметры здания", elem, _elem));
                 }
             }
@@ -1332,7 +1332,7 @@ namespace NetworkDesign
                             Polygons.Polygons[id].SetPoint(x, y, point);
                             break;
                         case 4:
-                            Buildings.Buildings[id].SetPoint(x, y, point, NetworkWires, id);
+                            Buildings.Buildings[id].SetPoint(x, y, point, ref NetworkWires, id);
                             break;
                         case 360:
                             Circles.Circles[id].SetPoint(x, y, point);

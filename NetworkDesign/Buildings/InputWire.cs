@@ -379,7 +379,7 @@ namespace NetworkDesign
         /// <param name="dify">Разница по У</param>
         /// <param name="networkWires">Группа проводов</param>
         /// <param name="build">Идентификатор здания</param>
-        public void MoveElem(int difx, int dify, GroupOfNW networkWires, int build)
+        public void MoveElem(int difx, int dify, ref GroupOfNW networkWires, int build)
         {
             int i = 0;
             foreach (var cir in InputWires.Circles)

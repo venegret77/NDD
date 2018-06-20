@@ -90,12 +90,15 @@ namespace NetworkDesign
         /// </summary>
         public void GenText()
         {
-            string text = Options.Name + Environment.NewLine;
-            text += "/" + Options.HostName;
-            Font font = new Font(FontFamily.GenericSansSerif, texture.width / 5);
-            Size size = TextRenderer.MeasureText(text,font);
-            Point CP = new Point(texture.location.X + (int)(texture.width / 2), texture.location.Y - (int)(texture.width / 2.5f));
-            MT = new MyText(DL, CP, size, text, 40);
+            if (!delete)
+            {
+                string text = Options.Name + Environment.NewLine;
+                text += "/" + Options.HostName;
+                Font font = new Font(FontFamily.GenericSansSerif, texture.width / 5);
+                Size size = TextRenderer.MeasureText(text, font);
+                Point CP = new Point(texture.location.X + (int)(texture.width / 2), texture.location.Y - (int)(texture.width / 1.5f));
+                MT = new MyText(DL, CP, size, text, 40);
+            }
         }
 
         /// <summary>
@@ -234,16 +237,19 @@ namespace NetworkDesign
         /// <param name="networkWires"></param>
         internal void MoveElem(int x, int y, int id, GroupOfNW networkWires)
         {
-            int difx = x - (int)CenterPointX;
-            int dify = y - (int)CenterPointY;
-            texture.location = new Point(texture.location.X + difx, texture.location.Y + dify);
+            int difx = texture.location.X;
+            int dify = texture.location.Y;
+            texture.location = MainForm._GenZoomPoint(new Point(x, y));
+            difx = texture.location.X - difx;
+            dify = texture.location.Y - dify;
+            //CalcCenterPoint();
             networkWires.CheckNW(texture.location.X + (int)((double)texture.width / 2), texture.location.Y + (int)((double)texture.width / 2), id, false, -1, DL);
             string text = Options.Name + Environment.NewLine;
             text += "/" + Options.HostName;
             Font font = new Font(FontFamily.GenericSansSerif, texture.width / 5);
             Point CP = new Point(texture.location.X + (int)(texture.width / 2), texture.location.Y - (int)(texture.width / 2.5f));
             Size size = TextRenderer.MeasureText(text, font);
-            MT.__MoveElem(CP.X - (size.Width / 2), CP.Y + (size.Height / 2));
+            MT.location = new Point(MT.location.X + difx, MT.location.Y + dify);
             MT.size = size;
         }
         /// <summary>
