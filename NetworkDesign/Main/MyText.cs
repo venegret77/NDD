@@ -137,6 +137,8 @@ namespace NetworkDesign.Main
                 gfx.Clear(Color.FromArgb(0, 255, 255, 255));
                 // ! Отрисовываем строку в поверхность рисования (в картинку) 
                 gfx.DrawString(textBox.Text, _font, Brushes.Black, new PointF(1, 1));
+                if (File.Exists(Application.StartupPath + @"\###temp.mttex.###"))
+                    File.Delete(Application.StartupPath + @"\###temp.mttex.###");
                 string url = Application.StartupPath + @"\###temp.mttex.###";
                 Bitmap bitmap = new Bitmap(text_bmp, RecalcSize(_size));
                 bitmap.Save(url);
@@ -194,6 +196,8 @@ namespace NetworkDesign.Main
                 gfx.Clear(Color.FromArgb(0, 255, 255, 255));
                 // ! Отрисовываем строку в поверхность рисования (в картинку) 
                 gfx.DrawString(text, _font, Brushes.Black, new PointF(1, 1));
+                if (File.Exists(Application.StartupPath + @"\###temp.mttex.###"))
+                    File.Delete(Application.StartupPath + @"\###temp.mttex.###");
                 string url = Application.StartupPath + @"\###temp.mttex.###";
                 Bitmap bitmap = new Bitmap(text_bmp, RecalcSize(_size));
                 double koef = 1;
@@ -260,6 +264,8 @@ namespace NetworkDesign.Main
                 gfx.Clear(Color.FromArgb(0, 255, 255, 255));
                 // ! Отрисовываем строку в поверхность рисования (в картинку) 
                 gfx.DrawString(text, _font, Brushes.Black, new PointF(1, 1));
+                if (File.Exists(Application.StartupPath + @"\###temp.mttex.###"))
+                    File.Delete(Application.StartupPath + @"\###temp.mttex.###");
                 string url = Application.StartupPath + @"\###temp.mttex.###";
                 Bitmap bitmap = new Bitmap(text_bmp, RecalcSize(_size));
                 double koef = _size.Width / _size.Height;
@@ -344,6 +350,8 @@ namespace NetworkDesign.Main
                 gfx.Clear(Color.FromArgb(0, 255, 255, 255));
                 // ! Отрисовываем строку в поверхность рисования (в картинку) 
                 gfx.DrawString(text, _font, Brushes.Black, new PointF(1, 1));
+                if (File.Exists(Application.StartupPath + @"\###temp.mttex.###"))
+                    File.Delete(Application.StartupPath + @"\###temp.mttex.###");
                 string url = Application.StartupPath + @"\###temp.mttex.###";
                 Bitmap bitmap = new Bitmap(text_bmp, RecalcSize(_size));
                 bitmap.Save(url);

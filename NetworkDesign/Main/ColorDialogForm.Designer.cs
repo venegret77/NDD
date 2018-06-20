@@ -64,6 +64,7 @@
             this.label13 = new System.Windows.Forms.Label();
             this.numericUpDown6 = new System.Windows.Forms.NumericUpDown();
             this.label14 = new System.Windows.Forms.Label();
+            this.numericUpDown7 = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).BeginInit();
@@ -71,6 +72,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown5)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown6)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown7)).BeginInit();
             this.SuspendLayout();
             // 
             // linesbtn
@@ -301,14 +303,14 @@
             this.label10.AutoSize = true;
             this.label10.Location = new System.Drawing.Point(12, 250);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(149, 13);
+            this.label10.Size = new System.Drawing.Size(104, 13);
             this.label10.TabIndex = 22;
-            this.label10.Text = "Сетевые провода (min - max)";
+            this.label10.Text = "Провода (min - max)";
             // 
             // button1
             // 
             this.button1.BackColor = System.Drawing.SystemColors.InactiveCaptionText;
-            this.button1.Location = new System.Drawing.Point(163, 245);
+            this.button1.Location = new System.Drawing.Point(116, 245);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(49, 23);
             this.button1.TabIndex = 21;
@@ -319,7 +321,7 @@
             // button2
             // 
             this.button2.BackColor = System.Drawing.SystemColors.InactiveCaptionText;
-            this.button2.Location = new System.Drawing.Point(210, 245);
+            this.button2.Location = new System.Drawing.Point(163, 245);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(49, 23);
             this.button2.TabIndex = 23;
@@ -449,11 +451,30 @@
             this.label14.TabIndex = 33;
             this.label14.Text = "Шрифт";
             // 
+            // numericUpDown7
+            // 
+            this.numericUpDown7.Location = new System.Drawing.Point(214, 245);
+            this.numericUpDown7.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDown7.Name = "numericUpDown7";
+            this.numericUpDown7.Size = new System.Drawing.Size(49, 20);
+            this.numericUpDown7.TabIndex = 34;
+            this.numericUpDown7.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDown7.ValueChanged += new System.EventHandler(this.numericUpDown7_ValueChanged);
+            // 
             // ColorDialogForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(275, 399);
+            this.Controls.Add(this.numericUpDown7);
             this.Controls.Add(this.label14);
             this.Controls.Add(this.numericUpDown6);
             this.Controls.Add(this.label13);
@@ -498,6 +519,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown4)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown5)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown6)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown7)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -540,5 +562,6 @@
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.Label label14;
         public System.Windows.Forms.NumericUpDown numericUpDown6;
+        private System.Windows.Forms.NumericUpDown numericUpDown7;
     }
 }

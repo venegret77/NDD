@@ -44,6 +44,7 @@ namespace NetworkDesign
         public float TextureWidth = 50;
         public int TimerInterval = 60000;
         public float fontsize = 14;
+        public float IWWidth = 3;
 
         [XmlElement("LinesColor")]
         public int argbl

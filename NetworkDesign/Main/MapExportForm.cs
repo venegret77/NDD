@@ -19,7 +19,7 @@ namespace NetworkDesign.Main
             InitializeComponent();
         }
 
-        public MapExportForm(List<Building> buildings)
+        public MapExportForm(List<Building> buildings, int value)
         {
             InitializeComponent();
             this.buildings = buildings;
@@ -31,6 +31,7 @@ namespace NetworkDesign.Main
                     checkedListBox1.SetItemCheckState(i, CheckState.Checked);
                 }
             }
+            trackBar1.Value = value;
         }
 
         private void radioButton1_CheckedChanged(object sender, EventArgs e)
@@ -138,6 +139,15 @@ namespace NetworkDesign.Main
         private void Circ_CheckedChanged(object sender, EventArgs e)
         {
             MainForm.filtres.Circ = Circ.Checked;
+        }
+
+        private void trackBar1_Scroll(object sender, EventArgs e)
+        {
+            MainForm.zoom = (double)trackBar1.Value / 10d;
+            if (MainForm.drawLevel.Level == -1)
+                MainForm.MyMap.ResizeRenderingArea();
+            else
+                MainForm.MyMap.ResizeRenderingArea(MainForm.drawLevel.Level);
         }
     }
 }

@@ -46,7 +46,9 @@
             this.Poly = new System.Windows.Forms.CheckBox();
             this.Rect = new System.Windows.Forms.CheckBox();
             this.Line = new System.Windows.Forms.CheckBox();
+            this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.SuspendLayout();
             // 
             // checkedListBox1
@@ -261,11 +263,25 @@
             this.Line.UseVisualStyleBackColor = true;
             this.Line.CheckedChanged += new System.EventHandler(this.Line_CheckedChanged);
             // 
+            // trackBar1
+            // 
+            this.trackBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.trackBar1.Location = new System.Drawing.Point(11, 267);
+            this.trackBar1.Maximum = 50;
+            this.trackBar1.Minimum = 5;
+            this.trackBar1.Name = "trackBar1";
+            this.trackBar1.Size = new System.Drawing.Size(384, 45);
+            this.trackBar1.TabIndex = 7;
+            this.trackBar1.Value = 10;
+            this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_Scroll);
+            // 
             // MapExportForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(408, 272);
+            this.ClientSize = new System.Drawing.Size(408, 323);
+            this.Controls.Add(this.trackBar1);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
@@ -278,6 +294,7 @@
             this.Text = "Выберите параметры экспорта";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -302,5 +319,6 @@
         private System.Windows.Forms.CheckBox Poly;
         private System.Windows.Forms.CheckBox Rect;
         private System.Windows.Forms.CheckBox Line;
+        private System.Windows.Forms.TrackBar trackBar1;
     }
 }

@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace NetworkDesign.Buildings
 {
-    public class Buildlist
+    public class Buildlist: ICloneable
     {
         public Building building = new Building();
         public List<int> added = new List<int>();
-        public List<int> deteled = new List<int>();
+        public List<int> deleted = new List<int>();
 
         public Buildlist() { }
 
@@ -18,7 +18,23 @@ namespace NetworkDesign.Buildings
         {
             this.building = building;
             this.added = added;
-            this.deteled = deteled;
+            this.deleted = deteled;
+        }
+
+        public object Clone()
+        {
+            List<int> a = new List<int>();
+            foreach (var add in added)
+                a.Add(add);
+            List<int> d = new List<int>();
+            foreach (var del in deleted)
+                d.Add(del);
+            return new Buildlist
+            {
+                building = (Building)this.building.Clone(),
+                added = a,
+                deleted = d
+            };
         }
     }
 }

@@ -468,23 +468,29 @@ namespace NetworkDesign
             int dify = 0;
             if (type == 2)
             {
-                difx = x - (int)MainRectangle.CenterPointX;
-                dify = y - (int)MainRectangle.CenterPointY;
+                difx = MainRectangle.Points[0].X;
+                dify = MainRectangle.Points[0].Y;
                 MainRectangle.MoveElem(x, y);
+                difx = MainRectangle.Points[0].X - difx;
+                dify = MainRectangle.Points[0].Y - dify;
                 _MainRectangle._MoveElem(difx, dify);
             }
             else if (type == 3)
             {
-                difx = x - (int)MainPolygon.CenterPointX;
-                dify = y - (int)MainPolygon.CenterPointY;
+                difx = MainPolygon.Points[0].X;
+                dify = MainPolygon.Points[0].Y;
                 MainPolygon.MoveElem(x, y);
+                difx = MainPolygon.Points[0].X - difx;
+                dify = MainPolygon.Points[0].Y - dify;
                 _MainPolygon._MoveElem(difx, dify);
             }
             else if (type == 360)
             {
-                difx = (int)((double)x / MainForm.zoom) - MainCircle.MainCenterPoint.X;
-                dify = (int)((double)y / MainForm.zoom) - MainCircle.MainCenterPoint.Y;
+                difx = MainCircle.MainCenterPoint.X;
+                dify = MainCircle.MainCenterPoint.Y;
                 MainCircle.MoveElem(x, y);
+                difx = MainCircle.MainCenterPoint.X - difx;
+                dify = MainCircle.MainCenterPoint.Y - dify;
             }
             Entrances.MoveElem(difx, dify);
             InputWires.MoveElem(difx, dify, ref networkWires, build);

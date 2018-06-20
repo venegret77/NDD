@@ -192,11 +192,17 @@ namespace NetworkDesign
         /// <param name="y">Координата У</param>
         public virtual void MoveElem(int x, int y)
         {
-            int difx = x - (int)CenterPointX;
-            int dify = y - (int)CenterPointY;
-            for (int i = 0; i < Points.Count; i++)
+            if (Points.Count > 0)
             {
-                Points[i] = new Point(Points[i].X + difx, Points[i].Y + dify);
+                int difx = Points[0].X;
+                int dify = Points[0].Y;
+                Points[0] = MainForm._GenZoomPoint(new Point(x, y));
+                difx = Points[0].X - difx;
+                dify = Points[0].Y - dify;
+                for (int i = 1; i < Points.Count; i++)
+                {
+                    Points[i] = new Point(Points[i].X + difx, Points[i].Y + dify);
+                }
             }
         }
         /// <summary>

@@ -1046,62 +1046,65 @@ namespace NetworkDesign
         /// <param name="y">Координата У</param>
         internal void SearchBuild(int x, int y)
         {
-            int build = Buildings.Search(x, y, out double distbuild, new DrawLevel(-1, -1));
-            if (build != -1)
+            if (MainForm.drawLevel.Level == -1)
             {
-                List<bool> floorsempty = new List<bool>();
-                for (int j = 0; j < Buildings.Buildings[build].Floors; j++)
-                    floorsempty.Add(CheckEmptyBuild(build, j));
-                BuildSettingsForm buildsettings = new BuildSettingsForm(Buildings.Buildings[build], floorsempty);
-                buildsettings.ShowDialog();
-                if (buildsettings.dialogResult == DialogResult.Yes)
+                int build = Buildings.Search(x, y, out double distbuild, new DrawLevel(-1, -1));
+                if (build != -1)
                 {
-                    int newfloors = buildsettings.floors.Count - 2 - Buildings.Buildings[build].floors_count;
-                    List<int> Deleted = new List<int>();
-                    List<int> Added = new List<int>();
-                    bool basement = Buildings.Buildings[build].basement;
-                    bool loft = Buildings.Buildings[build].loft;
-                    List<bool> BuildFloors = new List<bool>();
-                    if (basement)
-                        BuildFloors.Add(true);
-                    else
-                        BuildFloors.Add(false);
-                    for (int i = 0; i < Buildings.Buildings[build].floors_count; i++)
-                        BuildFloors.Add(true);
-                    for (int i = 0; i < newfloors; i++)
-                        BuildFloors.Add(false);
-                    if (loft)
-                        BuildFloors.Add(true);
-                    else
-                        BuildFloors.Add(false);
-                    for (int i = 0; i < BuildFloors.Count; i++)
+                    List<bool> floorsempty = new List<bool>();
+                    for (int j = 0; j < Buildings.Buildings[build].Floors; j++)
+                        floorsempty.Add(CheckEmptyBuild(build, j));
+                    BuildSettingsForm buildsettings = new BuildSettingsForm(Buildings.Buildings[build], floorsempty);
+                    buildsettings.ShowDialog();
+                    if (buildsettings.dialogResult == DialogResult.Yes)
                     {
-                        if (buildsettings.floors[i] & !BuildFloors[i])
-                            Added.Add(i);
-                        else if (!buildsettings.floors[i] & BuildFloors[i])
-                            Deleted.Add(i);
+                        int newfloors = buildsettings.floors.Count - 2 - Buildings.Buildings[build].floors_count;
+                        List<int> Deleted = new List<int>();
+                        List<int> Added = new List<int>();
+                        bool basement = Buildings.Buildings[build].basement;
+                        bool loft = Buildings.Buildings[build].loft;
+                        List<bool> BuildFloors = new List<bool>();
+                        if (basement)
+                            BuildFloors.Add(true);
+                        else
+                            BuildFloors.Add(false);
+                        for (int i = 0; i < Buildings.Buildings[build].floors_count; i++)
+                            BuildFloors.Add(true);
+                        for (int i = 0; i < newfloors; i++)
+                            BuildFloors.Add(false);
+                        if (loft)
+                            BuildFloors.Add(true);
+                        else
+                            BuildFloors.Add(false);
+                        for (int i = 0; i < BuildFloors.Count; i++)
+                        {
+                            if (buildsettings.floors[i] & !BuildFloors[i])
+                                Added.Add(i);
+                            else if (!buildsettings.floors[i] & BuildFloors[i])
+                                Deleted.Add(i);
+                        }
+                        Deleted.Reverse();
+                        List<int> _Added = new List<int>();
+                        foreach (var add in Added)
+                            _Added.Add(add);
+                        List<int> _Deleted = new List<int>();
+                        foreach (var del in Deleted)
+                            _Deleted.Add(del);
+                        Element elem = new Element(15, build, new Buildlist((Building)Buildings.Buildings[build].Clone(), _Added, _Deleted), -2);
+                        MoveElementsInBuild(build, Added, Deleted, buildsettings.floors[0]);
+                        int floorscount = 0;
+                        for (int i = 1; i < buildsettings.floors.Count - 1; i++)
+                            if (buildsettings.floors[i])
+                                floorscount++;
+                        Buildings.Buildings[build].basement = buildsettings.floors[0];
+                        Buildings.Buildings[build].loft = buildsettings.floors.Last();
+                        Buildings.Buildings[build].floors_count = floorscount;
+                        Buildings.Buildings[build].RefreshFloors();
+                        Buildings.Buildings[build].Name = buildsettings.BuildName;
+                        Buildings.Buildings[build].GenText();
+                        Element _elem = new Element(15, build, new Buildlist((Building)Buildings.Buildings[build].Clone(), _Deleted, _Added), -2);
+                        log.Add(new LogMessage("Изменил параметры здания", elem, _elem));
                     }
-                    Deleted.Reverse();
-                    List<int> _Added = new List<int>();
-                    foreach (var add in Added)
-                        _Added.Add(add);
-                    List<int> _Deleted = new List<int>();
-                    foreach (var del in Deleted)
-                        _Deleted.Add(del);
-                    Element elem = new Element(15, build, new Buildlist((Building)Buildings.Buildings[build].Clone(), _Added, _Deleted), -2);
-                    MoveElementsInBuild(build, Added, Deleted, buildsettings.floors[0]);
-                    int floorscount = 0;
-                    for (int i = 1; i < buildsettings.floors.Count - 1; i++)
-                        if (buildsettings.floors[i])
-                            floorscount++;
-                    Buildings.Buildings[build].basement = buildsettings.floors[0];
-                    Buildings.Buildings[build].loft = buildsettings.floors.Last();
-                    Buildings.Buildings[build].floors_count = floorscount;
-                    Buildings.Buildings[build].RefreshFloors();
-                    Buildings.Buildings[build].Name = buildsettings.BuildName;
-                    Buildings.Buildings[build].GenText();
-                    Element _elem = new Element(15, build, new Buildlist((Building)Buildings.Buildings[build].Clone(), _Deleted, _Added), -2);
-                    log.Add(new LogMessage("Изменил параметры здания", elem, _elem));
                 }
             }
         }

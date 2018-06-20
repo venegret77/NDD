@@ -1,4 +1,6 @@
-﻿using System;
+﻿using NetworkDesign.Buildings;
+using NetworkDesign.NetworkElements;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,6 +29,8 @@ namespace NetworkDesign
         /// Преобразование
         /// </summary>
         public int transform;
+        public URL_ID urlid;
+        public Buildlist buildlist;
         /// <summary>
         /// Конструктор
         /// </summary>
@@ -34,7 +38,21 @@ namespace NetworkDesign
         /// <param name="_index">Идентификатор элемента</param>
         /// <param name="_elem">Элемент</param>
         /// <param name="_transform">Трансформация</param>
-        public Element(int _type, int _index, object _elem, int _transform)
+        public Element(int _type, int _index, object _elem, int _transform): this()
+        {
+            type = _type;
+            index = _index;
+            elem = _elem;
+            transform = _transform;
+        }
+        public Element(int _type, int _index, URL_ID _elem, int _transform) : this()
+        {
+            type = _type;
+            index = _index;
+            elem = _elem;
+            transform = _transform;
+        }
+        public Element(int _type, int _index, Buildlist _elem, int _transform) : this()
         {
             type = _type;
             index = _index;
@@ -47,13 +65,26 @@ namespace NetworkDesign
         /// <returns>Возвращает копию элемента</returns>
         public object Clone()
         {
-            return new Element
-            {
-                type = this.type,
-                index = this.index,
-                elem = this.elem,
-                transform = this.transform
-            };
+            if (buildlist != null)
+                return new Element
+                {
+                    type = this.type,
+                    index = this.index,
+                    elem = this.elem,
+                    transform = this.transform,
+                    urlid = this.urlid,
+                    buildlist = (Buildlist)this.buildlist.Clone()
+                };
+            else
+                return new Element
+                {
+                    type = this.type,
+                    index = this.index,
+                    elem = this.elem,
+                    transform = this.transform,
+                    urlid = this.urlid,
+                    buildlist = null
+                };
         }
     }
 }

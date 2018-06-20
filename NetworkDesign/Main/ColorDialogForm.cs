@@ -37,6 +37,7 @@ namespace NetworkDesign
             if (MainForm.colorSettings.backgroundurl != "")
                 pictureBox1.Image = Image.FromFile(Application.StartupPath + @"\Textures\" + MainForm.colorSettings.backgroundurl);
             checkBox1.Checked = MainForm.colorSettings.isDrawBackground;
+            numericUpDown7.Value = (decimal)MainForm.colorSettings.IWWidth;
             StartPosition = FormStartPosition.CenterParent;
         }
 
@@ -177,6 +178,11 @@ namespace NetworkDesign
             if (MainForm.textBox != null)
                 MainForm.textBox.Font = new Font(MainForm.textBox.Font.FontFamily, (float)numericUpDown6.Value);
             MainForm.colorSettings.fontsize = (float)numericUpDown6.Value;
+        }
+
+        private void numericUpDown7_ValueChanged(object sender, EventArgs e)
+        {
+            MainForm.colorSettings.IWWidth = (float)numericUpDown7.Value;
         }
     }
 }

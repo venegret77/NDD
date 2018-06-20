@@ -206,12 +206,19 @@ namespace NetworkDesign
             if (e.Control & e.KeyCode == Keys.E)
             {
                 MyMap.Unfocus(true);
-                Filtres _filtres = filtres;
                 DrawLevel dl = drawLevel;
-                MapExportForm MEF = new MapExportForm(MyMap.Buildings.Buildings);
+                Filtres _filtres = filtres;
+                double _zoom = zoom;
+                MapExportForm MEF = new MapExportForm(MyMap.Buildings.Buildings, trackBar1.Value);
                 MEF.ShowDialog();
                 filtres = _filtres;
                 drawLevel = dl;
+                zoom = _zoom;
+                zoom = (double)trackBar1.Value / 10d;
+                if (drawLevel.Level == -1)
+                    MyMap.ResizeRenderingArea();
+                else
+                    MyMap.ResizeRenderingArea(drawLevel.Level);
             }
             //Копировать
             if (e.Control & e.KeyCode == Keys.C)
@@ -721,16 +728,15 @@ namespace NetworkDesign
             {
                 if (textid == -1)
                 {
-                    MyMap.MyTexts.Add(new MyText(drawLevel, new Point(MyMap.RecalcMouseX(x), MyMap.RecalcMouseY(y)), _textBox));
-                    int lastindex = MyMap.MyTexts.MyTexts.Count - 1;
-                    Element elem = new Element(10, lastindex, MyMap.MyTexts.MyTexts[lastindex].Clone(), -1);
-                    Element _elem = new Element(10, lastindex, new MyText(), -1);
-                    MyMap.log.Add(new LogMessage("Добавил надпись", elem, _elem));
-                    InfoLable.Text = "Добавил надпись";
+                    /*MyMap.MyTexts.Add(new MyText(drawLevel, new Point(MyMap.RecalcMouseX(x), MyMap.RecalcMouseY(y)), _textBox));
+                    Element elem = new Element(10, lastindex, MyMap.MyTexts.MyTexts[lastindex].Clone(), -2);
+                    Element _elem = new Element(10, lastindex, new MyText(), -2);
+                    MyMap.log.Add(new LogMessage("Изменил надпись", elem, _elem));
+                    InfoLable.Text = "Изменил надпись";*/
                 }
                 else
                 {
-                    MyMap.MyTexts.MyTexts[textid].fontsize = _textBox.Font.Size;
+                    MyMap.MyTexts.MyTexts[textid].fontsize = (int)((double)_textBox.Font.Size / zoom);
                     MyMap.MyTexts.MyTexts[textid].text = _textBox.Text;
                     MyMap.MyTexts.MyTexts[textid].delete = false;
                     MyMap.MyTexts.MyTexts[textid].GenNewTexture();
@@ -1705,6 +1711,7 @@ namespace NetworkDesign
                         CheckButtons(true);
                         MyMap.Rectangles.Remove(activeElem.item);
                         Unfocus("Преобразовал прямоугольник в здание");
+                        MyMap.Buildings.Buildings[lastindex].EndMove();
                     }
                     else if (activeElem.type == 3)
                     {
@@ -1716,6 +1723,7 @@ namespace NetworkDesign
                         CheckButtons(true);
                         MyMap.Polygons.Remove(activeElem.item);
                         Unfocus("Преобразовал многоугольник в здание");
+                        MyMap.Buildings.Buildings[lastindex].EndMove();
                     }
                     else if (activeElem.type == 360)
                     {
@@ -1727,6 +1735,7 @@ namespace NetworkDesign
                         CheckButtons(true);
                         MyMap.Circles.Remove(activeElem.item);
                         Unfocus("Преобразовал окружность в здание");
+                        MyMap.Buildings.Buildings[lastindex].EndMove();
                     }
                 }
             }
@@ -2189,7 +2198,7 @@ namespace NetworkDesign
                         break;
                     case 11:
                         if (backbtn)
-                            AddTextureFromLog(elem.index, (URL_ID)_elem.elem);
+                            AddTextureFromLog(elem.index, _elem.urlid);
                         else
                             DeleteTextureFromLog(elem.index);
                         break;
@@ -2197,7 +2206,7 @@ namespace NetworkDesign
                         if (backbtn)
                             DeleteTextureFromLog(elem.index);
                         else
-                            AddTextureFromLog(elem.index, (URL_ID)_elem.elem);
+                            AddTextureFromLog(elem.index, _elem.urlid);
                         break;
                     case 14:
                         if (_elem.index == -1)
@@ -2334,6 +2343,8 @@ namespace NetworkDesign
         #region Открытие, сохранение, экспорт, импорт
         private void SaveMap(string path)
         {
+            try
+            {
                 XmlSerializer formatter = new XmlSerializer(typeof(Map));
                 MyMap.UserLogin = user.SamAccountName;
                 if (Directory.Exists(Application.StartupPath + @"\###tempdirectory._temp###\"))
@@ -2359,7 +2370,8 @@ namespace NetworkDesign
                     File.Delete(path);
                 ZipFile.CreateFromDirectory(Application.StartupPath + @"\###tempdirectory._temp###\", path);
                 Directory.Delete(Application.StartupPath + @"\###tempdirectory._temp###\", true);
-           
+            }
+            catch { }
         }
         /// <summary>
         /// Функция для сохранения карты в файл 
@@ -2368,6 +2380,8 @@ namespace NetworkDesign
         /// <param name="descriptionFE">Описание заданного формата для отображения в диалоге</param>
         private void SaveMap(string fileExtension, string descriptionFE)
         {
+            try
+            { 
                 SaveFileDialog saveFileDialog1 = new SaveFileDialog
                 {
                     Filter = descriptionFE + "|*" + fileExtension
@@ -2410,6 +2424,8 @@ namespace NetworkDesign
                     Directory.Delete(Application.StartupPath + @"\###tempdirectory._temp###\", true);
                     path = filename;
                 }
+            }
+            catch { }
         }
         /// <summary>
         /// Функция для открытия файла карты
@@ -2779,10 +2795,19 @@ namespace NetworkDesign
         private void ExportMapClick(object sender, EventArgs e)
         {
             MyMap.Unfocus(true);
+            DrawLevel dl = drawLevel;
             Filtres _filtres = filtres;
-            MapExportForm MEF = new MapExportForm(MyMap.Buildings.Buildings);
+            double _zoom = zoom;
+            MapExportForm MEF = new MapExportForm(MyMap.Buildings.Buildings, trackBar1.Value);
             MEF.ShowDialog();
             filtres = _filtres;
+            drawLevel = dl;
+            zoom = _zoom;
+            zoom = (double)trackBar1.Value / 10d;
+            if (drawLevel.Level == -1)
+                MyMap.ResizeRenderingArea();
+            else
+                MyMap.ResizeRenderingArea(drawLevel.Level);
         }
         /// <summary>
         /// Событие нажатия кнопки экспорта и импорта здания
@@ -3142,12 +3167,12 @@ namespace NetworkDesign
         {
             if (drawLevel.Level == _elem.index)
                 drawLevel = new DrawLevel(-1, -1);
-            var temp = (Buildlist)_elem.elem;
+            var temp = _elem.buildlist;
             MyMap.Buildings.Buildings[_elem.index] = (Building)temp.building.Clone();
             if (MyMap.Buildings.Buildings[_elem.index].MT.idtexture != -1 && !MTTextures.Contains((uint)MyMap.Buildings.Buildings[_elem.index].MT.idtexture))
                 MyMap.Buildings.Buildings[_elem.index].MT.GenTextureFromBuild();
             List<int> _Added = new List<int>();
-            foreach (var add in temp.deteled)
+            foreach (var add in temp.deleted)
                 _Added.Add(add);
             List<int> _Deleted = new List<int>();
             foreach (var del in temp.added)
@@ -3747,45 +3772,52 @@ namespace NetworkDesign
 
         public static void ImageExport(List<bool> build)
         {
-            FolderBrowserDialog fbd = new FolderBrowserDialog();
-            if (fbd.ShowDialog() == DialogResult.OK)
+            try
             {
-                DrawLevel dl = drawLevel;
-                if (MessageBox.Show("Некоторые элементы могут быть заменены и удалены. Продолжить?") == DialogResult.OK)
+                FolderBrowserDialog fbd = new FolderBrowserDialog();
+                if (fbd.ShowDialog() == DialogResult.OK)
                 {
-                    string path = fbd.SelectedPath;
-                    drawLevel = new DrawLevel(-1, -1);
-                    MyMap.Drawing();
-                    Thread.Sleep(1000);
-                    Bitmap image = GetBitmap();
-                    image.Save(path + "/Главный вид.png");
-                    List<Building> buildings = new List<Building>();
-                    foreach (var b in MyMap.Buildings.Buildings)
-                        if (!b.delete)
-                            buildings.Add(b);
-                    for (int i = 0; i < buildings.Count; i++)
+                    DrawLevel dl = drawLevel;
+                    if (MessageBox.Show("Некоторые элементы могут быть заменены и удалены. Продолжить?") == DialogResult.OK)
                     {
-                        if (build[i])
+                        string path = fbd.SelectedPath;
+                        drawLevel = new DrawLevel(-1, -1);
+                        MyMap.Drawing();
+                        Thread.Sleep(1000);
+                        Bitmap image = GetBitmap();
+                        image.Save(path + "/Главный вид.png");
+                        List<Building> buildings = new List<Building>();
+                        foreach (var b in MyMap.Buildings.Buildings)
+                            if (!b.delete)
+                                buildings.Add(b);
+                        for (int i = 0; i < buildings.Count; i++)
                         {
-                            string buildname = path + "\\Здание " + i + " " + MyMap.Buildings.Buildings[i].Name + "\\";
-                            buildname = buildname.Replace("\r\n", "");
-                            buildname = buildname.Replace("\r", "");
-                            buildname = buildname.Replace("\n", "");
-                            if (Directory.Exists(buildname))
-                                Directory.Delete(buildname, true);
-                            Directory.CreateDirectory(buildname);
-                            for (int j = 0; j < MyMap.Buildings.Buildings[i].floors_name.Count; j++)
+                            if (build[i])
                             {
-                                drawLevel = new DrawLevel(i, j);
-                                MyMap.Drawing();
-                                Thread.Sleep(1000);
-                                Bitmap _image = GetBitmap();
-                                _image.Save(buildname + MyMap.Buildings.Buildings[i].floors_name[j].ToString() + ".png");
+                                string buildname = path + "\\Здание " + i + " " + MyMap.Buildings.Buildings[i].Name + "\\";
+                                buildname = buildname.Replace("\r\n", "");
+                                buildname = buildname.Replace("\r", "");
+                                buildname = buildname.Replace("\n", "");
+                                if (Directory.Exists(buildname))
+                                    Directory.Delete(buildname, true);
+                                Directory.CreateDirectory(buildname);
+                                for (int j = 0; j < MyMap.Buildings.Buildings[i].floors_name.Count; j++)
+                                {
+                                    drawLevel = new DrawLevel(i, j);
+                                    MyMap.Drawing();
+                                    Thread.Sleep(1000);
+                                    Bitmap _image = GetBitmap();
+                                    _image.Save(buildname + MyMap.Buildings.Buildings[i].floors_name[j].ToString() + ".png");
+                                }
                             }
                         }
                     }
+                    drawLevel = dl;
                 }
-                drawLevel = dl;
+            }
+            catch
+            {
+
             }
         }
         /// <summary>
@@ -4081,12 +4113,19 @@ namespace NetworkDesign
         private void экспортКартыToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MyMap.Unfocus(true);
-            Filtres _filtres = filtres;
             DrawLevel dl = drawLevel;
-            MapExportForm MEF = new MapExportForm(MyMap.Buildings.Buildings);
+            Filtres _filtres = filtres;
+            double _zoom = zoom;
+            MapExportForm MEF = new MapExportForm(MyMap.Buildings.Buildings, trackBar1.Value);
             MEF.ShowDialog();
             filtres = _filtres;
             drawLevel = dl;
+            zoom = _zoom;
+            zoom = (double)trackBar1.Value / 10d;
+            if (drawLevel.Level == -1)
+                MyMap.ResizeRenderingArea();
+            else
+                MyMap.ResizeRenderingArea(drawLevel.Level);
         }
 
         private void экспортимпортЗданийToolStripMenuItem_Click(object sender, EventArgs e)

@@ -156,7 +156,7 @@ namespace NetworkDesign.NetworkElements
                         G = (float)color.G / 255;
                         B = (float)color.B / 255;
                         A = (float)color.A / 255;
-                        Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.zoom);
+                        Gl.glLineWidth(MainForm.colorSettings.IWWidth * (float)MainForm.zoom);
                     }
                     else
                     {
@@ -164,7 +164,7 @@ namespace NetworkDesign.NetworkElements
                         G = (float)MainForm.colorSettings.ActiveElemColor.G / 255;
                         B = (float)MainForm.colorSettings.ActiveElemColor.B / 255;
                         A = (float)MainForm.colorSettings.ActiveElemColor.A / 255;
-                        Gl.glLineWidth(MainForm.colorSettings.LineWidth * (float)MainForm.zoom + 1);
+                        Gl.glLineWidth(MainForm.colorSettings.IWWidth * (float)MainForm.zoom + 1);
                     }
                     //Gl.glPushMatrix();
                     //Gl.glScaled(MainForm.zoom, MainForm.zoom, MainForm.zoom);
