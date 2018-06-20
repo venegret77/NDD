@@ -345,6 +345,9 @@ namespace NetworkDesign
                     Font = new Font(Font.FontFamily, colorSettings.fontsize)
                 };
             }
+            Size size = TextRenderer.MeasureText("  ", textBox.Font);
+            textBox.Width = size.Width + 2;
+            textBox.Height = size.Height;
             textBox.Focus();
             textBox.KeyDown += TextBox_KeyDown;
             textBox.LostFocus += TextBox_LostFocus;
@@ -394,18 +397,18 @@ namespace NetworkDesign
 
         private void _TextBox_KeyUp(object sender, KeyEventArgs e)
         {
-            Size size = TextRenderer.MeasureText(textBox.Text, textBox.Font);
-            textBox.Width = size.Width + 2;
-            textBox.Height = size.Height;
+            Size size = TextRenderer.MeasureText(_textBox.Text, _textBox.Font);
+            _textBox.Width = size.Width + 2;
+            _textBox.Height = size.Height;
         }
 
         private void _TextBox_LostFocus(object sender, EventArgs e)
         {
-            if (textBox.Text != "" & textBox.Text != " ")
+            if (_textBox.Text != "" & _textBox.Text != " ")
             {
                 if (textid == -1)
                 {
-                    MyMap.MyTexts.Add(new MyText(drawLevel, new Point(MyMap.RecalcMouseX(x), MyMap.RecalcMouseY(y)), textBox));
+                    MyMap.MyTexts.Add(new MyText(drawLevel, new Point(MyMap.RecalcMouseX(x), MyMap.RecalcMouseY(y)), _textBox));
                     int lastindex = MyMap.MyTexts.MyTexts.Count - 1;
                     Element elem = new Element(10, lastindex, MyMap.MyTexts.MyTexts[lastindex].Clone(), -1);
                     Element _elem = new Element(10, lastindex, new MyText(), -1);
@@ -414,8 +417,8 @@ namespace NetworkDesign
                 }
                 else
                 {
-                    MyMap.MyTexts.MyTexts[textid].fontsize = textBox.Font.Size;
-                    MyMap.MyTexts.MyTexts[textid].text = textBox.Text;
+                    MyMap.MyTexts.MyTexts[textid].fontsize = _textBox.Font.Size;
+                    MyMap.MyTexts.MyTexts[textid].text = _textBox.Text;
                     MyMap.MyTexts.MyTexts[textid].delete = false;
                     MyMap.MyTexts.MyTexts[textid].GenNewTexture();
                     UpdateTextLogAdd(textid);
@@ -428,7 +431,7 @@ namespace NetworkDesign
                 if (textid != -1)
                     MyMap.MyTexts.MyTexts[textid].delete = false;
             }
-            textBox.Dispose();
+            _textBox.Dispose();
         }
 
         //bool isControl = false;
@@ -445,13 +448,13 @@ namespace NetworkDesign
             }
             if (e.Control & e.KeyCode == Keys.Up)
             {
-                textBox.Font = new Font(textBox.Font.FontFamily, textBox.Font.Size + 1);
+                _textBox.Font = new Font(_textBox.Font.FontFamily, _textBox.Font.Size + 1);
             }
             if (e.Control & e.KeyCode == Keys.Down)
             {
                 if (colorSettings.fontsize > 1)
                 {
-                    textBox.Font = new Font(textBox.Font.FontFamily, textBox.Font.Size - 1);
+                    _textBox.Font = new Font(_textBox.Font.FontFamily, _textBox.Font.Size - 1);
                 }
             }
             /*if (e.KeyCode != Keys.ControlKey)
@@ -536,13 +539,8 @@ namespace NetworkDesign
         {
             if (!MyMap.NetworkElements.step)
             {
-                /*ImageTextures IT = new ImageTextures(ref MyMap.NetworkElements);
-                IT.ShowDialog();
-                if (IT.imageindex > -1)
-                {*/
-                    MyMap.NetworkElements.step = true;
-                    MyMap.NetworkElements.TempNetworkElement = new NetworkElement(new Texture(colorSettings.TextureWidth, new Point(x, y), MyMap.Instrument - nebutnscount, ImagesURL.Textures[MyMap.Instrument - nebutnscount].URL), drawLevel);
-                //}
+                MyMap.NetworkElements.step = true;
+                MyMap.NetworkElements.TempNetworkElement = new NetworkElement(new Texture(colorSettings.TextureWidth, new Point(x, y), MyMap.Instrument - nebutnscount, ImagesURL.Textures[MyMap.Instrument - nebutnscount].URL), drawLevel);
             }
             else
             {
@@ -556,9 +554,7 @@ namespace NetworkDesign
                 CheckButtons(true);
             }
         }
-
-
-
+        
         #endregion
         #region Работа с мышью на области отрисовки
         /// <summary>
@@ -578,6 +574,7 @@ namespace NetworkDesign
                     {
                         elem = new Element(14, drawLevel.Level, MyMap.sizeRenderingArea, -2);
                         isResizeMap = true;
+                        MyMap.RenderTimer.Stop();
                     }
                 }
                 else if (MyMap.Instrument == 0 & drawLevel.Level != -1)
@@ -586,6 +583,7 @@ namespace NetworkDesign
                     {
                         elem = new Element(14, drawLevel.Level, MyMap.Buildings.Buildings[drawLevel.Level].Clone(), -2);
                         isResizeMap = true;
+                        MyMap.RenderTimer.Stop();
                     }
                 }
             }
@@ -603,9 +601,9 @@ namespace NetworkDesign
                     switch (MyMap.Instrument)
                     {
                         case 0:
-                            stopwatch.Restart();
                             if (!MyMap.isMove)
                             {
+                                stopwatch.Restart();
                                 SelectItems(x, y);
                             }
                             break;
@@ -802,10 +800,15 @@ namespace NetworkDesign
         {
             if (isResizeMap)
             {
+                MyMap.RenderTimer.Start();
                 if (drawLevel.Level == -1)
+                {
+                    MyMap.ResizeRenderingArea();
                     _elem = new Element(14, drawLevel.Level, MyMap.sizeRenderingArea, -2);
+                }
                 else
                 {
+                    MyMap.ResizeRenderingArea(drawLevel.Level);
                     MyMap.Buildings.Buildings[drawLevel.Level].RefreshLocal();
                     _elem = new Element(14, drawLevel.Level, MyMap.Buildings.Buildings[drawLevel.Level].Clone(), -2);
                 }
@@ -863,6 +866,7 @@ namespace NetworkDesign
                         {
                             elem = new Element(14, drawLevel.Level, MyMap.sizeRenderingArea, -2);
                             isResizeMap = true;
+                            MyMap.RenderTimer.Stop();
                         }
                     }
                     else if (drawLevel.Level != -1 & MyMap.Instrument == 0)
@@ -871,6 +875,7 @@ namespace NetworkDesign
                         {
                             elem = new Element(14, drawLevel.Level, MyMap.Buildings.Buildings[drawLevel.Level].Clone(), -2);
                             isResizeMap = true;
+                            MyMap.RenderTimer.Stop();
                         }
                     }
                 }
@@ -1091,7 +1096,15 @@ namespace NetworkDesign
             }
             if (refresh)
             {
-                MyMap.ResizeRenderingArea();
+                int Height = (int)((double)MyMap.sizeRenderingArea.Height * MainForm.zoom);
+                int Width = (int)((double)MyMap.sizeRenderingArea.Width * MainForm.zoom);
+                /*int Left = (int)((double)MyMap.sizeRenderingArea.Left * MainForm.zoom);
+                int Right = (int)((double)MyMap.sizeRenderingArea.Right * MainForm.zoom);
+                int Top = (int)((double)MyMap.sizeRenderingArea.Top * MainForm.zoom);
+                int Bottom = (int)((double)MyMap.sizeRenderingArea.Bottom * MainForm.zoom);*/
+                MainForm.AnT.Height = Height;
+                MainForm.AnT.Width = Width;
+                //MyMap.ResizeRenderingArea();
                 refresh = false;
                 return true;
             }
@@ -1138,7 +1151,15 @@ namespace NetworkDesign
             }
             if (refresh)
             {
-                MyMap.ResizeRenderingArea(id);
+                int Height = (int)((double)MyMap.Buildings.Buildings[id].sizeRenderingArea.Height * MainForm.zoom);
+                int Width = (int)((double)MyMap.Buildings.Buildings[id].sizeRenderingArea.Width * MainForm.zoom);
+                /*int Left = (int)((double)Buildings.Buildings[buildid].sizeRenderingArea.Left * MainForm.zoom);
+                int Right = (int)((double)Buildings.Buildings[buildid].sizeRenderingArea.Right * MainForm.zoom);
+                int Top = (int)((double)Buildings.Buildings[buildid].sizeRenderingArea.Top * MainForm.zoom);
+                int Bottom = (int)((double)Buildings.Buildings[buildid].sizeRenderingArea.Bottom * MainForm.zoom);*/
+                MainForm.AnT.Height = Height;
+                MainForm.AnT.Width = Width;
+                //MyMap.ResizeRenderingArea(id);
                 refresh = false;
                 return true;
             }
@@ -1156,7 +1177,7 @@ namespace NetworkDesign
             var group = user.GetGroups();
             foreach (var g in group)
             {
-                if (g.Name == "Администраторы")
+                if (g.Name.ToLower().Contains("администратор") | g.Name.ToLower().Contains("administrator"))
                 {
                     edit = true;
                     return user;
@@ -1579,6 +1600,7 @@ namespace NetworkDesign
             Unfocus("Идет поиск");
             SearchDialog sd = new SearchDialog(MyMap.MyTexts, MyMap.Buildings, MyMap.NetworkElements, MyMap.NetworkWires);
             sd.ShowDialog();
+            Unfocus("Поиск завершен");
             if (sd._type != -1 & sd._item != -1)
             {
                 MyMap.SetInstrument(0);

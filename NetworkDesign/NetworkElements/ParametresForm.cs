@@ -54,7 +54,7 @@ namespace NetworkDesign.NetworkElements
 
         private void button6_Click(object sender, EventArgs e)
         {
-            if (textBox1.Text != "" & textBox1.Text != " " & !MainForm.parametrs.Params.Contains(textBox1.Text))
+            if (listBox2.SelectedIndex != -1 & textBox1.Text != "" & textBox1.Text != " " & !MainForm.parametrs.Params.Contains(textBox1.Text))
                 EditParam(listBox2.SelectedIndex);
         }
 
@@ -148,6 +148,11 @@ namespace NetworkDesign.NetworkElements
         }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void ParametresForm_Load(object sender, EventArgs e)
         {
 
         }

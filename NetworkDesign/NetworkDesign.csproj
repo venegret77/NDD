@@ -91,68 +91,72 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System">
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Core">
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.DirectoryServices">
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.DirectoryServices.AccountManagement">
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.DirectoryServices.Protocols">
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.IO.Compression">
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.IO.Compression.FileSystem">
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Xml.Linq">
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Data.DataSetExtensions">
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp">
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Data">
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Deployment">
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Drawing">
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Net.Http">
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Windows.Forms">
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Xml">
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Tao.DevIl, Version=1.6.8.3, Culture=neutral, PublicKeyToken=7ec4053013524957, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files (x86)\TaoFramework\bin\Tao.DevIl.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Tao.FreeGlut, Version=2.4.0.2, Culture=neutral, PublicKeyToken=6e602a6ad6c0d06d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files (x86)\TaoFramework\bin\Tao.FreeGlut.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Tao.OpenGl, Version=2.1.0.12, Culture=neutral, PublicKeyToken=1ca010269a4501ef, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files (x86)\TaoFramework\bin\Tao.OpenGl.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Tao.Platform.Windows, Version=1.0.0.5, Culture=neutral, PublicKeyToken=701104b2da67a104, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files (x86)\TaoFramework\bin\Tao.Platform.Windows.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -174,6 +178,12 @@
     </Compile>
     <Compile Include="Main\CreateMapForm.Designer.cs">
       <DependentUpon>CreateMapForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Main\DisplayedNameForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Main\DisplayedNameForm.Designer.cs">
+      <DependentUpon>DisplayedNameForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Main\LegendForm.cs">
       <SubType>Form</SubType>
@@ -329,6 +339,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Buildings\InputWireForm.resx">
       <DependentUpon>InputWireForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Main\DisplayedNameForm.resx">
+      <DependentUpon>DisplayedNameForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Main\FiltersForm.resx">
       <DependentUpon>FiltersForm.cs</DependentUpon>

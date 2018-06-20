@@ -56,64 +56,76 @@ namespace NetworkDesign
                 string text = textBox1.Text.ToLower();
                 for (int i = 0; i < GOB.Buildings.Count; i++)
                 {
-                    if (GOB.Buildings[i].Name.ToLower().Contains(text))
+                    if (!GOB.Buildings[i].delete)
                     {
-                        listBox1.Items.Add("Здание '" + GOB.Buildings[i].Name + "'");
-                        items.Add(i);
-                        type.Add(1);
+                        if (GOB.Buildings[i].Name.ToLower().Contains(text))
+                        {
+                            listBox1.Items.Add("Здание '" + GOB.Buildings[i].Name + "'");
+                            items.Add(i);
+                            type.Add(1);
+                        }
                     }
                 }
                 for (int i = 0; i < GONE.NetworkElements.Count; i++)
                 {
-                    if (GONE.NetworkElements[i].Options.Name.ToLower().Contains(text))
+                    if (!GONE.NetworkElements[i].delete)
                     {
-                        listBox1.Items.Add("Сетевой элемент '" + GONE.NetworkElements[i].Options.Name + "'");
-                        items.Add(i);
-                        type.Add(2);
-                    }
-                    if (GONE.NetworkElements[i].Options.HostName.ToLower().Contains(text))
-                    {
-                        listBox1.Items.Add("Сетевой элемент '/" + GONE.NetworkElements[i].Options.Name + "'");
-                        items.Add(i);
-                        type.Add(2);
-                    }
-                    foreach (var ip in GONE.NetworkElements[i].Options.IPs)
-                    {
-                        if (ip.ToLower().Contains(text))
+                        if (GONE.NetworkElements[i].Options.Name.ToLower().Contains(text))
+                        {
+                            listBox1.Items.Add("Сетевой элемент '" + GONE.NetworkElements[i].Options.Name + "'");
+                            items.Add(i);
+                            type.Add(2);
+                        }
+                        if (GONE.NetworkElements[i].Options.HostName.ToLower().Contains(text))
                         {
                             listBox1.Items.Add("Сетевой элемент '/" + GONE.NetworkElements[i].Options.Name + "'");
                             items.Add(i);
                             type.Add(2);
                         }
-                    }
-                    foreach (var note in GONE.NetworkElements[i].notes.notes)
-                    {
-                        if (note.note.ToLower().Contains(text))
+                        foreach (var ip in GONE.NetworkElements[i].Options.IPs)
                         {
-                            listBox1.Items.Add("Заметка '/" + note + "'");
-                            items.Add(i);
-                            type.Add(2);
+                            if (ip.ToLower().Contains(text))
+                            {
+                                listBox1.Items.Add("Сетевой элемент '/" + GONE.NetworkElements[i].Options.HostName + "'");
+                                items.Add(i);
+                                type.Add(2);
+                            }
+                        }
+                        foreach (var note in GONE.NetworkElements[i].notes.notes)
+                        {
+                            if (note.note.ToLower().Contains(text))
+                            {
+                                listBox1.Items.Add("Заметка '/" + note + "'");
+                                items.Add(i);
+                                type.Add(2);
+                            }
                         }
                     }
                 }
                 for (int i = 0; i < GOMT.MyTexts.Count; i++)
                 {
-                    if (GOMT.MyTexts[i].text.ToLower().Contains(text))
+                    if (!GOMT.MyTexts[i].delete)
                     {
-                        listBox1.Items.Add("Надпись '" + GOMT.MyTexts[i].text + "'");
-                        items.Add(i);
-                        type.Add(3);
+                        if (GOMT.MyTexts[i].text.ToLower().Contains(text))
+                        {
+                            listBox1.Items.Add("Надпись '" + GOMT.MyTexts[i].text + "'");
+                            items.Add(i);
+                            type.Add(3);
+                        }
                     }
                 }
                 for (int i = 0; i < GONW.NetworkWires.Count; i++)
                 {
-                    foreach (var note in GONW.NetworkWires[i].notes.notes)
+                    if (!GONW.NetworkWires[i].delete)
                     {
-                        if (note.note.ToLower().Contains(text))
+                        foreach (var note in GONW.NetworkWires[i].notes.notes)
                         {
-                            listBox1.Items.Add("Заметка '/" + note.note + "'");
-                            items.Add(i);
-                            type.Add(4);
+                            if (note.note.ToLower().Contains(text))
+                            {
+                                listBox1.Items.Add("Заметка '/" + note.note + "'");
+                                items.Add(i);
+                                type.Add(4);
+                            }
                         }
                     }
                 }

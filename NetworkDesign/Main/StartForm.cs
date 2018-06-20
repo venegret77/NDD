@@ -27,6 +27,14 @@ namespace NetworkDesign.Main
             try
             {
                 MainForm.user = MainForm.Autorisation(out MainForm.edit);
+                if (MainForm.user.DisplayName.Length < 2)
+                {
+                    DisplayedNameForm displayedNameForm = new DisplayedNameForm();
+                    while (displayedNameForm.dialogResult != DialogResult.OK)
+                    {
+                        displayedNameForm.ShowDialog();
+                    }
+                }
                 Text = "Авторизация успешна";
                 label4.Text = MainForm.user.DisplayName + " (";
                 if (MainForm.edit)

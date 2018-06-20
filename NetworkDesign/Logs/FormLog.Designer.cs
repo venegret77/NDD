@@ -54,7 +54,7 @@
             this.Controls.Add(this.dataGridView1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FormLog";
-            this.Text = "FormLog";
+            this.Text = "Лог действий";
             this.Load += new System.EventHandler(this.FormLog_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
