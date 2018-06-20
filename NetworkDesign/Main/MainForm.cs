@@ -62,7 +62,7 @@ namespace NetworkDesign
         public static int nebutnscount = 15;
         static public List<NEButton> neButtons = new List<NEButton>();
 
-        static public TextBox focusbox = new TextBox();
+        //static public TextBox focusbox = new TextBox();
 
         static public Filtres filtres = new Filtres();
 
@@ -107,6 +107,7 @@ namespace NetworkDesign
             AnT.MouseDown += new MouseEventHandler(AnT_MouseDown);
             AnT.MouseMove += new MouseEventHandler(AnT_MouseMove);
             AnT.MouseUp += new MouseEventHandler(AnT_MouseUp);
+            AnT.KeyDown += AnT_KeyDown;
             AnT.Click += AnT_Click;
             AnT.GotFocus += AnT_GotFocus;
             AnT.MouseDoubleClick += AnT_MouseDoubleClick;
@@ -145,13 +146,299 @@ namespace NetworkDesign
                 }
             }
             filtres = new Filtres(true, true, true, true, true, true, true, true, true, true);
-            focusbox.TabIndex = 99;
+            /*focusbox.TabIndex = 99;
             focusbox.Parent = this;
             focusbox.Visible = true;
             focusbox.Enabled = true;
-            focusbox.Location = new Point(5000, 5000);
+            focusbox.Location = new Point(5000, 5000);*/
             Click += MainForm_Click;
             линияToolStripMenuItem.Checked = true;
+        }
+
+        private void AnT_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Control & e.KeyCode == Keys.Z)
+            {
+                if (MyMap.log.Back.Count > 0)
+                {
+                    BackClick();
+                    Unfocus("Нажата стрелочка назад");
+                }
+            }
+            if (e.Control & e.KeyCode == Keys.X)
+            {
+                if (MyMap.log.Forward.Count > 0)
+                {
+                    ForwardClick();
+                    Unfocus("Нажата стрелочка вперед");
+                }
+            }
+            //Открыть
+            if (e.Control & e.KeyCode == Keys.O)
+            {
+                if (MessageBox.Show("Сохранить карту? Все несохраненные данные будут удалены", "Схранение карты", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    SaveMap(".ndm", "Network Design Map File");
+                }
+                OpenFileDialog openFileDialog = new OpenFileDialog
+                {
+                    Filter = "Network Design Map File|*.ndm|Network Design Map File (Template)|*.ndmt"
+                };
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    if (openFileDialog.FileName.Contains(".ndm") & !openFileDialog.FileName.Contains(".ndmt"))
+                        OpenMap(openFileDialog.FileName);
+                    else if (openFileDialog.FileName.Contains(".ndmt"))
+                        OpenTemplateMap(openFileDialog.FileName);
+                    CheckButtons(true);
+                    Text = MyMap.sizeRenderingArea.Name;
+                }
+            }
+            //Сохранить
+            if (e.Control & e.KeyCode == Keys.S)
+            {
+                if (path == "")
+                    SaveMap(".ndm", "Network Design Map File");
+                else
+                    SaveMap(path);
+            }
+            //Экпорт
+            if (e.Control & e.KeyCode == Keys.E)
+            {
+                MyMap.Unfocus(true);
+                Filtres _filtres = filtres;
+                MapExportForm MEF = new MapExportForm(MyMap.Buildings.Buildings);
+                MEF.ShowDialog();
+                filtres = _filtres;
+            }
+            //Копировать
+            if (e.Control & e.KeyCode == Keys.C)
+            {
+                CopyElem();
+            }
+            if (e.Control & e.KeyCode == Keys.N)
+            {
+                if (MessageBox.Show("Сохранить карту? Все несохраненные данные будут удалены", "Схранение карты", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    SaveMap(".ndm", "Network Design Map File");
+                }
+                CreateMapForm createMapForm = new CreateMapForm();
+                createMapForm.ShowDialog();
+            }
+            if (e.Control & e.KeyCode == Keys.B)
+            {
+                BuildExportImport buildExportImport = new BuildExportImport(MyMap.Buildings.Buildings);
+                buildExportImport.ShowDialog();
+                if (buildExportImport.action)
+                    CheckButtons(true);
+            }
+            if (e.Control & e.KeyCode == Keys.P)
+            {
+                colorDialog = new ColorDialogForm();
+                colorDialog.Show();
+            }
+            if (e.Control & e.KeyCode == Keys.I)
+            {
+                LegendForm legendForm = new LegendForm();
+                legendForm.Show();
+            }
+            if (e.Control & e.KeyCode == Keys.L)
+            {
+                FormLog formlog = new FormLog(MyMap.log);
+                formlog.ShowDialog();
+                int backcount = MyMap.log.Back.Count();
+                if (formlog.RowIndex != -1 & formlog.RowIndex != backcount)
+                {
+                    int count = 0;
+                    int forwardcount = MyMap.log.Forward.Count();
+                    if (formlog.RowIndex > backcount)
+                    {
+                        count = backcount + 1 + forwardcount - formlog.RowIndex;
+                        for (int i = 0; i < count; i++)
+                            ForwardClick();
+                    }
+                    else
+                    {
+                        count = backcount - formlog.RowIndex;
+                        for (int i = 0; i < count; i++)
+                            BackClick();
+                    }
+                }
+            }
+            if (e.Control & e.KeyCode == Keys.D1)
+            {
+                MyMap.SetInstrument(0);
+                редактированиеToolStripMenuItem.Checked = false;
+                курсорToolStripMenuItem.Checked = true;
+                линияToolStripMenuItem.Checked = false;
+                кругToolStripMenuItem.Checked = false;
+                прямоугольникToolStripMenuItem.Checked = false;
+                многоугольникToolStripMenuItem.Checked = false;
+                текстToolStripMenuItem.Checked = false;
+                проводаToolStripMenuItem.Checked = false;
+                InfoLable.Text = "Выбран инструмент 'Курсор'";
+            }
+            if (e.Control & e.KeyCode == Keys.D2)
+            {
+                MyMap.SetInstrument(1);
+                редактированиеToolStripMenuItem.Checked = false;
+                курсорToolStripMenuItem.Checked = false;
+                линияToolStripMenuItem.Checked = true;
+                кругToolStripMenuItem.Checked = false;
+                прямоугольникToolStripMenuItem.Checked = false;
+                многоугольникToolStripMenuItem.Checked = false;
+                текстToolStripMenuItem.Checked = false;
+                проводаToolStripMenuItem.Checked = false;
+                InfoLable.Text = "Выбран инструмент 'Линия'";
+            }
+            if (e.Control & e.KeyCode == Keys.D3)
+            {
+                MyMap.SetInstrument(5);
+                редактированиеToolStripMenuItem.Checked = false;
+                курсорToolStripMenuItem.Checked = false;
+                линияToolStripMenuItem.Checked = false;
+                кругToolStripMenuItem.Checked = false;
+                прямоугольникToolStripMenuItem.Checked = false;
+                многоугольникToolStripMenuItem.Checked = true;
+                текстToolStripMenuItem.Checked = false;
+                проводаToolStripMenuItem.Checked = false;
+                InfoLable.Text = "Выбран инструмент 'Многоугольник'";
+            }
+            if (e.Control & e.KeyCode == Keys.D4)
+            {
+                MyMap.SetInstrument(2);
+                редактированиеToolStripMenuItem.Checked = false;
+                курсорToolStripMenuItem.Checked = false;
+                линияToolStripMenuItem.Checked = false;
+                кругToolStripMenuItem.Checked = false;
+                прямоугольникToolStripMenuItem.Checked = true;
+                многоугольникToolStripMenuItem.Checked = false;
+                текстToolStripMenuItem.Checked = false;
+                проводаToolStripMenuItem.Checked = false;
+                InfoLable.Text = "Выбран инструмент 'Прямоугольник'";
+            }
+            if (e.Control & e.KeyCode == Keys.D5)
+            {
+                MyMap.SetInstrument(360);
+                редактированиеToolStripMenuItem.Checked = false;
+                курсорToolStripMenuItem.Checked = false;
+                линияToolStripMenuItem.Checked = false;
+                кругToolStripMenuItem.Checked = true;
+                прямоугольникToolStripMenuItem.Checked = false;
+                многоугольникToolStripMenuItem.Checked = false;
+                текстToolStripMenuItem.Checked = false;
+                проводаToolStripMenuItem.Checked = false;
+                InfoLable.Text = "Выбран инструмент 'Круг'";
+            }
+            if (e.Control & e.KeyCode == Keys.D6)
+            {
+                MyMap.SetInstrument(10);
+                редактированиеToolStripMenuItem.Checked = false;
+                курсорToolStripMenuItem.Checked = false;
+                линияToolStripMenuItem.Checked = false;
+                кругToolStripMenuItem.Checked = false;
+                прямоугольникToolStripMenuItem.Checked = false;
+                многоугольникToolStripMenuItem.Checked = false;
+                текстToolStripMenuItem.Checked = true;
+                проводаToolStripMenuItem.Checked = false;
+                InfoLable.Text = "Выбран инструмент 'Текст'";
+            }
+            if (e.Control & e.KeyCode == Keys.D7)
+            {
+                if (MyMap.EditRects.edit_mode)
+                {
+                    MyMap.SetInstrument(0);
+                    редактированиеToolStripMenuItem.Checked = false;
+                    курсорToolStripMenuItem.Checked = true;
+                    линияToolStripMenuItem.Checked = false;
+                    кругToolStripMenuItem.Checked = false;
+                    прямоугольникToolStripMenuItem.Checked = false;
+                    многоугольникToolStripMenuItem.Checked = false;
+                    текстToolStripMenuItem.Checked = false;
+                    проводаToolStripMenuItem.Checked = false;
+                    InfoLable.Text = "Выбран инструмент 'Курсор'";
+                }
+                else
+                {
+                    MyMap.SetInstrument(3);
+                    редактированиеToolStripMenuItem.Checked = true;
+                    курсорToolStripMenuItem.Checked = false;
+                    линияToolStripMenuItem.Checked = false;
+                    кругToolStripMenuItem.Checked = false;
+                    прямоугольникToolStripMenuItem.Checked = false;
+                    многоугольникToolStripMenuItem.Checked = false;
+                    текстToolStripMenuItem.Checked = false;
+                    проводаToolStripMenuItem.Checked = false;
+                    InfoLable.Text = "Выбран инструмент 'Редактирование'";
+                    MyMap.RefreshEditRect();
+                }
+            }
+            if (e.Control & e.KeyCode == Keys.D8)
+            {
+                MyMap.SetInstrument(9);
+                редактированиеToolStripMenuItem.Checked = false;
+                курсорToolStripMenuItem.Checked = false;
+                линияToolStripMenuItem.Checked = false;
+                кругToolStripMenuItem.Checked = false;
+                прямоугольникToolStripMenuItem.Checked = false;
+                многоугольникToolStripMenuItem.Checked = false;
+                текстToolStripMenuItem.Checked = false;
+                проводаToolStripMenuItem.Checked = true;
+                InfoLable.Text = "Выбран инструмент 'Провод'";
+            }
+            if (e.Control & e.KeyCode == Keys.T)
+            {
+                ImageTextures IT = new ImageTextures(ref MyMap.NetworkElements);
+                IT.ShowDialog();
+                if (IT.action == 0)
+                {
+                    AddTexture(IT.imageindex);
+                }
+                else if (IT.action == 1)
+                {
+                    neButtons.Add(new NEButton(new ToolStripButton(Images.Images[IT.imageindex]), IT.imageindex, ImagesURL.Textures[IT.imageindex].URL, toolStrip1.Items.Count));
+                    toolStrip1.Items.Add(neButtons.Last().toolStripButton);
+                }
+                else if (IT.action == 2)
+                {
+                    for (int i = 0; i < neButtons.Count; i++)
+                    {
+                        if (neButtons[i].id == IT.imageindex)
+                        {
+                            int id = neButtons[i].id;
+                            int tsid = neButtons[i].tsid;
+                            toolStrip1.Items.RemoveAt(tsid);
+                            neButtons.RemoveAt(i);
+                            for (int j = 0; j < neButtons.Count; j++)
+                            {
+                                if (neButtons[j].tsid > tsid)
+                                    neButtons[j].tsid--;
+                            }
+                            break;
+                        }
+                    }
+                }
+                else if (IT.action == 3)
+                {
+                    DeleteTexture(IT.imageindex);
+                }
+            }
+            if (e.Control & e.KeyCode == Keys.F)
+            {
+                Search();
+            }
+            if (e.Control & e.KeyCode == Keys.Back)
+            {
+                MyMap.ResizeRenderingArea();
+                drawLevel.Level = -1;
+                drawLevel.Floor = -1;
+                ReturnToMainBtn.Enabled = false;
+                comboBox1.Enabled = false;
+                comboBox1.Items.Clear();
+                floor_index = 0;
+                floors_name = new List<string>();
+                Unfocus("Нет активного элемента");
+            }
         }
 
         private void AnT_GotFocus(object sender, EventArgs e)
@@ -327,7 +614,7 @@ namespace NetworkDesign
         private void MouseText(int x, int y)
         {
             textid = -1;
-            focusbox.Focus();
+            AnT.Focus();
             this.x = x;
             this.y = y;
             if (textBox == null || textBox.Text == "")
@@ -359,7 +646,7 @@ namespace NetworkDesign
         private void MouseText(int id)
         {
             textid = id;
-            focusbox.Focus();
+            AnT.Focus();
             Point location = GenZoomPoint(MyMap.MyTexts.MyTexts[textid].location);
             Point _location;
             if (drawLevel.Level == -1)
@@ -444,7 +731,7 @@ namespace NetworkDesign
             }*/
             if (!e.Control & e.KeyCode == Keys.Enter)
             {
-                focusbox.Focus();
+                AnT.Focus();
             }
             if (e.Control & e.KeyCode == Keys.Up)
             {
@@ -512,7 +799,7 @@ namespace NetworkDesign
             }*/
             if (!e.Control & e.KeyCode == Keys.Enter)
             {
-                focusbox.Focus();
+                AnT.Focus();
             }
             if (e.Control & e.KeyCode == Keys.Up)
             {
@@ -1187,48 +1474,6 @@ namespace NetworkDesign
             if (user != null)
                 return user;
             return null;
-        }
-        /// <summary>
-        /// Обновление отображения кнопок после применения фильтров
-        /// </summary>
-        private void RefreshButtons()
-        {
-            if (!filtres.Poly)
-                PolygonBtn.Visible = false;
-            else
-                PolygonBtn.Visible = true;
-            if (!filtres.Line)
-                LineBtn.Visible = false;
-            else
-                LineBtn.Visible = true;
-            if (!filtres.Rect)
-                RectangleBtn.Visible = false;
-            else
-                RectangleBtn.Visible = true;
-            if (!filtres.Circ)
-                CircleBtn.Visible = false;
-            else
-                CircleBtn.Visible = true;
-            if (!filtres.NW)
-                NWBtn.Visible = false;
-            else
-                NWBtn.Visible = true;
-            if (!filtres.NE)
-                NEBtn.Visible = false;
-            else
-                NEBtn.Visible = true;
-            if (!filtres.Text)
-                TextBtn.Visible = false;
-            else
-                TextBtn.Visible = true;
-            if (!filtres.IW)
-                IWBtn.Visible = false;
-            else
-                IWBtn.Visible = true;
-            if (!filtres.Ent)
-                EntranceBtn.Visible = false;
-            else
-                EntranceBtn.Visible = true;
         }
         /// <summary>
         /// Функция для поиска элемента, в который попал клик мыши
@@ -2059,6 +2304,34 @@ namespace NetworkDesign
         }
         #endregion
         #region Открытие, сохранение, экспорт, импорт
+        private void SaveMap(string path)
+        {
+                XmlSerializer formatter = new XmlSerializer(typeof(Map));
+                MyMap.UserLogin = user.SamAccountName;
+                if (Directory.Exists(Application.StartupPath + @"\###tempdirectory._temp###\"))
+                    Directory.Delete(Application.StartupPath + @"\###tempdirectory._temp###\", true);
+                Directory.CreateDirectory(Application.StartupPath + @"\###tempdirectory._temp###\");
+                // получаем поток, куда будем записывать сериализованный объект
+                using (FileStream fs = new FileStream(Application.StartupPath + @"\###tempdirectory._temp###\mapfile.map", FileMode.Create))
+                {
+                    formatter.Serialize(fs, MyMap);
+                }
+                SaveTextures(ImagesURL);
+                Parametrs.Save(parametrs);
+                ID_TEXT temp = new ID_TEXT();
+                foreach (var n in neButtons)
+                    temp.ADD(n.id, n.textname);
+                NEButton.Save(temp);
+                File.Copy(Application.StartupPath + @"\Textures\ListOfTextures", Application.StartupPath + @"\###tempdirectory._temp###\ListOfTextures");
+                File.Copy(Application.StartupPath + @"\Configurations\NetworkSettings", Application.StartupPath + @"\###tempdirectory._temp###\NetworkSettings");
+                //File.Copy(Application.StartupPath + @"\Configurations\NEButtons", Application.StartupPath + @"\###tempdirectory._temp###\NEButtons");
+                foreach (var url in ImagesURL.Textures)
+                    File.Copy(Application.StartupPath + @"\Textures\" + url.URL, Application.StartupPath + @"\###tempdirectory._temp###\" + url.URL);
+                if (File.Exists(path))
+                    File.Delete(path);
+                ZipFile.CreateFromDirectory(Application.StartupPath + @"\###tempdirectory._temp###\", path);
+                Directory.Delete(Application.StartupPath + @"\###tempdirectory._temp###\", true);
+        }
         /// <summary>
         /// Функция для сохранения карты в файл 
         /// </summary>
@@ -2106,6 +2379,7 @@ namespace NetworkDesign
                     File.Delete(filename);
                 ZipFile.CreateFromDirectory(Application.StartupPath + @"\###tempdirectory._temp###\", filename);
                 Directory.Delete(Application.StartupPath + @"\###tempdirectory._temp###\", true);
+                path = filename;
             }
         }
         /// <summary>
@@ -2622,6 +2896,10 @@ namespace NetworkDesign
 
         private void открытьToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (MessageBox.Show("Сохранить карту? Все несохраненные данные будут удалены", "Схранение карты", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                SaveMap(".ndm", "Network Design Map File");
+            }
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
                 Filter = "Network Design Map File|*.ndm|Network Design Map File (Template)|*.ndmt"
@@ -2637,9 +2915,14 @@ namespace NetworkDesign
             }
         }
 
+        private string path = "";
+
         private void сохранитьToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SaveMap(".ndm", "Network Design Map File");
+            if (path == "")
+                SaveMap(".ndm", "Network Design Map File");
+            else
+                SaveMap(path);
         }
         /// <summary>
         /// Событие тика таймера
@@ -2652,13 +2935,13 @@ namespace NetworkDesign
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void MainForm_Click(object sender, EventArgs e) => focusbox.Focus();
+        private void MainForm_Click(object sender, EventArgs e) => AnT.Focus();
         /// <summary>
         /// Событие нажатия мыши по области отрисовки
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void AnT_Click(object sender, EventArgs e) => focusbox.Focus();
+        private void AnT_Click(object sender, EventArgs e) => AnT.Focus();
         ColorDialogForm colorDialog;
         /// <summary>
         /// Событие нажатия кнопки параметры
@@ -2705,6 +2988,10 @@ namespace NetworkDesign
         /// <param name="e"></param>
         private void CreateMapClick(object sender, EventArgs e)
         {
+            if (MessageBox.Show("Сохранить карту? Все несохраненные данные будут удалены", "Схранение карты", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                SaveMap(".ndm", "Network Design Map File");
+            }
             CreateMapForm createMapForm = new CreateMapForm();
             createMapForm.ShowDialog();
         }
@@ -2713,7 +3000,14 @@ namespace NetworkDesign
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void SaveBtnClick(object sender, EventArgs e) => SaveMap(".ndm", "Network Design Map File");
+        private void SaveBtnClick(object sender, EventArgs e)
+        {
+            if (path == "")
+                SaveMap(".ndm", "Network Design Map File");
+            else
+                SaveMap(path);
+        }
+
         /// <summary>
         /// СОбытие нажатия кнопки открыть карту
         /// </summary>
@@ -2721,6 +3015,10 @@ namespace NetworkDesign
         /// <param name="e"></param>
         private void OpenMapClick(object sender, EventArgs e)
         {
+            if (MessageBox.Show("Сохранить карту? Все несохраненные данные будут удалены", "Схранение карты", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                SaveMap(".ndm", "Network Design Map File");
+            }
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
                 Filter = "Network Design Map File|*.ndm|Network Design Map File (Template)|*.ndmt"
@@ -2828,6 +3126,7 @@ namespace NetworkDesign
             многоугольникToolStripMenuItem.Checked = false;
             текстToolStripMenuItem.Checked = false;
             проводаToolStripMenuItem.Checked = false;
+            InfoLable.Text = "Выбран инструмент 'Курсор'";
         }
 
         /// <summary>
@@ -2846,6 +3145,7 @@ namespace NetworkDesign
             многоугольникToolStripMenuItem.Checked = false;
             текстToolStripMenuItem.Checked = false;
             проводаToolStripMenuItem.Checked = false;
+            InfoLable.Text = "Выбран инструмент 'Линия'";
         }
 
         /// <summary>
@@ -2864,6 +3164,7 @@ namespace NetworkDesign
             многоугольникToolStripMenuItem.Checked = true;
             текстToolStripMenuItem.Checked = false;
             проводаToolStripMenuItem.Checked = false;
+            InfoLable.Text = "Выбран инструмент 'Многоугольник'";
         }
 
         /// <summary>
@@ -2920,6 +3221,7 @@ namespace NetworkDesign
             многоугольникToolStripMenuItem.Checked = false;
             текстToolStripMenuItem.Checked = false;
             проводаToolStripMenuItem.Checked = false;
+            InfoLable.Text = "Выбран инструмент 'Прямоугольник'";
         }
 
         /// <summary>
@@ -2938,6 +3240,7 @@ namespace NetworkDesign
             многоугольникToolStripMenuItem.Checked = false;
             текстToolStripMenuItem.Checked = false;
             проводаToolStripMenuItem.Checked = false;
+            InfoLable.Text = "Выбран инструмент 'Круг'";
         }
 
         /// <summary>
@@ -2948,8 +3251,7 @@ namespace NetworkDesign
         private void FiltersBtn_Click(object sender, EventArgs e)
         {
             FiltersForm ff = new FiltersForm();
-            ff.ShowDialog();
-            RefreshButtons();
+            ff.Show();
         }
         /// <summary>
         /// Событие нажатия кнопки редактирования
@@ -2969,6 +3271,7 @@ namespace NetworkDesign
                 многоугольникToolStripMenuItem.Checked = false;
                 текстToolStripMenuItem.Checked = false;
                 проводаToolStripMenuItem.Checked = false;
+                InfoLable.Text = "Выбран инструмент 'Курсор'";
             }
             else
             {
@@ -2981,6 +3284,7 @@ namespace NetworkDesign
                 многоугольникToolStripMenuItem.Checked = false;
                 текстToolStripMenuItem.Checked = false;
                 проводаToolStripMenuItem.Checked = false;
+                InfoLable.Text = "Выбран инструмент 'Редактирование'";
                 MyMap.RefreshEditRect();
             }
         }
@@ -3047,6 +3351,7 @@ namespace NetworkDesign
             многоугольникToolStripMenuItem.Checked = false;
             текстToolStripMenuItem.Checked = true;
             проводаToolStripMenuItem.Checked = false;
+            InfoLable.Text = "Выбран инструмент 'Текст'";
         }
 
         /// <summary>
@@ -3065,6 +3370,7 @@ namespace NetworkDesign
             многоугольникToolStripMenuItem.Checked = false;
             текстToolStripMenuItem.Checked = false;
             проводаToolStripMenuItem.Checked = true;
+            InfoLable.Text = "Выбран инструмент 'Провод'";
         }
 
         /// <summary>
@@ -3092,13 +3398,13 @@ namespace NetworkDesign
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void menuStrip1_MouseClick(object sender, MouseEventArgs e) => focusbox.Focus();
+        private void menuStrip1_MouseClick(object sender, MouseEventArgs e) => AnT.Focus();
         /// <summary>
         /// Событие клика по меню инстурментов
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void toolStrip1_MouseClick(object sender, MouseEventArgs e) => focusbox.Focus();
+        private void toolStrip1_MouseClick(object sender, MouseEventArgs e) => AnT.Focus();
         /// <summary>
         /// Событие прокрутки трэкбара (зум)
         /// </summary>
@@ -3119,6 +3425,10 @@ namespace NetworkDesign
         /// <param name="e"></param>
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
+            if (MessageBox.Show("Сохранить карту? Все несохраненные данные будут удалены", "Схранение карты", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                SaveMap(".ndm", "Network Design Map File");
+            }
             //StartForm.SaveMapList();
             ColorSettings.Save(colorSettings);
             SaveTextures(ImagesURL);
@@ -3313,6 +3623,11 @@ namespace NetworkDesign
         private void panel1_Scroll_1(object sender, ScrollEventArgs e) => asp = panel1.AutoScrollPosition;
         //копировать
         private void CopyBtn_Click(object sender, EventArgs e)
+        {
+            CopyElem();
+        }
+
+        private void CopyElem()
         {
             int i = activeElem.item;
             int lastindex;
@@ -3588,6 +3903,7 @@ namespace NetworkDesign
                 многоугольникToolStripMenuItem.Checked = false;
                 текстToolStripMenuItem.Checked = false;
                 проводаToolStripMenuItem.Checked = false;
+                InfoLable.Text = "Выбран инструмент 'Курсор'";
             }
             else
             {
@@ -3600,6 +3916,7 @@ namespace NetworkDesign
                 текстToolStripMenuItem.Checked = false;
                 проводаToolStripMenuItem.Checked = false;
                 MyMap.SetInstrument(3);
+                InfoLable.Text = "Выбран инструмент 'Редактирование'";
                 MyMap.RefreshEditRect();
             }
         }
@@ -3612,8 +3929,7 @@ namespace NetworkDesign
         private void фильтрыToolStripMenuItem_Click(object sender, EventArgs e)
         {
             FiltersForm ff = new FiltersForm();
-            ff.ShowDialog();
-            RefreshButtons();
+            ff.Show();
         }
 
         private void обрезатьОбластьОтрисовкиToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3632,6 +3948,7 @@ namespace NetworkDesign
             многоугольникToolStripMenuItem.Checked = false;
             текстToolStripMenuItem.Checked = false;
             проводаToolStripMenuItem.Checked = false;
+            InfoLable.Text = "Выбран инструмент 'Курсор'";
         }
 
         private void линияToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3645,6 +3962,7 @@ namespace NetworkDesign
             многоугольникToolStripMenuItem.Checked = false;
             текстToolStripMenuItem.Checked = false;
             проводаToolStripMenuItem.Checked = false;
+            InfoLable.Text = "Выбран инструмент 'Линия'";
         }
 
         private void многоугольникToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3658,6 +3976,7 @@ namespace NetworkDesign
             многоугольникToolStripMenuItem.Checked = true;
             текстToolStripMenuItem.Checked = false;
             проводаToolStripMenuItem.Checked = false;
+            InfoLable.Text = "Выбран инструмент 'Многоугольник'";
         }
 
         private void прямоугольникToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3671,6 +3990,7 @@ namespace NetworkDesign
             многоугольникToolStripMenuItem.Checked = false;
             текстToolStripMenuItem.Checked = false;
             проводаToolStripMenuItem.Checked = false;
+            InfoLable.Text = "Выбран инструмент 'Прямоугольник'";
         }
 
         private void кругToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3684,6 +4004,7 @@ namespace NetworkDesign
             многоугольникToolStripMenuItem.Checked = false;
             текстToolStripMenuItem.Checked = false;
             проводаToolStripMenuItem.Checked = false;
+            InfoLable.Text = "Выбран инструмент 'Круг'";
         }
 
         private void текстToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3697,6 +4018,7 @@ namespace NetworkDesign
             многоугольникToolStripMenuItem.Checked = false;
             текстToolStripMenuItem.Checked = true;
             проводаToolStripMenuItem.Checked = false;
+            InfoLable.Text = "Выбран инструмент 'Текст'";
         }
 
         private void экспортКартыToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3723,7 +4045,21 @@ namespace NetworkDesign
 
         private void проводаToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            MyMap.SetInstrument(10);
+            редактированиеToolStripMenuItem.Checked = false;
+            курсорToolStripMenuItem.Checked = false;
+            линияToolStripMenuItem.Checked = false;
+            кругToolStripMenuItem.Checked = false;
+            прямоугольникToolStripMenuItem.Checked = false;
+            многоугольникToolStripMenuItem.Checked = false;
+            текстToolStripMenuItem.Checked = false;
+            проводаToolStripMenuItem.Checked = true;
+            InfoLable.Text = "Выбран инструмент 'Провод'";
+        }
 
+        private void сохранитьКакToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            SaveMap(".ndm", "Network Design Map File");
         }
 
         /// <summary>

@@ -102,9 +102,10 @@
             this.прямоугольникToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.кругToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.текстToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.проводаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.проводаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.сохранитьКакToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.toolStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -603,6 +604,7 @@
             this.создатьToolStripMenuItem,
             this.открытьToolStripMenuItem,
             this.сохранитьToolStripMenuItem,
+            this.сохранитьКакToolStripMenuItem1,
             this.сохранитьКакToolStripMenuItem,
             this.экспортКартыToolStripMenuItem,
             this.экспортимпортЗданийToolStripMenuItem,
@@ -670,9 +672,10 @@
             // 
             // сетевыеЭлементыToolStripMenuItem
             // 
+            this.сетевыеЭлементыToolStripMenuItem.AutoSize = false;
             this.сетевыеЭлементыToolStripMenuItem.Name = "сетевыеЭлементыToolStripMenuItem";
-            this.сетевыеЭлементыToolStripMenuItem.Size = new System.Drawing.Size(273, 22);
-            this.сетевыеЭлементыToolStripMenuItem.Text = "Информация о сетевых элементах...";
+            this.сетевыеЭлементыToolStripMenuItem.Size = new System.Drawing.Size(387, 22);
+            this.сетевыеЭлементыToolStripMenuItem.Text = "Быстрые действия и обозначения";
             this.сетевыеЭлементыToolStripMenuItem.Click += new System.EventHandler(this.сетевыеЭлементыToolStripMenuItem_Click);
             // 
             // посмотретьЛогToolStripMenuItem
@@ -734,7 +737,7 @@
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(243, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(252, 6);
             // 
             // курсорToolStripMenuItem
             // 
@@ -746,7 +749,7 @@
             // toolStripSeparator10
             // 
             this.toolStripSeparator10.Name = "toolStripSeparator10";
-            this.toolStripSeparator10.Size = new System.Drawing.Size(243, 6);
+            this.toolStripSeparator10.Size = new System.Drawing.Size(252, 6);
             // 
             // pingToolStripMenuItem
             // 
@@ -790,6 +793,13 @@
             this.текстToolStripMenuItem.Text = "Текст...";
             this.текстToolStripMenuItem.Click += new System.EventHandler(this.текстToolStripMenuItem_Click);
             // 
+            // проводаToolStripMenuItem
+            // 
+            this.проводаToolStripMenuItem.Name = "проводаToolStripMenuItem";
+            this.проводаToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
+            this.проводаToolStripMenuItem.Text = "Провод...";
+            this.проводаToolStripMenuItem.Click += new System.EventHandler(this.проводаToolStripMenuItem_Click);
+            // 
             // panel1
             // 
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
@@ -814,12 +824,12 @@
             this.comboBox1.TabIndex = 7;
             this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
-            // проводаToolStripMenuItem
+            // сохранитьКакToolStripMenuItem1
             // 
-            this.проводаToolStripMenuItem.Name = "проводаToolStripMenuItem";
-            this.проводаToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
-            this.проводаToolStripMenuItem.Text = "Провод...";
-            this.проводаToolStripMenuItem.Click += new System.EventHandler(this.проводаToolStripMenuItem_Click);
+            this.сохранитьКакToolStripMenuItem1.Name = "сохранитьКакToolStripMenuItem1";
+            this.сохранитьКакToolStripMenuItem1.Size = new System.Drawing.Size(273, 22);
+            this.сохранитьКакToolStripMenuItem1.Text = "Сохранить как...";
+            this.сохранитьКакToolStripMenuItem1.Click += new System.EventHandler(this.сохранитьКакToolStripMenuItem1_Click);
             // 
             // MainForm
             // 
@@ -925,6 +935,7 @@
         private System.Windows.Forms.ToolStripMenuItem кругToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem текстToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem проводаToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem сохранитьКакToolStripMenuItem1;
     }
 }
 
