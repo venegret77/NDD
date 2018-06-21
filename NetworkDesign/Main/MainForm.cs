@@ -2892,7 +2892,7 @@ namespace NetworkDesign
 
         private void DeleteTexture(int id)
         {
-            Element elem = new Element(11, id, ImagesURL.Textures[id], -1);
+            Element elem = new Element(11, id, ImagesURL.Textures[id].Clone(), -1);
             DeleteImages.Add(ImagesURL.Textures[id]);
             ImagesURL.RemoveAt(id);
             isLoad = false;
@@ -2926,7 +2926,7 @@ namespace NetworkDesign
             Element elem = new Element(12, id, empty, -1);
             isLoad = false;
             LoadImages();
-            Element _elem = new Element(12, id, ImagesURL.Textures.Last(), -1);
+            Element _elem = new Element(12, id, (URL_ID)ImagesURL.Textures[ImagesURL.Textures.Count - 1].Clone(), -1);
             MyMap.log.Add(new LogMessage("Добавил текстуру", elem, _elem));
             InfoLable.Text = "Добавил текстуру";
             CheckButtons(true);
@@ -3651,8 +3651,9 @@ namespace NetworkDesign
                 ImagesURL.Clear();
                 ImagesURL = (ListOfTextures)textures.Clone();
                 foreach (var url in ImagesURL.Textures)
-                    if (!File.Exists(Application.StartupPath + @"\Textures\" + url.URL))
-                        File.Copy(Application.StartupPath + @"\###tempdirectory._temp###\" + url.URL, Application.StartupPath + @"\Textures\" + url.URL);
+                    if (url.URL != "")
+                        if (!File.Exists(Application.StartupPath + @"\Textures\" + url.URL))
+                            File.Copy(Application.StartupPath + @"\###tempdirectory._temp###\" + url.URL, Application.StartupPath + @"\Textures\" + url.URL);
                 int id = -1;
                 for (int i = 0; i < _textures.Count; i++)
                 {
@@ -3686,26 +3687,29 @@ namespace NetworkDesign
                 ListOfTextures textures = (ListOfTextures)formatter.Deserialize(fs);
                 for (int i = 0; i < NE.NetworkElements.Count; i++)
                 {
-                    bool isLoadTexture = false;
-                    for (int j = 0; j < ImagesURL.Textures.Count; j++)
+                    if (!NE.NetworkElements[i].delete & NE.NetworkElements[i].texture.url != "")
                     {
-                        if (NE.NetworkElements[i].texture.url == ImagesURL.Textures[j].URL)
+                        bool isLoadTexture = false;
+                        for (int j = 0; j < ImagesURL.Textures.Count; j++)
                         {
-                            NE.NetworkElements[i].texture.idimage = j;
-                            isLoadTexture = true;
-                            break;
+                            if (NE.NetworkElements[i].texture.url == ImagesURL.Textures[j].URL)
+                            {
+                                NE.NetworkElements[i].texture.idimage = j;
+                                isLoadTexture = true;
+                                break;
+                            }
                         }
-                    }
-                    if (!isLoadTexture)
-                    {
-                        ImagesURL.Add(textures.Textures[NE.NetworkElements[i].texture.idimage]);
-                        if (!File.Exists(Application.StartupPath + @"\Textures\" + NE.NetworkElements[i].texture.url))
-                            File.Copy(Application.StartupPath + @"\###tempdirectory._temp###\" + NE.NetworkElements[i].texture.url, Application.StartupPath + @"\Textures\" + NE.NetworkElements[i].texture.url);
-                        NE.NetworkElements[i].texture.idimage = ImagesURL.Count - 1;
-                        string empty = "";
-                        Element elem = new Element(12, ImagesURL.Count - 1, empty, -1);
-                        Element _elem = new Element(12, ImagesURL.Count - 1, ImagesURL.Textures.Last(), -1);
-                        MyMap.log.Add(new LogMessage("Добавил текстуру", elem, _elem));
+                        if (!isLoadTexture)
+                        {
+                            ImagesURL.Add(textures.Textures[NE.NetworkElements[i].texture.idimage]);
+                            if (!File.Exists(Application.StartupPath + @"\Textures\" + NE.NetworkElements[i].texture.url))
+                                File.Copy(Application.StartupPath + @"\###tempdirectory._temp###\" + NE.NetworkElements[i].texture.url, Application.StartupPath + @"\Textures\" + NE.NetworkElements[i].texture.url);
+                            NE.NetworkElements[i].texture.idimage = ImagesURL.Count - 1;
+                            string empty = "";
+                            Element elem = new Element(12, ImagesURL.Count - 1, empty, -1);
+                            Element _elem = new Element(12, ImagesURL.Count - 1, ImagesURL.Textures.Last(), -1);
+                            MyMap.log.Add(new LogMessage("Добавил текстуру", elem, _elem));
+                        }
                     }
                 }
                 isLoad = false;

@@ -33,6 +33,11 @@ namespace NetworkDesign.Main
 
         private void DisplayedNameForm_FormClosed(object sender, FormClosedEventArgs e)
         {
+            //Application.Exit();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
             Application.Exit();
         }
     }

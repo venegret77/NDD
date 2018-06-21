@@ -67,7 +67,7 @@ namespace NetworkDesign
             dist = Int32.MaxValue;
             for (int i = 0; i < Polygons.Count; i++)
             {
-                if (dl == Polygons[i].DL)
+                if (dl == Polygons[i].DL & !Polygons[i].delete)
                 {
                     double _dist = Polygons[i].Search(x, y);
                     if (dist == -1 & _dist != -1)
@@ -103,7 +103,7 @@ namespace NetworkDesign
             List<object> elems = new List<object>();
             foreach (var elem in Polygons)
             {
-                if (elem.DL.Level == build)
+                if (elem.DL.Level == build & !elem.delete)
                 {
                     elems.Add(elem);
                 }

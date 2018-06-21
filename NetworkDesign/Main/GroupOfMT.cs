@@ -67,7 +67,7 @@ namespace NetworkDesign.NetworkElements
             List<object> elems = new List<object>();
             foreach (var elem in MyTexts)
             {
-                if (elem.DL.Level == build)
+                if (elem.DL.Level == build & !elem.delete)
                 {
                     elems.Add(elem);
                 }
@@ -86,7 +86,7 @@ namespace NetworkDesign.NetworkElements
             double _count = Double.MaxValue;
             for (int i = 0; i < MyTexts.Count; i++)
             {
-                if (dl == MyTexts[i].DL)
+                if (dl == MyTexts[i].DL & !MyTexts[i].delete)
                 {
                     double count = MyTexts[i].Search(x, y);
                     if (count < _count & count != -1)

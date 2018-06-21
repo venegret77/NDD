@@ -68,7 +68,7 @@ namespace NetworkDesign
             dist = Int32.MaxValue;
             for (int i = 0; i < Circles.Count; i++)
             {
-                if (dl == Circles[i].MainDL)
+                if (dl == Circles[i].MainDL & !Circles[i].delete)
                 {
                     double _dist = Circles[i].Search(x, y);
                     if (dist == -1 & _dist != -1)
@@ -101,7 +101,7 @@ namespace NetworkDesign
                 //Внутри
                 if (dl.Level != -1)
                 {
-                    if (dl == Circles[i].LocalDL)
+                    if (dl == Circles[i].LocalDL & !Circles[i].delete)
                     {
                         double _dist = Circles[i].SearchEntInBuild(x, y);
                         if (dist == -1 & _dist != -1)
@@ -119,7 +119,7 @@ namespace NetworkDesign
                 //Снаружи
                 else
                 {
-                    if (dl == Circles[i].MainDL)
+                    if (dl == Circles[i].MainDL & !Circles[i].delete)
                     {
                         double _dist = Circles[i].SearchEnt(x, y);
                         if (dist == -1 & _dist != -1)
@@ -151,7 +151,7 @@ namespace NetworkDesign
             for (int i = 0; i < Circles.Count; i++)
             {
                 //Внутри
-                if (dl.Level != -1)
+                if (dl.Level != -1 & !Circles[i].delete)
                 {
                     double _dist = Circles[i].SearchIWInBuild(x, y, dl);
                     if (dist == -1 & _dist != -1)
@@ -168,7 +168,7 @@ namespace NetworkDesign
                 //Снаружи
                 else
                 {
-                    if (dl == Circles[i].MainDL)
+                    if (dl == Circles[i].MainDL & !Circles[i].delete)
                     {
                         double _dist = Circles[i].SearchIW(x, y);
                         if (dist == -1 & _dist != -1)
@@ -239,7 +239,7 @@ namespace NetworkDesign
             List<object> elems = new List<object>();
             foreach (var elem in Circles)
             {
-                if (elem.DL.Level == build)
+                if (elem.DL.Level == build & !elem.delete)
                 {
                     elems.Add(elem);
                 }

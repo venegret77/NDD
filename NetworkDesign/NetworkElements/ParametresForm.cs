@@ -91,10 +91,13 @@ namespace NetworkDesign.NetworkElements
         {
             foreach (var ne in NetworkElements.NetworkElements)
             {
-                foreach (var param in ne.Options.Options)
+                if (!ne.delete)
                 {
-                    if (param.ID == id & param.Name == name & !param.isEmpty())
-                        return false;
+                    foreach (var param in ne.Options.Options)
+                    {
+                        if (param.ID == id & param.Name == name & !param.isEmpty())
+                            return false;
+                    }
                 }
             }
             return true;

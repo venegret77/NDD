@@ -88,7 +88,7 @@ namespace NetworkDesign
             dist = Int32.MaxValue;
             for (int i = 0; i < Buildings.Count; i++)
             {
-                if (dl == Buildings[i].MainMapDL)
+                if (dl == Buildings[i].MainMapDL & !Buildings[i].delete)
                 {
                     double _dist = Buildings[i].CalcPointInBuild(x, y);
                     if (dist == -1 & _dist != -1)

@@ -119,7 +119,7 @@ namespace NetworkDesign.NetworkElements
             List<object> elems = new List<object>();
             foreach (var elem in NetworkWires)
             {
-                if (elem.DL.Level == build)
+                if (elem.DL.Level == build & !elem.delete)
                 {
                     elems.Add(elem);
                 }
@@ -138,7 +138,7 @@ namespace NetworkDesign.NetworkElements
             double _count = Double.MaxValue;
             for (int i = 0; i < NetworkWires.Count; i++)
             {
-                if (dl == NetworkWires[i].DL)
+                if (dl == NetworkWires[i].DL & !NetworkWires[i].delete)
                 {
                     double count = NetworkWires[i].Search(x, y);
                     if (count < _count & count != -1)

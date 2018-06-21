@@ -94,7 +94,7 @@ namespace NetworkDesign.NetworkElements
     /// <summary>
     /// Структура для хранения ссылки на текстуру, описания, наименования и типа текструты
     /// </summary>
-    public struct URL_ID
+    public struct URL_ID: ICloneable
     {
         /// <summary>
         /// Ссылка
@@ -135,6 +135,17 @@ namespace NetworkDesign.NetworkElements
             this.Type = iD;
             this.name = name;
             this.description = description;
+        }
+
+        public object Clone()
+        {
+            return new URL_ID
+            {
+                URL = this.URL,
+                Type = this.Type,
+                name = this.name,
+                description = this.description
+            };
         }
     }
 }

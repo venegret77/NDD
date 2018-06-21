@@ -68,7 +68,7 @@ namespace NetworkDesign
             dist = Int32.MaxValue;
             for (int i = 0; i < Rectangles.Count; i++)
             {
-                if (dl == Rectangles[i].DL)
+                if (dl == Rectangles[i].DL & !Rectangles[i].delete)
                 {
                     double _dist = Rectangles[i].Search(x, y);
                     if (dist == -1 & _dist != -1)
@@ -104,7 +104,7 @@ namespace NetworkDesign
             List<object> elems = new List<object>();
             foreach (var elem in Rectangles)
             {
-                if (elem.DL.Level == build)
+                if (elem.DL.Level == build & !elem.delete)
                 {
                     elems.Add(elem);
                 }

@@ -58,7 +58,10 @@ namespace NetworkDesign.NetworkElements
         {
             for (int i = 0; i < NetworkElements.Count; i++)
             {
-                NetworkElements[i].Options.Options[id].Name = MainForm.parametrs.Params[id];
+                if (!NetworkElements[i].delete)
+                    foreach (var opt in NetworkElements[i].Options.Options)
+                        if (opt.ID == id)
+                            opt.Name = MainForm.parametrs.Params[id];
             }
         }
 
@@ -108,7 +111,7 @@ namespace NetworkDesign.NetworkElements
             List<object> elems = new List<object>();
             foreach (var elem in NetworkElements)
             {
-                if (elem.DL.Level == build)
+                if (elem.DL.Level == build & !elem.delete)
                 {
                     elems.Add(elem);
                 }
@@ -125,7 +128,7 @@ namespace NetworkDesign.NetworkElements
         {
             for (int i = 0; i < NetworkElements.Count; i++)
             {
-                if (dl == NetworkElements[i].DL)
+                if (dl == NetworkElements[i].DL & !NetworkElements[i].delete)
                 {
                     if (NetworkElements[i].Search(x, y) != -1)
                         return i;

@@ -67,7 +67,7 @@ namespace NetworkDesign
             double _count = Double.MaxValue;
             for (int i = 0; i < Lines.Count; i++)
             {
-                if (dl == Lines[i].DL)
+                if (dl == Lines[i].DL & !Lines[i].delete)
                 {
                     double count = Lines[i].Search(x, y);
                     if (count < _count & count != -1)
@@ -101,7 +101,7 @@ namespace NetworkDesign
             List<object> elems = new List<object>();
             foreach (var elem in Lines)
             {
-                if (elem.DL.Level == build)
+                if (elem.DL.Level == build & !elem.delete)
                 {
                     elems.Add(elem);
                 }
