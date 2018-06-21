@@ -60,14 +60,14 @@
             this.Name = "DisplayedNameForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Введите отображаемое имя пользователя";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.DisplayedNameForm_FormClosed);
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Button button1;
+        public System.Windows.Forms.TextBox textBox1;
     }
 }

@@ -55,8 +55,20 @@ namespace NetworkDesign
         /// <param name="_elem_">Элемент 2</param>
         public LogMessage(string _Text, Element elem_, Element _elem_)
         {
-            username = MainForm.user.DisplayName;
-            userlogin = MainForm.user.SamAccountName;
+            string name = "";
+            string login = "";
+            if (MainForm.user == null)
+            {
+                name = MainForm.usertemp;
+                login = MainForm.usertemp;
+            }
+            else
+            {
+                name = MainForm.user.DisplayName;
+                login = MainForm.user.SamAccountName;
+            }
+            username = name;
+            userlogin = login;
             dateTime = DateTime.Now;
             Text = _Text;
             elem = elem_;
@@ -71,8 +83,20 @@ namespace NetworkDesign
         /// <param name="_buildid">Идентификатор здания</param>
         public LogMessage(string _Text, Element elem_, Element _elem_, int _buildid)
         {
-            username = MainForm.user.DisplayName;
-            userlogin = MainForm.user.SamAccountName;
+            string name = "";
+            string login = "";
+            if (MainForm.user == null)
+            {
+                name = MainForm.usertemp;
+                login = MainForm.usertemp;
+            }
+            else
+            {
+                name = MainForm.user.DisplayName;
+                login = MainForm.user.SamAccountName;
+            }
+            username = name;
+            userlogin = login;
             dateTime = DateTime.Now;
             Text = _Text;
             elem = elem_;

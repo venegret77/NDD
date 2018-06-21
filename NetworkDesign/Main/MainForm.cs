@@ -27,7 +27,7 @@ namespace NetworkDesign
         private bool isResizeMap = false;
         Element elem = new Element();
         Element _elem = new Element();
-        public static UserPrincipal user;
+        public static UserPrincipal user = null;
         public static bool edit;
         static public Map MyMap;
         static public DrawLevel drawLevel;
@@ -54,6 +54,7 @@ namespace NetworkDesign
         static public double hkoef = 1;
         static public int imgwidth = 100;
         static public int imgheight = 100;
+        static public string usertemp;
 
         static public bool isInit = false;
 
@@ -146,13 +147,10 @@ namespace NetworkDesign
                 }
             }
             filtres = new Filtres(true, true, true, true, true, true, true, true, true, true);
-            /*focusbox.TabIndex = 99;
-            focusbox.Parent = this;
-            focusbox.Visible = true;
-            focusbox.Enabled = true;
-            focusbox.Location = new Point(5000, 5000);*/
             Click += MainForm_Click;
             линияToolStripMenuItem.Checked = true;
+            MyMap.SetInstrument(1);
+            edit = true;
         }
 
         private void AnT_KeyDown(object sender, KeyEventArgs e)
@@ -2346,7 +2344,10 @@ namespace NetworkDesign
             try
             {
                 XmlSerializer formatter = new XmlSerializer(typeof(Map));
-                MyMap.UserLogin = user.SamAccountName;
+                if (user == null)
+                    MyMap.UserLogin = MainForm.usertemp;
+                else
+                    MyMap.UserLogin = user.SamAccountName;
                 if (Directory.Exists(Application.StartupPath + @"\###tempdirectory._temp###\"))
                     Directory.Delete(Application.StartupPath + @"\###tempdirectory._temp###\", true);
                 Directory.CreateDirectory(Application.StartupPath + @"\###tempdirectory._temp###\");
@@ -2398,7 +2399,10 @@ namespace NetworkDesign
                     {
                         filename = saveFileDialog1.FileName + fileExtension;
                     }
-                    MyMap.UserLogin = user.SamAccountName;
+                    if (user == null)
+                        MyMap.UserLogin = MainForm.usertemp;
+                    else
+                        MyMap.UserLogin = user.SamAccountName;
                     if (Directory.Exists(Application.StartupPath + @"\###tempdirectory._temp###\"))
                         Directory.Delete(Application.StartupPath + @"\###tempdirectory._temp###\", true);
                     Directory.CreateDirectory(Application.StartupPath + @"\###tempdirectory._temp###\");
@@ -2443,7 +2447,12 @@ namespace NetworkDesign
                 using (FileStream fs = new FileStream(Application.StartupPath + @"\###tempdirectory._temp###\mapfile.map", FileMode.OpenOrCreate))
                 {
                     Map TempMap = (Map)formatter.Deserialize(fs);
-                    if (TempMap.UserLogin == user.SamAccountName | edit)
+                    string name = "";
+                    if (user == null)
+                        name = MainForm.usertemp;
+                    else
+                        name = MainForm.user.SamAccountName;
+                    if (TempMap.UserLogin == name | edit)
                     {
                         for (int i = 0; i < TempMap.MyTexts.MyTexts.Count; i++)
                             TempMap.MyTexts.MyTexts[i].GenNewTexture();
@@ -2511,7 +2520,12 @@ namespace NetworkDesign
                     TempMap.NetworkElements.AddGroupElems(MyMap.NetworkElements.GetInBuild(buildid));
                     TempMap.NetworkWires.AddGroupElems(MyMap.NetworkWires.GetInBuild(buildid));
                     TempMap.MyTexts.AddGroupElems(MyMap.MyTexts.GetInBuild(buildid));
-                    TempMap.UserLogin = user.SamAccountName;
+                    string name = "";
+                    if (user == null)
+                        name = MainForm.usertemp;
+                    else
+                        name = MainForm.user.SamAccountName;
+                    TempMap.UserLogin = name;
                     if (Directory.Exists(Application.StartupPath + @"\###tempdirectory._temp###\"))
                         Directory.Delete(Application.StartupPath + @"\###tempdirectory._temp###\", true);
                     Directory.CreateDirectory(Application.StartupPath + @"\###tempdirectory._temp###\");
@@ -2566,7 +2580,12 @@ namespace NetworkDesign
                     {
                         MyMap.Unfocus(true);
                         Map OpenMap = (Map)formatter.Deserialize(fs);
-                        if (OpenMap.UserLogin == user.SamAccountName | edit)
+                        string name = "";
+                        if (user == null)
+                            name = MainForm.usertemp;
+                        else
+                            name = MainForm.user.SamAccountName;
+                        if (OpenMap.UserLogin == name | edit)
                         {
                             _OpenTexturesFromBuild(ref OpenMap.NetworkElements);
                             Parametrs._OpenFromBuild(ref OpenMap.NetworkElements);
@@ -2725,7 +2744,12 @@ namespace NetworkDesign
                     {
                         filename = saveFileDialog1.FileName + fileExtension;
                     }
-                    MyMap.UserLogin = user.SamAccountName;
+                    string name = "";
+                    if (user == null)
+                        name = MainForm.usertemp;
+                    else
+                        name = MainForm.user.SamAccountName;
+                    MyMap.UserLogin = name;
                     if (Directory.Exists(Application.StartupPath + @"\###tempdirectory._temp###\"))
                         Directory.Delete(Application.StartupPath + @"\###tempdirectory._temp###\", true);
                     Directory.CreateDirectory(Application.StartupPath + @"\###tempdirectory._temp###\");
@@ -2753,7 +2777,12 @@ namespace NetworkDesign
                 using (FileStream fs = new FileStream(Application.StartupPath + @"\###tempdirectory._temp###\mapfile.map", FileMode.OpenOrCreate))
                 {
                     Map TempMap = (Map)formatter.Deserialize(fs);
-                    if (TempMap.UserLogin == user.SamAccountName | edit)
+                    string name = "";
+                    if (user == null)
+                        name = MainForm.usertemp;
+                    else
+                        name = MainForm.user.SamAccountName;
+                    if (TempMap.UserLogin == name | edit)
                     {
                         for (int i = 0; i < TempMap.MyTexts.MyTexts.Count; i++)
                             TempMap.MyTexts.MyTexts[i].GenNewTexture();

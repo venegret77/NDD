@@ -29,10 +29,22 @@ namespace NetworkDesign.NetworkElements
         /// </summary>
         /// <param name="note">Текст заметки</param>
         /// <param name="user">Пользователь</param>
-        public Note(string note, UserPrincipal user)
+        public Note(string note)
         {
             this.note = note;
-            this.userlogin = user.SamAccountName;
+            string name = "";
+            string login = "";
+            if (MainForm.user == null)
+            {
+                name = MainForm.usertemp;
+                login = MainForm.usertemp;
+            }
+            else
+            {
+                name = MainForm.user.DisplayName;
+                login = MainForm.user.SamAccountName;
+            }
+            this.userlogin = login;
         }
 
         public override string ToString()
@@ -68,7 +80,7 @@ namespace NetworkDesign.NetworkElements
         /// <param name="text">Текст заметки</param>
         public void Add(string text)
         {
-            notes.Add(new Note(text, MainForm.user));
+            notes.Add(new Note(text));
         }
         /// <summary>
         /// Добавление
@@ -86,7 +98,19 @@ namespace NetworkDesign.NetworkElements
         /// <returns></returns>
         public bool Edit(int id, string text)
         {
-            if (MainForm.user.SamAccountName == notes[id].userlogin | MainForm.edit)
+            string name = "";
+            string login = "";
+            if (MainForm.user == null)
+            {
+                name = MainForm.usertemp;
+                login = MainForm.usertemp;
+            }
+            else
+            {
+                name = MainForm.user.DisplayName;
+                login = MainForm.user.SamAccountName;
+            }
+            if (login == notes[id].userlogin | MainForm.edit)
             {
                 notes[id].note = text;
                 return true;
@@ -100,7 +124,19 @@ namespace NetworkDesign.NetworkElements
         /// <returns></returns>
         public bool Remove(int id)
         {
-            if (MainForm.user.SamAccountName == notes[id].userlogin | MainForm.edit)
+            string name = "";
+            string login = "";
+            if (MainForm.user == null)
+            {
+                name = MainForm.usertemp;
+                login = MainForm.usertemp;
+            }
+            else
+            {
+                name = MainForm.user.DisplayName;
+                login = MainForm.user.SamAccountName;
+            }
+            if (login == notes[id].userlogin | MainForm.edit)
             {
                 notes.RemoveAt(id);
                 return true;

@@ -140,7 +140,19 @@ namespace NetworkDesign.NetworkElements
 
         private void button3_Click(object sender, EventArgs e)
         {
-            string text = MainForm.user.DisplayName.ToString() + ":" + textBox1.Text;
+            string name = "";
+            string login = "";
+            if (MainForm.user == null)
+            {
+                name = MainForm.usertemp;
+                login = MainForm.usertemp;
+            }
+            else
+            {
+                name = MainForm.user.DisplayName;
+                login = MainForm.user.SamAccountName;
+            }
+            string text = name.ToString() + ":" + textBox1.Text;
             if (notes.Edit(listBox1.SelectedIndex, text))
                 listBox1.Items[listBox1.SelectedIndex] = text;
         }
@@ -149,8 +161,20 @@ namespace NetworkDesign.NetworkElements
         {
             if (textBox1.Text != "" & textBox1.Text != " ")
             {
-                listBox1.Items.Add(MainForm.user.DisplayName.ToString() + ":" + textBox1.Text);
-                notes.Add(new Note(MainForm.user.DisplayName.ToString() + ":" + textBox1.Text, MainForm.user));
+                string name = "";
+                string login = "";
+                if (MainForm.user == null)
+                {
+                    name = MainForm.usertemp;
+                    login = MainForm.usertemp;
+                }
+                else
+                {
+                    name = MainForm.user.DisplayName;
+                    login = MainForm.user.SamAccountName;
+                }
+                listBox1.Items.Add(name.ToString() + ":" + textBox1.Text);
+                notes.Add(new Note(name.ToString() + ":" + textBox1.Text));
             }
             textBox1.Text = "";
             listBox1.Focus();

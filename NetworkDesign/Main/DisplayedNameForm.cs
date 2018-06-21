@@ -24,10 +24,16 @@ namespace NetworkDesign.Main
         {
             if (textBox1.Text != "" & textBox1.Text != " ")
             {
-                MainForm.user.DisplayName = textBox1.Text;
+                MainForm.usertemp = textBox1.Text;
+                //MainForm.user.SamAccountName = textBox1.Text;
                 dialogResult = DialogResult.OK;
                 Close();
             }
+        }
+
+        private void DisplayedNameForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Application.Exit();
         }
     }
 }

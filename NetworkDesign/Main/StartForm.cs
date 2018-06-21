@@ -20,6 +20,7 @@ namespace NetworkDesign.Main
 
         public StartForm()
         {
+            DisplayedNameForm displayedNameForm;
             InitializeComponent();
             StartPosition = FormStartPosition.CenterScreen;
             if (Directory.Exists(Application.StartupPath + @"\###tempdirectory._temp###\"))
@@ -29,24 +30,28 @@ namespace NetworkDesign.Main
                 MainForm.user = MainForm.Autorisation(out MainForm.edit);
                 if (MainForm.user.DisplayName.Length < 2)
                 {
-                    DisplayedNameForm displayedNameForm = new DisplayedNameForm();
+                    displayedNameForm = new DisplayedNameForm();
                     while (displayedNameForm.dialogResult != DialogResult.OK)
                     {
                         displayedNameForm.ShowDialog();
                     }
                 }
-                Text = "Авторизация успешна";
-                label4.Text = MainForm.user.DisplayName + " (";
                 if (MainForm.edit)
-                    label4.Text += "администратор)";
+                    label4.Text = MainForm.user.DisplayName + "(администратор)";
                 else
-                    label4.Text += "пользователь)";
+                    label4.Text = MainForm.user.DisplayName + "(пользователь)";
+                Text = "Авторизация успешна";
                 tabControl1.Enabled = true;
             }
             catch
             {
-                Name = "Авторизация не удалась";
-                label4.Text = "DefaultUser (пользоваель)";
+                displayedNameForm = new DisplayedNameForm();
+                while (displayedNameForm.dialogResult != DialogResult.OK)
+                {
+                    displayedNameForm.ShowDialog();
+                }
+                Text = "Авторизация не удалась";
+                label4.Text = MainForm.usertemp + "(пользоваель)";
                 tabControl1.Enabled = true;
             }
             //if (!MainForm.isInitMap)
