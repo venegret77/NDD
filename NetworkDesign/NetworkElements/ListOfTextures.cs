@@ -9,12 +9,8 @@ namespace NetworkDesign.NetworkElements
     /// <summary>
     /// Список текстур
     /// </summary>
-    public class ListOfTextures: ICloneable
+    public class ListOfTextures : ICloneable
     {
-        /// <summary>
-        /// Количество
-        /// </summary>
-        public int Count;
         /// <summary>
         /// Список класса URL_ID (текстуры)
         /// </summary>
@@ -33,7 +29,6 @@ namespace NetworkDesign.NetworkElements
         public void Add(string url, int id)
         {
             Textures.Add(new URL_ID(url, id));
-            Count++;
         }
         /// <summary>
         /// Добавить
@@ -42,7 +37,6 @@ namespace NetworkDesign.NetworkElements
         public void Add(URL_ID url_id)
         {
             Textures.Add(url_id);
-            Count++;
         }
         /// <summary>
         /// Копирование элемента
@@ -55,7 +49,6 @@ namespace NetworkDesign.NetworkElements
                 _Textures.Add(t);
             return new ListOfTextures
             {
-                Count = this.Count,
                 Textures = _Textures
             };
         }
@@ -65,7 +58,6 @@ namespace NetworkDesign.NetworkElements
         internal void Clear()
         {
             Textures = new List<URL_ID>();
-            Count = 0;
         }
         /// <summary>
         /// Удаление заданной текстуры
@@ -74,7 +66,6 @@ namespace NetworkDesign.NetworkElements
         internal void RemoveAt(int id)
         {
             Textures.RemoveAt(id);
-            Count--;
         }
         /// <summary>
         /// Возвращает первое вхождение текстуры с заданной ссылкой
@@ -90,11 +81,29 @@ namespace NetworkDesign.NetworkElements
             }
             return -1;
         }
+
+        public void giddown(int id)
+        {
+            for (int i = 0; i < Textures.Count; i++)
+            {
+                if (Textures[i].Type > id)
+                    Textures[i].typedown();
+            }
+        }
+
+        public void gidup(int id)
+        {
+            for (int i = 0; i < Textures.Count; i++)
+            {
+                if (Textures[i].Type >= id)
+                    Textures[i].typeup();
+            }
+        }
     }
     /// <summary>
     /// Структура для хранения ссылки на текстуру, описания, наименования и типа текструты
     /// </summary>
-    public struct URL_ID: ICloneable
+    public class URL_ID: ICloneable
     {
         /// <summary>
         /// Ссылка
@@ -104,6 +113,7 @@ namespace NetworkDesign.NetworkElements
         /// Тип
         /// </summary>
         public int Type;
+        public string namegroup;
         /// <summary>
         /// Наименование
         /// </summary>
@@ -112,6 +122,11 @@ namespace NetworkDesign.NetworkElements
         /// Описание
         /// </summary>
         public string description;
+
+        public URL_ID()
+        {
+        }
+
         /// <summary>
         /// Конструктор
         /// </summary>
@@ -133,6 +148,7 @@ namespace NetworkDesign.NetworkElements
         {
             this.URL = uRL;
             this.Type = iD;
+            namegroup = MainForm.groups.GroupsOfNE[iD].name;
             this.name = name;
             this.description = description;
         }
@@ -144,8 +160,19 @@ namespace NetworkDesign.NetworkElements
                 URL = this.URL,
                 Type = this.Type,
                 name = this.name,
-                description = this.description
+                description = this.description,
+                namegroup = this.namegroup
             };
+        }
+
+        public void typedown()
+        {
+            Type--;
+        }
+
+        public void typeup()
+        {
+            Type++;
         }
     }
 }

@@ -78,7 +78,7 @@ namespace NetworkDesign
                         }
                         if (GONE.NetworkElements[i].Options.HostName.ToLower().Contains(text))
                         {
-                            listBox1.Items.Add("Сетевой элемент '/" + GONE.NetworkElements[i].Options.Name + "'");
+                            listBox1.Items.Add("Сетевой элемент '/" + GONE.NetworkElements[i].Options.HostName + "'");
                             items.Add(i);
                             type.Add(2);
                         }
@@ -86,7 +86,7 @@ namespace NetworkDesign
                         {
                             if (ip.ToLower().Contains(text))
                             {
-                                listBox1.Items.Add("Сетевой элемент '/" + GONE.NetworkElements[i].Options.HostName + "'");
+                                listBox1.Items.Add("Сетевой элемент '/" + GONE.NetworkElements[i].Options.Name + "'");
                                 items.Add(i);
                                 type.Add(2);
                             }

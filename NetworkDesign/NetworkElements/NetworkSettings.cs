@@ -52,18 +52,6 @@ namespace NetworkDesign.NetworkElements
         {
         }
         /// <summary>
-        /// Обновление идентификаторов
-        /// </summary>
-        /// <param name="id">Идентификатор</param>
-        internal void RefreshID(int id)
-        {
-            for (int i = 0; i < Options.Count; i++)
-            {
-                if (Options[i].ID > id)
-                    Options[i].SetNewID();
-            }
-        }
-        /// <summary>
         /// Проверка доступности портов
         /// </summary>
         /// <returns>Возвращает значение, есть ли свободный порт или нет</returns>
@@ -128,7 +116,7 @@ namespace NetworkDesign.NetworkElements
                 _IPs.Add(ip);
             List<NetworkParametr> options = new List<NetworkParametr>();
             foreach (var p in Options)
-                options.Add(new NetworkParametr(p.ID, p.Name, p.Value));
+                options.Add(new NetworkParametr(p.Name, p.Value));
             return new NetworkSettings
             {
                 BusyPorts = this.BusyPorts,
@@ -149,10 +137,6 @@ namespace NetworkDesign.NetworkElements
     public class NetworkParametr
     {
         /// <summary>
-        /// Идентификатор
-        /// </summary>
-        public int ID;
-        /// <summary>
         /// Наименование
         /// </summary>
         public string Name;
@@ -163,12 +147,10 @@ namespace NetworkDesign.NetworkElements
         /// <summary>
         /// Конструктор
         /// </summary>
-        /// <param name="iD">Идентификатор</param>
         /// <param name="name">Наименование</param>
         /// <param name="value">Значение</param>
-        public NetworkParametr(int iD, string name, string value)
+        public NetworkParametr(string name, string value)
         {
-            ID = iD;
             Name = name;
             Value = value;
         }
@@ -177,14 +159,6 @@ namespace NetworkDesign.NetworkElements
         /// </summary>
         public NetworkParametr()
         {
-        }
-        /// <summary>
-        /// Установить новый идентификатор
-        /// </summary>
-        public void SetNewID()
-        {
-            ID--;
-            Name = MainForm.parametrs.Params[ID];
         }
         /// <summary>
         /// Проверка пустое значение или нет
@@ -209,55 +183,93 @@ namespace NetworkDesign.NetworkElements
 
     }
 
-    /// <summary>
-    /// Общий набор параметров для сетевых элементов
-    /// </summary>
-    public class Parametrs : ICloneable
+    public class GroupOfParametres
     {
-        /// <summary>
-        /// Список параметров в виде строк
-        /// </summary>
-        public List<string> Params = new List<string>();
-        /// <summary>
-        /// Конструктор
-        /// </summary>
-        public Parametrs()
+        public List<string> Parametres = new List<string>();
+
+        public GroupOfParametres() { }
+
+        public void Add(string name)
         {
+            if (!Parametres.Contains(name))
+            {
+                Parametres.Add(name);
+                int lastindex = Parametres.Count - 1;
+                Element elem = new Element(13, lastindex, "", -1);
+                Element _elem = new Element(13, lastindex, Parametres[lastindex], -1);
+                MainForm.MyMap.log.Add(new LogMessage("Добавил параметр '" + Parametres.Last() + "'", elem, _elem));
+            }
+            else
+                MessageBox.Show("Такой параметр уже существует");
         }
-        /// <summary>
-        /// Добавление
-        /// </summary>
-        /// <param name="_name">Наименование</param>
-        public void Add(string _name)
+
+        public bool Delete(int id, string name, ref Groups groups)
         {
-            Params.Add(_name);
+            bool isUsed = false;
+            for (int i = 0; i < groups.GroupsOfNE.Count; i++)
+            {
+                if (groups.GroupsOfNE[i].Parametres.Contains(name))
+                {
+                    isUsed = true;
+                    break;
+                }
+            }
+            if (isUsed)
+            {
+                MessageBox.Show("Невозможно удалить параметр, т.к. он используется");
+                return false;
+            }
+            else
+            {
+                Element elem = new Element(13, id, MainForm.parametrs.Parametres[id], -3);
+                Element _elem = new Element(13, id, "", -3);
+                MainForm.MyMap.log.Add(new LogMessage("Удалил параметр '" + MainForm.parametrs.Parametres[id] + "'", elem, _elem));
+                Parametres.RemoveAt(id);
+                return true;
+            }
         }
-        /// <summary>
-        /// Удаление
-        /// </summary>
-        /// <param name="id">Идентификатор</param>
-        public void Remove(int id)
+
+        public void Edit(int id, string oldname, string newname, ref Groups groups, ref GroupOfNE NE, bool toLog)
         {
-            Params.RemoveAt(id);
-        }
-        /// <summary>
-        /// Изменение
-        /// </summary>
-        /// <param name="id">Идентификатор</param>
-        /// <param name="_name">Новое наименование</param>
-        public void Edit(int id, string _name)
-        {
-            Params[id] = _name;
+            if (!Parametres.Contains(newname))
+            {
+                for (int i = 0; i < groups.GroupsOfNE.Count; i++)
+                {
+                    for (int j = 0; j < groups.GroupsOfNE[i].Parametres.Count; j++)
+                    {
+                        if (groups.GroupsOfNE[i].Parametres[j] == oldname)
+                            groups.GroupsOfNE[i].Parametres[j] = newname;
+                    }
+                }
+                for (int i = 0; i < NE.NetworkElements.Count; i++)
+                {
+                    if (!NE.NetworkElements[i].delete)
+                    {
+                        for (int j = 0; j < NE.NetworkElements[i].Options.Options.Count; j++)
+                            if (NE.NetworkElements[i].Options.Options[j].Name == oldname)
+                                NE.NetworkElements[i].Options.Options[j].Name = newname;
+                    }
+                }
+                if (toLog)
+                {
+                    Element elem = new Element(13, id, oldname, -2);
+                    Element _elem = new Element(13, id, newname, -2);
+                    MainForm.MyMap.log.Add(new LogMessage("Изменил параметр с '" + oldname + "' на '" + newname + "'", elem, _elem));
+                }
+                Parametres[id] = newname;
+            }
+            else
+                MessageBox.Show("Такой параметр уже добавлен");
         }
         /// <summary>
         /// Сохранение списка параметров
         /// </summary>
         /// <param name="_params">Список параметров</param>
-        static public void Save(Parametrs _params)
+        static public void Save(GroupOfParametres _params)
         {
-            if (_params.Params.Count <= 0)
-                _params.Params = null;
-            XmlSerializer formatter = new XmlSerializer(typeof(Parametrs));
+            if (_params.Parametres.Count <= 0)
+                _params.Parametres = null;
+            XmlSerializer formatter = new XmlSerializer(typeof(GroupOfParametres));
             using (FileStream fs = new FileStream(Application.StartupPath + @"\Configurations\NetworkSettings", FileMode.Create))
             {
                 formatter.Serialize(fs, _params);
@@ -267,11 +279,13 @@ namespace NetworkDesign.NetworkElements
         /// Загрузить параметры
         /// </summary>
         /// <returns>Возвращает список параментров</returns>
-        static public Parametrs Open()
+        static public GroupOfParametres Open()
         {
-            Parametrs parametrs = new Parametrs();
-            //parametrs.Add("IP");
-            //parametrs.Add("MAC");
+            GroupOfParametres parametrs = new GroupOfParametres();
+            parametrs.Parametres.Add("MAC");
+            parametrs.Parametres.Add("DNS");
+            parametrs.Parametres.Add("Маска подсети");
+            parametrs.Parametres.Add("Основной шлюз");
             if (!Directory.Exists(Application.StartupPath + @"\Configurations"))
             {
                 Directory.CreateDirectory(Application.StartupPath + @"\Configurations");
@@ -283,10 +297,10 @@ namespace NetworkDesign.NetworkElements
                 Save(parametrs);
                 return parametrs;
             }
-            XmlSerializer formatter = new XmlSerializer(typeof(Parametrs));
+            XmlSerializer formatter = new XmlSerializer(typeof(GroupOfParametres));
             using (FileStream fs = new FileStream(Application.StartupPath + @"\Configurations\NetworkSettings", FileMode.Open))
             {
-                return (Parametrs)formatter.Deserialize(fs);
+                return (GroupOfParametres)formatter.Deserialize(fs);
             }
         }
         /// <summary>
@@ -294,7 +308,11 @@ namespace NetworkDesign.NetworkElements
         /// </summary>
         static public void _Open()
         {
-            Parametrs parametrs = new Parametrs();
+            GroupOfParametres parametrs = new GroupOfParametres();
+            parametrs.Parametres.Add("MAC");
+            parametrs.Parametres.Add("DNS");
+            parametrs.Parametres.Add("Маска подсети");
+            parametrs.Parametres.Add("Основной шлюз");
             if (!Directory.Exists(Application.StartupPath + @"\Configurations"))
             {
                 Directory.CreateDirectory(Application.StartupPath + @"\Configurations");
@@ -306,20 +324,20 @@ namespace NetworkDesign.NetworkElements
                 Save(parametrs);
                 MainForm.parametrs = parametrs;
             }
-            XmlSerializer formatter = new XmlSerializer(typeof(Parametrs));
+            XmlSerializer formatter = new XmlSerializer(typeof(GroupOfParametres));
             using (FileStream fs = new FileStream(Application.StartupPath + @"\###tempdirectory._temp###\NetworkSettings", FileMode.Open))
             {
-                Parametrs _parametrs = (Parametrs)formatter.Deserialize(fs);
-                Parametrs __parametres = (Parametrs)MainForm.parametrs.Clone();
+                GroupOfParametres _parametrs = (GroupOfParametres)formatter.Deserialize(fs);
+                GroupOfParametres __parametres = (GroupOfParametres)MainForm.parametrs.Clone();
                 //MainForm.parametrs = new Parametrs();
-                MainForm.parametrs = (Parametrs)_parametrs.Clone();
+                MainForm.parametrs = (GroupOfParametres)_parametrs.Clone();
                 int id = -1;
-                for (int i = 0; i < __parametres.Params.Count; i++)
+                for (int i = 0; i < __parametres.Parametres.Count; i++)
                 {
                     id = -1;
-                    for (int j = 0; j < MainForm.parametrs.Params.Count; j++)
+                    for (int j = 0; j < MainForm.parametrs.Parametres.Count; j++)
                     {
-                        if (MainForm.parametrs.Params[j] == __parametres.Params[i])
+                        if (MainForm.parametrs.Parametres[j] == __parametres.Parametres[i])
                         {
                             id = i;
                             break;
@@ -327,11 +345,11 @@ namespace NetworkDesign.NetworkElements
                     }
                     if (id != -1)
                     {
-                        __parametres.Params.RemoveAt(id);
+                        __parametres.Parametres.RemoveAt(id);
                         i--;
                     }
                     else
-                        MainForm.parametrs.Add(__parametres.Params[i]);
+                        MainForm.parametrs.Add(__parametres.Parametres[i]);
                 }
             }
         }
@@ -342,13 +360,13 @@ namespace NetworkDesign.NetworkElements
         public object Clone()
         {
             List<string> _params = new List<string>();
-            foreach (var p in Params)
+            foreach (var p in Parametres)
             {
                 _params.Add(p);
             }
-            return new Parametrs
+            return new GroupOfParametres
             {
-                Params = _params,
+                Parametres = _params,
             };
         }
         /// <summary>
@@ -357,20 +375,22 @@ namespace NetworkDesign.NetworkElements
         /// <param name="NE">Группа сетевых элементов</param>
         internal static void _OpenFromBuild(ref GroupOfNE NE)
         {
-            XmlSerializer formatter = new XmlSerializer(typeof(Parametrs));
+            XmlSerializer formatter = new XmlSerializer(typeof(GroupOfParametres));
             using (FileStream fs = new FileStream(Application.StartupPath + @"\###tempdirectory._temp###\NetworkSettings", FileMode.Open))
             {
-                Parametrs _parametrs = (Parametrs)formatter.Deserialize(fs);
+                GroupOfParametres _parametrs = (GroupOfParametres)formatter.Deserialize(fs);
                 for (int i = 0; i < NE.NetworkElements.Count; i++)
                 {
+                    //MainForm.groups.GroupsOfNE.Contains(NE.NetworkElements[i].groupname)
+                    /*
                     for (int opt = 0; opt < NE.NetworkElements[i].Options.Options.Count; opt++)
                     {
                         bool isLoadParam = false;
-                        for (int j = 0; j < MainForm.parametrs.Params.Count; j++)
+                        for (int j = 0; j < MainForm.parametrs.Parametres.Count; j++)
                         {
-                            if (NE.NetworkElements[i].Options.Options[opt].Name == MainForm.parametrs.Params[j])
+                            if (NE.NetworkElements[i].Options.Options[opt].Name == MainForm.parametrs.Parametres[j])
                             {
-                                NE.NetworkElements[i].Options.Options[opt].ID = j;
+                                //NE.NetworkElements[i].Options.Options[opt].ID = j;
                                 isLoadParam = true;
                                 break;
                             }
@@ -378,13 +398,13 @@ namespace NetworkDesign.NetworkElements
                         if (!isLoadParam)
                         {
                             MainForm.parametrs.Add(NE.NetworkElements[i].Options.Options[opt].Name);
-                            NE.NetworkElements[i].Options.Options[opt].ID = MainForm.parametrs.Params.Count - 1;
-                            int lastindex = MainForm.parametrs.Params.Count - 1;
+                            //NE.NetworkElements[i].Options.Options[opt].ID = MainForm.parametrs.Params.Count - 1;
+                            int lastindex = MainForm.parametrs.Parametres.Count - 1;
                             Element elem = new Element(13, lastindex, "", -1);
-                            Element _elem = new Element(13, lastindex, MainForm.parametrs.Params[lastindex], -1);
+                            Element _elem = new Element(13, lastindex, MainForm.parametrs.Parametres[lastindex], -1);
                             MainForm.MyMap.log.Add(new LogMessage("Добавил параметр", elem, _elem));
-                        }
-                    }
+                        }*/
+                   // }
                 }
             }
         }

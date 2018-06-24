@@ -18,7 +18,6 @@ namespace NetworkDesign.NetworkElements
     {
         public int action = -1;
         GroupOfNE NetworkElements = new GroupOfNE();
-
         public int imageindex = -1;
         //int i = 0;
 
@@ -27,6 +26,11 @@ namespace NetworkDesign.NetworkElements
             StartPosition = FormStartPosition.CenterParent;
             InitializeComponent();
             this.NetworkElements = NetworkElements;
+            foreach (var g in MainForm.groups.GroupsOfNE)
+            {
+                ListViewGroup listViewGroup = new ListViewGroup(g.name);
+                listView1.Groups.Add(listViewGroup);
+            }
             GetImages();
         }
 
@@ -125,7 +129,7 @@ namespace NetworkDesign.NetworkElements
                     if (addTextureForm.delete)
                         MainForm.DeleteImages.Textures.Remove(addTextureForm._item);
                     action = 0;
-                    imageindex = MainForm.ImagesURL.Count - 1;
+                    imageindex = MainForm.ImagesURL.Textures.Count - 1;
                     Close();
                 }
             }
@@ -187,10 +191,13 @@ namespace NetworkDesign.NetworkElements
             Close();
         }
 
+        public bool isEdit = false;
+
         private void toolStripButton3_Click_1(object sender, EventArgs e)
         {
-            ParametresForm parametresForm = new ParametresForm(ref NetworkElements);
+            ParametresForm parametresForm = new ParametresForm(ref MainForm.groups, ref NetworkElements);
             parametresForm.ShowDialog();
+            isEdit = parametresForm.isEdit;
         }
     }
 }

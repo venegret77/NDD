@@ -12,18 +12,24 @@ namespace NetworkDesign.NetworkElements
 {
     public partial class ParametresForm : Form
     {
-        const int requiredparameters = 0;
-        GroupOfNE NetworkElements;
+        const int requiredparameters = 4;
+        const int requiredgroups = 5;
+        public bool isEdit = false;
+        Groups groups;
+        GroupOfNE NE;
 
-        public ParametresForm(ref GroupOfNE NetworkElements)
+        public ParametresForm(ref Groups groups, ref GroupOfNE NE)
         {
             StartPosition = FormStartPosition.CenterParent;
             InitializeComponent();
-            this.NetworkElements = NetworkElements;
-            for (int i = 0; i < MainForm.parametrs.Params.Count; i++)
+            this.groups = groups;
+            this.NE = NE;
+            for (int i = 0; i < MainForm.parametrs.Parametres.Count; i++)
             {
-                listBox2.Items.Add(MainForm.parametrs.Params[i]);
+                listBox2.Items.Add(MainForm.parametrs.Parametres[i]);
             }
+            foreach (var g in groups.GroupsOfNE)
+                listBox1.Items.Add(g.name);
         }
 
         private void listBox2_SelectedIndexChanged(object sender, EventArgs e)
@@ -48,73 +54,35 @@ namespace NetworkDesign.NetworkElements
 
         private void button5_Click(object sender, EventArgs e)
         {
-            if (textBox1.Text != "" & textBox1.Text != " " & !MainForm.parametrs.Params.Contains(textBox1.Text))
+            if (textBox1.Text != "" & textBox1.Text != " ")
                 AddParam();
         }
 
         private void button6_Click(object sender, EventArgs e)
         {
-            if (listBox2.SelectedIndex != -1 & textBox1.Text != "" & textBox1.Text != " " & !MainForm.parametrs.Params.Contains(textBox1.Text))
+            if (listBox2.SelectedIndex != -1 & textBox1.Text != "" & textBox1.Text != " ")
                 EditParam(listBox2.SelectedIndex);
         }
 
         private void button7_Click(object sender, EventArgs e)
         {
-            if (Check(listBox2.SelectedIndex, listBox2.SelectedItem.ToString()))
+            if (MessageBox.Show("Вы действительно хотите удалить параметр?", "Удаление параметра", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
-                if (MessageBox.Show("Вы действительно хотите удалить параметр?", "Удаление параметра", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                int id = listBox2.SelectedIndex;
+                if (MainForm.parametrs.Delete(id, listBox2.SelectedItem.ToString(), ref groups))
                 {
-                    int id = listBox2.SelectedIndex;
-                    textBox1.Clear();
-                    Element elem = new Element(13, id, MainForm.parametrs.Params[id], -3);
-                    Element _elem = new Element(13, id, "", -3);
-                    MainForm.MyMap.log.Add(new LogMessage("Удалил параметр", elem, _elem));
-                    MainForm.parametrs.Remove(id);
-                    NetworkElements.UpdateOptions(id);
                     listBox2.Items.RemoveAt(id);
-                    listBox2.SelectedIndex = -1;
-                    textBox1.Text = "";
-                    listBox2.Focus();
+                    isEdit = true;
                 }
-                else
-                {
-                    MessageBox.Show("Невозможно удалить параметр, т.к. он используется в других устройствах");
-                }
+                textBox1.Clear();
+                listBox2.SelectedIndex = -1;
             }
-        }
-
-        /// <summary>
-        /// Проверка на то, используется ли данный параметр в других устройствах
-        /// </summary>
-        /// <returns>true - параметр не найден среди устройств; false - параметр найден среди устройств</returns>
-        private bool Check(int id, string name)
-        {
-            foreach (var ne in NetworkElements.NetworkElements)
-            {
-                if (!ne.delete)
-                {
-                    foreach (var param in ne.Options.Options)
-                    {
-                        if (param.ID == id & param.Name == name & !param.isEmpty())
-                            return false;
-                    }
-                }
-            }
-            return true;
-            /*foreach (var item in NetworkElements.NetworkElements)
-            {
-                item.Options.RefreshID(id);
-            }
-            return true;*/
         }
 
         private void AddParam()
         {
+            isEdit = true;
             MainForm.parametrs.Add(textBox1.Text);
-            int lastindex = MainForm.parametrs.Params.Count - 1;
-            Element elem = new Element(13, lastindex, "", -1);
-            Element _elem = new Element(13, lastindex, MainForm.parametrs.Params[lastindex], -1);
-            MainForm.MyMap.log.Add(new LogMessage("Добавил параметр", elem, _elem));
             listBox2.Items.Add(textBox1.Text);
             listBox2.SelectedIndex = -1;
             textBox1.Text = "";
@@ -123,41 +91,68 @@ namespace NetworkDesign.NetworkElements
 
         private void EditParam(int id)
         {
-            Element elem = new Element(13, id, MainForm.parametrs.Params[id], -2);
-            MainForm.parametrs.Edit(id, textBox1.Text);
-            Element _elem = new Element(13, id, MainForm.parametrs.Params[id], -2);
-            MainForm.MyMap.log.Add(new LogMessage("Изменил параметр", elem, _elem));
+            isEdit = true;
+            MainForm.parametrs.Edit(id, listBox2.Items[id].ToString(), textBox1.Text, ref groups, ref NE, true);
             listBox2.Items[id] = textBox1.Text;
             listBox2.SelectedIndex = -1;
             textBox1.Text = "";
             listBox2.Focus();
-            NetworkElements.UpdateOptions(id, "");
-            int lastindex = MainForm.parametrs.Params.Count;
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
         }
 
         private void ParametresForm_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            AddGroup();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Вы действительно хотите удалить группу?", "Удаление группы", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                int id = listBox1.SelectedIndex;
+                if (MainForm.groups.Delete(id, ref MainForm.ImagesURL))
+                {
+                    listBox1.Items.RemoveAt(id);
+                    isEdit = true;
+                }
+                listBox1.SelectedIndex = -1;
+            }
+        }
+
+        private void AddGroup()
+        {
+            AddGroupForm addGroupForm = new AddGroupForm(MainForm.parametrs.Parametres);
+            addGroupForm.ShowDialog();
+            if (addGroupForm.dialogResult == DialogResult.Yes)
+            {
+                isEdit = true;
+                MainForm.groups.Add(addGroupForm.g);
+                listBox1.Items.Add(addGroupForm.g.name);
+                listBox1.SelectedIndex = -1;
+                listBox1.Focus();
+            }
+        }
+
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (listBox1.SelectedIndex == -1)
+            {
+                listBox1.SelectedIndex = -1;
+                button3.Enabled = false;
+            }
+            else
+            {
+                if (listBox1.SelectedIndex >= requiredgroups)
+                {
+                    button3.Enabled = true;
+                }
+                else
+                    button3.Enabled = false;
+            }
         }
     }
 }

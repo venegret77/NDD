@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Net;
@@ -28,10 +29,30 @@ namespace NetworkDesign.NetworkElements
             InitializeComponent();
         }
 
-        public NESettings(NetworkSettings Options, GroupOfNE NetworkElements, ref Notes note)
+        public NESettings(int group, NetworkSettings Options, GroupOfNE NetworkElements, ref Notes note)
         {
             InitializeComponent();
             StartPosition = FormStartPosition.CenterScreen;
+            var g = MainForm.groups.GroupsOfNE[group];
+            if (!g.isHostName)
+            {
+                button1.Enabled = false;
+                textBox2.Enabled = false;
+            }
+            if (!g.isIP)
+            {
+                button1.Enabled = false;
+                comboBox1.Enabled = false;
+            }
+            if (!g.isTrouthp)
+                numericUpDown1.Enabled = false;
+            if (!g.isPorts)
+                numericUpDown2.Enabled = false;
+            for (int i = 0; i < g.Parametres.Count; i++)
+            {
+                listBox2.Items.Add(g.Parametres[i]);
+                listBox1.Items.Add("");
+            }
             this.Options = Options;
             this.NetworkElements = NetworkElements;
             this.notes = note;
@@ -97,11 +118,6 @@ namespace NetworkDesign.NetworkElements
             if (comboBox1.Items.Count >= 1)
                 comboBox1.SelectedIndex = 0;
             RefreshPorts();
-            for (int i = 0; i < MainForm.parametrs.Params.Count; i++)
-            {
-                listBox2.Items.Add(MainForm.parametrs.Params[i]);
-                listBox1.Items.Add("");
-            }
             for (int i = 0; i < listBox2.Items.Count; i++)
             {
                 foreach (var item in Options.Options)
@@ -179,13 +195,13 @@ namespace NetworkDesign.NetworkElements
                 Options.Throughput = (Int64)(numericUpDown1.Value);
             for (int i = 0; i < requiredparameters; i++)
             {
-                Options.Options.Add(new NetworkParametr(i, listBox2.Items[i].ToString(), listBox1.Items[i].ToString()));
+                Options.Options.Add(new NetworkParametr(listBox2.Items[i].ToString(), listBox1.Items[i].ToString()));
             }
             for (int i = requiredparameters; i < listBox1.Items.Count; i++)
             {
                 if (!isEmpty(listBox1.Items[i].ToString()))
                 {
-                    Options.Options.Add(new NetworkParametr(i, listBox2.Items[i].ToString(), listBox1.Items[i].ToString()));
+                    Options.Options.Add(new NetworkParametr(listBox2.Items[i].ToString(), listBox1.Items[i].ToString()));
                 }
             }
         }
@@ -247,22 +263,38 @@ namespace NetworkDesign.NetworkElements
             RefreshPorts();
         }
 
+        Stopwatch stopwatch = new Stopwatch();
+
         private void button1_Click(object sender, EventArgs e)
+        {
+            button1.Enabled = false;
+            label8.Text = "-.-- сек.";
+            Options.isPing = false;
+            IPs.Clear();
+            foreach (var ip in comboBox1.Items)
+                IPs.Add(ip.ToString());
+            Options.HostName = textBox2.Text;
+            backgroundWorker1.RunWorkerAsync();
+        }
+
+        public void Send(string hostname)
         {
             try
             {
-                if (textBox2.Text != "")
+                int res;
+                bool isInt = Int32.TryParse(hostname, out res);
+                if (hostname != "" & !isInt)
                 {
-                    IPHostEntry ips = Dns.GetHostByName(textBox2.Text);
-                    comboBox1.Items.Clear();
+                    stopwatch.Restart();
+                    IPHostEntry ips = Dns.GetHostByName(hostname);
+                    stopwatch.Stop();
+                    IPs.Clear();
                     foreach (var ip in ips.AddressList)
                     {
-                        comboBox1.Items.Add(ip.ToString());
+                        IPs.Add(ip.ToString());
                     }
-                    if (comboBox1.Items.Count >= 1)
-                        comboBox1.SelectedIndex = 0;
                     Options.isPing = true;
-                    radioButton1.Checked = true;
+                    //radioButton1.Checked = true;
                 }
                 else
                 {
@@ -277,17 +309,17 @@ namespace NetworkDesign.NetworkElements
 
         private void GetName()
         {
-            if (comboBox1.Items.Count != 0)
+            if (IPs.Count != 0)
             {
                 if (_GetName())
                 {
                     Options.isPing = true;
-                    radioButton1.Checked = true;
+                    //radioButton1.Checked = true;
                 }
                 else
                 {
                     Options.isPing = false;
-                    radioButton1.Checked = false;
+                    //radioButton1.Checked = false;
                 }
             }
         }
@@ -298,19 +330,19 @@ namespace NetworkDesign.NetworkElements
         {
             try
             {
-                IPHostEntry ips = Dns.GetHostByAddress(comboBox1.Items[ip].ToString());
-                textBox2.Text = ips.HostName;
-                comboBox1.Items.Clear();
+                stopwatch.Restart();
+                IPHostEntry ips = Dns.GetHostByAddress(IPs[ip].ToString());
+                stopwatch.Stop();
+                Options.HostName = ips.HostName;
+                IPs.Clear();
                 foreach (var ip in ips.AddressList)
-                    comboBox1.Items.Add(ip.ToString());
-                if (comboBox1.Items.Count >= 1)
-                    comboBox1.SelectedIndex = 0;
+                    IPs.Add(ip.ToString());
                 ip = 0;
                 return true;
             }
             catch
             {
-                if (ip != comboBox1.Items.Count - 1)
+                if (ip != IPs.Count - 1)
                 {
                     ip++;
                     GetName();
@@ -436,6 +468,41 @@ namespace NetworkDesign.NetworkElements
                 e.Handled = true;
                 comboBox1.Text = "";
             }
+            else if (e.KeyCode == Keys.Delete & comboBox1.SelectedIndex != -1)
+                comboBox1.Items.RemoveAt(comboBox1.SelectedIndex);
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private List<string> IPs = new List<string>();
+
+        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        {
+            Send(Options.HostName);
+        }
+
+        private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            button1.Enabled = true;
+            if (Options.isPing)
+            {
+                radioButton1.Checked = true;
+                label8.Text = stopwatch.Elapsed.Seconds.ToString() + "." + stopwatch.Elapsed.Milliseconds.ToString("00");
+            }
+            else
+            {
+                radioButton1.Checked = false;
+                label8.Text = "-.-- сек.";
+            }
+            textBox2.Text = Options.HostName;
+            comboBox1.Items.Clear();
+            foreach (var ip in IPs)
+                comboBox1.Items.Add(ip);
+            if (IPs.Count >= 1)
+                comboBox1.SelectedIndex = 0;
         }
     }
 }

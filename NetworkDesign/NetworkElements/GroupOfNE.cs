@@ -35,33 +35,18 @@ namespace NetworkDesign.NetworkElements
             NetworkElements = ne.NetworkElements;
         }
         /// <summary>
-        /// Обновление параметров при удалении
-        /// </summary>
-        /// <param name="id">Идентификатор</param>
-        public void UpdateOptions(int id)
-        {
-            for (int i = 0; i < NetworkElements.Count; i++)
-            {
-                for (int j = 0; j < NetworkElements[i].Options.Options.Count; j++)
-                {
-                    if (NetworkElements[i].Options.Options[j].ID > id)
-                        NetworkElements[i].Options.Options[j].ID--;
-                }
-            }
-        }
-        /// <summary>
         /// Обновление параметров и их идентификаторов
         /// </summary>
         /// <param name="id">Идентификатор</param>
         /// <param name="name">Параметр</param>
-        public void UpdateOptions(int id, string name)
+        public void UpdateOptions(int id, string oldname, string name)
         {
             for (int i = 0; i < NetworkElements.Count; i++)
             {
                 if (!NetworkElements[i].delete)
                     foreach (var opt in NetworkElements[i].Options.Options)
-                        if (opt.ID == id)
-                            opt.Name = MainForm.parametrs.Params[id];
+                        if (opt.Name == oldname)
+                            opt.Name = MainForm.parametrs.Parametres[id];
             }
         }
 

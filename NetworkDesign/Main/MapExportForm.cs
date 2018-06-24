@@ -23,12 +23,14 @@ namespace NetworkDesign.Main
         {
             InitializeComponent();
             this.buildings = buildings;
+            int j = 0;
             for (int i = 0; i < buildings.Count; i++)
             {
                 if (!buildings[i].delete)
                 {
                     checkedListBox1.Items.Add(buildings[i].Name);
-                    checkedListBox1.SetItemCheckState(i, CheckState.Checked);
+                    checkedListBox1.SetItemCheckState(j, CheckState.Checked);
+                    j++;
                 }
             }
             trackBar1.Value = value;

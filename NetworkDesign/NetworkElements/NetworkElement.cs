@@ -55,6 +55,7 @@ namespace NetworkDesign
         /// Тип сетевого элемена
         /// </summary>
         public int type;
+        public string groupname;
         /// <summary>
         /// Текст
         /// </summary>
@@ -79,8 +80,10 @@ namespace NetworkDesign
         /// </summary>
         /// <param name="texture">Текстура</param>
         /// <param name="dL">Уровень отображения</param>
-        public NetworkElement(Texture texture, DrawLevel dL)
+        public NetworkElement(Texture texture, DrawLevel dL, int type)
         {
+            this.type = type;
+            groupname = MainForm.groups.GroupsOfNE[type].name;
             delete = false;
             this.texture = texture;
             DL = dL;
@@ -314,7 +317,8 @@ namespace NetworkDesign
                 CenterPointY = this.CenterPointY,
                 type = this.type,
                 MT = (MyText)this.MT.Clone(),
-                delete = this.delete
+                delete = this.delete,
+                groupname = this.groupname
             };
         }
     }

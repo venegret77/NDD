@@ -1,4 +1,4 @@
-﻿using NetworkDesign.Buildings;
+using NetworkDesign.Buildings;
 using NetworkDesign.NetworkElements;
 using System;
 using System.Collections.Generic;
@@ -31,6 +31,7 @@ namespace NetworkDesign
         public int transform;
         public URL_ID urlid;
         public Buildlist buildlist;
+        public Group group;
         /// <summary>
         /// Конструктор
         /// </summary>
@@ -45,18 +46,28 @@ namespace NetworkDesign
             elem = _elem;
             transform = _transform;
         }
-        public Element(int _type, int _index, URL_ID _elem, int _transform) : this()
+        public Element(int _type, int _index, object _elem, URL_ID urlid, int _transform) : this()
         {
             type = _type;
             index = _index;
             elem = _elem;
+            this.urlid = urlid;
             transform = _transform;
         }
-        public Element(int _type, int _index, Buildlist _elem, int _transform) : this()
+        public Element(int _type, int _index, object _elem, Buildlist buildlist, int _transform) : this()
         {
             type = _type;
             index = _index;
             elem = _elem;
+            this.buildlist = buildlist;
+            transform = _transform;
+        }
+        public Element(int _type, int _index, object _elem, Group group, int _transform) : this()
+        {
+            type = _type;
+            index = _index;
+            elem = _elem;
+            this.group = group;
             transform = _transform;
         }
         /// <summary>

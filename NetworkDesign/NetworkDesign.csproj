@@ -204,12 +204,19 @@
     <Compile Include="Main\StartForm.Designer.cs">
       <DependentUpon>StartForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="NetworkElements\AddGroupForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NetworkElements\AddGroupForm.Designer.cs">
+      <DependentUpon>AddGroupForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="NetworkElements\AddTextureForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="NetworkElements\AddTextureForm.Designer.cs">
       <DependentUpon>AddTextureForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="NetworkElements\Groups.cs" />
     <Compile Include="NetworkElements\ListOfTextures.cs" />
     <Compile Include="Main\ActiveElem.cs" />
     <Compile Include="GeometricElements\Circle.cs" />
@@ -358,6 +365,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Main\StartForm.resx">
       <DependentUpon>StartForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NetworkElements\AddGroupForm.resx">
+      <DependentUpon>AddGroupForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NetworkElements\AddTextureForm.resx">
       <DependentUpon>AddTextureForm.cs</DependentUpon>

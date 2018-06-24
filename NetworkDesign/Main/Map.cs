@@ -456,7 +456,7 @@ namespace NetworkDesign
                             sw.WriteLine(Buildings.Buildings[i].floors_name[n] + ":");
                             for (int j = 0; j < NetworkElements.NetworkElements.Count; j++)
                             {
-                                if (NetworkElements.NetworkElements[j].DL.Level == i & NetworkElements.NetworkElements[j].DL.Floor == n)
+                                if (NetworkElements.NetworkElements[j].DL.Level == i & NetworkElements.NetworkElements[j].DL.Floor == n & !NetworkElements.NetworkElements[j].delete)
                                 {
                                     sw.WriteLine(NetworkElements.NetworkElements[j].Options.ToString());
                                 }
@@ -639,7 +639,7 @@ namespace NetworkDesign
                 {
                     elem = new Element(1, i, new Line(), -1);
                     _elem = new Element(1, i, line.Clone(), -1);
-                    log.Add(new LogMessage("Удалил линию", elem, _elem));
+                    log.Add(new LogMessage("Удалил линию с id " + i, elem, _elem));
                     Lines.Remove(i);
                 }
             }
@@ -650,7 +650,7 @@ namespace NetworkDesign
                 {
                     elem = new Element(2, i, new MyRectangle(), -1);
                     _elem = new Element(2, i, rect.Clone(), -1);
-                    log.Add(new LogMessage("Удалил прямоугольник", elem, _elem));
+                    log.Add(new LogMessage("Удалил прямоугольник с id " + i, elem, _elem));
                     Rectangles.Remove(i);
                 }
             }
@@ -661,7 +661,7 @@ namespace NetworkDesign
                 {
                     elem = new Element(3, i, new Polygon(), -1);
                     _elem = new Element(3, i, pol.Clone(), -1);
-                    log.Add(new LogMessage("Удалил многоугольник", elem, _elem));
+                    log.Add(new LogMessage("Удалил многоугольник с id " + i, elem, _elem));
                     Polygons.Remove(i);
                 }
             }
@@ -672,7 +672,7 @@ namespace NetworkDesign
                 {
                     elem = new Element(360, i, new Circle(), -1);
                     _elem = new Element(360, i, circ.Clone(), -1);
-                    log.Add(new LogMessage("Удалил круг", elem, _elem));
+                    log.Add(new LogMessage("Удалил круг с id " + i, elem, _elem));
                     Circles.Remove(i);
                 }
             }
@@ -683,7 +683,7 @@ namespace NetworkDesign
                 {
                     elem = new Element(10, i, new MyText(), -1);
                     _elem = new Element(10, i, text.Clone(), -1);
-                    log.Add(new LogMessage("Удалил надпись", elem, _elem));
+                    log.Add(new LogMessage("Удалил надпись с id " + i, elem, _elem));
                     MyTexts.Remove(i);
                 }
             }
@@ -694,7 +694,7 @@ namespace NetworkDesign
                 {
                     elem = new Element(9, i, new NetworkWire(), -1);
                     _elem = new Element(9, i, nw.Clone(), -1);
-                    log.Add(new LogMessage("Удалил провод", elem, _elem));
+                    log.Add(new LogMessage("Удалил провод с id " + i, elem, _elem));
                     NetworkWires.Remove(i);
                     var ne1 = nw.idiw1;
                     var ne2 = nw.idiw2;
@@ -707,6 +707,27 @@ namespace NetworkDesign
                         NetworkElements.NetworkElements[ne2.ID].Options.BusyPorts--;
                     }
                 }
+                if (!nw.delete & nw.DL.Level == -1)
+                {
+                    var ne1 = nw.idiw1;
+                    var ne2 = nw.idiw2;
+                    if ((ne1.IW & ne1.Build == id) | (ne2.IW & ne2.Build == id))
+                    {
+                        elem = new Element(9, i, new NetworkWire(), -1);
+                        _elem = new Element(9, i, nw.Clone(), -1);
+                        log.Add(new LogMessage("Удалил провод с id " + i, elem, _elem));
+                        NetworkWires.Remove(i);
+
+                        if (!ne1.IW)
+                        {
+                            NetworkElements.NetworkElements[ne1.ID].Options.BusyPorts--;
+                        }
+                        if (!ne2.IW)
+                        {
+                            NetworkElements.NetworkElements[ne2.ID].Options.BusyPorts--;
+                        }
+                    }
+                }
             }
             for (i = 0; i < NetworkElements.NetworkElements.Count; i++)
             {
@@ -715,7 +736,7 @@ namespace NetworkDesign
                 {
                     elem = new Element(8, i, new NetworkElement(), -1);
                     _elem = new Element(8, i, ne.Clone(), -1);
-                    log.Add(new LogMessage("Удалил сетевой элемент", elem, _elem));
+                    log.Add(new LogMessage("Удалил сетевой элемент с id " + i, elem, _elem));
                     NetworkElements.Remove(i);
                 }
             }
@@ -1448,7 +1469,7 @@ namespace NetworkDesign
             {
                 var ns1 = NetworkElements.NetworkElements[NE].Options.ToString();
                 Element elem = new Element(13, NE, NetworkElements.NetworkElements[NE].Clone(), -4);
-                NESettings nes = new NESettings(NetworkElements.NetworkElements[NE].Options, NetworkElements, ref NetworkElements.NetworkElements[NE].notes);
+                NESettings nes = new NESettings(NetworkElements.NetworkElements[NE].type, NetworkElements.NetworkElements[NE].Options, NetworkElements, ref NetworkElements.NetworkElements[NE].notes);
                 nes.ShowDialog();
                 NetworkElements = nes.NetworkElements;
                 NetworkElements.NetworkElements[NE].Options = nes.Options;

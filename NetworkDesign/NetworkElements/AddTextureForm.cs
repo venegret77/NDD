@@ -26,6 +26,8 @@ namespace NetworkDesign.NetworkElements
             InitializeComponent();
             dr = DialogResult.Cancel;
             StartPosition = FormStartPosition.CenterScreen;
+            foreach (var g in MainForm.groups.GroupsOfNE)
+                comboBox1.Items.Add(g.name);
             openFileDialog1.Filter = "Image files (*.png) | *.png";
         }
 

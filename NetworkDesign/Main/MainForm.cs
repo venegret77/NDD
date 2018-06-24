@@ -32,7 +32,8 @@ namespace NetworkDesign
         static public Map MyMap;
         static public DrawLevel drawLevel;
         static public ColorSettings colorSettings = new ColorSettings();
-        static public Parametrs parametrs = new Parametrs();
+        static public GroupOfParametres parametrs = new GroupOfParametres();
+        static public Groups groups = new Groups();
         //
         static public ListOfTextures ImagesURL = new ListOfTextures();
         static public List<uint> Textures = new List<uint>();
@@ -60,7 +61,7 @@ namespace NetworkDesign
 
         Stopwatch stopwatch = new Stopwatch();
 
-        public static int nebutnscount = 15;
+        public static int nebutnscount = 20;
         static public List<NEButton> neButtons = new List<NEButton>();
 
         //static public TextBox focusbox = new TextBox();
@@ -132,8 +133,8 @@ namespace NetworkDesign
                 else
                     colorSettings.backgroundurl = "";
             }
-
-            parametrs = Parametrs.Open();
+            groups = Groups.Open();
+            parametrs = GroupOfParametres.Open();
             ImagesURL = OpenTextures();
             LoadImages();
             ID_TEXT temp = NEButton.Open();
@@ -421,6 +422,8 @@ namespace NetworkDesign
             {
                 ImageTextures IT = new ImageTextures(ref MyMap.NetworkElements);
                 IT.ShowDialog();
+                if (IT.isEdit)
+                    CheckButtons(true);
                 if (IT.action == 0)
                 {
                     AddTexture(IT.imageindex);
@@ -457,6 +460,10 @@ namespace NetworkDesign
             if (e.Control & e.KeyCode == Keys.F)
             {
                 Search();
+            }
+            if (e.KeyCode == Keys.Delete)
+            {
+                DeleteElem();
             }
             if (e.Control & e.KeyCode == Keys.Back)
             {
@@ -495,7 +502,7 @@ namespace NetworkDesign
                 int lastindex = MyMap.Lines.Lines.Count - 1;
                 Element elem = new Element(1, lastindex, MyMap.Lines.Lines[lastindex].Clone(), -1);
                 Element _elem = new Element(1, lastindex, new Line(), -1);
-                MyMap.log.Add(new LogMessage("Добавил линию", elem, _elem));
+                MyMap.log.Add(new LogMessage("Добавил линию c id " + lastindex, elem, _elem));
                 InfoLable.Text = "Добавил линию";
                 CheckButtons(true);
             }
@@ -521,7 +528,7 @@ namespace NetworkDesign
                 int lastindex = MyMap.Rectangles.Rectangles.Count - 1;
                 Element elem = new Element(2, lastindex, MyMap.Rectangles.Rectangles[lastindex].Clone(), -1);
                 Element _elem = new Element(2, lastindex, new MyRectangle(), -1);
-                MyMap.log.Add(new LogMessage("Добавил прямоугольник", elem, _elem));
+                MyMap.log.Add(new LogMessage("Добавил прямоугольник c id " + lastindex, elem, _elem));
                 InfoLable.Text = "Добавил прямоугольник";
                 CheckButtons(true);
             }
@@ -542,7 +549,7 @@ namespace NetworkDesign
                 int lastindex = MyMap.Circles.Circles.Count - 1;
                 Element elem = new Element(360, lastindex, MyMap.Circles.Circles[lastindex].Clone(), -1);
                 Element _elem = new Element(360, lastindex, new Circle(), -1);
-                MyMap.log.Add(new LogMessage("Добавил круг", elem, _elem));
+                MyMap.log.Add(new LogMessage("Добавил круг c id " + lastindex, elem, _elem));
                 InfoLable.Text = "Добавил круг";
                 CheckButtons(true);
             }
@@ -554,10 +561,12 @@ namespace NetworkDesign
             {
                 ImageTextures IT = new ImageTextures(ref MyMap.NetworkElements);
                 IT.ShowDialog();
+                if (IT.isEdit)
+                    CheckButtons(true);
                 if (IT.action == 0)
                 {
                     MyMap.NetworkElements.step = true;
-                    MyMap.NetworkElements.TempNetworkElement = new NetworkElement(new Texture(colorSettings.TextureWidth, new Point(x, y), IT.imageindex, ImagesURL.Textures[IT.imageindex].URL), drawLevel);
+                    MyMap.NetworkElements.TempNetworkElement = new NetworkElement(new Texture(colorSettings.TextureWidth, new Point(x, y), IT.imageindex, ImagesURL.Textures[IT.imageindex].URL), drawLevel, ImagesURL.Textures[IT.imageindex].Type);
                 }
             }
             else
@@ -567,7 +576,7 @@ namespace NetworkDesign
                 int lastindex = MyMap.NetworkElements.NetworkElements.Count - 1;
                 Element elem = new Element(8, lastindex, MyMap.NetworkElements.NetworkElements[lastindex].Clone(), -1);
                 Element _elem = new Element(8, lastindex, new NetworkElement(), -1);
-                MyMap.log.Add(new LogMessage("Добавил сетевой элемент", elem, _elem));
+                MyMap.log.Add(new LogMessage("Добавил сетевой элемент c id " + lastindex, elem, _elem));
                 InfoLable.Text = "Добавил сетевой элемент";
                 CheckButtons(true);
             }
@@ -599,7 +608,7 @@ namespace NetworkDesign
                         int lastindex = MyMap.NetworkWires.NetworkWires.Count - 1;
                         Element elem = new Element(9, lastindex, MyMap.NetworkWires.NetworkWires[lastindex].Clone(), -1);
                         Element _elem = new Element(9, lastindex, new NetworkWire(), -1);
-                        MyMap.log.Add(new LogMessage("Добавил провод", elem, _elem));
+                        MyMap.log.Add(new LogMessage("Добавил провод c id " + lastindex, elem, _elem));
                         InfoLable.Text = "Добавил провод";
                         CheckButtons(true);
                     }
@@ -632,7 +641,7 @@ namespace NetworkDesign
                 int lastindex = MyMap.Polygons.Polygons.Count - 1;
                 Element elem = new Element(3, lastindex, MyMap.Polygons.Polygons[lastindex].Clone(), -1);
                 Element _elem = new Element(3, lastindex, new Polygon(), -1);
-                MyMap.log.Add(new LogMessage("Добавил многоугольник", elem, _elem));
+                MyMap.log.Add(new LogMessage("Добавил многоугольник c id " + lastindex, elem, _elem));
                 InfoLable.Text = "Добавил многоугольник";
                 CheckButtons(true);
             }
@@ -797,7 +806,7 @@ namespace NetworkDesign
                     int lastindex = MyMap.MyTexts.MyTexts.Count - 1;
                     Element elem = new Element(10, lastindex, MyMap.MyTexts.MyTexts[lastindex].Clone(), -1);
                     Element _elem = new Element(10, lastindex, new MyText(), -1);
-                    MyMap.log.Add(new LogMessage("Добавил надпись", elem, _elem));
+                    MyMap.log.Add(new LogMessage("Добавил надпись c id " + lastindex, elem, _elem));
                     InfoLable.Text = "Добавил надпись";
                 }
                 else
@@ -859,7 +868,7 @@ namespace NetworkDesign
             if (!MyMap.NetworkElements.step)
             {
                 MyMap.NetworkElements.step = true;
-                MyMap.NetworkElements.TempNetworkElement = new NetworkElement(new Texture(colorSettings.TextureWidth, new Point(x, y), MyMap.Instrument - nebutnscount, ImagesURL.Textures[MyMap.Instrument - nebutnscount].URL), drawLevel);
+                MyMap.NetworkElements.TempNetworkElement = new NetworkElement(new Texture(colorSettings.TextureWidth, new Point(x, y), MyMap.Instrument - nebutnscount, ImagesURL.Textures[MyMap.Instrument - nebutnscount].URL), drawLevel, ImagesURL.Textures[MyMap.Instrument - nebutnscount].Type);
             }
             else
             {
@@ -868,7 +877,7 @@ namespace NetworkDesign
                 int lastindex = MyMap.NetworkElements.NetworkElements.Count - 1;
                 Element elem = new Element(8, lastindex, MyMap.NetworkElements.NetworkElements[lastindex].Clone(), -1);
                 Element _elem = new Element(8, lastindex, new NetworkElement(), -1);
-                MyMap.log.Add(new LogMessage("Добавил сетевой элемент", elem, _elem));
+                MyMap.log.Add(new LogMessage("Добавил сетевой элемент c id " + lastindex, elem, _elem));
                 InfoLable.Text = "Добавил сетевой элемент";
                 CheckButtons(true);
             }
@@ -887,20 +896,20 @@ namespace NetworkDesign
             int x = MyMap.RecalcMouseX(e.X);
             if (e.Button == MouseButtons.Left)
             {
-                if (drawLevel.Level == -1 & MyMap.Instrument == 0)
+                if (drawLevel.Level == -1 & MyMap.Instrument == 0 &!isMoveLog)
                 {
+                    elem = new Element(14, drawLevel.Level, MyMap.sizeRenderingArea, -2);
                     if (ChechEdges(x, y))
                     {
-                        elem = new Element(14, drawLevel.Level, MyMap.sizeRenderingArea, -2);
                         isResizeMap = true;
                         MyMap.RenderTimer.Stop();
                     }
                 }
-                else if (MyMap.Instrument == 0 & drawLevel.Level != -1)
+                else if (MyMap.Instrument == 0 & drawLevel.Level != -1 & !isMoveLog)
                 {
+                    elem = new Element(14, drawLevel.Level, MyMap.Buildings.Buildings[drawLevel.Level].Clone(), -2);
                     if (ChechEdges(x, y, drawLevel.Level))
                     {
-                        elem = new Element(14, drawLevel.Level, MyMap.Buildings.Buildings[drawLevel.Level].Clone(), -2);
                         isResizeMap = true;
                         MyMap.RenderTimer.Stop();
                     }
@@ -961,7 +970,7 @@ namespace NetworkDesign
                                         int lastindex = MyMap.Buildings.Buildings[drawLevel.Level].InputWires.InputWires.Circles.Count - 1;
                                         Element elem = new Element(6, lastindex, MyMap.Buildings.Buildings[drawLevel.Level].InputWires.InputWires.Circles[lastindex].Clone(), -1);
                                         Element _elem = new Element(6, lastindex, new Circle(), -1);
-                                        MyMap.log.Add(new LogMessage("Добавил проход провода через потолок", elem, _elem, drawLevel.Level));
+                                        MyMap.log.Add(new LogMessage("Добавил проход провода через потолок в здании c id " + activeElem.item, elem, _elem, drawLevel.Level));
                                         InfoLable.Text = "Добавил проход провода через потолок";
                                     }
                                 }
@@ -983,7 +992,7 @@ namespace NetworkDesign
                                     int lastindex = MyMap.Buildings.Buildings[activeElem.item].InputWires.InputWires.Circles.Count - 1;
                                     Element elem = new Element(6, lastindex, MyMap.Buildings.Buildings[activeElem.item].InputWires.InputWires.Circles[lastindex].Clone(), -1);
                                     Element _elem = new Element(6, lastindex, new Circle(), -1);
-                                    MyMap.log.Add(new LogMessage("Добавил вход провода в здание", elem, _elem, activeElem.item));
+                                    MyMap.log.Add(new LogMessage("Добавил вход провода в здание c id " + activeElem.item, elem, _elem, activeElem.item));
                                     InfoLable.Text = "Добавил вход провода в здание";
                                 }
                             }
@@ -994,7 +1003,7 @@ namespace NetworkDesign
                                 int lastindex = MyMap.Buildings.Buildings[activeElem.item].Entrances.Enterances.Circles.Count - 1;
                                 Element elem = new Element(7, lastindex, MyMap.Buildings.Buildings[activeElem.item].Entrances.Enterances.Circles[lastindex].Clone(), -1);
                                 Element _elem = new Element(7, lastindex, new Circle(), -1);
-                                MyMap.log.Add(new LogMessage("Добавил вход в здание", elem, _elem, activeElem.item));
+                                MyMap.log.Add(new LogMessage("Добавил вход в здание c id " + activeElem.item, elem, _elem, activeElem.item));
                                 InfoLable.Text = "Добавил вход в здание";
                             }
                             break;
@@ -1070,7 +1079,8 @@ namespace NetworkDesign
                                 else
                                 {
                                     int id = MyMap.NetworkWires.TempNetworkWire.idiw1.ID;
-                                    MyMap.NetworkElements.NetworkElements[id].Options.BusyPorts--;
+                                    if (id != -1 & !MyMap.NetworkWires.TempNetworkWire.idiw1.IW)
+                                        MyMap.NetworkElements.NetworkElements[id].Options.BusyPorts--;
                                     MyMap.NetworkWires.TempDefault();
                                 }
                             }
@@ -1170,29 +1180,29 @@ namespace NetworkDesign
             int x = MyMap.RecalcMouseX(e.X);
             if (e.Button == MouseButtons.Left)
             {
-                if (isResizeMap)
+                if (isResizeMap & !isMoveLog)
                 {
                     if (drawLevel.Level == -1)
                         ChechEdges(x, y);
                     else
                         ChechEdges(x, y, drawLevel.Level);
                 }
-                else
+                else if (!isMoveLog)
                 {
                     if (drawLevel.Level == -1 & MyMap.Instrument == 0)
                     {
+                        elem = new Element(14, drawLevel.Level, MyMap.sizeRenderingArea, -2);
                         if (ChechEdges(x, y))
                         {
-                            elem = new Element(14, drawLevel.Level, MyMap.sizeRenderingArea, -2);
                             isResizeMap = true;
                             MyMap.RenderTimer.Stop();
                         }
                     }
                     else if (drawLevel.Level != -1 & MyMap.Instrument == 0)
                     {
+                        elem = new Element(14, drawLevel.Level, MyMap.Buildings.Buildings[drawLevel.Level].Clone(), -2);
                         if (ChechEdges(x, y, drawLevel.Level))
                         {
-                            elem = new Element(14, drawLevel.Level, MyMap.Buildings.Buildings[drawLevel.Level].Clone(), -2);
                             isResizeMap = true;
                             MyMap.RenderTimer.Stop();
                         }
@@ -1795,6 +1805,7 @@ namespace NetworkDesign
                     }
                     else
                     {
+                        MessageBox.Show("Невозможно удалить элемент");
                         Unfocus("Невозможно удалить элемент");
                         return;
                     }
@@ -1810,6 +1821,7 @@ namespace NetworkDesign
                 case 8:
                     if (MyMap.NetworkElements.NetworkElements[activeElem.item].Options.BusyPorts != 0)
                     {
+                        MessageBox.Show("Невозможно удалить элемент");
                         Unfocus("Невозможно удалить элемент");
                         return;
                     }
@@ -1912,7 +1924,7 @@ namespace NetworkDesign
                         activeElem.type = 10;
                         activeElem.item = id;
                         MyMap.MyTexts.Choose(activeElem.item);
-                        InfoLable.Text = "Выбрана надпись ";
+                        InfoLable.Text = "Выбрана надпись '" + MyMap.MyTexts.MyTexts[id].text + "'";
                         DeleteBtn.Enabled = true;
                         break;
                     case 4:
@@ -1920,7 +1932,7 @@ namespace NetworkDesign
                         activeElem.type = 9;
                         activeElem.item = id;
                         MyMap.NetworkWires.Choose(activeElem.item);
-                        InfoLable.Text = "Выбран провод";
+                        InfoLable.Text = "Выбран провод с id " + id;
                         DeleteBtn.Enabled = true;
                         break;
                 }
@@ -1945,7 +1957,7 @@ namespace NetworkDesign
             {
                 isMoveLog = false;
                 _MoveElem = new Element(10, id, elem, -2);
-                MyMap.log.Add(new LogMessage("Изменил надпись", _MoveElem, MoveElem));
+                MyMap.log.Add(new LogMessage("Изменил надпись с id " + id, _MoveElem, MoveElem));
             }
             else
             {
@@ -1959,37 +1971,48 @@ namespace NetworkDesign
         private void MoveLogAdd()
         {
             object elem = new object();
+            string logmessage = "";
             switch (activeElem.type)
             {
                 case 1:
                     elem = MyMap.Lines.Lines[activeElem.item].Clone();
+                    logmessage = "Изменил линию с id " + activeElem.item;
                     break;
                 case 2:
                     elem = MyMap.Rectangles.Rectangles[activeElem.item].Clone();
+                    logmessage = "Изменил прямоугольник с id " + activeElem.item;
                     break;
                 case 3:
                     elem = MyMap.Polygons.Polygons[activeElem.item].Clone();
+                    logmessage = "Изменил многоугольник с id " + activeElem.item;
                     break;
                 case 4:
                     elem = MyMap.Buildings.Buildings[activeElem.item].Clone();
+                    logmessage = "Изменил здание '" + MyMap.Buildings.Buildings[activeElem.item].Name + "'";
                     break;
                 case 360:
                     elem = MyMap.Circles.Circles[activeElem.item].Clone();
+                    logmessage = "Изменил круг с id " + activeElem.item;
                     break;
                 case 6:
                     elem = MyMap.Buildings.Buildings[activeElem.build].InputWires.InputWires.Circles[activeElem.item].Clone();
+                    logmessage = "Изменил вход провода в здание '" + MyMap.Buildings.Buildings[activeElem.build].Name + "'";
                     break;
                 case 7:
                     elem = MyMap.Buildings.Buildings[activeElem.build].Entrances.Enterances.Circles[activeElem.item].Clone();
+                    logmessage = "Изменил вход в здание '" + MyMap.Buildings.Buildings[activeElem.build].Name + "'";
                     break;
                 case 8:
                     elem = MyMap.NetworkElements.NetworkElements[activeElem.item].Clone();
+                    logmessage = "Изменил сетевой элемент '" + MyMap.NetworkElements.NetworkElements[activeElem.item].Options.Name + "'";
                     break;
                 case 9:
                     elem = MyMap.NetworkWires.NetworkWires[activeElem.item].Clone();
+                    logmessage = "Изменил провод с id " + activeElem.item;
                     break;
                 case 10:
                     elem = MyMap.MyTexts.MyTexts[activeElem.item].Clone();
+                    logmessage = "Изменил надпись с id " + activeElem.item;
                     break;
             }
             if (activeElem.type == 1 | activeElem.type == 2 | activeElem.type == 3 | activeElem.type == 4 | activeElem.type == 360 | activeElem.type == 6 | activeElem.type == 7 | activeElem.type == 8 | activeElem.type == 9 | activeElem.type == 10)
@@ -2001,9 +2024,9 @@ namespace NetworkDesign
                     isMoveLog = false;
                     _MoveElem = new Element(activeElem.type, activeElem.item, elem, -2);
                     if (_MoveElem.type == 6 | _MoveElem.type == 7)
-                        MyMap.log.Add(new LogMessage("Переместил элемент", _MoveElem, MoveElem, activeElem.build));
+                        MyMap.log.Add(new LogMessage(logmessage, _MoveElem, MoveElem, activeElem.build));
                     else
-                        MyMap.log.Add(new LogMessage("Переместил элемент", _MoveElem, MoveElem));
+                        MyMap.log.Add(new LogMessage(logmessage, _MoveElem, MoveElem));
                     CheckButtons(true);
                 }
                 else
@@ -2030,14 +2053,12 @@ namespace NetworkDesign
                         case 1:
                             MyMap.Rectangles.Remove(elem.index);
                             MyMap.Buildings.Buildings[_elem.index] = (Building)_elem.elem;
-                            if (MyMap.Buildings.Buildings[_elem.index].MT.idtexture != -1 && !MTTextures.Contains((uint)MyMap.Buildings.Buildings[_elem.index].MT.idtexture))
-                                MyMap.Buildings.Buildings[_elem.index].MT.GenTextureFromBuild();
+                            MyMap.Buildings.Buildings[_elem.index].MT.GenTextureFromBuild(true);
                             break;
                         case 2:
                             MyMap.Polygons.Remove(elem.index);
                             MyMap.Buildings.Buildings[_elem.index] = (Building)_elem.elem;
-                            if (MyMap.Buildings.Buildings[_elem.index].MT.idtexture != -1 && !MTTextures.Contains((uint)MyMap.Buildings.Buildings[_elem.index].MT.idtexture))
-                                MyMap.Buildings.Buildings[_elem.index].MT.GenTextureFromBuild();
+                            MyMap.Buildings.Buildings[_elem.index].MT.GenTextureFromBuild(true);
                             break;
                         case 3:
                             MyMap.Buildings.Remove(elem.index);
@@ -2060,8 +2081,7 @@ namespace NetworkDesign
                         case 5:
                             MyMap.Circles.Remove(elem.index);
                             MyMap.Buildings.Buildings[_elem.index] = (Building)_elem.elem;
-                            if (MyMap.Buildings.Buildings[_elem.index].MT.idtexture != -1 && !MTTextures.Contains((uint)MyMap.Buildings.Buildings[_elem.index].MT.idtexture))
-                                MyMap.Buildings.Buildings[_elem.index].MT.GenTextureFromBuild();
+                            MyMap.Buildings.Buildings[_elem.index].MT.GenTextureFromBuild(true);
                             break;
                         case 6:
                             MyMap.Buildings.Remove(elem.index);
@@ -2099,14 +2119,12 @@ namespace NetworkDesign
                         case 3:
                             MyMap.Rectangles.Remove(elem.index);
                             MyMap.Buildings.Buildings[_elem.index] = (Building)_elem.elem;
-                            if (MyMap.Buildings.Buildings[_elem.index].MT.idtexture != -1 && !MTTextures.Contains((uint)MyMap.Buildings.Buildings[_elem.index].MT.idtexture))
-                                MyMap.Buildings.Buildings[_elem.index].MT.GenTextureFromBuild();
+                            MyMap.Buildings.Buildings[_elem.index].MT.GenTextureFromBuild(true);
                             break;
                         case 4:
                             MyMap.Polygons.Remove(elem.index);
                             MyMap.Buildings.Buildings[_elem.index] = (Building)_elem.elem;
-                            if (MyMap.Buildings.Buildings[_elem.index].MT.idtexture != -1 && !MTTextures.Contains((uint)MyMap.Buildings.Buildings[_elem.index].MT.idtexture))
-                                MyMap.Buildings.Buildings[_elem.index].MT.GenTextureFromBuild();
+                            MyMap.Buildings.Buildings[_elem.index].MT.GenTextureFromBuild(true);
                             break;
                         case 5:
                             MyMap.Buildings.Remove(elem.index);
@@ -2120,8 +2138,7 @@ namespace NetworkDesign
                         case 6:
                             MyMap.Circles.Remove(elem.index);
                             MyMap.Buildings.Buildings[_elem.index] = (Building)_elem.elem;
-                            if (MyMap.Buildings.Buildings[_elem.index].MT.idtexture != -1 && !MTTextures.Contains((uint)MyMap.Buildings.Buildings[_elem.index].MT.idtexture))
-                                MyMap.Buildings.Buildings[_elem.index].MT.GenTextureFromBuild();
+                            MyMap.Buildings.Buildings[_elem.index].MT.GenTextureFromBuild(true);
                             break;
                     }
                     drawLevel = new DrawLevel(-1, -1);
@@ -2142,8 +2159,7 @@ namespace NetworkDesign
                         break;
                     case 4:
                         MyMap.Buildings.Buildings[elem.index] = (Building)elem.elem;
-                        if (MyMap.Buildings.Buildings[elem.index].MT.idtexture != -1 && !MTTextures.Contains((uint)MyMap.Buildings.Buildings[elem.index].MT.idtexture))
-                            MyMap.Buildings.Buildings[elem.index].MT.GenTextureFromBuild();
+                        MyMap.Buildings.Buildings[elem.index].MT.GenTextureFromBuild(true);
                         MyMap.Buildings.CheckIW(elem.index, MyMap.NetworkWires);
                         break;
                     case 360:
@@ -2191,8 +2207,7 @@ namespace NetworkDesign
                         break;
                     case 10:
                         MyMap.MyTexts.MyTexts[elem.index] = (MyText)elem.elem;
-                        if (MyMap.MyTexts.MyTexts[elem.index].idtexture != -1 && !MTTextures.Contains((uint)MyMap.MyTexts.MyTexts[elem.index].idtexture))
-                            MyMap.MyTexts.MyTexts[elem.index].GenNewTexture();
+                        MyMap.MyTexts.MyTexts[elem.index].GenNewTexture();
                         break;
                     case 11:
                         if (backbtn)
@@ -2272,28 +2287,27 @@ namespace NetworkDesign
                     break;
             }
         }
-        private void PharseElem(Element _elem, Element elem, bool backbtn, Parametrs temp)
+        private void PharseElem(Element _elem, Element elem, bool backbtn, GroupOfParametres temp)
         {
             if (backbtn)
             {
                 switch (_elem.transform)
                 {
                     case -1:
-                        parametrs.Remove(elem.index);
-                        MyMap.NetworkElements.UpdateOptions(elem.index);
+                        parametrs.Parametres.RemoveAt(elem.index);
+                        //parametrs.Delete(elem.index);
                         break;
                     case -2:
-                        parametrs.Edit(elem.index, _elem.elem.ToString());
-                        MyMap.NetworkElements.UpdateOptions(elem.index, "");
+                        //parametrs.Edit(elem.index, _elem.elem.ToString());
+                        //MyMap.NetworkElements.UpdateOptions(elem.index, "");
+                        parametrs.Edit(_elem.index, (string)elem.elem, (string)_elem.elem, ref groups, ref MyMap.NetworkElements, false);
                         break;
                     case -3:
-                        parametrs.Add(_elem.elem.ToString());
+                        parametrs.Parametres.Add(_elem.elem.ToString());
                         break;
                     case -4:
                         MyMap.NetworkElements.NetworkElements[elem.index] = (NetworkElement)_elem.elem;
-                        //Где-то тут генерить текстуру
-                        if (MyMap.NetworkElements.NetworkElements[elem.index].MT.idtexture != -1 && !MTTextures.Contains((uint)MyMap.NetworkElements.NetworkElements[elem.index].MT.idtexture))
-                            MyMap.NetworkElements.NetworkElements[elem.index].MT.GenTextureFromBuild();
+                        MyMap.NetworkElements.NetworkElements[elem.index].MT.GenTextureFromNE(true);
                         break;
                 }
             }
@@ -2302,20 +2316,44 @@ namespace NetworkDesign
                 switch (_elem.transform)
                 {
                     case -1:
-                        parametrs.Add(_elem.elem.ToString());
+                        parametrs.Parametres.Add(_elem.elem.ToString());
                         break;
                     case -2:
-                        parametrs.Edit(elem.index, _elem.elem.ToString());
-                        MyMap.NetworkElements.UpdateOptions(elem.index, "");
+                        parametrs.Edit(_elem.index, (string)elem.elem, (string)_elem.elem, ref groups, ref MyMap.NetworkElements, false);
                         break;
                     case -3:
-                        parametrs.Remove(elem.index);
-                        MyMap.NetworkElements.UpdateOptions(elem.index);
+                        parametrs.Parametres.RemoveAt(elem.index);
                         break;
                     case -4:
                         MyMap.NetworkElements.NetworkElements[elem.index] = (NetworkElement)_elem.elem;
-                        if (MyMap.NetworkElements.NetworkElements[elem.index].MT.idtexture != -1 && !MTTextures.Contains((uint)MyMap.NetworkElements.NetworkElements[elem.index].MT.idtexture))
-                            MyMap.NetworkElements.NetworkElements[elem.index].MT.GenTextureFromBuild();
+                        MyMap.NetworkElements.NetworkElements[elem.index].MT.GenTextureFromNE(true);
+                        break;
+                }
+            }
+        }
+        private void PharseElem(Element _elem, Element elem, bool backbtn, Groups temp)
+        {
+            if (backbtn)
+            {
+                switch (_elem.transform)
+                {
+                    case -1:
+                        groups.GroupsOfNE.RemoveAt(elem.index);
+                        break;
+                    case -3:
+                        groups.GroupsOfNE.Add((Group)_elem.group);
+                        break;
+                }
+            }
+            else
+            {
+                switch (_elem.transform)
+                {
+                    case -1:
+                        groups.GroupsOfNE.Add((Group)_elem.group);
+                        break;
+                    case -3:
+                        groups.GroupsOfNE.RemoveAt(elem.index);
                         break;
                 }
             }
@@ -2357,11 +2395,13 @@ namespace NetworkDesign
                     formatter.Serialize(fs, MyMap);
                 }
                 SaveTextures(ImagesURL);
-                Parametrs.Save(parametrs);
+                GroupOfParametres.Save(parametrs);
+                Groups.Save(groups);
                 ID_TEXT temp = new ID_TEXT();
                 foreach (var n in neButtons)
                     temp.ADD(n.id, n.textname);
                 NEButton.Save(temp);
+                File.Copy(Application.StartupPath + @"\Configurations\Groups", Application.StartupPath + @"\###tempdirectory._temp###\Groups");
                 File.Copy(Application.StartupPath + @"\Textures\ListOfTextures", Application.StartupPath + @"\###tempdirectory._temp###\ListOfTextures");
                 File.Copy(Application.StartupPath + @"\Configurations\NetworkSettings", Application.StartupPath + @"\###tempdirectory._temp###\NetworkSettings");
                 //File.Copy(Application.StartupPath + @"\Configurations\NEButtons", Application.StartupPath + @"\###tempdirectory._temp###\NEButtons");
@@ -2382,7 +2422,7 @@ namespace NetworkDesign
         private void SaveMap(string fileExtension, string descriptionFE)
         {
             try
-            { 
+            {
                 SaveFileDialog saveFileDialog1 = new SaveFileDialog
                 {
                     Filter = descriptionFE + "|*" + fileExtension
@@ -2412,11 +2452,13 @@ namespace NetworkDesign
                         formatter.Serialize(fs, MyMap);
                     }
                     SaveTextures(ImagesURL);
-                    Parametrs.Save(parametrs);
+                    GroupOfParametres.Save(parametrs);
+                    Groups.Save(groups);
                     ID_TEXT temp = new ID_TEXT();
                     foreach (var n in neButtons)
                         temp.ADD(n.id, n.textname);
                     NEButton.Save(temp);
+                    File.Copy(Application.StartupPath + @"\Configurations\Groups", Application.StartupPath + @"\###tempdirectory._temp###\Groups");
                     File.Copy(Application.StartupPath + @"\Textures\ListOfTextures", Application.StartupPath + @"\###tempdirectory._temp###\ListOfTextures");
                     File.Copy(Application.StartupPath + @"\Configurations\NetworkSettings", Application.StartupPath + @"\###tempdirectory._temp###\NetworkSettings");
                     //File.Copy(Application.StartupPath + @"\Configurations\NEButtons", Application.StartupPath + @"\###tempdirectory._temp###\NEButtons");
@@ -2439,44 +2481,45 @@ namespace NetworkDesign
         {
             try
             { 
-                if (Directory.Exists(Application.StartupPath + @"\###tempdirectory._temp###\"))
-                    Directory.Delete(Application.StartupPath + @"\###tempdirectory._temp###\", true);
-                ZipFile.ExtractToDirectory(path, Application.StartupPath + @"\###tempdirectory._temp###\");
-                XmlSerializer formatter = new XmlSerializer(typeof(Map));
-                // получаем поток, куда будем записывать сериализованный объект
-                using (FileStream fs = new FileStream(Application.StartupPath + @"\###tempdirectory._temp###\mapfile.map", FileMode.OpenOrCreate))
+            if (Directory.Exists(Application.StartupPath + @"\###tempdirectory._temp###\"))
+                Directory.Delete(Application.StartupPath + @"\###tempdirectory._temp###\", true);
+            ZipFile.ExtractToDirectory(path, Application.StartupPath + @"\###tempdirectory._temp###\");
+            XmlSerializer formatter = new XmlSerializer(typeof(Map));
+            // получаем поток, куда будем записывать сериализованный объект
+            using (FileStream fs = new FileStream(Application.StartupPath + @"\###tempdirectory._temp###\mapfile.map", FileMode.OpenOrCreate))
+            {
+                Map TempMap = (Map)formatter.Deserialize(fs);
+                string name = "";
+                if (user == null)
+                    name = MainForm.usertemp;
+                else
+                    name = MainForm.user.SamAccountName;
+                if (TempMap.UserLogin == name | edit)
                 {
-                    Map TempMap = (Map)formatter.Deserialize(fs);
-                    string name = "";
-                    if (user == null)
-                        name = MainForm.usertemp;
-                    else
-                        name = MainForm.user.SamAccountName;
-                    if (TempMap.UserLogin == name | edit)
-                    {
-                        for (int i = 0; i < TempMap.MyTexts.MyTexts.Count; i++)
-                            TempMap.MyTexts.MyTexts[i].GenNewTexture();
-                        for (int i = 0; i < TempMap.Buildings.Buildings.Count; i++)
-                            TempMap.Buildings.Buildings[i].GenText();
-                        for (int i = 0; i < TempMap.NetworkElements.NetworkElements.Count; i++)
-                            TempMap.NetworkElements.NetworkElements[i].GenText();
-                        _OpenTextures();
-                        Parametrs._Open();
-                        ID_TEXT temp = new ID_TEXT();
-                        foreach (var n in neButtons)
-                            temp.ADD(n.id, n.textname);
-                        RefreshNENuttons();
-                        MyMap.MapLoad(TempMap);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Вам запрещен доступ к данной карте");
-                        return false;
-                    }
+                    for (int i = 0; i < TempMap.MyTexts.MyTexts.Count; i++)
+                        TempMap.MyTexts.MyTexts[i].GenNewTexture();
+                    for (int i = 0; i < TempMap.Buildings.Buildings.Count; i++)
+                        TempMap.Buildings.Buildings[i].GenText();
+                    for (int i = 0; i < TempMap.NetworkElements.NetworkElements.Count; i++)
+                        TempMap.NetworkElements.NetworkElements[i].GenText();
+                    _OpenTextures();
+                    GroupOfParametres._Open();
+                    Groups._Open();
+                    ID_TEXT temp = new ID_TEXT();
+                    foreach (var n in neButtons)
+                        temp.ADD(n.id, n.textname);
+                    RefreshNENuttons();
+                    MyMap.MapLoad(TempMap);
                 }
-                if (Directory.Exists(Application.StartupPath + @"\###tempdirectory._temp###\"))
-                    Directory.Delete(Application.StartupPath + @"\###tempdirectory._temp###\", true);
-                return true;
+                else
+                {
+                    MessageBox.Show("Вам запрещен доступ к данной карте");
+                    return false;
+                }
+            }
+            if (Directory.Exists(Application.StartupPath + @"\###tempdirectory._temp###\"))
+                Directory.Delete(Application.StartupPath + @"\###tempdirectory._temp###\", true);
+            return true;
             }
             catch
             {
@@ -2535,11 +2578,13 @@ namespace NetworkDesign
                         formatter.Serialize(fs, TempMap);
                     }
                     SaveTextures(ImagesURL);
-                    Parametrs.Save(parametrs);
+                    GroupOfParametres.Save(parametrs);
+                    Groups.Save(groups);
                     ID_TEXT temp = new ID_TEXT();
                     foreach (var n in neButtons)
                         temp.ADD(n.id, n.textname);
                     NEButton.Save(temp);
+                    File.Copy(Application.StartupPath + @"\Configurations\Groups", Application.StartupPath + @"\###tempdirectory._temp###\Groups");
                     File.Copy(Application.StartupPath + @"\Textures\ListOfTextures", Application.StartupPath + @"\###tempdirectory._temp###\ListOfTextures");
                     File.Copy(Application.StartupPath + @"\Configurations\NetworkSettings", Application.StartupPath + @"\###tempdirectory._temp###\NetworkSettings");
                     //File.Copy(Application.StartupPath + @"\Configurations\NEButtons", Application.StartupPath + @"\###tempdirectory._temp###\NEButtons");
@@ -2551,10 +2596,7 @@ namespace NetworkDesign
                     Directory.Delete(Application.StartupPath + @"\###tempdirectory._temp###\", true);
                 }
             }
-            catch
-            {
-
-            }
+            catch { }
         }
         /// <summary>
         /// Открытие файла с картой сети
@@ -2588,7 +2630,8 @@ namespace NetworkDesign
                         if (OpenMap.UserLogin == name | edit)
                         {
                             _OpenTexturesFromBuild(ref OpenMap.NetworkElements);
-                            Parametrs._OpenFromBuild(ref OpenMap.NetworkElements);
+                            //GroupOfParametres._OpenFromBuild(ref OpenMap.NetworkElements);
+                            Groups._OpenFromBuild(ref OpenMap.NetworkElements);
                             int newdll = MyMap.Buildings.Buildings.Count;
                             OpenMap.Buildings.Buildings[0].LocalDL.Level = newdll;
                             MyMap.Buildings.Add(OpenMap.Buildings.Buildings[0].Clone());
@@ -2616,7 +2659,7 @@ namespace NetworkDesign
                                 lastindex = MyMap.Lines.Lines.Count - 1;
                                 Element _elem1 = new Element(1, lastindex, new Line(), -1);
                                 Element elem1 = new Element(1, lastindex, MyMap.Lines.Lines[lastindex].Clone(), -1);
-                                MyMap.log.Add(new LogMessage("Импортировал линию внутри здания", elem1, _elem1));
+                                MyMap.log.Add(new LogMessage("Импортировал линию внутри здания с id " + lastindex, elem1, _elem1));
                             }
                             foreach (var item in OpenMap.Rectangles.Rectangles)
                             {
@@ -2625,7 +2668,7 @@ namespace NetworkDesign
                                 lastindex = MyMap.Rectangles.Rectangles.Count - 1;
                                 Element _elem2 = new Element(2, lastindex, new MyRectangle(), -1);
                                 Element elem2 = new Element(2, lastindex, MyMap.Rectangles.Rectangles[lastindex].Clone(), -1);
-                                MyMap.log.Add(new LogMessage("Импортировал прямоугольник внутри здания", elem2, _elem2));
+                                MyMap.log.Add(new LogMessage("Импортировал прямоугольник внутри здания  с id " + lastindex, elem2, _elem2));
                             }
                             foreach (var item in OpenMap.Polygons.Polygons)
                             {
@@ -2634,7 +2677,7 @@ namespace NetworkDesign
                                 lastindex = MyMap.Polygons.Polygons.Count - 1;
                                 Element _elem3 = new Element(3, lastindex, new Polygon(), -1);
                                 Element elem3 = new Element(3, lastindex, MyMap.Polygons.Polygons[lastindex].Clone(), -1);
-                                MyMap.log.Add(new LogMessage("Импортировал многоугольник внутри здания", elem3, _elem3));
+                                MyMap.log.Add(new LogMessage("Импортировал многоугольник внутри здания с id " + lastindex, elem3, _elem3));
                             }
                             foreach (var item in OpenMap.Circles.Circles)
                             {
@@ -2644,7 +2687,7 @@ namespace NetworkDesign
                                 lastindex = MyMap.Circles.Circles.Count - 1;
                                 Element _elem4 = new Element(360, lastindex, new Circle(), -1);
                                 Element elem4 = new Element(360, lastindex, MyMap.Circles.Circles[lastindex].Clone(), -1);
-                                MyMap.log.Add(new LogMessage("Импортировал круг внутри здания", elem4, _elem4));
+                                MyMap.log.Add(new LogMessage("Импортировал круг внутри здания с id " + lastindex, elem4, _elem4));
                             }
                             foreach (var item in OpenMap.MyTexts.MyTexts)
                             {
@@ -2654,7 +2697,7 @@ namespace NetworkDesign
                                 lastindex = MyMap.MyTexts.MyTexts.Count - 1;
                                 Element _elem5 = new Element(10, lastindex, new MyText(), -1);
                                 Element elem5 = new Element(10, lastindex, MyMap.MyTexts.MyTexts[lastindex].Clone(), -1);
-                                MyMap.log.Add(new LogMessage("Импортировал надпись внутри здания", elem5, _elem5));
+                                MyMap.log.Add(new LogMessage("Импортировал надпись внутри здания с id " + lastindex, elem5, _elem5));
                             }
                             foreach (var item in OpenMap.NetworkElements.NetworkElements)
                             {
@@ -2664,7 +2707,7 @@ namespace NetworkDesign
                                 lastindex = MyMap.NetworkElements.NetworkElements.Count - 1;
                                 Element _elem6 = new Element(8, lastindex, new NetworkElement(), -1);
                                 Element elem6 = new Element(8, lastindex, MyMap.NetworkElements.NetworkElements[lastindex].Clone(), -1);
-                                MyMap.log.Add(new LogMessage("Импортировал сетевой элемент внутри здания", elem6, _elem6));
+                                MyMap.log.Add(new LogMessage("Импортировал сетевой элемент внутри здания с id " + lastindex, elem6, _elem6));
                             }
                             foreach (var item in OpenMap.NetworkWires.NetworkWires)
                             {
@@ -2673,7 +2716,7 @@ namespace NetworkDesign
                                 lastindex = MyMap.NetworkWires.NetworkWires.Count - 1;
                                 Element _elem7 = new Element(9, lastindex, new NetworkWire(), -1);
                                 Element elem7 = new Element(9, lastindex, MyMap.NetworkWires.NetworkWires[lastindex].Clone(), -1);
-                                MyMap.log.Add(new LogMessage("Импортировал провод внутри здания", elem7, _elem7));
+                                MyMap.log.Add(new LogMessage("Импортировал провод внутри здания с id " + lastindex, elem7, _elem7));
                             }
                         }
                         else
@@ -2689,7 +2732,7 @@ namespace NetworkDesign
             }
             catch
             {
-                return false;
+
             }
             return false;
         }
@@ -2700,7 +2743,7 @@ namespace NetworkDesign
         {
             for (int i = 0; i < neButtons.Count; i++)
             {
-                for (int j = 0; j < ImagesURL.Count; j++)
+                for (int j = 0; j < ImagesURL.Textures.Count; j++)
                 {
                     if (neButtons[i].textname == ImagesURL.Textures[j].URL)
                     {
@@ -2762,8 +2805,7 @@ namespace NetworkDesign
                     Directory.Delete(Application.StartupPath + @"\###tempdirectory._temp###\", true);
                 }
             }
-            catch
-            { }
+            catch { }
         }
         public static bool OpenTemplateMap(string path)
         {
@@ -2856,6 +2898,8 @@ namespace NetworkDesign
         {
             ImageTextures IT = new ImageTextures(ref MyMap.NetworkElements);
             IT.ShowDialog();
+            if (IT.isEdit)
+                CheckButtons(true);
             if (IT.action == 0)
             {
                 AddTexture(IT.imageindex);
@@ -2892,7 +2936,8 @@ namespace NetworkDesign
 
         private void DeleteTexture(int id)
         {
-            Element elem = new Element(11, id, ImagesURL.Textures[id].Clone(), -1);
+            string empty = "";
+            Element elem = new Element(11, id, empty, (URL_ID)ImagesURL.Textures[id].Clone(), -1);
             DeleteImages.Add(ImagesURL.Textures[id]);
             ImagesURL.RemoveAt(id);
             isLoad = false;
@@ -2913,21 +2958,19 @@ namespace NetworkDesign
                     if (item.texture.idimage > id)
                         item.texture.idimage--;
             }
-            string empty = "";
-            Element _elem = new Element(11, id, empty, -1);
-            MyMap.log.Add(new LogMessage("Удалил текстуру", elem, _elem));
+            Element _elem = new Element(11, id, "", -1);
+            MyMap.log.Add(new LogMessage("Удалил текстуру c id " + id, elem, _elem));
             InfoLable.Text = "Удалил текстуру";
             CheckButtons(true);
         }
 
         private void AddTexture(int id)
         {
-            string empty = "";
-            Element elem = new Element(12, id, empty, -1);
+            Element elem = new Element(12, id, "", -1);
             isLoad = false;
             LoadImages();
-            Element _elem = new Element(12, id, (URL_ID)ImagesURL.Textures[ImagesURL.Textures.Count - 1].Clone(), -1);
-            MyMap.log.Add(new LogMessage("Добавил текстуру", elem, _elem));
+            Element _elem = new Element(12, id, "", (URL_ID)ImagesURL.Textures[ImagesURL.Textures.Count - 1].Clone(), -1);
+            MyMap.log.Add(new LogMessage("Добавил текстуру c id " + id, elem, _elem));
             InfoLable.Text = "Добавил текстуру";
             CheckButtons(true);
         }
@@ -3156,12 +3199,14 @@ namespace NetworkDesign
         private void BackClick()
         {
             Element _elem = MyMap.log.DeleteLastBack(out Element elem, out int buildid);
-            if (_elem.type != 7 & _elem.type != 6 & _elem.type != 13 & _elem.type != 15)
+            if (_elem.type != 7 & _elem.type != 6 & _elem.type != 13 & _elem.type != 15 & _elem.type != 17)
                 PharseElem(_elem, elem, true);
             else if (_elem.type == 13)
                 PharseElem(_elem, elem, true, parametrs);
             else if (_elem.type == 15)
                 BuildEdit(_elem, elem);
+            else if (_elem.type == 17)
+                PharseElem(_elem, elem, true, groups);
             else
                 PharseElem(_elem, elem, buildid);
             CheckButtons(false);
@@ -3181,12 +3226,14 @@ namespace NetworkDesign
         private void ForwardClick()
         {
             Element _elem = MyMap.log.DeleteLastForward(out Element elem, out int buildid);
-            if (_elem.type != 7 & _elem.type != 6 & _elem.type != 13 & _elem.type != 15)
+            if (_elem.type != 7 & _elem.type != 6 & _elem.type != 13 & _elem.type != 15 & _elem.type != 17)
                 PharseElem(_elem, elem, false);
             else if (_elem.type == 13)
                 PharseElem(_elem, elem, false, parametrs);
             else if (_elem.type == 15)
                 BuildEdit(_elem, elem);
+            else if (_elem.type == 17)
+                PharseElem(_elem, elem, false, groups);
             else
                 PharseElem(_elem, elem, buildid);
             CheckButtons(false);
@@ -3196,10 +3243,9 @@ namespace NetworkDesign
         {
             if (drawLevel.Level == _elem.index)
                 drawLevel = new DrawLevel(-1, -1);
-            var temp = _elem.buildlist;
+            var temp = (Buildlist)_elem.elem;
             MyMap.Buildings.Buildings[_elem.index] = (Building)temp.building.Clone();
-            if (MyMap.Buildings.Buildings[_elem.index].MT.idtexture != -1 && !MTTextures.Contains((uint)MyMap.Buildings.Buildings[_elem.index].MT.idtexture))
-                MyMap.Buildings.Buildings[_elem.index].MT.GenTextureFromBuild();
+            MyMap.Buildings.Buildings[_elem.index].MT.GenTextureFromBuild(true);
             List<int> _Added = new List<int>();
             foreach (var add in temp.deleted)
                 _Added.Add(add);
@@ -3534,7 +3580,8 @@ namespace NetworkDesign
             //StartForm.SaveMapList();
             ColorSettings.Save(colorSettings);
             SaveTextures(ImagesURL);
-            Parametrs.Save(parametrs);
+            GroupOfParametres.Save(parametrs);
+            Groups.Save(groups);
             ID_TEXT temp = new ID_TEXT();
             foreach (var n in neButtons)
                 temp.ADD(n.id, n.textname);
@@ -3555,7 +3602,7 @@ namespace NetworkDesign
             listView1.LargeImageList = Images;
             listView1.SmallImageList = Images;
             bool noexist = false;
-            for (int j = 0; j < ImagesURL.Count; j++)
+            for (int j = 0; j < ImagesURL.Textures.Count; j++)
             {
                 if (File.Exists(Application.StartupPath + @"\Textures\" + ImagesURL.Textures[j].URL))
                 {
@@ -3655,10 +3702,10 @@ namespace NetworkDesign
                         if (!File.Exists(Application.StartupPath + @"\Textures\" + url.URL))
                             File.Copy(Application.StartupPath + @"\###tempdirectory._temp###\" + url.URL, Application.StartupPath + @"\Textures\" + url.URL);
                 int id = -1;
-                for (int i = 0; i < _textures.Count; i++)
+                for (int i = 0; i < _textures.Textures.Count; i++)
                 {
                     id = -1;
-                    for (int j = 0; j < ImagesURL.Count; j++)
+                    for (int j = 0; j < ImagesURL.Textures.Count; j++)
                     {
                         if (ImagesURL.Textures[j].URL == _textures.Textures[i].URL)
                         {
@@ -3704,11 +3751,11 @@ namespace NetworkDesign
                             ImagesURL.Add(textures.Textures[NE.NetworkElements[i].texture.idimage]);
                             if (!File.Exists(Application.StartupPath + @"\Textures\" + NE.NetworkElements[i].texture.url))
                                 File.Copy(Application.StartupPath + @"\###tempdirectory._temp###\" + NE.NetworkElements[i].texture.url, Application.StartupPath + @"\Textures\" + NE.NetworkElements[i].texture.url);
-                            NE.NetworkElements[i].texture.idimage = ImagesURL.Count - 1;
+                            NE.NetworkElements[i].texture.idimage = ImagesURL.Textures.Count - 1;
                             string empty = "";
-                            Element elem = new Element(12, ImagesURL.Count - 1, empty, -1);
-                            Element _elem = new Element(12, ImagesURL.Count - 1, ImagesURL.Textures.Last(), -1);
-                            MyMap.log.Add(new LogMessage("Добавил текстуру", elem, _elem));
+                            Element elem = new Element(12, ImagesURL.Textures.Count - 1, empty, -1);
+                            Element _elem = new Element(12, ImagesURL.Textures.Count - 1, ImagesURL.Textures.Last(), -1);
+                            MyMap.log.Add(new LogMessage("Добавил текстуру c id " + (ImagesURL.Textures.Count - 1).ToString(), elem, _elem));
                         }
                     }
                 }
@@ -3749,7 +3796,7 @@ namespace NetworkDesign
                     lastindex = MyMap.Lines.Lines.Count - 1;
                     _elem = new Element(1, lastindex, new Line(), -1);
                     elem = new Element(1, lastindex, MyMap.Lines.Lines[lastindex].Clone(), -1);
-                    MyMap.log.Add(new LogMessage("Скопировал линию", elem, _elem));
+                    MyMap.log.Add(new LogMessage("Скопировал линию с id " + lastindex, elem, _elem));
                     break;
                 case 2:
                     MyMap.Rectangles.Add(MyMap.Rectangles.Rectangles[i].Clone());
@@ -3759,7 +3806,7 @@ namespace NetworkDesign
                     lastindex = MyMap.Rectangles.Rectangles.Count - 1;
                     _elem = new Element(2, lastindex, new MyRectangle(), -1);
                     elem = new Element(2, lastindex, MyMap.Rectangles.Rectangles[lastindex].Clone(), -1);
-                    MyMap.log.Add(new LogMessage("Скопировал прямоугольник", elem, _elem));
+                    MyMap.log.Add(new LogMessage("Скопировал прямоугольник с id " + lastindex, elem, _elem));
                     break;
                 case 3:
                     MyMap.Polygons.Add(MyMap.Polygons.Polygons[i].Clone());
@@ -3769,7 +3816,7 @@ namespace NetworkDesign
                     lastindex = MyMap.Polygons.Polygons.Count - 1;
                     _elem = new Element(3, lastindex, new Polygon(), -1);
                     elem = new Element(3, lastindex, MyMap.Polygons.Polygons[lastindex].Clone(), -1);
-                    MyMap.log.Add(new LogMessage("Скопировал многоугольник", elem, _elem));
+                    MyMap.log.Add(new LogMessage("Скопировал многоугольник с id " + lastindex, elem, _elem));
                     break;
                 case 360:
                     MyMap.Circles.Add(MyMap.Circles.Circles[i].Clone());
@@ -3778,7 +3825,7 @@ namespace NetworkDesign
                     lastindex = MyMap.Circles.Circles.Count - 1;
                     _elem = new Element(360, lastindex, new Circle(), -1);
                     elem = new Element(360, lastindex, MyMap.Circles.Circles[lastindex].Clone(), -1);
-                    MyMap.log.Add(new LogMessage("Скопировал круг", elem, _elem));
+                    MyMap.log.Add(new LogMessage("Скопировал круг с id " + lastindex, elem, _elem));
                     break;
                 case 8:
                     MyMap.NetworkElements.Add(MyMap.NetworkElements.NetworkElements[i].Clone());
@@ -3788,7 +3835,7 @@ namespace NetworkDesign
                     lastindex = MyMap.NetworkElements.NetworkElements.Count - 1;
                     _elem = new Element(8, lastindex, new NetworkElement(), -1);
                     elem = new Element(8, lastindex, MyMap.NetworkElements.NetworkElements[lastindex].Clone(), -1);
-                    MyMap.log.Add(new LogMessage("Скопировал сетевой элемент", elem, _elem));
+                    MyMap.log.Add(new LogMessage("Скопировал сетевой элемент с id " + lastindex, elem, _elem));
                     break;
                 case 10:
                     MyMap.MyTexts.Add(MyMap.MyTexts.MyTexts[i].Clone());
@@ -3798,15 +3845,13 @@ namespace NetworkDesign
                     lastindex = MyMap.MyTexts.MyTexts.Count - 1;
                     _elem = new Element(10, lastindex, new MyText(), -1);
                     elem = new Element(10, lastindex, MyMap.MyTexts.MyTexts[lastindex].Clone(), -1);
-                    MyMap.log.Add(new LogMessage("Скопировал текст", elem, _elem));
+                    MyMap.log.Add(new LogMessage("Скопировал текст с id " + lastindex, elem, _elem));
                     break;
             }
         }
 
         public static void ImageExport(List<bool> build)
         {
-            try
-            {
                 FolderBrowserDialog fbd = new FolderBrowserDialog();
                 if (fbd.ShowDialog() == DialogResult.OK)
                 {
@@ -3815,43 +3860,46 @@ namespace NetworkDesign
                     {
                         string path = fbd.SelectedPath;
                         drawLevel = new DrawLevel(-1, -1);
+                        MyMap.ResizeRenderingArea();
                         MyMap.Drawing();
                         Thread.Sleep(1000);
                         Bitmap image = GetBitmap();
                         image.Save(path + "/Главный вид.png");
+                        List<int> buildsid = new List<int>();
                         List<Building> buildings = new List<Building>();
-                        foreach (var b in MyMap.Buildings.Buildings)
-                            if (!b.delete)
-                                buildings.Add(b);
+                        for (int i = 0; i < MyMap.Buildings.Buildings.Count; i++)
+                        {
+                            if (!MyMap.Buildings.Buildings[i].delete)
+                            {
+                                buildings.Add(MyMap.Buildings.Buildings[i]);
+                                buildsid.Add(i);
+                            }
+                        }
                         for (int i = 0; i < buildings.Count; i++)
                         {
                             if (build[i])
-                            {
-                                string buildname = path + "\\Здание " + i + " " + MyMap.Buildings.Buildings[i].Name + "\\";
+                            { 
+                                MyMap.ResizeRenderingArea(buildsid[i]);
+                                string buildname = path + "\\Здание " + i + " " + buildings[i].Name + "\\";
                                 buildname = buildname.Replace("\r\n", "");
                                 buildname = buildname.Replace("\r", "");
                                 buildname = buildname.Replace("\n", "");
                                 if (Directory.Exists(buildname))
                                     Directory.Delete(buildname, true);
                                 Directory.CreateDirectory(buildname);
-                                for (int j = 0; j < MyMap.Buildings.Buildings[i].floors_name.Count; j++)
+                                for (int j = 0; j < buildings[i].floors_name.Count; j++)
                                 {
-                                    drawLevel = new DrawLevel(i, j);
+                                    drawLevel = new DrawLevel(buildsid[i], j);
                                     MyMap.Drawing();
                                     Thread.Sleep(1000);
                                     Bitmap _image = GetBitmap();
-                                    _image.Save(buildname + MyMap.Buildings.Buildings[i].floors_name[j].ToString() + ".png");
+                                    _image.Save(buildname + buildings[i].floors_name[j].ToString() + ".png");
                                 }
                             }
                         }
                     }
                     drawLevel = dl;
                 }
-            }
-            catch
-            {
-
-            }
         }
         /// <summary>
         /// Получает изображение из области отрисовки
@@ -3877,8 +3925,6 @@ namespace NetworkDesign
         /// <param name="build">Список зданий</param>
         static public void ExportListNE(List<bool> build)
         {
-            try
-            {
                 SaveFileDialog saveFileDialog1 = new SaveFileDialog
                 {
                     Filter = "Text File" + "|*" + ".txt"
@@ -3896,11 +3942,6 @@ namespace NetworkDesign
                     }
                     MyMap.ExportListNE(filename, build);
                 }
-            }
-            catch
-            {
-                
-            }
         }
 
         static public System.Windows.Forms.Timer PingDeviceTimer = new System.Windows.Forms.Timer();
